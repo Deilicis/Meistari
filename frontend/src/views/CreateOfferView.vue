@@ -103,7 +103,7 @@ const submitOffer = async () => {
       isSuccess.value = true;
       message.value = "Pakalpojums veiksmīgi izveidots!";
       setTimeout(() => {
-        router.push('/my-offers'); // Mēs tūlīt izveidosim šo lapu
+        router.push('/my-offers');
       }, 1500);
     } else {
       isSuccess.value = false;

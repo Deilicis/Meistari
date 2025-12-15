@@ -72,20 +72,21 @@
 </template>
 
 <script setup>
+import { useNotifications } from '@/composables/useNotifications';
 import { ref, onMounted, computed } from 'vue';
 
 const requests = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
-
+const { notify } = useNotifications();
 // Modāļa mainīgie
-const selectedRequest = ref(null); // Kurš darbs ir atvērts
+const selectedRequest = ref(null); 
 const applicationForm = ref({ price: '', comment: '' });
 const modalMessage = ref('');
 const user = ref(null);
 
 onMounted(async () => {
-  // Ielādējam useri, lai zinātu ID
+  // Ielādē user
   const userData = localStorage.getItem('user');
   if (userData) user.value = JSON.parse(userData);
 
@@ -114,7 +115,7 @@ const formatDate = (d) => new Date(d).toLocaleDateString('lv-LV');
 const openModal = (req) => {
   selectedRequest.value = req;
   modalMessage.value = '';
-  // Iestatām cenu automātiski uz budžeta sākumu (kā ieteikumu)
+  // Iestata cenu automātiski uz budžeta sākuma
   applicationForm.value.price = ''; 
   applicationForm.value.comment = '';
 };
@@ -144,7 +145,7 @@ const submitApplication = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      alert("Pieteikums veiksmīgi nosūtīts!"); // Vienkāršs paziņojums
+      notify('Jūsu pieteikums ir nosūtīts veiksmīgi!', 'success');
       closeModal();
     } else {
       modalMessage.value = data.message;

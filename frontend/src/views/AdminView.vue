@@ -90,12 +90,12 @@
 </template>
 
 <script setup>
+import { useNotifications } from '@/composables/useNotifications';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Lai ikona "trash" strādātu, tā jāimportē main.js, bet pagaidām izmantosim tekstu vai pievienosim to tur.
-// Es pieņemu, ka trash ikona būs pieejama.
 
+const { notify } = useNotifications();
 const users = ref([]);
 const router = useRouter();
 const roleNames = {
@@ -126,11 +126,10 @@ const deleteUser = async (id) => {
     });
 
     if (response.ok) {
-      // Atjaunojam sarakstu
       users.value = users.value.filter(u => u.id !== id);
-      alert('Lietotājs izdzēsts.');
+      notify('Lietotājs veiksmīgi izdzēsts!', 'success');
     } else {
-      alert('Kļūda dzēšot.');
+      notify('Kļūda dzēšot!', 'error');
     }
   } catch (error) {
     console.error(error);
@@ -139,7 +138,7 @@ const deleteUser = async (id) => {
 
 onMounted(() => {
   const user = JSON.parse(localStorage.getItem('user'));
-  // Vienkārša aizsardzība frontend pusē
+  // Vienkārša aizsardzība
   if (!user || user.role !== 'admin') {
     router.push('/dashboard');
     return;

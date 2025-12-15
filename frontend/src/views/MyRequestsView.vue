@@ -92,8 +92,10 @@
 </template>
 
 <script setup>
+import { useNotifications } from '@/composables/useNotifications';
 import { ref, onMounted } from 'vue';
 
+const { notify } = useNotifications();
 const requests = ref([]);
 const applicants = ref([]);
 const loading = ref(true);
@@ -116,16 +118,15 @@ onMounted(async () => {
     }
 });
 
-// Funkcija, kas ielādē kandidātus konkrētam darbam
 const toggleApplicants = async (requestId) => {
     if (activeRequest.value === requestId) {
-        activeRequest.value = null; // Aizvērt, ja jau atvērts
+        activeRequest.value = null; // Aizvērt, ja atvērts
         return;
     }
 
     activeRequest.value = requestId;
     applicantsLoading.value = true;
-    applicants.value = []; // Notīrīt vecos
+    applicants.value = []; // Notīr vecos
 
     try {
         const response = await fetch(`http://localhost/Meistari/api/get_applicants.php?request_id=${requestId}`);
@@ -146,8 +147,6 @@ const getMasterName = (app) => {
 };
 
 const formatDate = (d) => new Date(d).toLocaleDateString('lv-LV');
-// ... (citas funkcijas: toggleApplicants, getMasterName, etc.)
-
 const confirmMaster = async (requestId, applicationId) => {
   if (!confirm("Vai tiešām vēlaties apstiprināt šo meistaru? Darbs tiks atzīmēts kā pabeigts.")) {
     return;
@@ -166,16 +165,14 @@ const confirmMaster = async (requestId, applicationId) => {
     const data = await response.json();
 
     if (response.ok) {
-      alert("Veiksmīgi apstiprināts!");
-      // Pārlādējam lapu vai atjauninām sarakstu, lai redzētu izmaiņas
-      // Ātrākais variants: vienkārši pārlādēt šo skatu
+      notify('Meistars veiksmīgi apstiprināts!', 'success');
       location.reload(); 
     } else {
-      alert("Kļūda: " + data.message);
+      notify("Kļūda: " + data.message, 'error');
     }
   } catch (error) {
     console.error(error);
-    alert("Servera kļūda.");
+    notify("Servera kļūda.", 'error');
   }
 };
 </script>

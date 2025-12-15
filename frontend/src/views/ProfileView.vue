@@ -81,12 +81,10 @@ const isSuccess = ref(false);
 const userId = ref(null);
 
 onMounted(() => {
-  // Get User ID from localStorage
+
   const user = JSON.parse(localStorage.getItem('user'));
   if (user) {
     userId.value = user.id;
-    // Ideally, you would fetch existing profile data here to fill the form
-    // fetchProfileData(); 
   }
 });
 

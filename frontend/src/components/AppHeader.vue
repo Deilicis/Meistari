@@ -76,8 +76,6 @@ onMounted(() => {
   checkUser();
 });
 
-// Pārbaudām lietotāju katru reizi, kad mainās lapa (route)
-// Tas ir svarīgi, lai headeris atjaunotos uzreiz pēc Login/Logout
 watch(route, () => {
   checkUser();
 });

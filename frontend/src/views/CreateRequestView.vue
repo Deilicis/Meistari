@@ -80,8 +80,6 @@ const form = ref({
 
 const submitRequest = async () => {
   message.value = '';
-  
-  // Iegūstam lietotāja ID no localStorage
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) {
     router.push('/login');
@@ -89,7 +87,6 @@ const submitRequest = async () => {
   }
 
   try {
-    // PĀRBAUDIET ADRESI: Meistari vs Meistari-Project
     const response = await fetch('http://localhost/Meistari/api/create_request.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -104,7 +101,7 @@ const submitRequest = async () => {
     if (response.ok) {
       isSuccess.value = true;
       message.value = "Pieprasījums veiksmīgi publicēts!";
-      // Pēc 1.5 sekundēm atgriežamies uz paneli
+      // Pēc 1.5 sekundes delay
       setTimeout(() => {
         router.push('/dashboard');
       }, 1500);

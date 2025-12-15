@@ -1,12 +1,13 @@
 <script setup>
-import { RouterView, useRoute } from 'vue-router';
-import AppHeader from '@/components/AppHeader.vue'; // Imports
+import { RouterView, useRoute } from 'vue-router'
+import AppHeader from '@/components/AppHeader.vue'
+import NotificationToast from '@/components/NotificationToast.vue'
 
-const route = useRoute();
+const route = useRoute()
 </script>
 
 <template>
-  <AppHeader v-if="!route.meta.hideHeader" />
+  <NotificationToast /> <AppHeader v-if="!route.meta.hideHeader" />
   
   <RouterView />
 </template>

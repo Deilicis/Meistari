@@ -8,11 +8,6 @@
             class="text-blue-500">.lv</span></span>
       </div>
       <h2 class="text-2xl font-bold mb-6 text-center text-blue-900 tracking-tight">Pieslēgties</h2>
-
-      <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        {{ errorMessage }}
-      </div>
-
       <form @submit.prevent="handleLogin">
 
         <div class="mb-4">
@@ -44,21 +39,22 @@
 </template>
 
 <script setup>
+import { useNotifications } from '@/composables/useNotifications';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// 1. Variables to store input data
+const { notify } = useNotifications();
 const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
-const router = useRouter(); // To redirect user after login
+const router = useRouter();
 
 // 2. The Login Function
 const handleLogin = async () => {
-  errorMessage.value = ''; // Clear previous errors
+  errorMessage.value = '';
 
   try {
-    // Send data to your PHP API
+
     const response = await fetch('http://localhost/Meistari/api/login.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,8 +67,7 @@ const handleLogin = async () => {
     const data = await response.json();
 
     if (response.ok) {
-      // SUCCESS: Login worked
-      console.log('Login successful:', data.user);
+      console.log('Login izdevās:', data.user);
 
       const sessionDuration = 2 * 60 * 60 * 1000;
       const sessionData = {
@@ -81,16 +76,14 @@ const handleLogin = async () => {
       };
 
       localStorage.setItem('user', JSON.stringify(sessionData));
-
-      // Redirect to Dashboard (we will create this later)
+      notify(`Sveicināti atpakaļ, ${data.user.username}!`, 'success');
       router.push('/dashboard');
     } else {
-      // ERROR: Show the message from PHP (e.g., "Nepareiza parole")
-      errorMessage.value = data.message || 'Kļūda sistēmā.';
+      notify(data.message || 'Kļūda sistēmā.', 'error');
     }
 
   } catch (error) {
-    errorMessage.value = 'Nevarēja savienoties ar serveri.';
+    notify('Nevarēja savienoties ar serveri.', 'error');
     console.error(error);
   }
 };

@@ -82,7 +82,7 @@ const username = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
-const role = ref('mekletajs'); // Default selection
+const role = ref('mekletajs');
 const errorMessage = ref('');
 const successMessage = ref('');
 const router = useRouter();
@@ -91,7 +91,6 @@ const handleRegister = async () => {
   errorMessage.value = '';
   successMessage.value = '';
 
-  // 1. Client-side Validation
   if (password.value !== confirmPassword.value) {
     errorMessage.value = "Paroles nesakrīt!";
     return;
@@ -102,7 +101,7 @@ const handleRegister = async () => {
   }
 
   try {
-    // 2. Send Data to API
+   
     const response = await fetch('http://localhost/Meistari/api/register.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -118,7 +117,7 @@ const handleRegister = async () => {
 
     if (response.ok) {
       successMessage.value = "Reģistrācija veiksmīga! Pārvirza uz pieslēgšanos...";
-      // Wait 2 seconds so user sees the success message, then redirect
+
       setTimeout(() => {
         router.push('/login');
       }, 2000);
