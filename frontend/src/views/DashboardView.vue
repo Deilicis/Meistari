@@ -12,7 +12,8 @@
                             <font-awesome-icon icon="user" class="text-gray-400" />
                             {{ user.username }} ({{ user.role }})
                         </span>
-                        <button @click="logout" class="text-red-600 hover:text-red-800 font-medium flex items-center gap-2">
+                        <button @click="logout"
+                            class="text-red-600 hover:text-red-800 font-medium flex items-center gap-2">
                             <font-awesome-icon icon="sign-out-alt" /> Iziet
                         </button>
                     </div>
@@ -83,7 +84,25 @@
                     </div>
                 </div>
             </div>
+            <div v-else-if="user.role === 'admin'" class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
+                    <h2 class="text-2xl font-bold mb-4 text-red-700">Administratora Panelis</h2>
+                    <p class="text-gray-600 mb-6">Sistēmas pārvaldība un uzraudzība.</p>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
+                            @click="$router.push('/admin')">
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <font-awesome-icon icon="user-cog" class="text-red-600 text-xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-red-600">Lietotāju Pārvaldība</h3>
+                                <p class="text-sm text-gray-500">Skatīt, bloķēt vai dzēst lietotājus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </template>

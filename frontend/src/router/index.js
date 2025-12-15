@@ -7,6 +7,7 @@ import CreateRequestView from '../views/CreateRequestView.vue'
 import RequestsView from '../views/RequestsView.vue'
 import HomeView from '../views/HomeView.vue'
 import MyRequestsView from '../views/MyRequestsView.vue'
+import AdminView from '../views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,7 @@ const router = createRouter({
     { path: '/create-request', name: 'create-request', component: CreateRequestView },
     { path: '/requests', name: 'requests', component: RequestsView },
     { path: '/my-requests', name: 'my-requests', component: MyRequestsView },
+    { path: '/admin', name: 'admin', component: AdminView },
   ]
 })
 

@@ -11,14 +11,16 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { 
     faUser, faSignOutAlt, faSearch, faPenToSquare, 
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
-    faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer 
+    faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
+    faTrash
 } from '@fortawesome/free-solid-svg-icons'
 
 // Pievienojam tās bibliotēkai
 library.add(
     faUser, faSignOutAlt, faSearch, faPenToSquare, 
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
-    faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer
+    faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
+    faTrash
 )
 
 const app = createApp(App)
