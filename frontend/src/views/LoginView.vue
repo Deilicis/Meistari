@@ -1,47 +1,42 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    
+
+  <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Pieslēgties</h2>
+      <div class="flex justify-center items-center gap-1 p-4 cursor-pointer" @click="$router.push('/')">
+        <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
+        <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span
+            class="text-blue-500">.lv</span></span>
+      </div>
+      <h2 class="text-2xl font-bold mb-6 text-center text-blue-900 tracking-tight">Pieslēgties</h2>
 
       <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
         {{ errorMessage }}
       </div>
 
       <form @submit.prevent="handleLogin">
-        
+
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2">E-pasts</label>
-          <input 
-            v-model="email" 
-            type="email" 
-            required
+          <input v-model="email" type="email" required
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="janis@example.com"
-          >
+            placeholder="janis@example.com">
         </div>
 
         <div class="mb-6">
           <label class="block text-gray-700 text-sm font-bold mb-2">Parole</label>
-          <input 
-            v-model="password" 
-            type="password" 
-            required
+          <input v-model="password" type="password" required
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="********"
-          >
+            placeholder="********">
         </div>
 
-        <button 
-          type="submit" 
-          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
-        >
+        <button type="submit"
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
           Pieslēgties
         </button>
       </form>
 
       <p class="mt-4 text-center text-sm text-gray-600">
-        Nav konta? 
+        Nav konta?
         <RouterLink to="/register" class="text-blue-600 hover:underline">Reģistrēties</RouterLink>
       </p>
     </div>
@@ -78,12 +73,17 @@ const handleLogin = async () => {
     if (response.ok) {
       // SUCCESS: Login worked
       console.log('Login successful:', data.user);
-      
-      // Save user info in localStorage (so they stay logged in)
-      localStorage.setItem('user', JSON.stringify(data.user));
+
+      const sessionDuration = 2 * 60 * 60 * 1000;
+      const sessionData = {
+        ...data.user,
+        expiry: new Date().getTime() + sessionDuration
+      };
+
+      localStorage.setItem('user', JSON.stringify(sessionData));
 
       // Redirect to Dashboard (we will create this later)
-      router.push('/dashboard'); 
+      router.push('/dashboard');
     } else {
       // ERROR: Show the message from PHP (e.g., "Nepareiza parole")
       errorMessage.value = data.message || 'Kļūda sistēmā.';

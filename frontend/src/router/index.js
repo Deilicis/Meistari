@@ -35,5 +35,37 @@ const router = createRouter({
     { path: '/admin', name: 'admin', component: AdminView },
   ]
 })
+// ... (routes definīcijas augstāk)
+
+// Globālais Navigācijasargs (Navigation Guard)
+router.beforeEach((to, from, next) => {
+  const userData = localStorage.getItem('user');
+  
+  if (userData) {
+    const user = JSON.parse(userData);
+    const now = new Date().getTime();
+
+    // Pārbaudām, vai sesijas laiks ir beidzies vai nav iestatīts
+    if (!user.expiry || now > user.expiry) {
+      // Sesija beigusies - dzēšam datus un metam ārā
+      localStorage.removeItem('user');
+      
+      // Ja lietotājs jau nav login lapā, pārvirzām
+      if (to.name !== 'login' && to.name !== 'register') {
+        return next({ name: 'login' });
+      }
+    }
+  }
+  
+  // Ja lietotājs mēģina piekļūt slēgtām lapām bez ielogošanās
+  const publicPages = ['login', 'register', 'home'];
+  const authRequired = !publicPages.includes(to.name);
+  
+  if (authRequired && !userData) {
+    return next({ name: 'login' });
+  }
+
+  next();
+});
 
 export default router

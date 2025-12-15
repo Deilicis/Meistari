@@ -3,9 +3,10 @@
         <nav class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
-                    <div class="flex items-center gap-2">
-                        <font-awesome-icon icon="hammer" class="text-blue-600 text-xl" />
-                        <h1 class="text-xl font-bold text-blue-600">Meistari.lv</h1>
+                    <div class="flex justify-center items-center gap-1 p-4 cursor-pointer" @click="$router.push('/')">
+                        <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
+                        <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span
+                                class="text-blue-500">.lv</span></span>
                     </div>
                     <div class="flex items-center gap-4">
                         <span v-if="user" class="text-gray-700 flex items-center gap-2">

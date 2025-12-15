@@ -1,37 +1,35 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 py-10">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Reģistrācija</h2>
+      <div class="flex justify-center items-center gap-1 p-4 cursor-pointer" @click="$router.push('/')">
+        <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
+        <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span
+            class="text-blue-500">.lv</span></span>
+      </div>
+      <h2 class="text-2xl font-bold mb-6 text-center text-blue-900 tracking-tight">Reģistrēties</h2>
 
       <div v-if="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
         {{ errorMessage }}
       </div>
-      <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
+      <div v-if="successMessage"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
         {{ successMessage }}
       </div>
 
       <form @submit.prevent="handleRegister">
-        
+
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2">Lietotājvārds</label>
-          <input 
-            v-model="username" 
-            type="text" 
-            required
+          <input v-model="username" type="text" required
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="JānisB"
-          >
+            placeholder="JānisB">
         </div>
 
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2">E-pasts</label>
-          <input 
-            v-model="email" 
-            type="email" 
-            required
+          <input v-model="email" type="email" required
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="janis@piemers.lv"
-          >
+            placeholder="janis@piemers.lv">
         </div>
 
         <div class="mb-4">
@@ -50,37 +48,26 @@
 
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2">Parole</label>
-          <input 
-            v-model="password" 
-            type="password" 
-            required
-            minlength="8"
+          <input v-model="password" type="password" required minlength="8"
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Vismaz 8 simboli"
-          >
+            placeholder="Vismaz 8 simboli">
         </div>
 
         <div class="mb-6">
           <label class="block text-gray-700 text-sm font-bold mb-2">Atkārtot Paroli</label>
-          <input 
-            v-model="confirmPassword" 
-            type="password" 
-            required
+          <input v-model="confirmPassword" type="password" required
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="********"
-          >
+            placeholder="********">
         </div>
 
-        <button 
-          type="submit" 
-          class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-200"
-        >
+        <button type="submit"
+          class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
           Reģistrēties
         </button>
       </form>
 
       <p class="mt-4 text-center text-sm text-gray-600">
-        Jau ir konts? 
+        Jau ir konts?
         <RouterLink to="/login" class="text-blue-600 hover:underline">Pieslēgties</RouterLink>
       </p>
     </div>
