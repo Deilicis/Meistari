@@ -1,37 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 font-sans">
 
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-20 items-center">
-          <div class="flex justify-center items-center gap-1 p-4 cursor-pointer" @click="$router.push('/')">
-            <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
-            <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span
-                class="text-blue-500">.lv</span></span>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <div v-if="user" class="flex items-center gap-4">
-              <span class="hidden md:block text-gray-700 font-medium">Sveiki, {{ user.username }}!</span>
-              <button @click="$router.push('/dashboard')"
-                class="bg-blue-100 text-blue-900 px-5 py-2 rounded-lg font-bold hover:bg-blue-200 transition">
-                Mans Panelis
-              </button>
-            </div>
-            <div v-else class="flex items-center gap-3">
-              <button @click="$router.push('/login')" class="text-gray-600 hover:text-blue-900 font-medium px-3 py-2">
-                Pieslēgties
-              </button>
-              <button @click="$router.push('/register')"
-                class="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
-                Reģistrēties
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
     <header class="bg-blue-900 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
         <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500 blur-3xl"></div>

@@ -1,26 +1,5 @@
 <template>
     <div class="min-h-screen bg-gray-100">
-        <nav class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex justify-center items-center gap-1 p-4 cursor-pointer" @click="$router.push('/')">
-                        <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
-                        <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span
-                                class="text-blue-500">.lv</span></span>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span v-if="user" class="text-gray-700 flex items-center gap-2">
-                            <font-awesome-icon icon="user" class="text-gray-400" />
-                            {{ user.username }} ({{ user.role }})
-                        </span>
-                        <button @click="logout"
-                            class="text-red-600 hover:text-red-800 font-medium flex items-center gap-2">
-                            <font-awesome-icon icon="sign-out-alt" /> Iziet
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
 
         <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
 

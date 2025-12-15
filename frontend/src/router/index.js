@@ -9,6 +9,8 @@ import HomeView from '../views/HomeView.vue'
 import MyRequestsView from '../views/MyRequestsView.vue'
 import AdminView from '../views/AdminView.vue'
 
+// frontend/src/router/index.js
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,22 +22,32 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      meta: { hideHeader: true }
     },
-    { path: '/register', name: 'register', component: RegisterView },
+    { 
+      path: '/register', 
+      name: 'register', 
+      component: RegisterView,
+      meta: { hideHeader: true }
+    },
     { 
       path: '/dashboard', 
       name: 'dashboard', 
-      component: DashboardView
+      component: DashboardView 
     },
     { path: '/profile', name: 'profile', component: ProfileView },
     { path: '/create-request', name: 'create-request', component: CreateRequestView },
     { path: '/requests', name: 'requests', component: RequestsView },
     { path: '/my-requests', name: 'my-requests', component: MyRequestsView },
-    { path: '/admin', name: 'admin', component: AdminView },
+    { 
+      path: '/admin', 
+      name: 'admin', 
+      component: AdminView,
+      meta: { hideHeader: true }
+    },
   ]
 })
-// ... (routes definīcijas augstāk)
 
 // Globālais Navigācijasargs (Navigation Guard)
 router.beforeEach((to, from, next) => {
