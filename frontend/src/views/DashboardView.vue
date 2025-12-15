@@ -40,27 +40,40 @@
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">Meistara Panelis</h2>
                     <p class="text-gray-600 mb-6">Pārvaldiet savus piedāvājumus un meklējiet jaunus klientus.</p>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
                             @click="$router.push('/requests')">
-                            <div class="bg-blue-100 p-3 rounded-full">
-                                <font-awesome-icon icon="search" class="text-blue-600 text-xl" />
+                            <div class="bg-blue-100 p-4 rounded-full">
+                                <font-awesome-icon icon="search" class="text-blue-600 text-2xl" />
                             </div>
                             <div>
                                 <h3 class="font-bold text-lg text-blue-600">Meklēt Darbus</h3>
                                 <p class="text-sm text-gray-500">Skatīt klientu pieprasījumus.</p>
                             </div>
                         </div>
-                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
+
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
+                            @click="$router.push('/my-offers')">
+                            <div class="bg-purple-100 p-4 rounded-full">
+                                <font-awesome-icon icon="briefcase" class="text-purple-600 text-2xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-purple-600">Mani Pakalpojumi</h3>
+                                <p class="text-sm text-gray-500">Izveidot un pārvaldīt piedāvājumus.</p>
+                            </div>
+                        </div>
+
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
                             @click="$router.push('/profile')">
-                            <div class="bg-green-100 p-3 rounded-full">
-                                <font-awesome-icon icon="user-cog" class="text-green-600 text-xl" />
+                            <div class="bg-green-100 p-4 rounded-full">
+                                <font-awesome-icon icon="user-cog" class="text-green-600 text-2xl" />
                             </div>
                             <div>
                                 <h3 class="font-bold text-lg text-green-600">Mans Profils</h3>
                                 <p class="text-sm text-gray-500">Rediģēt pieredzi un portfolio.</p>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -8,7 +8,8 @@ import RequestsView from '../views/RequestsView.vue'
 import HomeView from '../views/HomeView.vue'
 import MyRequestsView from '../views/MyRequestsView.vue'
 import AdminView from '../views/AdminView.vue'
-
+import CreateOfferView from '../views/CreateOfferView.vue'
+import MyOffersView from '../views/MyOffersView.vue'
 // frontend/src/router/index.js
 
 const router = createRouter({
@@ -25,34 +26,36 @@ const router = createRouter({
       component: LoginView,
       meta: { hideHeader: true }
     },
-    { 
-      path: '/register', 
-      name: 'register', 
+    {
+      path: '/register',
+      name: 'register',
       component: RegisterView,
       meta: { hideHeader: true }
     },
-    { 
-      path: '/dashboard', 
-      name: 'dashboard', 
-      component: DashboardView 
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView
     },
     { path: '/profile', name: 'profile', component: ProfileView },
     { path: '/create-request', name: 'create-request', component: CreateRequestView },
     { path: '/requests', name: 'requests', component: RequestsView },
     { path: '/my-requests', name: 'my-requests', component: MyRequestsView },
-    { 
-      path: '/admin', 
-      name: 'admin', 
+    {
+      path: '/admin',
+      name: 'admin',
       component: AdminView,
       meta: { hideHeader: true }
     },
+    { path: '/create-offer', name: 'create-offer', component: CreateOfferView },
+    { path: '/my-offers', name: 'my-offers', component: MyOffersView },
   ]
 })
 
 // Globālais Navigācijasargs (Navigation Guard)
 router.beforeEach((to, from, next) => {
   const userData = localStorage.getItem('user');
-  
+
   if (userData) {
     const user = JSON.parse(userData);
     const now = new Date().getTime();
@@ -61,18 +64,18 @@ router.beforeEach((to, from, next) => {
     if (!user.expiry || now > user.expiry) {
       // Sesija beigusies - dzēšam datus un metam ārā
       localStorage.removeItem('user');
-      
+
       // Ja lietotājs jau nav login lapā, pārvirzām
       if (to.name !== 'login' && to.name !== 'register') {
         return next({ name: 'login' });
       }
     }
   }
-  
+
   // Ja lietotājs mēģina piekļūt slēgtām lapām bez ielogošanās
   const publicPages = ['login', 'register', 'home'];
   const authRequired = !publicPages.includes(to.name);
-  
+
   if (authRequired && !userData) {
     return next({ name: 'login' });
   }
