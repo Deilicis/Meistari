@@ -3,12 +3,18 @@
         <nav class="bg-white shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-2">
+                        <font-awesome-icon icon="hammer" class="text-blue-600 text-xl" />
                         <h1 class="text-xl font-bold text-blue-600">Meistari.lv</h1>
                     </div>
                     <div class="flex items-center gap-4">
-                        <span v-if="user" class="text-gray-700">Sveiki, {{ user.username }}! ({{ user.role }})</span>
-                        <button @click="logout" class="text-red-600 hover:text-red-800 font-medium">Iziet</button>
+                        <span v-if="user" class="text-gray-700 flex items-center gap-2">
+                            <font-awesome-icon icon="user" class="text-gray-400" />
+                            {{ user.username }} ({{ user.role }})
+                        </span>
+                        <button @click="logout" class="text-red-600 hover:text-red-800 font-medium flex items-center gap-2">
+                            <font-awesome-icon icon="sign-out-alt" /> Iziet
+                        </button>
                     </div>
                 </div>
             </div>
@@ -20,20 +26,29 @@
 
             <div v-else-if="user.role === 'mekletajs'" class="space-y-6">
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold mb-4">Meklētāja Panelis</h2>
-                    <p class="text-gray-600 mb-6">Šeit jūs varat meklēt meistarus vai pievienot savus darba
-                        pieprasījumus.</p>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">Meklētāja Panelis</h2>
+                    <p class="text-gray-600 mb-6">Pārvaldiet savus darbus un atrodiet meistarus.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border p-4 rounded hover:bg-gray-50 cursor-pointer"
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
                             @click="$router.push('/my-requests')">
-                            <h3 class="font-bold text-lg text-blue-600">Mani Darbi</h3>
-                            <p class="text-sm text-gray-500">Skatīt statusu un pieteikumus.</p>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <font-awesome-icon icon="briefcase" class="text-blue-600 text-xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-blue-600">Mani Darbi</h3>
+                                <p class="text-sm text-gray-500">Skatīt statusu un pieteikumus.</p>
+                            </div>
                         </div>
-                        <div class="border p-4 rounded hover:bg-gray-50 cursor-pointer"
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
                             @click="$router.push('/create-request')">
-                            <h3 class="font-bold text-lg text-green-600">Izveidot Pieprasījumu</h3>
-                            <p class="text-sm text-gray-500">Publicēt jaunu darba sludinājumu.</p>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <font-awesome-icon icon="plus-circle" class="text-green-600 text-xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-green-600">Izveidot Pieprasījumu</h3>
+                                <p class="text-sm text-gray-500">Publicēt jaunu darba sludinājumu.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -41,19 +56,29 @@
 
             <div v-else-if="user.role === 'meistars'" class="space-y-6">
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold mb-4">Meistara Panelis</h2>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">Meistara Panelis</h2>
                     <p class="text-gray-600 mb-6">Pārvaldiet savus piedāvājumus un meklējiet jaunus klientus.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border p-4 rounded hover:bg-gray-50 cursor-pointer"
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
                             @click="$router.push('/requests')">
-                            <h3 class="font-bold text-lg text-blue-600">Meklēt Darbus</h3>
-                            <p class="text-sm text-gray-500">Skatīt klientu pieprasījumus.</p>
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <font-awesome-icon icon="search" class="text-blue-600 text-xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-blue-600">Meklēt Darbus</h3>
+                                <p class="text-sm text-gray-500">Skatīt klientu pieprasījumus.</p>
+                            </div>
                         </div>
-                        <div class="border p-4 rounded hover:bg-gray-50 cursor-pointer"
+                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex items-start gap-4"
                             @click="$router.push('/profile')">
-                            <h3 class="font-bold text-lg text-green-600">Mans Profils</h3>
-                            <p class="text-sm text-gray-500">Rediģēt pieredzi, portfolio un kontaktinformāciju.</p>
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <font-awesome-icon icon="user-cog" class="text-green-600 text-xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-green-600">Mans Profils</h3>
+                                <p class="text-sm text-gray-500">Rediģēt pieredzi un portfolio.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,20 +96,15 @@ const user = ref(null);
 const router = useRouter();
 
 onMounted(() => {
-    // 1. Check if user is logged in
     const userData = localStorage.getItem('user');
-
     if (!userData) {
-        // If no user found, kick them back to login
         router.push('/login');
     } else {
-        // Load user data into the variable
         user.value = JSON.parse(userData);
     }
 });
 
 const logout = () => {
-    // Clear storage and redirect
     localStorage.removeItem('user');
     router.push('/login');
 };

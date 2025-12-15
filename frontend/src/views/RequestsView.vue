@@ -25,8 +25,8 @@
 
           <div class="border-t pt-4 mt-auto">
             <div class="flex justify-between items-center text-sm text-gray-700 mb-2">
-              <span>📍 {{ req.location }}</span>
-              <span class="font-bold text-green-600">Budžets: € {{ req.budget }}</span>
+              <span><font-awesome-icon icon="map-marker-alt" class="text-red-500" /> {{ req.location }}</span>
+              <span class="font-bold text-green-600">Budžets: <font-awesome-icon icon="euro-sign" /> {{ req.budget }}</span>
             </div>
             
             <button @click="openModal(req)" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-medium">

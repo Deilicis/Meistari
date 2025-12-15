@@ -37,7 +37,7 @@
                             <button @click="toggleApplicants(req.id)"
                                 class="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded transition"
                                 :class="activeRequest === req.id ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'">
-                                <span>👤 {{ req.applicant_count }} Pieteikumi</span>
+                                <span><font-awesome-icon icon="user" /> {{ req.applicant_count }} Pieteikumi</span>
                                 <span v-if="activeRequest === req.id">▼</span>
                                 <span v-else>▶</span>
                             </button>
@@ -75,7 +75,7 @@
 
                                     <span v-else-if="app.status === 'accepted'"
                                         class="text-green-600 text-sm font-bold block mt-2">
-                                        ✅ Apstiprināts
+                                        <font-awesome-icon icon="checkmark" /> Apstiprināts
                                     </span>
                                 </div>
 

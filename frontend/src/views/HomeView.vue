@@ -4,7 +4,8 @@
     <nav class="bg-white shadow-md sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20 items-center">
-          <div class="flex items-center cursor-pointer" @click="$router.push('/')">
+          <div class="flex items-center gap-2 cursor-pointer" @click="$router.push('/')">
+            <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
             <span class="text-3xl font-extrabold text-blue-900 tracking-tight">Meistari<span class="text-blue-500">.lv</span></span>
           </div>
           
@@ -43,11 +44,11 @@
         </p>
         
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <button @click="handlePostJob" class="bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-600 shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
-            <span>📝</span> Ievietot Darbu
+          <button @click="handlePostJob" class="bg-green-500 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-600 shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-3">
+            <font-awesome-icon icon="pen-to-square" /> Ievietot Darbu
           </button>
-          <button @click="$router.push('/requests')" class="bg-white text-blue-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
-            <span>🔍</span> Meklēt Darbus
+          <button @click="$router.push('/requests')" class="bg-white text-blue-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-3">
+            <font-awesome-icon icon="search" /> Meklēt Darbus
           </button>
         </div>
       </div>
@@ -59,17 +60,23 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📢</div>
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
+               <font-awesome-icon icon="bullhorn" />
+            </div>
             <h3 class="text-xl font-bold mb-2">1. Ievieto Darbu</h3>
             <p class="text-gray-600">Apraksti, kas jādara, norādi budžetu un termiņu. Tas aizņem tikai 2 minūtes.</p>
           </div>
           <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🤝</div>
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
+                <font-awesome-icon icon="handshake" />
+            </div>
             <h3 class="text-xl font-bold mb-2">2. Saņem Piedāvājumus</h3>
             <p class="text-gray-600">Meistari pieteiksies tavam sludinājumam. Izvēlies labāko pēc atsauksmēm.</p>
           </div>
           <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">✅</div>
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
+                <font-awesome-icon icon="check-circle" />
+            </div>
             <h3 class="text-xl font-bold mb-2">3. Darbs Paveikts</h3>
             <p class="text-gray-600">Sazinies, vienojies un izbaudi rezultātu. Pēc darba atstāj vērtējumu.</p>
           </div>
@@ -79,28 +86,22 @@
 
     <section class="py-16 bg-gray-50 border-t">
       <div class="max-w-6xl mx-auto px-4">
-        <div class="flex justify-between items-end mb-8">
-          <div>
-            <h2 class="text-3xl font-bold text-gray-900">Jaunākie Pieprasījumi</h2>
-            <p class="text-gray-600 mt-2">Aktīvi darbi, kuriem nepieciešami meistari.</p>
-          </div>
-          <button @click="$router.push('/requests')" class="text-blue-600 font-semibold hover:underline hidden sm:block">
-            Skatīt visus →
-          </button>
+        <div v-if="loading" class="text-center py-10 text-gray-400">
+            <font-awesome-icon icon="search" spin class="mr-2"/> Ielādē datus...
         </div>
-
-        <div v-if="loading" class="text-center py-10 text-gray-400">Ielādē datus...</div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div v-for="req in latestRequests" :key="req.id" class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-100 flex flex-col">
             <div class="flex justify-between items-start mb-3">
               <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">{{ req.category }}</span>
-              <span class="text-green-600 font-bold">€ {{ req.budget }}</span>
+              <span class="text-green-600 font-bold flex items-center gap-1">
+                <font-awesome-icon icon="euro-sign" class="text-sm"/> {{ req.budget }}
+              </span>
             </div>
             <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{{ req.title }}</h3>
             <p class="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">{{ req.description }}</p>
             <div class="flex items-center text-gray-400 text-xs gap-1 mt-auto">
-              <span>📍 {{ req.location }}</span> • 
+              <font-awesome-icon icon="map-marker-alt" /> <span>{{ req.location }}</span> • 
               <span>{{ formatDate(req.created_at) }}</span>
             </div>
           </div>
@@ -130,13 +131,11 @@ const requests = ref([]);
 const loading = ref(true);
 
 onMounted(async () => {
-  // 1. Pārbaudām, vai ir lietotājs (lai pareizi attēlotu Navigāciju)
   const userData = localStorage.getItem('user');
   if (userData) {
     user.value = JSON.parse(userData);
   }
 
-  // 2. Iegūstam datus sākumlapas "Teaser" sadaļai
   try {
     const response = await fetch('http://localhost/Meistari/api/get_requests.php');
     if (response.ok) {
@@ -149,7 +148,6 @@ onMounted(async () => {
   }
 });
 
-// Ņemam tikai pirmos 3 ierakstus sākumlapai
 const latestRequests = computed(() => {
   return requests.value.slice(0, 3);
 });
@@ -158,7 +156,7 @@ const handlePostJob = () => {
   if (user.value) {
     router.push('/create-request');
   } else {
-    router.push('/login'); // Ja nav ielogojies, vispirms liekam ielogoties
+    router.push('/login'); 
   }
 };
 
