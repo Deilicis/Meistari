@@ -10,47 +10,27 @@ import MyRequestsView from '../views/MyRequestsView.vue'
 import AdminView from '../views/AdminView.vue'
 import CreateOfferView from '../views/CreateOfferView.vue'
 import MyOffersView from '../views/MyOffersView.vue'
-// frontend/src/router/index.js
+import MyApplicationsView from '../views/MyApplicationsView.vue'
+
+const routes = [
+  { path: '/', name: 'home', component: HomeView },
+  { path: '/login', name: 'login', component: LoginView, meta: { hideHeader: true } },
+  { path: '/register', name: 'register', component: RegisterView, meta: { hideHeader: true } },
+  { path: '/dashboard', name: 'dashboard', component: DashboardView },
+  { path: '/profile', name: 'profile', component: ProfileView },
+  { path: '/create-request', name: 'create-request', component: CreateRequestView },
+  { path: '/requests', name: 'requests', component: RequestsView },
+  { path: '/my-requests', name: 'my-requests', component: MyRequestsView },
+  { path: '/admin', name: 'admin', component: AdminView, meta: { hideHeader: true } },
+  { path: '/create-offer', name: 'create-offer', component: CreateOfferView },
+  { path: '/my-offers', name: 'my-offers', component: MyOffersView },
+  { path: '/my-applications', name: 'my-applications', component: MyApplicationsView },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView,
-      meta: { hideHeader: true }
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: RegisterView,
-      meta: { hideHeader: true }
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView
-    },
-    { path: '/profile', name: 'profile', component: ProfileView },
-    { path: '/create-request', name: 'create-request', component: CreateRequestView },
-    { path: '/requests', name: 'requests', component: RequestsView },
-    { path: '/my-requests', name: 'my-requests', component: MyRequestsView },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: AdminView,
-      meta: { hideHeader: true }
-    },
-    { path: '/create-offer', name: 'create-offer', component: CreateOfferView },
-    { path: '/my-offers', name: 'my-offers', component: MyOffersView },
-  ]
-})
+  routes
+});
 
 // Navigation Guard
 router.beforeEach((to, from, next) => {
@@ -62,7 +42,6 @@ router.beforeEach((to, from, next) => {
 
     if (!user.expiry || now > user.expiry) {
       localStorage.removeItem('user');
-
       if (to.name !== 'login' && to.name !== 'register') {
         return next({ name: 'login' });
       }

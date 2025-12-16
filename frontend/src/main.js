@@ -11,7 +11,8 @@ import {
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
     faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock,
-    faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight
+    faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight,
+    faListCheck
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -19,7 +20,8 @@ library.add(
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
     faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock,
-    faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight
+    faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight,
+    faListCheck
 )
 
 const app = createApp(App)

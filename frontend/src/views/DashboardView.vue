@@ -41,7 +41,7 @@
                     <p class="text-gray-600 mb-6">Pārvaldiet savus piedāvājumus un meklējiet jaunus klientus.</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
+                        <div class="border p-6 rounded-lg hover:bg-gray-100 cursor-pointer transition flex flex-col items-center text-center gap-3"
                             @click="$router.push('/requests')">
                             <div class="bg-blue-100 p-4 rounded-full">
                                 <font-awesome-icon icon="search" class="text-blue-600 text-2xl" />
@@ -52,7 +52,7 @@
                             </div>
                         </div>
 
-                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
+                        <div class="border p-6 rounded-lg hover:bg-gray-100 cursor-pointer transition flex flex-col items-center text-center gap-3"
                             @click="$router.push('/my-offers')">
                             <div class="bg-purple-100 p-4 rounded-full">
                                 <font-awesome-icon icon="briefcase" class="text-purple-600 text-2xl" />
@@ -62,8 +62,17 @@
                                 <p class="text-sm text-gray-500">Izveidot un pārvaldīt piedāvājumus.</p>
                             </div>
                         </div>
-
-                        <div class="border p-6 rounded-lg hover:bg-gray-50 cursor-pointer transition flex flex-col items-center text-center gap-3"
+                        <div class="border p-6 rounded-lg hover:bg-gray-100 cursor-pointer transition flex flex-col items-center text-center gap-3"
+                            @click="$router.push('/my-applications')">
+                            <div class="bg-yellow-100 p-4 rounded-full">
+                                <font-awesome-icon icon="list-check" class="text-yellow-600 text-2xl" />
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-yellow-600">Mani Pieteikumi</h3>
+                                <p class="text-sm text-gray-500">Sekot līdzi statusiem.</p>
+                            </div>
+                        </div>
+                        <div class="border p-6 rounded-lg hover:bg-gray-100 cursor-pointer transition flex flex-col items-center text-center gap-3"
                             @click="$router.push('/profile')">
                             <div class="bg-green-100 p-4 rounded-full">
                                 <font-awesome-icon icon="user-cog" class="text-green-600 text-2xl" />
