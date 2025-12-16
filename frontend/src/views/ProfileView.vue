@@ -3,7 +3,7 @@
     <div class="max-w-3xl mx-auto bg-white p-8 rounded shadow">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Mans Profils</h2>
-        <button @click="$router.push('/dashboard')" class="text-blue-600 hover:underline">Atpakaļ uz paneli</button>
+        <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" /></button>
       </div>
 
       <div v-if="message" :class="`p-4 mb-4 rounded ${isSuccess ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`">

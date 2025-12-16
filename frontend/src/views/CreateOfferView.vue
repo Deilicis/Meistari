@@ -4,7 +4,7 @@
       
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800">Pievienot Pakalpojumu</h2>
-        <button @click="$router.push('/dashboard')" class="text-gray-600 hover:text-gray-900">Atcelt</button>
+        <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" /></button>
       </div>
 
       <div v-if="message" :class="`p-4 mb-4 rounded ${isSuccess ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`">
@@ -103,7 +103,7 @@ const submitOffer = async () => {
       isSuccess.value = true;
       message.value = "Pakalpojums veiksmīgi izveidots!";
       setTimeout(() => {
-        router.push('/my-offers');
+        router.push('/my-offers'); 
       }, 1500);
     } else {
       isSuccess.value = false;

@@ -4,8 +4,7 @@
 
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800">Mani Izsludinātie Darbi</h2>
-                <button @click="$router.push('/dashboard')" class="text-blue-600 hover:underline">Atpakaļ uz
-                    paneli</button>
+                <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" /></button>
             </div>
 
             <div v-if="loading" class="text-center text-gray-500">Ielādē datus...</div>

@@ -2,7 +2,13 @@
   <div class="min-h-screen bg-gray-100 flex">
 
     <aside class="w-64 bg-blue-900 text-white min-h-screen hidden md:block">
-      <div class="p-6 text-2xl font-bold flex items-center gap-2">
+      <div class="p-6 text-2xl font-bold flex-col text-center items-center gap-2">
+        <div class="flex items-center gap-2 cursor-pointer" @click="$router.push('/')">
+          <font-awesome-icon icon="hammer" class="text-blue-600 text-2xl" />
+          <span class="text-3xl font-extrabold text-white-900 tracking-tight">
+            Meistari<span class="text-blue-500">.lv</span>
+          </span>
+        </div>
         <font-awesome-icon icon="user-cog" />
         Admin
       </div>
@@ -20,8 +26,8 @@
 
       <div class="flex justify-between items-center mb-8">
         <h2 class="text-3xl font-bold text-gray-800">Lietotāju Pārvaldība</h2>
-        <button @click="$router.push('/dashboard')" class="text-blue-600 hover:underline flex items-center gap-2">
-          <font-awesome-icon icon="sign-out-alt" /> Iziet no Admin
+        <button @click="$router.push('/dashboard')" class="text-red-600 hover:underline flex items-center gap-2">
+          <font-awesome-icon icon="sign-out-alt" /> Atpakaļ
         </button>
       </div>
 

@@ -8,7 +8,7 @@
             <button @click="$router.push('/create-offer')" class="bg-green-600 text-white px-4 py-2 rounded font-bold hover:bg-green-700 transition flex items-center gap-2">
                 <font-awesome-icon icon="plus-circle" /> Pievienot Jaunu
             </button>
-            <button @click="$router.push('/dashboard')" class="text-blue-600 hover:underline">Atpakaļ uz paneli</button>
+            <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" /></button>
         </div>
       </div>
 
