@@ -9,8 +9,7 @@
 
       <div class="relative z-10 max-w-lg mx-auto">
         <div class="mb-6 text-blue-300 text-6xl">
-          <font-awesome-icon icon="hammer" />
-          <span class="text-1 font-extrabold text-white tracking-tight">
+          <font-awesome-icon icon="hammer" /><span class="text-1 font-extrabold text-white tracking-tight">
             Meistari<span class="text-blue-500">.lv</span>
           </span>
         </div>
@@ -23,110 +22,123 @@
       </div>
     </div>
 
-    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12">
-      <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 lg:p-10 border border-gray-100">
-
-        <div class="text-center mb-8">
-          <h2 class="text-3xl font-bold text-gray-900">Izveidot kontu</h2>
-          <p class="text-gray-500 mt-2">Izvēlieties savu lomu:</p>
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-8 overflow-y-auto"> <div class="max-w-xl w-full bg-white rounded-2xl shadow-xl p-6 lg:p-8 border border-gray-100"> <div class="text-center mb-6"> <h2 class="text-2xl font-bold text-gray-900">Izveidot kontu</h2> <p class="text-sm text-gray-500 mt-1">Izvēlieties savu lomu:</p>
         </div>
 
-        <form @submit.prevent="handleRegister" class="space-y-5">
-
-          <div class="grid grid-cols-1 gap-3 mb-6">
-
-            <div @click="setRole('mekletajs')"
-              class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 transition-all duration-200 hover:shadow-md"
-              :class="form.role === 'mekletajs' ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white border"
-                :class="form.role === 'mekletajs' ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
-                <font-awesome-icon icon="search" />
+        <form @submit.prevent="handleRegister" class="space-y-4"> <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            
+            <div 
+              @click="setRole('mekletajs')"
+              class="cursor-pointer border rounded-lg p-3 flex flex-col items-center justify-center text-center transition-all duration-200 hover:shadow-md h-full"
+              :class="form.role === 'mekletajs' ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'"
+            >
+              <div class="w-8 h-8 rounded-full flex items-center justify-center bg-white border mb-2"
+                   :class="form.role === 'mekletajs' ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
+                <font-awesome-icon icon="search" class="text-sm"/>
               </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-gray-900">Meklēju meistaru</p>
-                <p class="text-xs text-gray-500">Esmu klients, vēlos publicēt darbus.</p>
-              </div>
-            </div>
-
-            <div @click="setRole('meistars', 'individual')"
-              class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 transition-all duration-200 hover:shadow-md"
-              :class="(form.role === 'meistars' && form.master_type === 'individual') ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white border"
-                :class="(form.role === 'meistars' && form.master_type === 'individual') ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
-                <font-awesome-icon icon="user" />
-              </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-gray-900">Esmu Meistars (Privātpersona)</p>
-                <p class="text-xs text-gray-500">Strādāju individuāli (pašnodarbinātais).</p>
+              <div>
+                <p class="font-bold text-xs text-gray-900">Meklētājs</p>
+                <p class="text-[10px] text-gray-500 leading-tight mt-1">Vēlos publicēt darbus</p>
               </div>
             </div>
 
-            <div @click="setRole('meistars', 'company')"
-              class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 transition-all duration-200 hover:shadow-md"
-              :class="(form.role === 'meistars' && form.master_type === 'company') ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center bg-white border"
-                :class="(form.role === 'meistars' && form.master_type === 'company') ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
-                <font-awesome-icon icon="briefcase" />
+            <div 
+              @click="setRole('meistars', 'individual')"
+              class="cursor-pointer border rounded-lg p-3 flex flex-col items-center justify-center text-center transition-all duration-200 hover:shadow-md h-full"
+              :class="(form.role === 'meistars' && form.master_type === 'individual') ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'"
+            >
+              <div class="w-8 h-8 rounded-full flex items-center justify-center bg-white border mb-2"
+                   :class="(form.role === 'meistars' && form.master_type === 'individual') ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
+                <font-awesome-icon icon="user" class="text-sm"/>
               </div>
-              <div class="text-left">
-                <p class="font-bold text-sm text-gray-900">Esmu Uzņēmums</p>
-                <p class="text-xs text-gray-500">SIA vai IK, piedāvājam pakalpojumus.</p>
+              <div>
+                <p class="font-bold text-xs text-gray-900">Meistars</p>
+                <p class="text-[10px] text-gray-500 leading-tight mt-1">Privātpersona</p>
+              </div>
+            </div>
+
+            <div 
+              @click="setRole('meistars', 'company')"
+              class="cursor-pointer border rounded-lg p-3 flex flex-col items-center justify-center text-center transition-all duration-200 hover:shadow-md h-full"
+              :class="(form.role === 'meistars' && form.master_type === 'company') ? 'border-blue-600 bg-blue-50 ring-1 ring-blue-600' : 'border-gray-200 hover:border-blue-300'"
+            >
+              <div class="w-8 h-8 rounded-full flex items-center justify-center bg-white border mb-2"
+                   :class="(form.role === 'meistars' && form.master_type === 'company') ? 'text-blue-600 border-blue-200' : 'text-gray-400 border-gray-200'">
+                <font-awesome-icon icon="briefcase" class="text-sm"/>
+              </div>
+              <div>
+                <p class="font-bold text-xs text-gray-900">Uzņēmums</p>
+                <p class="text-[10px] text-gray-500 leading-tight mt-1">SIA vai IK</p>
               </div>
             </div>
 
           </div>
 
-          <div class="space-y-4">
-
+          <div class="space-y-3">
+            
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                {{ form.master_type === 'company' ? 'Uzņēmuma Nosaukums' : 'Lietotājvārds' }}
+              <label class="block text-xs font-bold text-gray-700 mb-1">
+                 {{ form.master_type === 'company' ? 'Uzņēmuma Nosaukums' : 'Lietotājvārds' }}
               </label>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <font-awesome-icon :icon="form.master_type === 'company' ? 'briefcase' : 'user'" />
+                  <font-awesome-icon :icon="form.master_type === 'company' ? 'briefcase' : 'user'" class="text-sm"/>
                 </span>
-                <input v-model="form.username" type="text" required
-                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  :placeholder="form.master_type === 'company' ? 'SIA Būve' : 'JanisBerzins'">
+                <input 
+                  v-model="form.username" 
+                  type="text" 
+                  required 
+                  class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  :placeholder="form.master_type === 'company' ? 'SIA Būve' : 'JanisBerzins'"
+                >
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">E-pasts</label>
+              <label class="block text-xs font-bold text-gray-700 mb-1">E-pasts</label>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <font-awesome-icon icon="envelope" />
+                    <font-awesome-icon icon="envelope" class="text-sm"/>
                 </span>
-                <input v-model="form.email" type="email" required
-                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="info@piemers.lv">
+                <input 
+                  v-model="form.email" 
+                  type="email" 
+                  required 
+                  class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="info@piemers.lv"
+                >
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Parole</label>
+              <label class="block text-xs font-bold text-gray-700 mb-1">Parole</label>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <font-awesome-icon icon="lock" />
+                    <font-awesome-icon icon="lock" class="text-sm"/>
                 </span>
-                <input v-model="form.password" type="password" required
-                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="••••••••">
+                <input 
+                  v-model="form.password" 
+                  type="password" 
+                  required 
+                  class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="••••••••"
+                >
               </div>
             </div>
           </div>
 
-          <button type="submit"
-            class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-lg hover:bg-blue-700 shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 mt-4">
+          <button 
+            type="submit" 
+            class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 mt-2 text-sm"
+          >
             Reģistrēties
           </button>
 
         </form>
 
-        <div class="mt-6 text-center border-t pt-6">
-          <p class="text-sm text-gray-600">
-            Jau ir konts?
+        <div class="mt-4 text-center border-t pt-4">
+          <p class="text-xs text-gray-600">
+            Jau ir konts? 
             <router-link to="/login" class="text-blue-600 font-bold hover:underline">
               Pieslēgties šeit
             </router-link>

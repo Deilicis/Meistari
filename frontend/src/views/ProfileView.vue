@@ -10,8 +10,7 @@
              <span v-else class="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded">Meistara Profils</span>
            </p>
         </div>
-        <button @click="$router.push('/dashboard')" class="text-gray-500 hover:text-gray-800 font-medium flex items-center gap-2">
-            <font-awesome-icon icon="arrow-left" /> Atpakaļ
+        <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" />
         </button>
       </div>
 
