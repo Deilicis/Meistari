@@ -1,13 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 font-sans">
     
-   <header 
+    <header 
       class="relative overflow-hidden bg-cover bg-center bg-no-repeat"
-      style="background-image: url('assets/hero-bg.png');"
+      style="background-image: url('/hero-bg.jpg');"
     >
-      
-      <div class="absolute inset-0 bg-blue-900/100 z-0"></div>
-
+      <div class="absolute inset-0 bg-blue-900/85 z-0"></div>
       <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-30">
          <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500 blur-3xl"></div>
          <div class="absolute top-32 -left-24 w-72 h-72 rounded-full bg-indigo-500 blur-3xl"></div>
@@ -34,32 +32,120 @@
 
     <section class="py-16 bg-white">
       <div class="max-w-7xl mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold text-gray-800 mb-12">Kā tas strādā?</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
-               <font-awesome-icon icon="bullhorn" />
+        
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Kā tas strādā?</h2>
+        
+        <div class="flex justify-center mb-12">
+            <div class="bg-gray-100 p-1.5 rounded-full inline-flex relative">
+                <div 
+                    class="absolute top-1.5 bottom-1.5 rounded-full bg-white shadow transition-all duration-300 ease-in-out"
+                    :class="infoTab === 'mekletajs' ? 'left-1.5 w-[calc(50%-6px)]' : 'left-[calc(50%+3px)] w-[calc(50%-6px)]'"
+                ></div>
+                
+                <button 
+                    @click="infoTab = 'mekletajs'"
+                    class="relative z-10 px-8 py-2 rounded-full text-sm font-bold transition-colors duration-300 flex items-center gap-2 w-40 justify-center"
+                    :class="infoTab === 'mekletajs' ? 'text-blue-900' : 'text-gray-500 hover:text-gray-700'"
+                >
+                    <font-awesome-icon icon="search" /> Meklētājam
+                </button>
+                <button 
+                    @click="infoTab = 'meistars'"
+                    class="relative z-10 px-8 py-2 rounded-full text-sm font-bold transition-colors duration-300 flex items-center gap-2 w-40 justify-center"
+                    :class="infoTab === 'meistars' ? 'text-blue-900' : 'text-gray-500 hover:text-gray-700'"
+                >
+                    <font-awesome-icon icon="hammer" /> Meistaram
+                </button>
             </div>
-            <h3 class="text-xl font-bold mb-2">1. Ievieto Darbu</h3>
-            <p class="text-gray-600">Apraksti, kas jādara, norādi budžetu un termiņu.</p>
-          </div>
-          <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
-                <font-awesome-icon icon="handshake" />
-            </div>
-            <h3 class="text-xl font-bold mb-2">2. Saņem Piedāvājumus</h3>
-            <p class="text-gray-600">Meistari pieteiksies tavam sludinājumam.</p>
-          </div>
-          <div class="p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 text-blue-600">
-                <font-awesome-icon icon="check-circle" />
-            </div>
-            <h3 class="text-xl font-bold mb-2">3. Darbs Paveikts</h3>
-            <p class="text-gray-600">Sazinies, vienojies un izbaudi rezultātu.</p>
-          </div>
         </div>
+
+        <transition name="fade" mode="out-in">
+            
+            <div v-if="infoTab === 'mekletajs'" key="mekletajs" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="p-6 relative">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="pen-to-square" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">1. Ievieto Darbu</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Apraksti veicamo uzdevumu, norādi vēlamo budžetu un termiņu. Tas aizņems tikai pāris minūtes.</p>
+                </div>
+                
+                <div class="p-6 relative">
+                    <div class="hidden md:block absolute top-14 -right-4 text-gray-200 text-2xl">
+                        <font-awesome-icon icon="chevron-right" />
+                    </div>
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="comments" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">2. Saņem Piedāvājumus</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Meistari iepazīsies ar Tavu sludinājumu un nosūtīs savus cenu piedāvājumus un komentārus.</p>
+                </div>
+
+                <div class="p-6 relative">
+                    <div class="hidden md:block absolute top-14 -right-4 text-gray-200 text-2xl">
+                        <font-awesome-icon icon="chevron-right" />
+                    </div>
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="check-circle" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">3. Izvēlies Labāko</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Salīdzini meistaru profilus, pieredzi un cenas. Apstiprini to, kurš šķiet vispiemērotākais.</p>
+                </div>
+
+                <div class="p-6 relative">
+                    <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="star" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">4. Novērtē Darbu</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Kad darbs paveikts, atstāj atsauksmi par meistaru, lai palīdzētu citiem lietotājiem.</p>
+                </div>
+            </div>
+
+            <div v-else key="meistars" class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="p-6 relative">
+                    <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="user-plus" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">1. Izveido Profilu</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Reģistrējies kā speciālists vai uzņēmums. Norādi savas prasmes, pieredzi un pilsētu.</p>
+                </div>
+                
+                <div class="p-6 relative">
+                    <div class="hidden md:block absolute top-14 -right-4 text-gray-200 text-2xl">
+                        <font-awesome-icon icon="chevron-right" />
+                    </div>
+                    <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="search" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">2. Atrodi Darbus</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Pārlūko klientu pieprasījumus savā kategorijā. Izmanto filtrus, lai atrastu piemērotākos.</p>
+                </div>
+
+                <div class="p-6 relative">
+                    <div class="hidden md:block absolute top-14 -right-4 text-gray-200 text-2xl">
+                        <font-awesome-icon icon="chevron-right" />
+                    </div>
+                    <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="paper-plane" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">3. Nosūti Piedāvājumu</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Piesakies darbam, norādot savu cenu un komentāru. Esi profesionāls un pārliecinošs.</p>
+                </div>
+
+                <div class="p-6 relative">
+                    <div class="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">
+                        <font-awesome-icon icon="trophy" />
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">4. Pelni un Audz</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Veic kvalitatīvu darbu, saņem samaksu tieši no klienta un vāc pozitīvas atsauksmes.</p>
+                </div>
+            </div>
+
+        </transition>
+
       </div>
     </section>
+
 
     <section class="py-16 bg-gray-50 border-t">
       <div class="max-w-6xl mx-auto px-4">
@@ -162,12 +248,18 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+// Jaunas ikonas importi, ja tās vēl nav main.js
+// Ieteicams pārliecināties, ka šīs ikonas ir pieejamas:
+// comments, star, user-plus, paper-plane, trophy, chevron-right
+
 const router = useRouter();
 const user = ref(null);
 const requests = ref([]);
-const offers = ref([]); 
+const offers = ref([]);
 const loading = ref(true);
-const activeTab = ref('requests'); 
+
+const activeTab = ref('requests'); // Sludinājumu tabula
+const infoTab = ref('mekletajs');  // "Kā tas strādā" tabula
 
 onMounted(async () => {
   const userData = localStorage.getItem('user');
@@ -175,8 +267,8 @@ onMounted(async () => {
 
   try {
     const [reqResponse, offResponse] = await Promise.all([
-        fetch('http://localhost/Meistari/api/get_requests.php'),
-        fetch('http://localhost/Meistari/api/get_offers.php')
+        fetch('api/get_requests.php'),
+        fetch('api/get_offers.php')
     ]);
 
     if (reqResponse.ok) requests.value = await reqResponse.json();
@@ -189,7 +281,6 @@ onMounted(async () => {
   }
 });
 
-// tikai pirmos 3 ierakstus
 const latestRequests = computed(() => requests.value.slice(0, 3));
 const latestOffers = computed(() => offers.value.slice(0, 3));
 
@@ -206,10 +297,22 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString('lv-LV');
 };
 
-
 const getMasterName = (offer) => {
     if (offer.company_name) return offer.company_name;
     if (offer.first_name) return `${offer.first_name} ${offer.last_name}`;
     return offer.username; 
 };
 </script>
+
+<style scoped>
+/* Pārejas efekti saturam */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
