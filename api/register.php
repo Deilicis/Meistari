@@ -1,83 +1,80 @@
 <?php
 // api/register.php
-
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// Handle preflight requests (Browser security check)
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') { http_response_code(200); exit(); }
 
-// 2. Include Database Connection
 include_once 'db.php';
 
-// 3. Get the posted data
 $data = json_decode(file_get_contents("php://input"));
 
-// Check if data is not empty
 if (
     !empty($data->username) &&
     !empty($data->email) &&
     !empty($data->password) &&
-    !empty($data->role) // 'seeker' or 'master'
+    !empty($data->role)
 ) {
-    // 4. Input Validation & Cleaning
-    $username = htmlspecialchars(strip_tags($data->username));
-    $email = htmlspecialchars(strip_tags($data->email));
-    $role = htmlspecialchars(strip_tags($data->role));
-    $password = $data->password;
-
-    // Validate role to ensure it's only what we expect
-    if(!in_array($role, ['mekletajs', 'meistars'])) {
-        http_response_code(400); // Bad Request
-        echo json_encode(["message" => "Invalid role selected."]);
+    // Validācija
+    if (!in_array($data->role, ['mekletajs', 'meistars'])) {
+        http_response_code(400);
+        echo json_encode(["message" => "Nederīga loma."]);
         exit();
     }
 
     try {
-        // 5. Check if User already exists (Email or Username)
-        $checkQuery = "SELECT id FROM users WHERE email = :email OR username = :username";
-        $stmt = $pdo->prepare($checkQuery);
-        $stmt->execute(['email' => $email, 'username' => $username]);
-
-        if ($stmt->rowCount() > 0) {
-            // User exists
-            http_response_code(409); // Conflict
-            echo json_encode(["message" => "Username or Email already exists."]);
-        } else {
-            // 6. Create new User
-            
-            // SECURITY: Hash the password! Never store plain text passwords.
-            $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-            $query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
-            $stmt = $pdo->prepare($query);
-
-            if ($stmt->execute([
-                ':username' => $username,
-                ':email' => $email,
-                ':password' => $password_hash,
-                ':role' => $role
-            ])) {
-                http_response_code(201); // Created
-                echo json_encode(["message" => "User registered successfully."]);
-            } else {
-                http_response_code(503); // Service Unavailable
-                echo json_encode(["message" => "Unable to register user."]);
-            }
+        // 1. Pārbaudām, vai e-pasts jau eksistē
+        $check = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $check->execute([$data->email]);
+        if ($check->rowCount() > 0) {
+            http_response_code(409);
+            echo json_encode(["message" => "Šis e-pasts jau ir reģistrēts."]);
+            exit();
         }
-    } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode(["message" => "Database error: " . $e->getMessage()]);
-    }
 
+        $pdo->beginTransaction();
+
+        // 2. Ievietojam lietotāju (users tabulā)
+        $query = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
+        $stmt = $pdo->prepare($query);
+        
+        $password_hash = password_hash($data->password, PASSWORD_BCRYPT);
+        
+        $stmt->execute([
+            ':username' => htmlspecialchars(strip_tags($data->username)),
+            ':email' => htmlspecialchars(strip_tags($data->email)),
+            ':password' => $password_hash,
+            ':role' => $data->role
+        ]);
+
+        $user_id = $pdo->lastInsertId();
+
+        // 3. Ja tas ir MEISTARS, uzreiz izveidojam profila sagatavi
+        if ($data->role === 'meistars') {
+            // Saņemam tipu no frontenda (individual vai company), pēc noklusējuma individual
+            $type = isset($data->master_type) && in_array($data->master_type, ['company', 'individual']) 
+                    ? $data->master_type 
+                    : 'individual';
+
+            $profileQuery = "INSERT INTO master_profiles (user_id, type) VALUES (?, ?)";
+            $profileStmt = $pdo->prepare($profileQuery);
+            $profileStmt->execute([$user_id, $type]);
+        }
+
+        $pdo->commit();
+
+        http_response_code(201);
+        echo json_encode(["message" => "Lietotājs veiksmīgi izveidots."]);
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        http_response_code(500);
+        echo json_encode(["message" => "Datubāzes kļūda: " . $e->getMessage()]);
+    }
 } else {
-    // Data is incomplete
-    http_response_code(400); // Bad Request
-    echo json_encode(["message" => "Incomplete data. Please provide username, email, password and role."]);
+    http_response_code(400);
+    echo json_encode(["message" => "Nepilnīgi dati."]);
 }
 ?>

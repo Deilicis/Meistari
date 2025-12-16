@@ -16,7 +16,7 @@
             <span class="hidden md:block text-gray-700 font-medium">
               <font-awesome-icon icon="user" class="text-gray-400 mr-2"/>
               {{ user.username }} 
-              <span @click="$router.push('/dashboard')" class="cursor-pointer text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-1"><font-awesome-icon icon="eye" class="text-blue-80 pr-1" />{{ roleNames[user.role] || user.role }}</span>
+              <span @click="$router.push('/dashboard')" class="cursor-pointer text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded ml-1 transition"><font-awesome-icon icon="eye" class="text-blue-80 pr-1" />{{ roleNames[user.role] || user.role }}</span>
             </span>
 
             <button 
@@ -30,16 +30,16 @@
 
           <div v-else class="flex items-center gap-3">
             <button 
-              @click="$router.push('/login')" 
-              class="text-gray-600 hover:text-blue-900 font-medium px-3 py-2"
+              @click="$router.push('/register')" 
+              class="text-blue-600 px-5 py-2.5 rounded-lg font-bold hover:text-blue-800 hover:bg-gray-100 shadow-lg transition"
             >
-              Pieslēgties
+              Kļūsti par meistaru
             </button>
             <button 
-              @click="$router.push('/register')" 
+              @click="$router.push('/login')" 
               class="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition"
             >
-              Reģistrēties
+              Pieslēgties
             </button>
           </div>
 

@@ -10,14 +10,14 @@ import {
     faUser, faSignOutAlt, faSearch, faPenToSquare, 
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
-    faTrash, faEye, faTimes
+    faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
     faUser, faSignOutAlt, faSearch, faPenToSquare, 
     faMapMarkerAlt, faEuroSign, faBriefcase, faPlusCircle, 
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
-    faTrash, faEye, faTimes
+    faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock
 )
 
 const app = createApp(App)
