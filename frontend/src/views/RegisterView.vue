@@ -7,7 +7,7 @@
         <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-blue-400 blur-3xl"></div>
       </div>
 
-      <div class="relative z-10 max-w-lg mx-auto">
+      <div class="relative z-10 max-w-lg mx-auto cursor-pointer" @click="router.push('./')">
         <div class="mb-6 text-blue-300 text-6xl">
           <font-awesome-icon icon="hammer" /><span class="text-1 font-extrabold text-white tracking-tight">
             Meistari<span class="text-blue-500">.lv</span>

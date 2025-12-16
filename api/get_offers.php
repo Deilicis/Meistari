@@ -6,9 +6,10 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once 'db.php';
 
 try {
-    // Atlasām pakalpojumus un pievienojam autora vārdu un pilsētu no profila
-    $query = "SELECT 
-                o.id, o.title, o.category, o.description, o.price, o.service_type, o.created_at,
+$query = "SELECT 
+                o.id, 
+                o.user_id,
+                o.title, o.category, o.description, o.price, o.service_type, o.created_at,
                 u.username,
                 mp.city, mp.type, mp.company_name, mp.first_name, mp.last_name
               FROM offers o

@@ -1,97 +1,125 @@
 <template>
-  <div class="min-h-screen bg-gray-100 py-10 relative">
-    <div class="max-w-5xl mx-auto px-4">
+  <div class="min-h-screen bg-gray-50 py-10">
+    <div class="max-w-6xl mx-auto px-4">
       
-      <div class="flex justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-800">Aktīvie Darba Pieprasījumi</h2>
-        <button @click="$router.push('/dashboard')" class="bg-red-600 text-white font-bold p-1 rounded hover:bg-red-700 transition"><font-awesome-icon icon="times" /></button>
+      <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+           <h2 class="text-3xl font-bold text-gray-800">Aktīvie Darba Sludinājumi</h2>
+           <p class="text-gray-500">Atrodi sev piemērotāko darbu un piesakies.</p>
+        </div>
+        <button v-if="user && user.role === 'mekletajs'" @click="$router.push('/create-request')" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition shadow-md">
+            <font-awesome-icon icon="plus-circle" /> Ievietot Jaunu
+        </button>
       </div>
 
-      <div class="bg-white p-4 rounded shadow mb-6">
-        <input v-model="searchQuery" type="text" placeholder="Meklēt..." class="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            
+            <div class="md:col-span-2 relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                    <font-awesome-icon icon="search" />
+                </span>
+                <input 
+                    v-model="filters.search" 
+                    type="text" 
+                    placeholder="Meklēt pēc nosaukuma..." 
+                    class="w-full pl-10 border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 focus:bg-white transition"
+                >
+            </div>
+
+            <div>
+                <select v-model="filters.category" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 focus:bg-white transition text-gray-700">
+                    <option value="">Visas kategorijas</option>
+                    <option value="Santehnika">Santehnika</option>
+                    <option value="Elektrība">Elektrība</option>
+                    <option value="Celtniecība">Celtniecība</option>
+                    <option value="IT Pakalpojumi">IT Pakalpojumi</option>
+                    <option value="Tīrīšana">Tīrīšana</option>
+                    <option value="Skaistumkopšana">Skaistumkopšana</option>
+                    <option value="Cits">Cits</option>
+                </select>
+            </div>
+
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                    <font-awesome-icon icon="map-marker-alt" />
+                </span>
+                <input 
+                    v-model="filters.city" 
+                    type="text" 
+                    placeholder="Pilsēta..." 
+                    class="w-full pl-10 border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 focus:bg-white transition"
+                >
+            </div>
+        </div>
       </div>
 
-      <div v-if="loading" class="text-center text-gray-500 py-10">Ielādē...</div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div v-for="req in filteredRequests" :key="req.id" class="bg-white p-6 rounded-lg shadow flex flex-col">
+      <div v-if="loading" class="text-center py-20 text-gray-400">
+         <font-awesome-icon icon="circle-notch" spin class="text-3xl mb-2"/>
+         <p>Meklējam darbus...</p>
+      </div>
+
+      <div v-else-if="filteredRequests.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div v-for="req in filteredRequests" :key="req.id" class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-100 flex flex-col h-full">
           
-          <div class="flex justify-between items-start mb-2">
-            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{{ req.category }}</span>
-            <span class="text-gray-500 text-sm">{{ formatDate(req.created_at) }}</span>
+          <div class="flex justify-between items-start mb-3">
+            <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">{{ req.category }}</span>
+            <span class="text-green-600 font-bold flex items-center gap-1">
+              <font-awesome-icon icon="euro-sign" class="text-sm"/> {{ req.budget }}
+            </span>
           </div>
 
-          <h3 class="text-xl font-bold text-gray-900 mb-2">{{ req.title }}</h3>
-          <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">{{ req.description }}</p>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">{{ req.title }}</h3>
+          <p class="text-gray-500 text-sm mb-4 line-clamp-3 flex-grow">{{ req.description }}</p>
 
-          <div class="border-t pt-4 mt-auto">
-            <div class="flex justify-between items-center text-sm text-gray-700 mb-2">
-              <span><font-awesome-icon icon="map-marker-alt" class="text-red-500" /> {{ req.location }}</span>
-              <span class="font-bold text-green-600">Budžets: <font-awesome-icon icon="euro-sign" /> {{ req.budget }}</span>
+          <div class="mt-auto pt-4 border-t border-gray-50">
+            <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+                <span class="flex items-center gap-1"><font-awesome-icon icon="map-marker-alt" /> {{ req.location }}</span>
+                <span>{{ new Date(req.created_at).toLocaleDateString('lv-LV') }}</span>
             </div>
-            
-            <button @click="openModal(req)" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition font-medium">
-              Pieteikties Darbam
+
+            <button 
+                @click="openRequest(req)" 
+                class="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+            >
+                Skatīt Vairāk
             </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="selectedRequest" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-        
-        <h3 class="text-xl font-bold mb-4">Pieteikties: {{ selectedRequest.title }}</h3>
-        
-        <p class="text-gray-600 text-sm mb-4">
-          Klieta budžets: <span class="font-bold">€ {{ selectedRequest.budget }}</span>
-        </p>
-
-        <form @submit.prevent="submitApplication">
-          <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">Jūsu cena (€)</label>
-            <input v-model="applicationForm.price" type="number" step="0.01" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-bold mb-1">Komentārs klientam</label>
-            <textarea v-model="applicationForm.comment" rows="3" placeholder="Kad varat sākt? Kāpēc izvēlēties jūs?" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500"></textarea>
-          </div>
-
-          <div v-if="modalMessage" class="text-sm text-red-600 mb-4">{{ modalMessage }}</div>
-
-          <div class="flex justify-end gap-2">
-            <button type="button" @click="closeModal" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">Atcelt</button>
-            <button type="submit" class="px-4 py-2 bg-green-600 text-white font-bold rounded hover:bg-green-700">Nosūtīt</button>
-          </div>
-        </form>
-
+      <div v-else class="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
+          <font-awesome-icon icon="search" class="text-4xl text-gray-300 mb-4" />
+          <h3 class="text-xl font-bold text-gray-600">Nekas netika atrasts</h3>
+          <p class="text-gray-400">Mēģiniet mainīt meklēšanas kritērijus.</p>
+          <button @click="resetFilters" class="mt-4 text-blue-600 font-bold hover:underline">Notīrīt filtrus</button>
       </div>
-    </div>
 
+    </div>
   </div>
 </template>
 
 <script setup>
-import { useNotifications } from '@/composables/useNotifications';
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
 const requests = ref([]);
 const loading = ref(true);
-const searchQuery = ref('');
-const { notify } = useNotifications();
-// Modāļa mainīgie
-const selectedRequest = ref(null); 
-const applicationForm = ref({ price: '', comment: '' });
-const modalMessage = ref('');
+const router = useRouter();
 const user = ref(null);
 
+const filters = ref({
+    search: '',
+    category: '',
+    city: ''
+});
+
 onMounted(async () => {
-  // Ielādē user
   const userData = localStorage.getItem('user');
   if (userData) user.value = JSON.parse(userData);
 
   try {
-    const response = await fetch('http://localhost/Meistari/api/get_requests.php');
+    const response = await fetch('api/get_requests.php');
     if (response.ok) {
       requests.value = await response.json();
     }
@@ -102,56 +130,56 @@ onMounted(async () => {
   }
 });
 
+// Filtrēša
 const filteredRequests = computed(() => {
-  if (!searchQuery.value) return requests.value;
-  const lower = searchQuery.value.toLowerCase();
-  return requests.value.filter(req => req.title.toLowerCase().includes(lower) || req.category.toLowerCase().includes(lower));
+    return requests.value.filter(req => {
+        // Virsraksta
+        const matchesSearch = req.title.toLowerCase().includes(filters.value.search.toLowerCase());
+        
+        //Kategorija
+        const matchesCategory = filters.value.category ? req.category === filters.value.category : true;
+
+        // Pilseta
+        const matchesCity = req.location.toLowerCase().includes(filters.value.city.toLowerCase());
+
+        return matchesSearch && matchesCategory && matchesCity;
+    });
 });
 
-const formatDate = (d) => new Date(d).toLocaleDateString('lv-LV');
-
-// --- MODĀĻA LOĢIKA ---
-
-const openModal = (req) => {
-  selectedRequest.value = req;
-  modalMessage.value = '';
-  // Iestata cenu automātiski uz budžeta sākuma
-  applicationForm.value.price = ''; 
-  applicationForm.value.comment = '';
+const resetFilters = () => {
+    filters.value.search = '';
+    filters.value.category = '';
+    filters.value.city = '';
 };
 
-const closeModal = () => {
-  selectedRequest.value = null;
-};
-
-const submitApplication = async () => {
-  if (!user.value) {
-    modalMessage.value = "Lūdzu vispirms ielogojieties!";
-    return;
-  }
-
-  try {
-    const response = await fetch('http://localhost/Meistari/api/apply_for_job.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        request_id: selectedRequest.value.id,
-        master_id: user.value.id,
-        price: applicationForm.value.price,
-        comment: applicationForm.value.comment
-      })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      notify('Jūsu pieteikums ir nosūtīts veiksmīgi!', 'success');
-      closeModal();
+const openRequest = (req) => {
+    // Īslaicīgs risinajums
+    if (user.value && user.value.role === 'meistars') {
+        applyForJob(req.id);
     } else {
-      modalMessage.value = data.message;
+        alert("Lai pieteiktos, jābūt Meistaram! Detalizēts skats drīz būs pieejams.");
     }
-  } catch (error) {
-    modalMessage.value = "Servera kļūda.";
-  }
+};
+
+const applyForJob = async (id) => {
+    const price = prompt("Jūsu cena (€):");
+    if (!price) return;
+    
+    const comment = prompt("Komentārs klientam:");
+
+    try {
+        const response = await fetch('api/apply_for_job.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                request_id: id,
+                master_id: user.value.id,
+                price: price,
+                comment: comment || ''
+            })
+        });
+        if (response.ok) alert("Pieteikums nosūtīts!");
+        else alert("Kļūda nosūtot pieteikumu.");
+    } catch (e) { console.error(e); }
 };
 </script>

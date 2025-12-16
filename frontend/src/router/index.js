@@ -11,6 +11,8 @@ import AdminView from '../views/AdminView.vue'
 import CreateOfferView from '../views/CreateOfferView.vue'
 import MyOffersView from '../views/MyOffersView.vue'
 import MyApplicationsView from '../views/MyApplicationsView.vue'
+import OffersView from '../views/OffersView.vue';
+import PublicProfileView from '../views/PublicProfileView.vue';
 
 const routes = [
   { path: '/', name: 'home', component: HomeView },
@@ -25,6 +27,8 @@ const routes = [
   { path: '/create-offer', name: 'create-offer', component: CreateOfferView },
   { path: '/my-offers', name: 'my-offers', component: MyOffersView },
   { path: '/my-applications', name: 'my-applications', component: MyApplicationsView },
+  { path: '/offers', name: 'offers', component: OffersView },
+  { path: '/master/:id', name: 'public-profile', component: PublicProfileView },
 ];
 
 const router = createRouter({

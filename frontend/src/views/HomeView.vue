@@ -178,16 +178,17 @@
                 {{ activeTab === 'requests' ? 'Aktīvi darbi, kuriem nepieciešami meistari.' : 'Profesionāļi, kas gatavi palīdzēt.' }}
             </p>
           </div>
-          <button @click="$router.push('/requests')" class="text-blue-600 font-semibold hover:underline hidden sm:block">
-            Skatīt visus →
-          </button>
         </div>
+
 
         <div v-if="loading" class="text-center py-10 text-gray-400">
             <font-awesome-icon icon="search" spin class="mr-2"/> Ielādē datus...
         </div>
-
-        <div v-else-if="activeTab === 'requests'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div v-else-if="activeTab === 'requests'">
+       <button @click="$router.push('/requests')" class="text-blue-600 font-semibold hover:underline hidden sm:block">
+            Skatīt visus <font-awesome-icon icon="arrow-right" />
+          </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div v-for="req in latestRequests" :key="req.id" class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-100 flex flex-col">
             <div class="flex justify-between items-start mb-3">
               <span class="bg-blue-50 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">{{ req.category }}</span>
@@ -203,8 +204,12 @@
             </div>
           </div>
         </div>
-
-        <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
+</div>
+<div v-else>
+            <button @click="$router.push('/offers')" class="text-purple-600 font-semibold hover:underline hidden sm:block">
+            Skatīt visus <font-awesome-icon icon="arrow-right" />
+          </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div v-for="offer in latestOffers" :key="offer.id" class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 border border-gray-100 flex flex-col group">
             <div class="flex justify-between items-start mb-3">
               <span class="bg-purple-50 text-purple-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">{{ offer.category }}</span>
@@ -229,7 +234,7 @@
             </div>
           </div>
         </div>
-        
+        </div>
         <div class="mt-8 text-center sm:hidden">
            <button @click="$router.push('/requests')" class="text-blue-600 font-semibold">Skatīt visus darbus →</button>
         </div>
@@ -248,18 +253,14 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
-// Jaunas ikonas importi, ja tās vēl nav main.js
-// Ieteicams pārliecināties, ka šīs ikonas ir pieejamas:
-// comments, star, user-plus, paper-plane, trophy, chevron-right
-
 const router = useRouter();
 const user = ref(null);
 const requests = ref([]);
 const offers = ref([]);
 const loading = ref(true);
 
-const activeTab = ref('requests'); // Sludinājumu tabula
-const infoTab = ref('mekletajs');  // "Kā tas strādā" tabula
+const activeTab = ref('requests'); // Sludinājumi vai Piedāvājumi
+const infoTab = ref('mekletajs');  // "Kā tas strādā"
 
 onMounted(async () => {
   const userData = localStorage.getItem('user');

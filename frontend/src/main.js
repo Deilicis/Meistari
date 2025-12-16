@@ -12,7 +12,7 @@ import {
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
     faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock,
     faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight,
-    faListCheck
+    faListCheck, faPhone, faArrowRight, faCircleNotch
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -21,7 +21,7 @@ library.add(
     faBullhorn, faHandshake, faCheckCircle, faUserCog, faHammer,
     faTrash, faEye, faTimes, faBuilding, faArrowLeft, faEnvelope, faLock,
     faComments, faStar, faUserPlus, faPaperPlane, faTrophy, faChevronRight,
-    faListCheck
+    faListCheck, faPhone, faArrowRight, faCircleNotch
 )
 
 const app = createApp(App)
