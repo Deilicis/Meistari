@@ -6,11 +6,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Enums\Role\RoleNameEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Role extends Model
 {
+    use HasFactory;
+
     public const TABLE = 'roles';
     public const ID = 'id';
     public const NAME = 'name';
@@ -31,7 +34,7 @@ class Role extends Model
     {
         return $this->getAttribute(self::ID);
     }
-    
+
     public function getName(): RoleNameEnum
     {
         return $this->getAttribute(self::NAME);

@@ -6,11 +6,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Enums\Profile\ProfileTypeEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Profile extends Model
 {
+    use HasFactory;
+
     public const TABLE = 'profiles';
     public const ID = 'id';
     public const USER_ID = 'user_id';
@@ -26,7 +29,6 @@ class Profile extends Model
     public const IS_VERIFIED = 'is_verified';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
-
     private const BOOLEAN = 'boolean';
 
     protected $table = self::TABLE;

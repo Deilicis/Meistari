@@ -19,4 +19,15 @@ enum ApplicationStatusEnum: string
     {
         return array_column(self::cases(), 'value');
     }
+
+    public function label(): string
+    {
+        return match($this) {
+            self::PENDING => 'Gaida apstiprinājumu',
+            self::ACCEPTED => 'Pieņemts',
+            self::REJECTED => 'Noraidīts',
+            self::COMPLETED => 'Pabeigts',
+            self::CANCELLED => 'Atcelts',
+        };
+    }
 }

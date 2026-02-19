@@ -18,4 +18,14 @@ enum JobStatusEnum: string
     {
         return array_column(self::cases(), 'value');
     }
+
+    public function label(): string
+    {
+        return match($this) {
+            self::ACTIVE => 'Aktīvs',
+            self::ASSIGNED => 'Piešķirts',
+            self::COMPLETED => 'Pabeigts',
+            self::CANCELLED => 'Atcelts',
+        };
+    }
 }

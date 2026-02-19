@@ -6,13 +6,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Enums\Service\ServicePriceTypeEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Service extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     public const TABLE = 'services';
     public const ID = 'id';
