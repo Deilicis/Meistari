@@ -1,48 +1,133 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    public const TABLE = 'users';
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const EMAIL = 'email';
+    public const EMAIL_VERIFIED_AT = 'email_verified_at';
+    public const PASSWORD = 'password';
+    public const REMEMBER_TOKEN = 'remember_token';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
+
+    protected $table = self::TABLE;
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        self::NAME,
+        self::EMAIL,
+        self::PASSWORD,
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        self::PASSWORD,
+        self::REMEMBER_TOKEN,
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        self::EMAIL_VERIFIED_AT => 'datetime',
+        self::PASSWORD => 'hashed',
+    ];
+
+    public function getId(): int
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->getAttribute(self::ID);
+    }
+
+    public function getName(): string
+    {
+        return $this->getAttribute(self::NAME);
+    }
+
+    public function getEmail(): string
+    {
+        return $this->getAttribute(self::EMAIL);
+    }
+
+    public function getEmailVerifiedAt(): ?Carbon
+    {
+        return $this->getAttribute(self::EMAIL_VERIFIED_AT);
+    }
+
+    public function getPassword(): string
+    {
+        return $this->getAttribute(self::PASSWORD);
+    }
+
+    public function getRememberToken(): ?string
+    {
+        return $this->getAttribute(self::REMEMBER_TOKEN);
+    }
+
+    public function getCreatedAt(): ?Carbon
+    {
+        return $this->getAttribute(self::CREATED_AT);
+    }
+
+    public function getUpdatedAt(): ?Carbon
+    {
+        return $this->getAttribute(self::UPDATED_AT);
+    }
+
+    public function getDeletedAt(): ?Carbon
+    {
+        return $this->getAttribute(self::DELETED_AT);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Role::class, 
+            RoleUserPivot::TABLE, 
+            RoleUserPivot::USER_ID, 
+            RoleUserPivot::ROLE_ID
+        );
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class, 'user_id', self::ID);
+    }
+
+    public function jobRequests(): HasMany
+    {
+        return $this->hasMany(JobRequest::class, 'user_id', self::ID);
+    }
+
+    public function services(): HasMany
+    {
+        return $this->hasMany(Service::class, 'user_id', self::ID);
+    }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class, 'user_id', self::ID);
+    }
+
+    public function reviewsGiven(): HasMany
+    {
+        return $this->hasMany(Review::class, 'reviewer_id', self::ID);
+    }
+
+    public function reviewsReceived(): HasMany
+    {
+        return $this->hasMany(Review::class, 'reviewee_id', self::ID);
     }
 }
