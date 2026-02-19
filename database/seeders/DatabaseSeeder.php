@@ -51,6 +51,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             JobRequestSeeder::class,
             ServiceSeeder::class,
+            ApplicationSeeder::class,
+            ReviewSeeder::class,
+            ConversationSeeder::class,
         ]);
     }
 }
