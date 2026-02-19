@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\Profile\ProfileTypeEnum;
+use App\Enums\Profile\ProfileTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

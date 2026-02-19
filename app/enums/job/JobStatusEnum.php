@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Enum\Job;
+namespace App\Enums\Job;
 
-enum ApplicationStatusEnum: string
+enum JobStatusEnum: string
 {
-    case PENDING = 'pending';
-    case ACCEPTED = 'accepted';
-    case REJECTED = 'rejected';
+    case ACTIVE = 'active';
+    case ASSIGNED = 'assigned';
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enum\Service\ServicePriceTypeEnum;
+use App\Enums\Service\ServicePriceTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,15 +30,12 @@ return new class extends Migration
     {
         Schema::create(self::TABLE, function (Blueprint $table) {
             $table->id(self::ID);
-
             $table->foreignId(self::USER_ID)
                   ->constrained(self::TABLE_USERS)
                   ->cascadeOnDelete();
-
             $table->foreignId(self::CATEGORY_ID)
                   ->constrained(self::TABLE_CATEGORIES)
                   ->cascadeOnDelete();
-
             $table->string(self::TITLE);
             $table->string(self::SLUG)->unique();
             $table->text(self::DESCRIPTION);
@@ -47,7 +44,6 @@ return new class extends Migration
                   ->default(ServicePriceTypeEnum::HOURLY->value);
             $table->string(self::LOCATION);
             $table->boolean(self::IS_ACTIVE)->default(true);
-
             $table->timestamp(self::CREATED_AT)->useCurrent();
             $table->timestamp(self::UPDATED_AT)->nullable()->useCurrentOnUpdate();
             $table->softDeletes(self::DELETED_AT);

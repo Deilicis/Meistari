@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Enum\Service;
+namespace App\Enums\Service;
 
 enum ServicePriceTypeEnum: string
 {
