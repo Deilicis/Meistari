@@ -1,51 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Profile\ProfileTypeEnum;
+use App\Enums\Role\RoleNameEnum;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Services\Repositories\User\UserLogicRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
-    public function create(): Response
-    {
-        return Inertia::render('Auth/Register');
+    public function __construct(
+        private readonly UserLogicRepository $userLogicRepository
+    ) {
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    public function createRegisterView(): Response
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        return Inertia::render('Auth/Register', [
+            'roles' => RoleNameEnum::cases(),
+            'profileTypes' => ProfileTypeEnum::cases(),
         ]);
+    }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    public function registerUser(RegisterUserRequest $request): RedirectResponse
+    {
+        $this->userLogicRepository->registerUser($request->toDTO());
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return $request->responseRedirect();
     }
 }
