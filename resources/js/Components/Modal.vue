@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps({
@@ -45,7 +45,7 @@ const close = () => {
     }
 };
 
-const closeOnEscape = (e) => {
+const closeOnEscape = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
         e.preventDefault();
 

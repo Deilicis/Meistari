@@ -1,40 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ConfirmPasswordRequest;
+use App\Services\Repositories\Auth\AuthLogicRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ConfirmablePasswordController extends Controller
 {
-    /**
-     * Show the confirm password view.
-     */
-    public function show(): Response
+    public function __construct(
+        private readonly AuthLogicRepository $authLogicRepository
+    ) {
+    }
+
+    public function showConfirmView(): Response
     {
         return Inertia::render('Auth/ConfirmPassword');
     }
 
-    /**
-     * Confirm the user's password.
-     */
-    public function store(Request $request): RedirectResponse
+    public function confirmPassword(ConfirmPasswordRequest $request): RedirectResponse
     {
-        if (! Auth::guard('web')->validate([
-            'email' => $request->user()->email,
-            'password' => $request->password,
-        ])) {
-            throw ValidationException::withMessages([
-                'password' => __('auth.password'),
-            ]);
-        }
-
-        $request->session()->put('auth.password_confirmed_at', time());
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+        
+        $this->authLogicRepository->confirmPassword($user, $request->toDTO());
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

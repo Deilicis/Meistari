@@ -27,9 +27,13 @@ class UserDbRepository
 
     public function update(User $user, array $data): User
     {
-        /** @var User $newUser */
-        $newUser = $user->fill($data)->save();
-        return $newUser;
+        $user->update($data);
+        return $user->refresh();
+    }
+
+    public function delete(User $user): bool
+    {
+        return $user->delete();
     }
 
     public function createProfile(array $data): Profile
