@@ -6,4 +6,6 @@ declare module '*.vue' {
     export default component;
 }
 
-declare function route(name?: string, params?: any, absolute?: boolean): any;
+declare global {
+    function route(name?: string, params?: any, absolute?: boolean): any;
+}

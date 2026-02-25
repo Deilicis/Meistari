@@ -3,6 +3,7 @@ import AuthLayout from '@/Layouts/AuthLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import FormField from '@/Components/FormField.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
@@ -85,7 +86,7 @@ const submit = () => {
                 <button
                     type="button"
                     @click="form.role = getRoleValue('master')"
-                    :class="form.role === getRoleValue('master') ? 'bg-white shadow-sm text-[#0a192f]' : 'text-gray-500 hover:text-gray-700'"
+                    :class="form.role === getRoleValue('master') ? 'bg-white shadow-sm text-gray-600' : 'text-gray-500 hover:text-gray-700'"
                     class="flex-1 py-3 rounded-lg text-sm font-bold tracking-wide transition-all duration-200"
                 >
                     MEISTARS
@@ -101,7 +102,7 @@ const submit = () => {
                             type="radio"
                             :value="getOptionValue(type)"
                             v-model="form.profile_type"
-                            class="text-[#0a192f] focus:ring-[#0a192f] border-gray-300 w-4 h-4 cursor-pointer"
+                            class="text-gray-500 focus:ring-gray-500 border-gray-300 w-4 h-4 cursor-pointer"
                         />
                         <span class="ml-2 text-sm text-gray-700 font-medium">
                             {{ getProfileLabel(type) }}
@@ -114,73 +115,56 @@ const submit = () => {
             <hr class="border-gray-100 my-4" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <InputLabel for="name" value="Lietotājvārds" />
-                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" required autofocus />
-                    <InputError class="mt-1" :message="form.errors.name" />
-                </div>
-                <div>
-                    <InputLabel for="email" value="E-pasts" />
-                    <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" required />
-                    <InputError class="mt-1" :message="form.errors.email" />
-                </div>
+                <FormField 
+                    id="name" 
+                    label="Lietotājvārds" 
+                    v-model="form.name" 
+                    :error="form.errors.name" 
+                    autofocus 
+                />
+                
+                <FormField 
+                    id="email" 
+                    type="email" 
+                    label="E-pasts" 
+                    v-model="form.email" 
+                    :error="form.errors.email" 
+                />
             </div>
 
-            <div>
-                <InputLabel for="city" value="Pilsēta" />
-                <TextInput id="city" type="text" class="mt-1 block w-full" v-model="form.city" required placeholder="Piemēram, Rīga" />
-                <InputError class="mt-1" :message="form.errors.city" />
-            </div>
+            <FormField 
+                id="city" 
+                label="Pilsēta" 
+                placeholder="Piemēram, Rīga" 
+                v-model="form.city" 
+                :error="form.errors.city" 
+            />
 
             <template v-if="String(form.profile_type).toLowerCase() === 'individual'">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
-                    <div>
-                        <InputLabel for="first_name" value="Vārds" />
-                        <TextInput id="first_name" type="text" class="mt-1 block w-full" v-model="form.first_name" required />
-                        <InputError class="mt-1" :message="form.errors.first_name" />
-                    </div>
-                    <div>
-                        <InputLabel for="last_name" value="Uzvārds" />
-                        <TextInput id="last_name" type="text" class="mt-1 block w-full" v-model="form.last_name" required />
-                        <InputError class="mt-1" :message="form.errors.last_name" />
-                    </div>
+                    <FormField id="first_name" label="Vārds" v-model="form.first_name" :error="form.errors.first_name" />
+                    <FormField id="last_name" label="Uzvārds" v-model="form.last_name" :error="form.errors.last_name" />
                 </div>
             </template>
 
             <template v-else>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
-                    <div>
-                        <InputLabel for="company_name" value="Uzņēmuma nosaukums" />
-                        <TextInput id="company_name" type="text" class="mt-1 block w-full" v-model="form.company_name" required />
-                        <InputError class="mt-1" :message="form.errors.company_name" />
-                    </div>
-                    <div>
-                        <InputLabel for="reg_number" value="Reģistrācijas numurs" />
-                        <TextInput id="reg_number" type="text" class="mt-1 block w-full" v-model="form.reg_number" required />
-                        <InputError class="mt-1" :message="form.errors.reg_number" />
-                    </div>
+                    <FormField id="company_name" label="Uzņēmuma nosaukums" v-model="form.company_name" :error="form.errors.company_name" />
+                    <FormField id="reg_number" label="Reģistrācijas numurs" v-model="form.reg_number" :error="form.errors.reg_number" />
                 </div>
             </template>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <InputLabel for="password" value="Parole" />
-                    <TextInput id="password" type="password" class="mt-1 block w-full" v-model="form.password" required />
-                    <InputError class="mt-1" :message="form.errors.password" />
-                </div>
-                <div>
-                    <InputLabel for="password_confirmation" value="Apstiprināt paroli" />
-                    <TextInput id="password_confirmation" type="password" class="mt-1 block w-full" v-model="form.password_confirmation" required />
-                    <InputError class="mt-1" :message="form.errors.password_confirmation" />
-                </div>
+                <FormField id="password" type="password" label="Parole" v-model="form.password" :error="form.errors.password" />
+                <FormField id="password_confirmation" type="password" label="Apstiprināt paroli" v-model="form.password_confirmation" :error="form.errors.password_confirmation" />
             </div>
 
             <div class="flex items-center justify-between pt-4">
-                <Link :href="route('login')" class="text-sm text-[#0a192f] hover:text-blue-700 font-semibold underline underline-offset-4">
+                <Link :href="route('login')" class="text-sm text-navy hover:text-blue-700 font-semibold underline underline-offset-4">
                     Jau ir konts? Ienākt
                 </Link>
 
-                <PrimaryButton class="bg-[#0a192f] hover:bg-blue-900 px-8 py-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <PrimaryButton class="bg-navy hover:bg-navy-hover px-8 py-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Reģistrēties
                 </PrimaryButton>
             </div>

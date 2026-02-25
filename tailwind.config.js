@@ -15,6 +15,16 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                navy: {
+                    DEFAULT: '#0a192f',
+                    hover: '#112240',
+                    light: '#233554',
+                },
+                gold: {
+                    DEFAULT: '#FFD700',
+                }
+            }
         },
     },
 
