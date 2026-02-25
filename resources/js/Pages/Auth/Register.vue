@@ -6,7 +6,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
-// 1. Tagad mēs pasakām TS, ka dati var būt gan strings, gan objekts
 type EnumOption = string | { name: string; value: string };
 
 const props = defineProps<{
@@ -14,13 +13,11 @@ const props = defineProps<{
     profileTypes: EnumOption[];
 }>();
 
-// 2. Viedā funkcija, kas izvelk vērtību jebkurā situācijā
 const getOptionValue = (option: EnumOption): string => {
     if (!option) return '';
     return typeof option === 'string' ? option : option.value;
 };
 
-// 3. Viedā funkcija, kas iztulko Enum uz Latviešu valodu
 const getProfileLabel = (option: EnumOption): string => {
     const val = getOptionValue(option).toLowerCase();
     if (val === 'individual') return 'Privātpersona';
@@ -29,7 +26,6 @@ const getProfileLabel = (option: EnumOption): string => {
     return typeof option === 'string' ? option : option.name;
 };
 
-// 4. Lomas izvēles palīgfunkcija
 const getRoleValue = (searchName: string): string => {
     if (!props.roles || !props.roles.length) return searchName.toLowerCase();
     
