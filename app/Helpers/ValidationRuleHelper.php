@@ -15,4 +15,7 @@ class ValidationRuleHelper
     public const MAX_255 = 'max:255';
     public const BOOLEAN = 'boolean';
     public const CURRENT_PASSWORD = 'current_password';
+    public const INTEGER = 'integer';
+    public const UNIQUE = 'unique';
+    public const EXISTS = 'exists';
 }

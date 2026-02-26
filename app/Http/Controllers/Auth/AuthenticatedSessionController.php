@@ -31,7 +31,7 @@ class AuthenticatedSessionController extends Controller
     {
         $this->authLogicRepository->login($request->toDTO(), $request->ip());
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false))->with('success', 'Ielogojies veiksmīgi!');
     }
 
     public function logoutUser(): RedirectResponse

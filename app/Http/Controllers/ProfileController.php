@@ -31,12 +31,9 @@ class ProfileController extends Controller
 
     public function updateProfile(UpdateProfileRequest $request): RedirectResponse
     {
-        /** @var \App\Models\User $user */
-        $user = $request->user();
+        $this->profileLogicRepository->updateProfile($request->toDTO(), $request->user());
 
-        $this->profileLogicRepository->updateProfile($user, $request->toDTO());
-
-        return Redirect::route('profile.edit');
+        return Redirect::route('profile.edit')->with('success', 'Profila informācija veiksmīgi atjaunināta!');
     }
 
     public function deleteAccount(DeleteAccountRequest $request): RedirectResponse

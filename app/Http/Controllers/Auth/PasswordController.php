@@ -18,8 +18,8 @@ class PasswordController extends Controller
 
     public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
     {
-        $this->userLogicRepository->updatePassword($request->user(), $request->toDTO());
+        $this->authLogicRepository->updatePassword($request->toDTO(), $request->user());
 
-        return back();
+        return back()->with('success', 'Jūsu parole ir veiksmīgi nomainīta!');
     }
 }

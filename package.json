@@ -23,5 +23,8 @@
         "vite": "^7.0.7",
         "vue": "^3.4.0",
         "vue-tsc": "^3.2.5"
+    },
+    "dependencies": {
+        "vue-sonner": "^2.0.9"
     }
 }

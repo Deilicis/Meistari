@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { Toaster, toast } from 'vue-sonner';
 
 interface AuthUser {
     id: number;
@@ -14,7 +15,10 @@ interface AuthUser {
     roles: string[];
 }
 
-const page = usePage<{ auth: { user: AuthUser } }>();
+const page = usePage<{ 
+    auth: { user: AuthUser }, 
+    flash: { success?: string, error?: string, info?: string } 
+}>();
 const user = computed(() => page.props.auth.user);
 
 defineSlots<{
@@ -23,6 +27,24 @@ defineSlots<{
 }>();
 
 const showingNavigationDropdown = ref(false);
+
+const displayToast = () => {
+    if (page.props.flash?.success) toast.success(page.props.flash.success);
+    if (page.props.flash?.error) toast.error(page.props.flash.error);
+    if (page.props.flash?.info) toast.info(page.props.flash.info);
+};
+
+onMounted(() => {
+    displayToast();
+});
+
+watch(
+    () => page.props.flash,
+    () => {
+        displayToast();
+    },
+    { deep: true }
+);
 
 const isMaster = computed(() => user.value?.roles.includes('master') ?? false);
 const isSeeker = computed(() => user.value?.roles.includes('seeker') ?? false);
@@ -168,7 +190,8 @@ const isSeeker = computed(() => user.value?.roles.includes('seeker') ?? false);
             <main>
                 <slot />
             </main>
-            
         </div>
+
+        <Toaster richColors position="bottom-right" />
     </div>
 </template>
