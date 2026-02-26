@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Category\SaveCategoryRequest;
+use App\Http\Requests\Category\CreateCategoryRequest;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Services\Repositories\Category\CategoryLogicRepository;
 use Illuminate\Http\JsonResponse;
@@ -27,29 +28,67 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function apiIndex(): JsonResponse
-    {
-        return response()->json($this->logicRepository->getNestedCategories());
-    }
-
-    public function store(SaveCategoryRequest $request): RedirectResponse
+    public function store(CreateCategoryRequest $request): RedirectResponse
     {
         $this->logicRepository->createCategory($request->toDTO());
-
         return back()->with('success', 'Kategorija veiksmīgi izveidota!');
     }
 
-    public function update(SaveCategoryRequest $request, Category $category): RedirectResponse
+    public function update(CreateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->logicRepository->updateCategory($category, $request->toDTO());
-
         return back()->with('success', 'Kategorija atjaunināta!');
     }
 
     public function destroy(Category $category): RedirectResponse
     {
         $this->logicRepository->deleteCategory($category);
-
         return back()->with('success', 'Kategorija izdzēsta!');
+    }
+
+    public function apiIndex(): JsonResponse
+    {
+        $categories = $this->logicRepository->getNestedCategories();
+        
+        return response()->json(CategoryResource::collection($categories));
+    }
+
+    public function apiShow(int $id): JsonResponse
+    {
+        $category = $this->logicRepository->getCategoryById($id);
+        
+        return response()->json(new CategoryResource($category));
+    }
+
+    public function apiStore(CreateCategoryRequest $request): JsonResponse
+    {
+        $category = $this->logicRepository->createCategory($request->toDTO());
+
+        return response()->json([
+            'message' => 'Kategorija veiksmīgi izveidota!',
+            'data' => new CategoryResource($category),
+        ], 201);
+    }
+
+
+    public function apiUpdate(CreateCategoryRequest $request, Category $category): JsonResponse
+    {
+        $this->logicRepository->updateCategory($category, $request->toDTO());
+
+        $category->refresh();
+
+        return response()->json([
+            'message' => 'Kategorija veiksmīgi atjaunināta!',
+            'data' => new CategoryResource($category),
+        ], 200);
+    }
+
+    public function apiDestroy(Category $category): JsonResponse
+    {
+        $this->logicRepository->deleteCategory($category);
+
+        return response()->json([
+            'message' => 'Kategorija veiksmīgi izdzēsta!'
+        ], 200);
     }
 }

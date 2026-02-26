@@ -40,7 +40,7 @@ class CategoryLogicRepository
     {
         if ($dto->parentId === $category->getId()) {
             throw ValidationException::withMessages([
-                Category::PARENT_ID => 'Kategorija nevar būt pakārtota pati sev.'
+                Category::PARENT_ID => 'Kategorija nevar būt pakārtota sev.'
             ]);
         }
 
