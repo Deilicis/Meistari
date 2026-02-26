@@ -6,7 +6,7 @@ namespace App\DataTransferObjects\Category;
 
 use App\Models\Category;
 
-class CreateCategoryRequest
+class SaveCategoryRequestData
 {
     public string $name;
     public string $slug;

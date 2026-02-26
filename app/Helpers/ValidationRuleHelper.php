@@ -18,4 +18,6 @@ class ValidationRuleHelper
     public const INTEGER = 'integer';
     public const UNIQUE = 'unique';
     public const EXISTS = 'exists';
+    public const DATE = 'date';
+    public const NUMERIC = 'numeric';
 }

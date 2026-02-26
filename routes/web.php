@@ -95,6 +95,21 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
         });
     });
 
+    // -- Darba Sludinājumu (Job Requests) API --
+    Route::prefix('job-requests')->name('job-requests.')->group(function () {
+        // Lasīšana
+        Route::get('/', [JobRequestController::class, 'apiIndex'])->name('index');
+        Route::get('/{id}', [JobRequestController::class, 'apiShow'])->name('show');
+        
+        // CRUD
+        Route::middleware(['role:seeker'])->group(function () {
+            Route::get('/my/list', [JobRequestController::class, 'apiMyRequests'])->name('my-requests');
+            Route::post('/', [JobRequestController::class, 'apiStore'])->name('store');
+            Route::put('/{job_request}', [JobRequestController::class, 'apiUpdate'])->name('update');
+            Route::delete('/{job_request}', [JobRequestController::class, 'apiDestroy'])->name('destroy');
+        });
+    });
+
 });
 
 /*

@@ -7,7 +7,7 @@ namespace App\DataTransferObjects\Service;
 use App\Models\Service;
 use App\Enums\Service\ServicePriceTypeEnum;
 
-class CreateServiceRequestData
+class SaveServiceRequestData
 {
     public int $userId;
     public int $categoryId;

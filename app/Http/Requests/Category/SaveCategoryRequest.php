@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Category;
 
-use App\DataTransferObjects\Category\CreateCategoryRequestData;
+use App\DataTransferObjects\Category\SaveCategoryRequestData;
 use App\Helpers\ValidationRuleHelper;
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-class CreateCategoryRequest extends FormRequest
+class SaveCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -55,9 +55,9 @@ class CreateCategoryRequest extends FormRequest
         ];
     }
 
-    public function toDTO(): CreateCategoryRequestData
+    public function toDTO(): SaveCategoryRequestData
     {
-        $dto = new CreateCategoryRequestData();
+        $dto = new SaveCategoryRequestData();
         
         $dto->name = $this->validated(Category::NAME);
         $dto->slug = $this->validated(Category::SLUG);
