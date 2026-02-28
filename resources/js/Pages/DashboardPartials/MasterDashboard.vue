@@ -1,31 +1,52 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+
+defineProps<{
+    stats?: { // <-- Šeit pielikta jautājuma zīme (stats var būt undefined)
+        total_services?: number;
+        active_applications?: number;
+    }
+}>();
 </script>
 
 <template>
-    <div class="space-y-6">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-600">
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Sveiks, Meistar!</h3>
-            <p class="text-sm text-gray-500 mb-4">Pārvaldi savu profilu, pakalpojumus un apskati jaunākos darba pieprasījumus savā apkārtnē.</p>
-            <div class="flex gap-4">
-                <PrimaryButton class="bg-blue-600 hover:bg-blue-700">
-                    Meklēt darbus
-                </PrimaryButton>
-                <button class="px-4 py-2 border border-gray-300 rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
-                    Rediģēt profilu
-                </button>
+    <div>
+        <h3 class="text-lg font-bold text-gray-900 mb-6">Meistara Panelis</h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-100 flex flex-col justify-between">
+                <div>
+                    <div class="text-sm font-medium text-gray-500 mb-1">Pievienotie Pakalpojumi</div>
+                    <div class="text-3xl font-extrabold text-navy">
+                        {{ stats?.total_services ?? 0 }}
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <Link :href="route('master.services.index')">
+                        <PrimaryButton>Pārvaldīt pakalpojumus</PrimaryButton>
+                    </Link>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-100 flex flex-col justify-between">
+                <div>
+                    <div class="text-sm font-medium text-gray-500 mb-1">Aktīvie Darba Pieteikumi</div>
+                    <div class="text-3xl font-extrabold text-indigo-600">
+                        {{ stats?.active_applications ?? 0 }}
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <Link :href="'#'">
+                        <PrimaryButton class="bg-indigo-600 hover:bg-indigo-700">Apskatīt pieteikumus</PrimaryButton>
+                    </Link>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                <h4 class="font-semibold text-gray-700 mb-2">Mani pieteikumi</h4>
-                <p class="text-sm text-gray-500">Nav aktīvu pieteikumu.</p>
-            </div>
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                <h4 class="font-semibold text-gray-700 mb-2">Jauni ziņojumi</h4>
-                <p class="text-sm text-gray-500">Tev nav jaunu ziņojumu.</p>
-            </div>
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-100">
+            <h4 class="text-md font-bold text-gray-800 mb-4">Pēdējās aktivitātes</h4>
+            <p class="text-sm text-gray-500">Pagaidām šeit ir kluss. Izveidojiet pakalpojumus un piesakieties darbiem, lai sāktu!</p>
         </div>
     </div>
 </template>

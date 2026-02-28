@@ -19,9 +19,18 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ResetPasswordRequestData::TOKEN => [Rules::REQUIRED],
-            ResetPasswordRequestData::EMAIL => [Rules::REQUIRED, Rules::EMAIL],
-            ResetPasswordRequestData::PASSWORD => [Rules::REQUIRED, Rules::CONFIRMED, Password::defaults()],
+            ResetPasswordRequestData::TOKEN => [
+                Rules::REQUIRED
+            ],
+            ResetPasswordRequestData::EMAIL => [
+                Rules::REQUIRED, 
+                Rules::EMAIL
+            ],
+            ResetPasswordRequestData::PASSWORD => [
+                Rules::REQUIRED, 
+                Rules::CONFIRMED, 
+                Password::defaults()
+            ],
         ];
     }
 

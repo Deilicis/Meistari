@@ -26,30 +26,62 @@ class UpdateProfileRequest extends FormRequest
         $isCompany = $user->profile->getType() === ProfileTypeEnum::COMPANY;
 
         return [
-            UpdateProfileRequestData::NAME => [Rules::REQUIRED, Rules::STRING, Rules::MAX_255],
+            UpdateProfileRequestData::NAME => [
+                Rules::REQUIRED,
+                Rules::STRING,
+                Rules::MAX_255
+            ],
             UpdateProfileRequestData::EMAIL => [
-                Rules::REQUIRED, Rules::STRING, Rules::LOWERCASE, Rules::EMAIL, Rules::MAX_255,
+                Rules::REQUIRED,
+                Rules::STRING,
+                Rules::LOWERCASE,
+                Rules::EMAIL,
+                Rules::MAX_255,
                 Rule::unique(User::TABLE, User::EMAIL)->ignore($user->getId()),
             ],
-            UpdateProfileRequestData::CITY => [Rules::REQUIRED, Rules::STRING, Rules::MAX_255],
-            UpdateProfileRequestData::PHONE => [Rules::NULLABLE, Rules::STRING, Rules::MAX_255],
-            UpdateProfileRequestData::BIO => [Rules::NULLABLE, Rules::STRING],
-
+            UpdateProfileRequestData::CITY => [
+                Rules::REQUIRED,
+                Rules::STRING,
+                Rules::MAX_255
+            ],
+            UpdateProfileRequestData::PHONE => [
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
+            ],
+            UpdateProfileRequestData::BIO => [
+                Rules::NULLABLE, 
+                Rules::STRING
+            ],
             UpdateProfileRequestData::FIRST_NAME => [
-                Rule::requiredIf($isIndividual), Rules::NULLABLE, Rules::STRING, Rules::MAX_255
+                Rule::requiredIf($isIndividual),
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
             ],
             UpdateProfileRequestData::LAST_NAME => [
-                Rule::requiredIf($isIndividual), Rules::NULLABLE, Rules::STRING, Rules::MAX_255
+                Rule::requiredIf($isIndividual),
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
             ],
 
             UpdateProfileRequestData::COMPANY_NAME => [
-                Rule::requiredIf($isCompany), Rules::NULLABLE, Rules::STRING, Rules::MAX_255
+                Rule::requiredIf($isCompany),
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
             ],
             UpdateProfileRequestData::REG_NUMBER => [
-                Rule::requiredIf($isCompany), Rules::NULLABLE, Rules::STRING, Rules::MAX_255
+                Rule::requiredIf($isCompany),
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
             ],
             UpdateProfileRequestData::VAT_NUMBER => [
-                Rules::NULLABLE, Rules::STRING, Rules::MAX_255
+                Rules::NULLABLE,
+                Rules::STRING,
+                Rules::MAX_255
             ],
         ];
     }

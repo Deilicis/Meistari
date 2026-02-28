@@ -18,9 +18,18 @@ class LoginUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            LoginUserRequestData::EMAIL => [Rules::REQUIRED, Rules::STRING, Rules::EMAIL],
-            LoginUserRequestData::PASSWORD => [Rules::REQUIRED, Rules::STRING],
-            LoginUserRequestData::REMEMBER => [Rules::BOOLEAN],
+            LoginUserRequestData::EMAIL => [
+                Rules::REQUIRED, 
+                Rules::STRING, 
+                Rules::EMAIL
+            ],
+            LoginUserRequestData::PASSWORD => [
+                Rules::REQUIRED, 
+                Rules::STRING
+            ],
+            LoginUserRequestData::REMEMBER => [
+                Rules::BOOLEAN
+            ],
         ];
     }
 

@@ -24,7 +24,7 @@ class ServiceResource extends JsonResource
             Service::PRICE_TYPE => $this->getPriceType()->value,
             Service::LOCATION => $this->getLocation(),
             Service::IS_ACTIVE => $this->getIsActive(),
-            Service::CREATED_AT => $this->getCreatedAt()
+            Service::CREATED_AT => $this->getCreatedAt(),
             'category' => new CategoryResource($this->whenLoaded('category')),
 
         ];

@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Category;
 
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Http\Controllers\Controller;
 use App\Services\Repositories\Category\CategoryLogicRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

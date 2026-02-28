@@ -18,7 +18,10 @@ class ConfirmPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ConfirmPasswordRequestData::PASSWORD => [Rules::REQUIRED, Rules::STRING],
+            ConfirmPasswordRequestData::PASSWORD => [
+                Rules::REQUIRED, 
+                Rules::STRING
+            ],
         ];
     }
 

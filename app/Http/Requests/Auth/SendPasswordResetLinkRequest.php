@@ -18,7 +18,10 @@ class SendPasswordResetLinkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            SendPasswordResetLinkRequestData::EMAIL => [Rules::REQUIRED, Rules::EMAIL],
+            SendPasswordResetLinkRequestData::EMAIL => [
+                Rules::REQUIRED, 
+                Rules::EMAIL
+            ],
         ];
     }
 

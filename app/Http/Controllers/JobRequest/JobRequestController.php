@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\JobRequest;
 
 use App\Http\Requests\JobRequest\SaveJobRequest;
 use App\Http\Resources\JobRequestResource;
 use App\Models\JobRequest;
+use App\Http\Controllers\Controller;
 use App\Services\Repositories\JobRequest\JobRequestLogicRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

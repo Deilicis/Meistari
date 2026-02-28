@@ -18,7 +18,10 @@ class DeleteAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            DeleteAccountRequestData::PASSWORD => [Rules::REQUIRED, 'current_password'],
+            DeleteAccountRequestData::PASSWORD => [
+                Rules::REQUIRED,
+                'current_password'
+            ],
         ];
     }
 
