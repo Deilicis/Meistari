@@ -27,7 +27,7 @@ class ServiceFactory extends Factory
             Service::DESCRIPTION => fake()->realText(300),
             Service::PRICE => fake()->randomFloat(2, 15, 200),
             Service::PRICE_TYPE => fake()->randomElement(ServicePriceTypeEnum::cases()),
-            Service::LOCATION => fake()->city(),
+            Service::LOCATION => [fake()->city()],
             Service::IS_ACTIVE => fake()->boolean(90),
         ];
     }

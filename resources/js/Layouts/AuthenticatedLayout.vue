@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
+import Dropdown from '@/Components/Form/Dropdown.vue';
+import DropdownLink from '@/Components/Link/DropdownLink.vue';
+import NavLink from '@/Components/Link/NavLink.vue';
+import ResponsiveNavLink from '@/Components/Link/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { Toaster, toast } from 'vue-sonner';
 
@@ -52,7 +52,7 @@ const isSeeker = computed(() => user.value?.roles.includes('seeker') ?? false);
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-50 font-sans">
+        <div class="min-h-screen bg-slate-200 font-sans">
             
             <nav class="bg-white border-b border-gray-100 shadow-sm relative z-20">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

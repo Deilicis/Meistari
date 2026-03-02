@@ -21,9 +21,9 @@ class ServiceLogicRepository
         return $this->dbRepository->getPaginated();
     }
 
-    public function getUserServices(int $userId): Collection
+    public function getUserServices(int $userId, array $filters = [])
     {
-        return $this->dbRepository->getByUserId($userId);
+        return $this->dbRepository->getUserServices($userId, $filters);
     }
 
     public function getServiceById(int $id): Service

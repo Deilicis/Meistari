@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import AuthLayout from '@/Layouts/AuthLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import FormField from '@/Components/FormField.vue';
+import InputError from '@/Components/Form/InputError.vue';
+import InputLabel from '@/Components/Form/InputLabel.vue';
+import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
+import FormField from '@/Components/Form/FormField.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 type EnumOption = string | { name: string; value: string };

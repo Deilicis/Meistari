@@ -31,6 +31,7 @@ class Service extends Model
     public const DELETED_AT = 'deleted_at';
     private const DECIMAL = 'decimal:2';
     private const BOOLEAN = 'boolean';
+    private const ARRAY_CAST = 'array';
 
     protected $table = self::TABLE;
 
@@ -50,6 +51,7 @@ class Service extends Model
         self::PRICE => self::DECIMAL,
         self::PRICE_TYPE => ServicePriceTypeEnum::class,
         self::IS_ACTIVE => self::BOOLEAN,
+        self::LOCATION => self::ARRAY_CAST,
     ];
 
     public function getId(): int
@@ -94,9 +96,9 @@ class Service extends Model
         return $this->getAttribute(self::PRICE_TYPE);
     }
 
-    public function getLocation(): string
+    public function getLocation(): array
     {
-        return $this->getAttribute(self::LOCATION);
+        return $this->getAttribute(self::LOCATION) ?? [];
     }
 
     public function getIsActive(): bool

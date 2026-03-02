@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Modal from '@/Components/Common/Modal.vue';
+import SecondaryButton from '@/Components/Form/SecondaryButton.vue';
 
 defineProps<{
     show: boolean;

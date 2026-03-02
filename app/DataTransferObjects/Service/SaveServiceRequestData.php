@@ -16,7 +16,7 @@ class SaveServiceRequestData
     public string $description;
     public ?float $price = null;
     public ServicePriceTypeEnum $priceType;
-    public string $location;
+    public array $location;
     public bool $isActive;
 
     public function toArray(): array

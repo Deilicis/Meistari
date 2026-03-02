@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import TagLink from '@/Components/TagLink.vue';
-import TextLink from '@/Components/TextLink.vue';
+import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
+import TagLink from '@/Components/Tag/TagLink.vue';
+import TextLink from '@/Components/Link/TextLink.vue';
 
 defineProps<{
     canLogin?: boolean;

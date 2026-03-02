@@ -1,19 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import ServiceModal from '@/Pages/Master/Services/ServiceModal.vue';
-import ConfirmationModal from '@/Components/ConfirmationModal.vue';
+import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
+import ServiceModal from '@/Components/Services/ServiceModal.vue';
+import ConfirmationModal from '@/Components/Common/ConfirmationModal.vue';
+import ServiceCard from '@/Components/Services/ServiceCard.vue';
+import MyServicesSearchBar from '@/Components/Search/MyServicesSearchBar.vue';
 
 const props = defineProps<{
     services: { data: any[] };
     categories: any[];
+    filters?: any;
 }>();
+
+const filterForm = ref({
+    search: props.filters?.search ?? '',
+    category_id: props.filters?.category_id ?? '',
+    is_active: props.filters?.is_active ?? '',
+    price_min: props.filters?.price_min ?? '',
+    price_max: props.filters?.price_max ?? '',
+});
+
+let searchTimeout: ReturnType<typeof setTimeout>;
+
+watch(filterForm, (newFilters) => {
+    clearTimeout(searchTimeout);
+    
+    searchTimeout = setTimeout(() => {
+        router.get(route('master.services.index'), newFilters, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true
+        });
+    }, 300);
+}, { deep: true });
 
 const isServiceModalOpen = ref(false);
 const serviceToEdit = ref<any | null>(null);
@@ -53,6 +76,16 @@ const executeDelete = async () => {
         serviceToDelete.value = null;
     }
 };
+
+const clearFilters = () => {
+    filterForm.value = {
+        search: '',
+        category_id: '',
+        is_active: '',
+        price_min: '',
+        price_max: '',
+    };
+};
 </script>
 
 <template>
@@ -70,40 +103,33 @@ const executeDelete = async () => {
             </div>
         </template>
 
-        <div class="py-12">
+        <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 
+                <MyServicesSearchBar 
+                    v-model="filterForm" 
+                    :categories="categories" 
+                />
+
                 <div v-if="!props.services.data || props.services.data.length === 0" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-10 text-center border-2 border-dashed border-gray-200">
-                    <p class="text-gray-500 mb-4">Tev vēl nav pievienots neviens pakalpojums.</p>
-                    <PrimaryButton @click="openCreateModal">Izveidot pirmo pakalpojumu</PrimaryButton>
+                    <p class="text-gray-500 mb-4">Nav atrasts neviens pakalpojums, kas atbilstu kritērijiem.</p>
+                    
+                    <PrimaryButton v-if="Object.values(filterForm).some(x => x !== '')" @click="clearFilters">
+                        Notīrīt filtrus
+                    </PrimaryButton>
+                    <PrimaryButton v-else @click="openCreateModal">
+                        Izveidot pirmo pakalpojumu
+                    </PrimaryButton>
                 </div>
 
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div v-for="service in props.services.data" :key="service.id" class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex flex-col hover:shadow-md transition">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="service.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                                {{ service.is_active ? 'Aktīvs' : 'Neaktīvs' }}
-                            </span>
-                            <span class="text-lg font-bold text-gray-900">{{ service.price ? service.price + ' €' : 'Vienojoties' }}</span>
-                        </div>
-                        
-                        <h3 class="text-lg font-bold text-gray-900 mb-2 truncate">{{ service.title }}</h3>
-                        <p class="text-sm text-gray-600 mb-4 line-clamp-3 flex-grow">{{ service.description }}</p>
-                        
-                        <div class="flex items-center gap-2 text-xs text-gray-500 mb-6">
-                            <span>📂 {{ service.category?.name || 'Nav kategorijas' }}</span>
-                            <span>📍 {{ service.location }}</span>
-                        </div>
-                        
-                        <div class="flex gap-2 mt-auto border-t pt-4">
-                            <SecondaryButton @click="openEditModal(service)" class="flex-1 justify-center">
-                                Rediģēt
-                            </SecondaryButton>
-                            <DangerButton @click="confirmDelete(service.id)" class="px-3">
-                                Dzēst
-                            </DangerButton>
-                        </div>
-                    </div>
+                    <ServiceCard 
+                        v-for="service in props.services.data" 
+                        :key="service.id" 
+                        :service="service"
+                        @edit="openEditModal"
+                        @delete="confirmDelete"
+                    />
                 </div>
 
             </div>

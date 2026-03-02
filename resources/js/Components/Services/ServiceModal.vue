@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import axios from 'axios';
-import { toast } from 'vue-sonner'; //
-import Modal from '@/Components/Modal.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { toast } from 'vue-sonner';
+import Modal from '@/Components/Common/Modal.vue';
+import TextInput from '@/Components/Form/TextInput.vue';
+import InputLabel from '@/Components/Form/InputLabel.vue';
+import InputError from '@/Components/Form/InputError.vue';
+import Checkbox from '@/Components/Form/Checkbox.vue';
+import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
+import SecondaryButton from '@/Components/Form/SecondaryButton.vue';
+import TagInput from '@/Components/Tag/TagInput.vue';
 
 const props = defineProps<{
     show: boolean;
@@ -28,7 +29,7 @@ const form = ref({
     description: '',
     price: '' as number | string,
     price_type: 'fixed',
-    location: '',
+    location: [] as string[],
     is_active: true,
 });
 
@@ -43,7 +44,7 @@ watch(() => props.show, (isOpen) => {
                 description: props.service.description,
                 price: props.service.price || '',
                 price_type: props.service.price_type,
-                location: props.service.location,
+                location: Array.isArray(props.service.location) ? props.service.location : [],
                 is_active: props.service.is_active,
             };
         } else {
@@ -54,7 +55,7 @@ watch(() => props.show, (isOpen) => {
                 description: '',
                 price: '',
                 price_type: 'fixed',
-                location: '',
+                location: [],
                 is_active: true,
             };
         }
@@ -137,9 +138,13 @@ const save = async () => {
                 </div>
 
                 <div>
-                    <InputLabel for="location" value="Lokācija (Pilsēta/Novads)" />
-                    <TextInput id="location" v-model="form.location" type="text" class="mt-1 block w-full" placeholder="Piem., Rīga" />
-                    <InputError class="mt-2" :message="validationErrors.location?.[0]" />
+                    <InputLabel value="Lokācijas (Pilsētas vai 'Attālināti')" />
+                    <TagInput 
+                        v-model="form.location" 
+                        placeholder="Piem., Rīga, visa Latvija..." 
+                        :maxTags="10" 
+                    />
+                    <InputError class="mt-2" :message="validationErrors.location?.[0] || validationErrors['location.0']?.[0]" />
                 </div>
 
                 <div class="block mt-4">

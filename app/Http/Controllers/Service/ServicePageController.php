@@ -22,11 +22,14 @@ class ServicePageController extends Controller
 
     public function index(Request $request): Response
     {
-        $services = $this->serviceLogicRepo->getUserServices($request->user()->id);
+        $filters = $request->only(['search', 'category_id', 'is_active', 'price_min', 'price_max']);
+
+        $services = $this->serviceLogicRepo->getUserServices($request->user()->id, $filters);
         
         return Inertia::render('Master/Services/MyServices', [
             'services' => ServiceResource::collection($services),
-            'categories' => $this->categoryLogicRepo->getFlatCategories()
+            'categories' => $this->categoryLogicRepo->getFlatCategories(),
+            'filters' => $filters,
         ]);
     }
 }

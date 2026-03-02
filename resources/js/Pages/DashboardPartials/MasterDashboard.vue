@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 
 defineProps<{
-    stats?: { // <-- Šeit pielikta jautājuma zīme (stats var būt undefined)
+    stats?: {
         total_services?: number;
         active_applications?: number;
     }

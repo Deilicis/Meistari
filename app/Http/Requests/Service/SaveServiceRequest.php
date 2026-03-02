@@ -62,7 +62,7 @@ class SaveServiceRequest extends FormRequest
             ],
             Service::PRICE => [
                 ValidationRuleHelper::NULLABLE,
-                'numeric',
+                ValidationRuleHelper::NUMERIC,
                 'min:0'
             ],
             Service::PRICE_TYPE => [
@@ -71,6 +71,11 @@ class SaveServiceRequest extends FormRequest
             ],
             Service::LOCATION => [
                 ValidationRuleHelper::REQUIRED,
+                'array',
+                'min:1',
+                'max:10'
+            ],
+            Service::LOCATION . '.*' => [
                 ValidationRuleHelper::STRING,
                 ValidationRuleHelper::MAX_255
             ],

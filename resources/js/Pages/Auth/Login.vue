@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Checkbox from '@/Components/Checkbox.vue';
+import Checkbox from '@/Components/Form/Checkbox.vue';
 import AuthLayout from '@/Layouts/AuthLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/Form/InputError.vue';
+import InputLabel from '@/Components/Form/InputLabel.vue';
+import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
+import TextInput from '@/Components/Form/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 defineProps<{
@@ -46,7 +46,6 @@ const submit = () => {
                     type="email"
                     class="mt-1 block w-full"
                     v-model="form.email"
-                    required
                     autofocus
                     autocomplete="username"
                     placeholder="tavs@epasts.lv"
@@ -70,7 +69,6 @@ const submit = () => {
                     type="password"
                     class="block w-full"
                     v-model="form.password"
-                    required
                     autocomplete="current-password"
                 />
                 <InputError class="mt-1" :message="form.errors.password" />
