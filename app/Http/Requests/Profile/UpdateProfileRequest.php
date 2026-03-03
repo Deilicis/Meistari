@@ -6,13 +6,15 @@ namespace App\Http\Requests\Profile;
 
 use App\DataTransferObjects\Profile\UpdateProfileRequestData;
 use App\Enums\Profile\ProfileTypeEnum;
-use App\Helpers\ValidationRuleHelper as Rules;
-use App\Models\User;
+use App\Helpers\ValidationRuleHelper;
+use App\Models\Profile;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateProfileRequest extends FormRequest
 {
+    public const IMAGES_TO_DELETE = 'images_to_delete';
+
     public function authorize(): bool
     {
         return true;
@@ -20,85 +22,70 @@ class UpdateProfileRequest extends FormRequest
 
     public function rules(): array
     {
-        /** @var \App\Models\User $user */
-        $user = $this->user();
-        $isIndividual = $user->profile->getType() === ProfileTypeEnum::INDIVIDUAL;
-        $isCompany = $user->profile->getType() === ProfileTypeEnum::COMPANY;
-
         return [
-            UpdateProfileRequestData::NAME => [
-                Rules::REQUIRED,
-                Rules::STRING,
-                Rules::MAX_255
+            Profile::TYPE => [
+                ValidationRuleHelper::REQUIRED,
+                Rule::enum(ProfileTypeEnum::class)
             ],
-            UpdateProfileRequestData::EMAIL => [
-                Rules::REQUIRED,
-                Rules::STRING,
-                Rules::LOWERCASE,
-                Rules::EMAIL,
-                Rules::MAX_255,
-                Rule::unique(User::TABLE, User::EMAIL)->ignore($user->getId()),
+            Profile::PHONE => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::STRING,
+                ValidationRuleHelper::MAX_255
             ],
-            UpdateProfileRequestData::CITY => [
-                Rules::REQUIRED,
-                Rules::STRING,
-                Rules::MAX_255
+            Profile::BIO => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::STRING
             ],
-            UpdateProfileRequestData::PHONE => [
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
+            
+            Profile::AVATAR => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::IMAGE,
+                ValidationRuleHelper::MIMES . ':jpeg,png,jpg,webp',
+                ValidationRuleHelper::MAX . ':2048'
             ],
-            UpdateProfileRequestData::BIO => [
-                Rules::NULLABLE, 
-                Rules::STRING
+            Profile::EXPERIENCE_YEARS => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::INTEGER,
+                ValidationRuleHelper::MIN . ':0',
+                ValidationRuleHelper::MAX . ':70'
             ],
-            UpdateProfileRequestData::FIRST_NAME => [
-                Rule::requiredIf($isIndividual),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
+            Profile::PORTFOLIO_IMAGES => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::ARRAY_RULE,
+                ValidationRuleHelper::MAX . ':10'
             ],
-            UpdateProfileRequestData::LAST_NAME => [
-                Rule::requiredIf($isIndividual),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
+            Profile::PORTFOLIO_IMAGES . '.*' => [
+                ValidationRuleHelper::IMAGE,
+                ValidationRuleHelper::MIMES . ':jpeg,png,jpg,webp',
+                ValidationRuleHelper::MAX . ':5120'
             ],
-
-            UpdateProfileRequestData::COMPANY_NAME => [
-                Rule::requiredIf($isCompany),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
+            self::IMAGES_TO_DELETE => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::ARRAY_RULE
             ],
-            UpdateProfileRequestData::REG_NUMBER => [
-                Rule::requiredIf($isCompany),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
-            ],
-            UpdateProfileRequestData::VAT_NUMBER => [
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255
-            ],
+            self::IMAGES_TO_DELETE . '.*' => [
+                ValidationRuleHelper::STRING
+            ]
         ];
     }
 
     public function toDTO(): UpdateProfileRequestData
     {
-        return UpdateProfileRequestData::from([
-            UpdateProfileRequestData::NAME => $this->input(UpdateProfileRequestData::NAME),
-            UpdateProfileRequestData::EMAIL => $this->input(UpdateProfileRequestData::EMAIL),
-            UpdateProfileRequestData::CITY => $this->input(UpdateProfileRequestData::CITY),
-            UpdateProfileRequestData::FIRST_NAME => $this->input(UpdateProfileRequestData::FIRST_NAME),
-            UpdateProfileRequestData::LAST_NAME => $this->input(UpdateProfileRequestData::LAST_NAME),
-            UpdateProfileRequestData::COMPANY_NAME => $this->input(UpdateProfileRequestData::COMPANY_NAME),
-            UpdateProfileRequestData::REG_NUMBER => $this->input(UpdateProfileRequestData::REG_NUMBER),
-            UpdateProfileRequestData::VAT_NUMBER => $this->input(UpdateProfileRequestData::VAT_NUMBER),
-            UpdateProfileRequestData::PHONE => $this->input(UpdateProfileRequestData::PHONE),
-            UpdateProfileRequestData::BIO => $this->input(UpdateProfileRequestData::BIO),
-        ]);
+        $dto = new UpdateProfileRequestData();
+        
+        $dto->userId = $this->user()->id;
+        $dto->type = ProfileTypeEnum::from($this->validated(Profile::TYPE));
+        $dto->phoneNumber = $this->validated(Profile::PHONE);
+        $dto->description = $this->validated(Profile::BIO);
+        
+        $dto->avatar = $this->file(Profile::AVATAR);
+        
+        $experience = $this->validated(Profile::EXPERIENCE_YEARS);
+        $dto->experienceYears = $experience !== null ? (int) $experience : null;
+        
+        $dto->portfolioImages = $this->file(Profile::PORTFOLIO_IMAGES) ?? [];
+        $dto->imagesToDelete = $this->validated(self::IMAGES_TO_DELETE) ?? [];
+
+        return $dto;
     }
 }

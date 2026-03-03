@@ -14,6 +14,7 @@ class ValidationRuleHelper
     public const CONFIRMED = 'confirmed';
     public const MAX_255 = 'max:255';
     public const BOOLEAN = 'boolean';
+    public const ARRAY_RULE = 'array';
     public const CURRENT_PASSWORD = 'current_password';
     public const INTEGER = 'integer';
     public const UNIQUE = 'unique';

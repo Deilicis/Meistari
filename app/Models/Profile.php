@@ -27,9 +27,14 @@ class Profile extends Model
     public const PHONE = 'phone';
     public const BIO = 'bio';
     public const IS_VERIFIED = 'is_verified';
+    public const AVATAR = 'avatar';
+    public const EXPERIENCE_YEARS = 'experience_years';
+    public const PORTFOLIO_IMAGES = 'portfolio_images';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     private const BOOLEAN = 'boolean';
+
+    private const ARRAY_CAST = 'array';
 
     protected $table = self::TABLE;
 
@@ -50,6 +55,7 @@ class Profile extends Model
     protected $casts = [
         self::TYPE => ProfileTypeEnum::class,
         self::IS_VERIFIED => self::BOOLEAN,
+        self::PORTFOLIO_IMAGES => self::ARRAY_CAST,
     ];
 
     public function getId(): int
@@ -120,6 +126,21 @@ class Profile extends Model
     public function getUpdatedAt(): ?Carbon
     {
         return $this->getAttribute(self::UPDATED_AT);
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->getAttribute(self::AVATAR);
+    }
+
+    public function getExperienceYears(): ?int
+    {
+        return $this->getAttribute(self::EXPERIENCE_YEARS);
+    }
+
+    public function getPortfolioImages(): array
+    {
+        return $this->getAttribute(self::PORTFOLIO_IMAGES) ?? [];
     }
 
     public function user(): BelongsTo
