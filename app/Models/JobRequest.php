@@ -20,37 +20,38 @@ class JobRequest extends Model
     public const ID = 'id';
     public const USER_ID = 'user_id';
     public const CATEGORY_ID = 'category_id';
-    public const TITLE = 'title';
     public const SLUG = 'slug';
+    public const TITLE = 'title';
     public const DESCRIPTION = 'description';
     public const BUDGET = 'budget';
-    public const LOCATION = 'location';
     public const DEADLINE = 'deadline';
+    public const LOCATION = 'location';
+    public const IMAGES = 'images';
     public const STATUS = 'status';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';
-    private const DECIMAL = 'decimal:2';
-    private const DATE = 'date';
+    private const ARRAY_CAST = 'array';
 
     protected $table = self::TABLE;
 
     protected $fillable = [
         self::USER_ID,
         self::CATEGORY_ID,
-        self::TITLE,
         self::SLUG,
+        self::TITLE,
         self::DESCRIPTION,
         self::BUDGET,
-        self::LOCATION,
         self::DEADLINE,
+        self::LOCATION,
+        self::IMAGES,
         self::STATUS,
     ];
 
     protected $casts = [
         self::STATUS => JobStatusEnum::class,
-        self::BUDGET => self::DECIMAL,
-        self::DEADLINE => self::DATE,
+        self::LOCATION => self::ARRAY_CAST,
+        self::IMAGES => self::ARRAY_CAST,
     ];
 
     public function getId(): int
@@ -73,11 +74,6 @@ class JobRequest extends Model
         return $this->getAttribute(self::TITLE);
     }
 
-    public function getSlug(): string
-    {
-        return $this->getAttribute(self::SLUG);
-    }
-
     public function getDescription(): string
     {
         return $this->getAttribute(self::DESCRIPTION);
@@ -85,17 +81,21 @@ class JobRequest extends Model
 
     public function getBudget(): ?float
     {
-        return $this->getAttribute(self::BUDGET) !== null 
-            ? (float) $this->getAttribute(self::BUDGET) 
-            : null;
+        $budget = $this->getAttribute(self::BUDGET);
+        return $budget !== null ? (float) $budget : null;
     }
 
-    public function getLocation(): string
+    public function getLocation(): array
     {
-        return $this->getAttribute(self::LOCATION);
+        return $this->getAttribute(self::LOCATION) ?? [];
     }
 
-    public function getDeadline(): ?Carbon
+    public function getLocationAsString(): string
+    {
+        return implode(', ', $this->getLocation());
+    }
+
+    public function getDeadline(): ?string
     {
         return $this->getAttribute(self::DEADLINE);
     }
@@ -120,19 +120,24 @@ class JobRequest extends Model
         return $this->getAttribute(self::DELETED_AT);
     }
 
+    public function getImages(): array
+    {
+        return $this->getAttribute(self::IMAGES) ?? [];
+    }
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, self::USER_ID, User::ID);
+        return $this->belongsTo(User::class);
     }
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, self::CATEGORY_ID, Category::ID);
+        return $this->belongsTo(Category::class);
     }
-
+    
     public function applications(): HasMany
     {
-        return $this->hasMany(Application::class, Application::JOB_REQUEST_ID, self::ID);
+        return $this->hasMany(Application::class);
     }
 
     public function reviews(): HasMany

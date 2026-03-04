@@ -8,6 +8,9 @@ use App\DataTransferObjects\JobRequest\SaveJobRequestData;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class JobRequestLogicRepository
 {
@@ -33,21 +36,74 @@ class JobRequestLogicRepository
 
     public function createJobRequest(SaveJobRequestData $dto): JobRequest
     {
-        return $this->dbRepository->create($dto->toArray());
+        $images = [];
+
+        if (!empty($dto->images)) {
+            foreach ($dto->images as $image) {
+                if ($image instanceof UploadedFile) {
+                    $images[] = $image->store('job-requests', 'public');
+                }
+            }
+        }
+
+        $slug = Str::slug($dto->title) . '-' . uniqid();
+
+        $dataToSave = [
+            JobRequest::USER_ID => $dto->userId,
+            JobRequest::CATEGORY_ID => $dto->categoryId,
+            JobRequest::SLUG => $slug,
+            JobRequest::TITLE => $dto->title,
+            JobRequest::DESCRIPTION => $dto->description,
+            JobRequest::STATUS => $dto->status->value,
+            JobRequest::BUDGET => $dto->budget,
+            JobRequest::DEADLINE => $dto->deadline,
+            JobRequest::LOCATION => $dto->location,
+            JobRequest::IMAGES => $images,
+        ];
+
+        return $this->dbRepository->create($dataToSave);
     }
 
     public function updateJobRequest(JobRequest $jobRequest, SaveJobRequestData $dto, int $currentUserId): bool
     {
-        if ($jobRequest->user_id !== $currentUserId) {
+        if ($jobRequest->getUserId() !== $currentUserId) {
             abort(403, 'Jums nav tiesību rediģēt šo darba sludinājumu.');
         }
 
-        return $this->dbRepository->update($jobRequest, $dto->toArray());
+        $images = $jobRequest->getImages();
+
+        if (!empty($dto->imagesToDelete)) {
+            foreach ($dto->imagesToDelete as $path) {
+                Storage::disk('public')->delete($path);
+                $images = array_filter($images, fn($p) => $p !== $path);
+            }
+            $images = array_values($images);
+        }
+
+        if (!empty($dto->images)) {
+            foreach ($dto->images as $image) {
+                if ($image instanceof UploadedFile) {
+                    $images[] = $image->store('job-requests', 'public');
+                }
+            }
+        }
+
+        $dataToUpdate = [
+            JobRequest::CATEGORY_ID => $dto->categoryId,
+            JobRequest::TITLE => $dto->title,
+            JobRequest::DESCRIPTION => $dto->description,
+            JobRequest::BUDGET => $dto->budget,
+            JobRequest::DEADLINE => $dto->deadline,
+            JobRequest::LOCATION => $dto->location,
+            JobRequest::IMAGES => $images,
+        ];
+
+        return $this->dbRepository->update($jobRequest, $dataToUpdate);
     }
 
     public function deleteJobRequest(JobRequest $jobRequest, int $currentUserId): ?bool
     {
-        if ($jobRequest->user_id !== $currentUserId) {
+        if ($jobRequest->getUserId() !== $currentUserId) {
             abort(403, 'Jums nav tiesību dzēst šo darba sludinājumu.');
         }
 

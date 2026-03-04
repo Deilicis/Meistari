@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\JobRequest;
 
-use App\Http\Requests\JobRequest\SaveJobRequest;
-use App\Http\Resources\JobRequestResource;
-use App\Models\JobRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JobRequest\SaveJobRequest;
+use App\Models\JobRequest;
 use App\Services\Repositories\JobRequest\JobRequestLogicRepository;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class JobRequestController extends Controller
 {
@@ -19,54 +18,28 @@ class JobRequestController extends Controller
     ) {
     }
 
-    public function apiIndex(): JsonResponse
+    public function store(SaveJobRequest $request): RedirectResponse
     {
-        $jobs = $this->logicRepository->getPaginatedJobRequests();
-        
-        return JobRequestResource::collection($jobs)->response();
+        $this->logicRepository->createJobRequest($request->toDTO());
+
+        return redirect()->route('seeker.job-requests.index')->with('success', 'Darba sludinājums veiksmīgi izveidots!');
     }
 
-    public function apiMyRequests(Request $request): JsonResponse
+    public function update(SaveJobRequest $request, JobRequest $jobRequest): RedirectResponse
     {
-        $jobs = $this->logicRepository->getUserJobRequests($request->user()->id);
-        
-        return response()->json(JobRequestResource::collection($jobs));
+        $this->logicRepository->updateJobRequest(
+            $jobRequest, 
+            $request->toDTO(), 
+            Auth::id()
+        );
+
+        return back()->with('success', 'Sludinājums veiksmīgi atjaunināts!');
     }
 
-    public function apiShow(int $id): JsonResponse
+    public function destroy(JobRequest $jobRequest): RedirectResponse
     {
-        $job = $this->logicRepository->getJobRequestById($id);
-        
-        return response()->json(new JobRequestResource($job));
-    }
+        $this->logicRepository->deleteJobRequest($jobRequest, Auth::id());
 
-    public function apiStore(SaveJobRequest $request): JsonResponse
-    {
-        $job = $this->logicRepository->createJobRequest($request->toDTO());
-
-        return response()->json([
-            'message' => 'Darba sludinājums veiksmīgi publicēts!',
-            'data' => new JobRequestResource($job),
-        ], 201);
-    }
-
-    public function apiUpdate(SaveJobRequest $request, JobRequest $jobRequest): JsonResponse
-    {
-        $this->logicRepository->updateJobRequest($jobRequest, $request->toDTO(), $request->user()->id);
-        $jobRequest->refresh();
-
-        return response()->json([
-            'message' => 'Darba sludinājums veiksmīgi atjaunināts!',
-            'data' => new JobRequestResource($jobRequest),
-        ], 200);
-    }
-
-    public function apiDestroy(Request $request, JobRequest $jobRequest): JsonResponse
-    {
-        $this->logicRepository->deleteJobRequest($jobRequest, $request->user()->id);
-
-        return response()->json([
-            'message' => 'Darba sludinājums veiksmīgi izdzēsts!'
-        ], 200);
+        return back()->with('info', 'Sludinājums ir izdzēsts.');
     }
 }
