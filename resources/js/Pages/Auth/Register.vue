@@ -48,11 +48,6 @@ const form = useForm({
     profile_type: props.profileTypes && props.profileTypes.length > 0 
         ? getOptionValue(props.profileTypes[0]) 
         : 'individual',
-    city: '',
-    first_name: '',
-    last_name: '',
-    company_name: '',
-    reg_number: '',
 });
 
 const submit = () => {
@@ -71,7 +66,7 @@ const submit = () => {
             <p class="text-sm text-gray-500 mt-1">Pievienojies platformai un sāc darboties jau šodien.</p>
         </div>
 
-        <form @submit.prevent="submit" class="space-y-3.5">
+        <form @submit.prevent="submit" class="space-y-4">
             
             <div>
                 <div class="flex bg-gray-100 p-1 rounded-lg shadow-inner mb-1.5">
@@ -124,52 +119,28 @@ const submit = () => {
 
             <hr class="border-gray-100 my-2" />
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <FormField 
-                    id="name" 
-                    label="Lietotājvārds" 
-                    v-model="form.name" 
-                    :error="form.errors.name" 
-                    autofocus 
-                />
-                
-                <FormField 
-                    id="email" 
-                    type="email" 
-                    label="E-pasts" 
-                    v-model="form.email" 
-                    :error="form.errors.email" 
-                />
-            </div>
-
             <FormField 
-                id="city" 
-                label="Pilsēta" 
-                placeholder="Piemēram, Rīga" 
-                v-model="form.city" 
-                :error="form.errors.city" 
+                id="name" 
+                label="Vārds vai Uzņēmuma nosaukums" 
+                v-model="form.name" 
+                :error="form.errors.name" 
+                autofocus 
             />
-
-            <template v-if="String(form.profile_type).toLowerCase() === 'individual'">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in">
-                    <FormField id="first_name" label="Vārds" v-model="form.first_name" :error="form.errors.first_name" />
-                    <FormField id="last_name" label="Uzvārds" v-model="form.last_name" :error="form.errors.last_name" />
-                </div>
-            </template>
-
-            <template v-else>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 animate-fade-in">
-                    <FormField id="company_name" label="Uzņēmuma nosaukums" v-model="form.company_name" :error="form.errors.company_name" />
-                    <FormField id="reg_number" label="Reģistrācijas numurs" v-model="form.reg_number" :error="form.errors.reg_number" />
-                </div>
-            </template>
+            
+            <FormField 
+                id="email" 
+                type="email" 
+                label="E-pasts" 
+                v-model="form.email" 
+                :error="form.errors.email" 
+            />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <FormField id="password" type="password" label="Parole" v-model="form.password" :error="form.errors.password" />
                 <FormField id="password_confirmation" type="password" label="Apstiprināt paroli" v-model="form.password_confirmation" :error="form.errors.password_confirmation" />
             </div>
 
-            <div class="flex flex-col-reverse sm:flex-row items-center justify-between pt-2 gap-4">
+            <div class="flex flex-col-reverse sm:flex-row items-center justify-between pt-4 gap-4">
                 <Link :href="route('login')" class="text-sm text-navy hover:text-blue-700 font-semibold underline underline-offset-4">
                     Jau ir konts? Ienākt
                 </Link>
@@ -181,13 +152,3 @@ const submit = () => {
         </form>
     </AuthLayout>
 </template>
-
-<style scoped>
-.animate-fade-in {
-    animation: fadeIn 0.2s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-3px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>

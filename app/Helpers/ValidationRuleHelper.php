@@ -15,6 +15,10 @@ class ValidationRuleHelper
     public const MAX_255 = 'max:255';
     public const BOOLEAN = 'boolean';
     public const ARRAY_RULE = 'array';
+    public const IMAGE = 'image';
+    public const MIMES = 'mimes';
+    public const MAX = 'max';
+    public const MIN = 'min';
     public const CURRENT_PASSWORD = 'current_password';
     public const INTEGER = 'integer';
     public const UNIQUE = 'unique';

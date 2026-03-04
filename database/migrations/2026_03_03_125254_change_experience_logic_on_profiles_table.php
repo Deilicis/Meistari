@@ -10,27 +10,22 @@ return new class extends Migration
 {
     private const TABLE = 'profiles';
     private const AVATAR = 'avatar';
-    private const BIO = 'bio';
+    private const EXPERIENCES = 'experiences';
     private const EXPERIENCE_YEARS = 'experience_years';
-    private const PORTFOLIO_IMAGES = 'portfolio_images';
 
     public function up(): void
     {
         Schema::table(self::TABLE, function (Blueprint $table) {
-            $table->string(self::AVATAR)->nullable()->after(self::BIO);
-            $table->unsignedTinyInteger(self::EXPERIENCE_YEARS)->nullable()->after(self::AVATAR);
-            $table->json(self::PORTFOLIO_IMAGES)->nullable()->after(self::EXPERIENCE_YEARS);
+            $table->dropColumn(self::EXPERIENCE_YEARS);
+            $table->json(self::EXPERIENCES)->nullable()->after(self::AVATAR);
         });
     }
 
     public function down(): void
     {
         Schema::table(self::TABLE, function (Blueprint $table) {
-            $table->dropColumn([
-                self::AVATAR,
-                self::EXPERIENCE_YEARS,
-                self::PORTFOLIO_IMAGES
-            ]);
+            $table->dropColumn(self::EXPERIENCES);
+            $table->unsignedTinyInteger(self::EXPERIENCE_YEARS)->nullable()->after(self::AVATAR);
         });
     }
 };

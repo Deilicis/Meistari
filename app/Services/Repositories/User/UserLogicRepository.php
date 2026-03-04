@@ -35,12 +35,7 @@ class UserLogicRepository
 
             $this->userDbRepository->createProfile([
                 Profile::USER_ID => $user->getId(),
-                Profile::TYPE => $data->profile_type,
-                Profile::CITY => $data->city,
-                Profile::FIRST_NAME => $data->first_name,
-                Profile::LAST_NAME => $data->last_name,
-                Profile::COMPANY_NAME => $data->company_name,
-                Profile::REG_NUMBER => $data->reg_number,
+                Profile::TYPE => $data->profile_type->value,
             ]);
 
             event(new Registered($user));
@@ -50,6 +45,7 @@ class UserLogicRepository
             return $user;
         });
     }
+
     public function updatePassword(User $user, UpdatePasswordRequestData $data): void
     {
         $this->userDbRepository->update($user, [

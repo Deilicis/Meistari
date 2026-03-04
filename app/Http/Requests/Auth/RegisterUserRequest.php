@@ -24,10 +24,6 @@ class RegisterUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $profileType = $this->input(RegisterUserRequestData::PROFILE_TYPE);
-        $isIndividual = $profileType === ProfileTypeEnum::INDIVIDUAL->value;
-        $isCompany = $profileType === ProfileTypeEnum::COMPANY->value;
-
         return [
             RegisterUserRequestData::NAME => [
                 Rules::REQUIRED,
@@ -55,35 +51,6 @@ class RegisterUserRequest extends FormRequest
                 Rules::REQUIRED,
                 new Enum(ProfileTypeEnum::class),
             ],
-            RegisterUserRequestData::CITY => [
-                Rules::REQUIRED,
-                Rules::STRING,
-                Rules::MAX_255,
-            ],
-            RegisterUserRequestData::FIRST_NAME => [
-                Rule::requiredIf($isIndividual),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255,
-            ],
-            RegisterUserRequestData::LAST_NAME => [
-                Rule::requiredIf($isIndividual),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255,
-            ],
-            RegisterUserRequestData::COMPANY_NAME => [
-                Rule::requiredIf($isCompany),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255,
-            ],
-            RegisterUserRequestData::REG_NUMBER => [
-                Rule::requiredIf($isCompany),
-                Rules::NULLABLE,
-                Rules::STRING,
-                Rules::MAX_255,
-            ],
         ];
     }
 
@@ -95,11 +62,6 @@ class RegisterUserRequest extends FormRequest
             RegisterUserRequestData::PASSWORD => $this->input(RegisterUserRequestData::PASSWORD),
             RegisterUserRequestData::ROLE => RoleNameEnum::from($this->input(RegisterUserRequestData::ROLE)),
             RegisterUserRequestData::PROFILE_TYPE => ProfileTypeEnum::from($this->input(RegisterUserRequestData::PROFILE_TYPE)),
-            RegisterUserRequestData::CITY => $this->input(RegisterUserRequestData::CITY),
-            RegisterUserRequestData::FIRST_NAME => $this->input(RegisterUserRequestData::FIRST_NAME),
-            RegisterUserRequestData::LAST_NAME => $this->input(RegisterUserRequestData::LAST_NAME),
-            RegisterUserRequestData::COMPANY_NAME => $this->input(RegisterUserRequestData::COMPANY_NAME),
-            RegisterUserRequestData::REG_NUMBER => $this->input(RegisterUserRequestData::REG_NUMBER),
         ]);
     }
 

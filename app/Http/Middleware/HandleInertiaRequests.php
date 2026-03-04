@@ -7,42 +7,43 @@ use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that is loaded on the first page visit.
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
-    /**
-     * Determine the current asset version.
-     */
+    private const AUTH = 'auth';
+    private const FLASH = 'flash';
+
+    private const USER = 'user';
+    private const ID = 'id';
+    private const NAME = 'name';
+    private const EMAIL = 'email';
+    private const ROLES = 'roles';
+    private const PROFILE = 'profile';
+    private const SUCCESS = 'success';
+    private const ERROR = 'error';
+    private const INFO = 'info';
+
     public function version(Request $request): ?string
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
         return [
             ...parent::share($request),
-            'auth' => [
-                'user' => $request->user() ? [
-                    'id' => $request->user()->id,
-                    'name' => $request->user()->name,
-                    'email' => $request->user()->email,
-                    'roles' => $request->user()->roles->pluck('name')->toArray(),
+            self::AUTH => [
+                self::USER => $request->user() ? [
+                    self::ID => $request->user()->id,
+                    self::NAME => $request->user()->name,
+                    self::EMAIL => $request->user()->email,
+                    self::ROLES => $request->user()->roles->pluck(self::NAME)->toArray(),
+                    self::PROFILE => $request->user()->profile,
                 ] : null,
             ],
-            'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'info' => fn () => $request->session()->get('info'),
+            self::FLASH => [
+                self::SUCCESS => fn () => $request->session()->get(self::SUCCESS),
+                self::ERROR => fn () => $request->session()->get(self::ERROR),
+                self::INFO => fn () => $request->session()->get(self::INFO),
             ],
         ];
     }

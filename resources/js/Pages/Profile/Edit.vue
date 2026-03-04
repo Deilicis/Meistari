@@ -6,49 +6,37 @@ import UpdateProfileInformationForm from './Partials/UpdateProfileInformationFor
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+    mustVerifyEmail: Boolean,
+    status: String,
 });
 </script>
 
 <template>
-    <Head title="Profile" />
+    <Head title="Profila iestatījumi" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2
-                class="text-xl font-semibold leading-tight text-gray-800"
-            >
-                Profile
+            <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">
+                Mans Profils
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
+        <div class="py-10 bg-slate-200 min-h-screen">
+            <div class="mx-auto max-w-5xl space-y-10 px-4 sm:px-6 lg:px-8">
+                
+                <div class="bg-white shadow-sm border border-slate-200 p-6 rounded-xl overflow-hidden">
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
-                        class="max-w-xl"
                     />
                 </div>
 
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <UpdatePasswordForm class="max-w-xl" />
+                <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-8">
+                    <UpdatePasswordForm />
                 </div>
 
-                <div
-                    class="bg-white p-4 shadow sm:rounded-lg sm:p-8"
-                >
-                    <DeleteUserForm class="max-w-xl" />
+                <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-8">
+                    <DeleteUserForm />
                 </div>
             </div>
         </div>

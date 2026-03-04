@@ -20,7 +20,7 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $this->profileLogicRepository->updateProfile($request->toDTO(), $request->user());
+        $this->profileLogicRepository->updateProfile($request->user(), $request->toDTO());
 
         return back()->with('success', 'Profila informācija veiksmīgi atjaunināta!');
     }
@@ -29,9 +29,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        Auth::logout();
-
-        $this->profileLogicRepository->deleteProfile($request->toDTO(), $user);
+        $this->profileLogicRepository->deleteAccount($user, $request->toDTO());
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

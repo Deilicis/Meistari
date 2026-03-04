@@ -28,12 +28,11 @@ class Profile extends Model
     public const BIO = 'bio';
     public const IS_VERIFIED = 'is_verified';
     public const AVATAR = 'avatar';
-    public const EXPERIENCE_YEARS = 'experience_years';
+    public const EXPERIENCES = 'experiences';
     public const PORTFOLIO_IMAGES = 'portfolio_images';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     private const BOOLEAN = 'boolean';
-
     private const ARRAY_CAST = 'array';
 
     protected $table = self::TABLE;
@@ -49,6 +48,9 @@ class Profile extends Model
         self::CITY,
         self::PHONE,
         self::BIO,
+        self::AVATAR,
+        self::EXPERIENCES,
+        self::PORTFOLIO_IMAGES,
         self::IS_VERIFIED,
     ];
 
@@ -56,6 +58,7 @@ class Profile extends Model
         self::TYPE => ProfileTypeEnum::class,
         self::IS_VERIFIED => self::BOOLEAN,
         self::PORTFOLIO_IMAGES => self::ARRAY_CAST,
+        self::EXPERIENCES => self::ARRAY_CAST,
     ];
 
     public function getId(): int
@@ -133,9 +136,9 @@ class Profile extends Model
         return $this->getAttribute(self::AVATAR);
     }
 
-    public function getExperienceYears(): ?int
+    public function getExperiences(): array
     {
-        return $this->getAttribute(self::EXPERIENCE_YEARS);
+        return $this->getAttribute(self::EXPERIENCES) ?? [];
     }
 
     public function getPortfolioImages(): array
