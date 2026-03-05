@@ -12,7 +12,6 @@ const props = defineProps<{
 
 const newPortfolioPreviews = ref<{ url: string, file: File }[]>([]);
 
-// Ja forma tiek notīrīta (piem., pēc veiksmīgas saglabāšanas vecākā), mēs atbrīvojam atmiņu
 watch(newFiles, (files) => {
     if (files.length === 0) {
         newPortfolioPreviews.value.forEach(p => URL.revokeObjectURL(p.url));
