@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import InputError from '@/Components/Form/InputError.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
@@ -6,8 +6,8 @@ import TextInput from '@/Components/Form/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const passwordInput = ref(null);
-const currentPasswordInput = ref(null);
+const passwordInput = ref<InstanceType<typeof TextInput> | null>(null);
+const currentPasswordInput = ref<InstanceType<typeof TextInput> | null>(null);
 
 const form = useForm({
     current_password: '',
@@ -22,11 +22,11 @@ const updatePassword = () => {
         onError: () => {
             if (form.errors.password) {
                 form.reset('password', 'password_confirmation');
-                passwordInput.value.focus();
+                passwordInput.value?.$el?.focus();
             }
             if (form.errors.current_password) {
                 form.reset('current_password');
-                currentPasswordInput.value.focus();
+                currentPasswordInput.value?.$el?.focus();
             }
         },
     });
@@ -34,88 +34,57 @@ const updatePassword = () => {
 </script>
 
 <template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Atjaunināt paroli
-            </h2>
+    <form @submit.prevent="updatePassword" class="space-y-5">
+        <div>
+            <InputLabel for="current_password" value="Pašreizējā parole" />
+            <TextInput
+                id="current_password"
+                ref="currentPasswordInput"
+                v-model="form.current_password"
+                type="password"
+                class="mt-1 block w-full"
+                autocomplete="current-password"
+            />
+            <InputError :message="form.errors.current_password" class="mt-2" />
+        </div>
 
-            <p class="mt-1 text-sm text-gray-600">
-                Pārliecinies, ka parole ir garāka par 8 simboliem.
-            </p>
-        </header>
+        <div>
+            <InputLabel for="password" value="Jaunā parole" />
+            <TextInput
+                id="password"
+                ref="passwordInput"
+                v-model="form.password"
+                type="password"
+                class="mt-1 block w-full"
+                autocomplete="new-password"
+            />
+            <InputError :message="form.errors.password" class="mt-2" />
+        </div>
 
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
-                <InputLabel for="current_password" value="Pašreizējā parole" />
+        <div>
+            <InputLabel for="password_confirmation" value="Apstiprināt jauno paroli" />
+            <TextInput
+                id="password_confirmation"
+                v-model="form.password_confirmation"
+                type="password"
+                class="mt-1 block w-full"
+                autocomplete="new-password"
+            />
+            <InputError :message="form.errors.password_confirmation" class="mt-2" />
+        </div>
 
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
-
-                <InputError
-                    :message="form.errors.current_password"
-                    class="mt-2"
-                />
-            </div>
-
-            <div>
-                <InputLabel for="password" value="Jaunā parole" />
-
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-
-                <InputError :message="form.errors.password" class="mt-2" />
-            </div>
-
-            <div>
-                <InputLabel
-                    for="password_confirmation"
-                    value="Apstiprināt jauno paroli"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    :message="form.errors.password_confirmation"
-                    class="mt-2"
-                />
-            </div>
-
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Saglabāt</PrimaryButton>
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-if="form.recentlySuccessful"
-                        class="text-sm text-gray-600"
-                    >
-                        Saglabāts.
-                    </p>
-                </Transition>
-            </div>
-        </form>
-    </section>
+        <div class="flex items-center gap-4 pt-1">
+            <PrimaryButton :disabled="form.processing">Saglabāt paroli</PrimaryButton>
+            <Transition
+                enter-active-class="transition ease-in-out"
+                enter-from-class="opacity-0"
+                leave-active-class="transition ease-in-out"
+                leave-to-class="opacity-0"
+            >
+                <p v-if="form.recentlySuccessful" class="text-sm text-emerald-600 font-medium">
+                    Parole veiksmīgi nomainīta.
+                </p>
+            </Transition>
+        </div>
+    </form>
 </template>

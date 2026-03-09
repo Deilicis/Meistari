@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
 
-defineProps({
-    mustVerifyEmail: Boolean,
-    status: String,
-});
+defineProps<{
+    mustVerifyEmail: boolean;
+    status?: string;
+}>();
 </script>
 
 <template>
@@ -16,28 +16,48 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">
-                Mans Profils
-            </h2>
+            <div>
+                <h2 class="text-xl font-bold text-navy">Mans Profils</h2>
+                <p class="text-sm text-gray-500 mt-0.5">Pārvaldiet savu kontu un personīgo informāciju</p>
+            </div>
         </template>
 
-        <div class="py-10 bg-slate-200 min-h-screen">
-            <div class="mx-auto max-w-5xl space-y-10 px-4 sm:px-6 lg:px-8">
-                
-                <div class="bg-white shadow-sm border border-slate-200 p-6 rounded-xl overflow-hidden">
+        <div class="py-8">
+            <div class="mx-auto max-w-5xl space-y-8 px-4 sm:px-6 lg:px-8">
+
+                <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
                     />
                 </div>
 
-                <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-8">
-                    <UpdatePasswordForm />
+                <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
+                    <div class="bg-navy px-6 py-4 border-b border-navy-light">
+                        <h3 class="text-base font-semibold text-white">Mainīt paroli</h3>
+                        <p class="text-sm text-white/50 mt-0.5">Pārliecinies, ka parole ir garāka par 8 simboliem.</p>
+                    </div>
+                    <div class="p-6">
+                        <UpdatePasswordForm />
+                    </div>
                 </div>
 
-                <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-8">
-                    <DeleteUserForm />
+                <div class="bg-white shadow-sm border border-red-100 rounded-2xl overflow-hidden">
+                    <div class="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center gap-3">
+                        <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div>
+                            <h3 class="text-base font-semibold text-red-700">Bīstamā zona</h3>
+                            <p class="text-sm text-red-500 mt-0.5">Šīs darbības ir neatgriezeniskas.</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <DeleteUserForm />
+                    </div>
                 </div>
+
             </div>
         </div>
     </AuthenticatedLayout>

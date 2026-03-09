@@ -26,6 +26,7 @@
         "vue-tsc": "^3.2.5"
     },
     "dependencies": {
+        "@heroicons/vue": "^2.2.0",
         "lodash": "^4.17.23",
         "vue-sonner": "^2.0.9"
     }

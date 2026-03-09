@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Role\RoleNameEnum;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -36,7 +37,9 @@ class HandleInertiaRequests extends Middleware
                     self::ID => $request->user()->id,
                     self::NAME => $request->user()->name,
                     self::EMAIL => $request->user()->email,
-                    self::ROLES => $request->user()->roles->pluck(self::NAME)->toArray(),
+                    self::ROLES => $request->user()->roles->pluck(self::NAME)
+                        ->map(fn ($r) => $r instanceof RoleNameEnum ? $r->value : (string) $r)
+                        ->toArray(),
                     self::PROFILE => $request->user()->profile,
                 ] : null,
             ],

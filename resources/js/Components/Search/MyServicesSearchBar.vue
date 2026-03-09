@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import TextInput from '@/Components/Form/TextInput.vue';
+import type { Category } from '@/types/models';
 
 defineProps<{
-    categories: any[];
+    categories: Category[];
 }>();
 
 const filterForm = defineModel<{
@@ -29,14 +30,14 @@ const filterForm = defineModel<{
             </div>
             
             <div>
-                <select v-model="filterForm.category_id" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                <select v-model="filterForm.category_id" class="border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm w-full">
                     <option value="">Visas kategorijas</option>
                     <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                 </select>
             </div>
             
             <div>
-                <select v-model="filterForm.is_active" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                <select v-model="filterForm.is_active" class="border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm w-full">
                     <option value="">Visi statusi</option>
                     <option value="1">Tikai aktīvie</option>
                     <option value="0">Tikai neaktīvie</option>

@@ -3,21 +3,21 @@ import { ref, computed, watch, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
 import Dropdown from '@/Components/Form/Dropdown.vue';
 import DropdownLink from '@/Components/Link/DropdownLink.vue';
-import NavLink from '@/Components/Link/NavLink.vue';
-import ResponsiveNavLink from '@/Components/Link/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { Toaster, toast } from 'vue-sonner';
+import type { AuthUser } from '@/types/models';
+import {
+    HomeIcon,
+    BriefcaseIcon,
+    ClipboardDocumentListIcon,
+    ChevronDownIcon,
+    Bars3Icon,
+    XMarkIcon,
+} from '@heroicons/vue/24/outline';
 
-interface AuthUser {
-    id: number;
-    name: string;
-    email: string;
-    roles: string[];
-}
-
-const page = usePage<{ 
-    auth: { user: AuthUser }, 
-    flash: { success?: string, error?: string, info?: string } 
+const page = usePage<{
+    auth: { user: AuthUser };
+    flash: { success?: string; error?: string; info?: string };
 }>();
 const user = computed(() => page.props.auth.user);
 
@@ -34,164 +34,190 @@ const displayToast = () => {
     if (page.props.flash?.info) toast.info(page.props.flash.info);
 };
 
-onMounted(() => {
-    displayToast();
-});
-
-watch(
-    () => page.props.flash,
-    () => {
-        displayToast();
-    },
-    { deep: true }
-);
+onMounted(() => displayToast());
+watch(() => page.props.flash, () => displayToast(), { deep: true });
 
 const isMaster = computed(() => user.value?.roles.includes('master') ?? false);
 const isSeeker = computed(() => user.value?.roles.includes('seeker') ?? false);
+const accentBg = computed(() => isMaster.value ? 'bg-gold text-navy' : 'bg-emerald-400 text-white');
+const roleLabel = computed(() => isMaster.value ? 'Meistars' : 'Meklētājs');
+
+const navLinkClass = (active: boolean) =>
+    active
+        ? `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-white/10 transition-colors`
+        : `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors`;
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-slate-200 font-sans">
-            
-            <nav class="bg-white border-b border-gray-100 shadow-sm relative z-20">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between items-center">
-                        <div class="flex items-center gap-6">
-                            
-                            <div class="flex shrink-0 items-center gap-3">
-                                <Link :href="route('dashboard')" class="flex items-center gap-3">
-                                    <ApplicationLogo class="block h-9 w-auto object-contain" />
-                                    <span class="text-xl font-extrabold tracking-widest uppercase text-navy hidden sm:block">Meistari</span>
-                                </Link>
-                            </div>
+    <div class="min-h-screen bg-gray-100 font-sans">
+        <nav class="bg-navy relative z-20">
+            <div class="h-0.5 w-full" :class="isMaster ? 'bg-gold' : 'bg-emerald-400'" />
 
-                            <div class="hidden sm:flex sm:space-x-6 sm:ms-6">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Mans Panelis
-                                </NavLink>
-                                
-                                </div>
-                        </div>
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-15 py-2.5 justify-between items-center">
 
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <div class="relative ms-3">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center gap-2 rounded-lg border border-transparent bg-gray-50 px-4 py-2 text-sm font-bold leading-4 text-navy transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none"
-                                            >
-                                                {{ user.name }}
+                    <!-- Kreisā puse: logotips un navigācijas saites -->
+                    <div class="flex items-center gap-6">
+                        <Link :href="route('dashboard')" class="flex items-center gap-2.5 shrink-0">
+                            <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
+                            <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
+                                Meistari
+                            </span>
+                        </Link>
 
-                                                <svg
-                                                    class="h-4 w-4 text-gray-500"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <div class="block px-4 py-2 text-xs text-gray-400 bg-gray-50 border-b border-gray-100">
-                                            Pieslēdzies kā: <span class="font-bold text-gray-600">{{ isMaster ? 'Meistars' : 'Meklētājs' }}</span>
-                                        </div>
-
-                                        <DropdownLink :href="route('profile.edit')">
-                                            Mans Profils
-                                        </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Iziet no sistēmas
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div class="-me-2 flex items-center sm:hidden">
-                            <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                        <!-- Navigācijas saites datoriem -->
+                        <div class="hidden sm:flex items-center gap-1">
+                            <Link
+                                :href="route('dashboard')"
+                                :class="navLinkClass(route().current('dashboard'))"
                             >
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
+                                <HomeIcon class="w-3.5 h-3.5" />
+                                Mans Panelis
+                            </Link>
+
+                            <Link
+                                v-if="isMaster"
+                                :href="route('master.services.index')"
+                                :class="navLinkClass(route().current('master.services.index'))"
+                            >
+                                <BriefcaseIcon class="w-3.5 h-3.5" />
+                                Mani Pakalpojumi
+                            </Link>
+
+                            <Link
+                                v-if="isSeeker"
+                                :href="route('seeker.job-requests.index')"
+                                :class="navLinkClass(route().current('seeker.job-requests.index'))"
+                            >
+                                <ClipboardDocumentListIcon class="w-3.5 h-3.5" />
+                                Mani Sludinājumi
+                            </Link>
                         </div>
                     </div>
-                </div>
 
-                <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden absolute w-full bg-white border-b border-gray-200 z-50 shadow-lg"
-                >
-                    <div class="space-y-1 p-3">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Mans Panelis
-                        </ResponsiveNavLink>
+                    <div class="hidden sm:flex items-center gap-3">
+                        <!-- Lomas indikators -->
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg">
+                            {{ roleLabel }}
+                        </span>
+
+                        <!-- Lietotāja izvēlne -->
+                        <Dropdown align="right" width="48">
+                            <template #trigger>
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                                >
+                                    <!-- Lietotāja iniciāļu aplis -->
+                                    <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                                        :class="accentBg">
+                                        {{ user.name.charAt(0).toUpperCase() }}
+                                    </span>
+                                    {{ user.name }}
+                                    <ChevronDownIcon class="h-3.5 w-3.5 text-white/50" />
+                                </button>
+                            </template>
+
+                            <template #content>
+                                <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                                    <p class="text-xs text-gray-500">Pieslēdzies kā</p>
+                                    <p class="text-sm font-bold text-gray-800 truncate">{{ user.name }}</p>
+                                    <p class="text-xs text-gray-400 truncate">{{ user.email }}</p>
+                                </div>
+                                <DropdownLink :href="route('profile.edit')">Mans Profils</DropdownLink>
+                                <DropdownLink :href="route('logout')" method="post" as="button">
+                                    Iziet no sistēmas
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
                     </div>
 
-                    <div class="border-t border-gray-200 pb-1 pt-4 bg-gray-50">
-                        <div class="px-4">
-                            <div class="text-base font-bold text-navy">
-                                {{ user.name }}
-                            </div>
-                            <div class="text-sm font-medium text-gray-500">
-                                {{ user.email }}
-                            </div>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
-                                Mans Profils
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Iziet no sistēmas
-                            </ResponsiveNavLink>
-                        </div>
+                    <!-- Mobilā izvēlne (hamburger poga) -->
+                    <div class="-me-2 flex items-center sm:hidden">
+                        <button
+                            @click="showingNavigationDropdown = !showingNavigationDropdown"
+                            class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                        >
+                            <XMarkIcon v-if="showingNavigationDropdown" class="h-6 w-6" />
+                            <Bars3Icon v-else class="h-6 w-6" />
+                        </button>
                     </div>
                 </div>
-            </nav>
+            </div>
 
-            <header class="bg-white shadow-sm" v-if="$slots.header">
-                <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-                    <slot name="header" />
+            <!-- Mobilā navigācijas izvēlne -->
+            <div
+                :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
+                class="sm:hidden border-t border-white/10"
+            >
+                <div class="px-3 py-2 space-y-1">
+                    <Link :href="route('dashboard')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('dashboard') }"
+                        @click="showingNavigationDropdown = false">
+                        <HomeIcon class="w-4 h-4" />
+                        Mans Panelis
+                    </Link>
+
+                    <Link v-if="isMaster" :href="route('master.services.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('master.services.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <BriefcaseIcon class="w-4 h-4" />
+                        Mani Pakalpojumi
+                    </Link>
+
+                    <Link v-if="isSeeker" :href="route('seeker.job-requests.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('seeker.job-requests.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <ClipboardDocumentListIcon class="w-4 h-4" />
+                        Mani Sludinājumi
+                    </Link>
                 </div>
-            </header>
 
-            <main>
-                <slot />
-            </main>
-        </div>
+                <div class="border-t border-white/10 px-4 py-3">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                            :class="accentBg">
+                            {{ user.name.charAt(0).toUpperCase() }}
+                        </span>
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ user.name }}</p>
+                            <p class="text-xs text-white/50">{{ user.email }}</p>
+                        </div>
+                    </div>
 
-        <Toaster richColors position="bottom-right" />
+                    <div class="space-y-1">
+                        <Link :href="route('profile.edit')"
+                            class="block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                            @click="showingNavigationDropdown = false">
+                            Mans Profils
+                        </Link>
+
+                        <Link :href="route('logout')" method="post" as="button"
+                            class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                            @click="showingNavigationDropdown = false">
+                            Iziet no sistēmas
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Lapas galvenes slots -->
+        <header v-if="$slots.header" class="bg-white border-b border-gray-200">
+            <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+                <slot name="header" />
+            </div>
+        </header>
+
+        <!-- Galvenais saturs -->
+        <main>
+            <slot />
+        </main>
+
     </div>
+
+    <Toaster richColors position="bottom-right" />
 </template>

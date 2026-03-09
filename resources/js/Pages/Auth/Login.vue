@@ -29,16 +29,16 @@ const submit = () => {
     <AuthLayout>
         <Head title="Ienākt" />
 
-        <div class="mb-8 text-center md:text-left">
-            <h2 class="text-3xl font-bold text-gray-900">Sveicināti atpakaļ!</h2>
-            <p class="text-sm text-gray-500 mt-2">Ievadiet savus datus, lai piekļūtu savam kontam.</p>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-navy">Sveicināti atpakaļ!</h2>
+            <p class="text-sm text-gray-500 mt-1">Ievadiet savus datus, lai piekļūtu savam kontam.</p>
         </div>
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
+        <div v-if="status" class="mb-5 text-sm font-medium text-emerald-700 bg-emerald-50 p-3 rounded-xl border border-emerald-200">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit" class="space-y-6">
+        <form @submit.prevent="submit" class="space-y-5">
             <div>
                 <InputLabel for="email" value="E-pasts" />
                 <TextInput
@@ -59,7 +59,7 @@ const submit = () => {
                     <Link
                         v-if="canResetPassword"
                         :href="route('password.request')"
-                        class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                        class="text-xs font-semibold text-navy hover:text-navy-hover transition-colors"
                     >
                         Aizmirsāt paroli?
                     </Link>
@@ -74,28 +74,33 @@ const submit = () => {
                 <InputError class="mt-1" :message="form.errors.password" />
             </div>
 
-            <div class="block">
-                <label class="flex items-center cursor-pointer group">
-                    <Checkbox name="remember" v-model:checked="form.remember" class="text-[#0a192f] focus:ring-[#0a192f]" />
-                    <span class="ms-2 text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Atcerēties mani</span>
-                </label>
-            </div>
+            <label class="flex items-center gap-2 cursor-pointer group">
+                <Checkbox name="remember" v-model:checked="form.remember" class="text-navy focus:ring-navy" />
+                <span class="text-sm text-gray-500 group-hover:text-gray-700 transition-colors">Atcerēties mani</span>
+            </label>
 
-            <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <Link
-                    :href="route('register')"
-                    class="text-sm text-[#0a192f] hover:text-blue-700 font-semibold underline underline-offset-4"
-                >
-                    Izveidot jaunu kontu
-                </Link>
-
+            <div class="pt-2 space-y-3">
                 <PrimaryButton
-                    class="w-full sm:w-auto bg-[#0a192f] hover:bg-blue-900 px-8 py-3"
-                    :class="{ 'opacity-25': form.processing }"
+                    class="w-full justify-center py-2.5"
+                    :class="{ 'opacity-50': form.processing }"
                     :disabled="form.processing"
                 >
-                    Ienākt
+                    <span v-if="form.processing" class="flex items-center gap-2">
+                        <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Ienāk...
+                    </span>
+                    <span v-else>Ienākt</span>
                 </PrimaryButton>
+
+                <p class="text-center text-sm text-gray-500">
+                    Nav konta?
+                    <Link :href="route('register')" class="font-semibold text-navy hover:text-navy-hover underline underline-offset-4 transition-colors">
+                        Reģistrēties
+                    </Link>
+                </p>
             </div>
         </form>
     </AuthLayout>

@@ -10,7 +10,10 @@ import AvatarUpload from '@/Components/Form/AvatarUpload.vue';
 import ExperienceEditor from '@/Components/Form/ExperienceEditor.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
 
-const page = usePage<any>();
+import type { AuthUser, Profile } from '@/types/models';
+
+type ProfileUser = AuthUser & { profile: Profile & { experiences: object[]; portfolio_images: string[]; reg_number?: string; vat_number?: string } };
+const page = usePage<{ auth: { user: ProfileUser } }>();
 const user = computed(() => page.props.auth.user);
 const profile = computed(() => user.value.profile || {});
 const isMaster = computed(() => user.value.roles?.includes('master'));
@@ -56,10 +59,10 @@ const submit = () => {
 <template>
     <section class="max-w-7xl mx-auto">
         <header class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-900">
+            <h2 class="text-xl font-bold text-navy">
                 Profila informācija
             </h2>
-            <p class="mt-2 text-sm text-gray-600">
+            <p class="mt-1 text-sm text-gray-500">
                 Pārvaldiet savu kontaktinformāciju, vizuālo tēlu un profesionālo portfolio, lai klienti jūs labāk iepazītu.
             </p>
         </header>
@@ -67,8 +70,8 @@ const submit = () => {
         <form @submit.prevent="submit" class="space-y-8">
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gray-200 px-6 py-4 border-b border-gray-100">
-                    <h3 class="text-lg font-semibold text-gray-800">Pamatinformācija</h3>
+                <div class="bg-navy px-6 py-4 border-b border-navy-light">
+                    <h3 class="text-base font-semibold text-white">Pamatinformācija</h3>
                 </div>
                 
                 <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -153,7 +156,7 @@ const submit = () => {
                                 <textarea 
                                     id="description" 
                                     rows="3" 
-                                    class="mt-1 block w-full border-gray-300 bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm transition-colors" 
+                                    class="mt-1 block w-full border-gray-300 bg-gray-50 focus:bg-white focus:border-navy focus:ring-navy rounded-md shadow-sm transition-colors" 
                                     v-model="form.description" 
                                     placeholder="Pastāstiet īsi par sevi vai savu uzņēmumu..."
                                 ></textarea>
@@ -186,7 +189,7 @@ const submit = () => {
                 </div>
             </template>
 
-            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 flex items-center justify-between shadow-inner">
+            <div class="bg-navy/5 p-6 rounded-xl border border-navy/10 flex items-center justify-between">
                 <Transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 translate-y-2" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-300" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-2">
                     <div v-if="form.recentlySuccessful" class="flex items-center text-green-600">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>

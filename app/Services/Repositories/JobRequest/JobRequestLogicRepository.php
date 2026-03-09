@@ -24,9 +24,9 @@ class JobRequestLogicRepository
         return $this->dbRepository->getPaginated();
     }
 
-    public function getUserJobRequests(int $userId): Collection
+    public function getUserJobRequests(int $userId, array $filters = []): Collection
     {
-        return $this->dbRepository->getByUserId($userId);
+        return $this->dbRepository->getByUserId($userId, $filters);
     }
 
     public function getJobRequestById(int $id): JobRequest

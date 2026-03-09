@@ -4,21 +4,19 @@ import SeekerDashboard from './DashboardPartials/SeekerDashboard.vue';
 import MasterDashboard from './DashboardPartials/MasterDashboard.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import type { AuthUser, Service, JobRequest } from '@/types/models';
 
-interface AuthUser {
-    id: number;
-    name: string;
-    email: string;
+const props = defineProps<{
+    stats: Record<string, number>;
     roles: string[];
-}
+    recentServices: Service[];
+    recentJobRequests: JobRequest[];
+}>();
 
-const page = usePage<{ auth: { user: AuthUser | null } }>();
+const page = usePage();
+const user = computed(() => page.props.auth.user as AuthUser);
 
-const user = computed(() => page.props.auth.user);
-
-const isMaster = computed(() => {
-    return user.value?.roles.includes('master') ?? false;
-});
+const isMaster = computed(() => props.roles?.includes('master') ?? false);
 </script>
 
 <template>
@@ -26,17 +24,26 @@ const isMaster = computed(() => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-bold leading-tight text-navy">
-                Mans Panelis
-            </h2>
+            <div>
+                <h2 class="text-xl font-bold text-navy">Mans Panelis</h2>
+                <p class="text-sm text-gray-500 mt-0.5">Laipni lūdzam atpakaļ, {{ user.name }}!</p>
+            </div>
         </template>
 
-        <div class="py-10">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                
-                <MasterDashboard v-if="isMaster" />
-                <SeekerDashboard v-else />
-
+        <div class="py-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <MasterDashboard 
+                    v-if="isMaster" 
+                    :stats="props.stats" 
+                    :user="user" 
+                    :recentServices="props.recentServices" 
+                />
+                <SeekerDashboard 
+                    v-else 
+                    :stats="props.stats" 
+                    :user="user" 
+                    :recentJobRequests="props.recentJobRequests" 
+                />
             </div>
         </div>
     </AuthenticatedLayout>

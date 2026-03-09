@@ -17,12 +17,32 @@ class JobRequestDbRepository
             ->paginate($perPage);
     }
 
-    public function getByUserId(int $userId): Collection
+    public function getByUserId(int $userId, array $filters = []): Collection
     {
-        return JobRequest::with(['category', 'applications'])
-            ->where(JobRequest::USER_ID, $userId)
-            ->latest()
-            ->get();
+        $query = JobRequest::with(['category', 'applications'])
+            ->where(JobRequest::USER_ID, $userId);
+
+        if (!empty($filters['search'])) {
+            $query->where(JobRequest::TITLE, 'like', '%' . $filters['search'] . '%');
+        }
+
+        if (!empty($filters['category_id'])) {
+            $query->where(JobRequest::CATEGORY_ID, $filters['category_id']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where(JobRequest::STATUS, $filters['status']);
+        }
+
+        if (!empty($filters['budget_min'])) {
+            $query->where(JobRequest::BUDGET, '>=', $filters['budget_min']);
+        }
+
+        if (!empty($filters['budget_max'])) {
+            $query->where(JobRequest::BUDGET, '<=', $filters['budget_max']);
+        }
+
+        return $query->latest()->get();
     }
 
     public function getById(int $id): JobRequest

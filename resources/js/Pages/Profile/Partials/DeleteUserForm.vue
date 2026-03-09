@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import DangerButton from '@/Components/Form/DangerButton.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
@@ -9,7 +9,7 @@ import { useForm } from '@inertiajs/vue3';
 import { nextTick, ref } from 'vue';
 
 const confirmingUserDeletion = ref(false);
-const passwordInput = ref(null);
+const passwordInput = ref<InstanceType<typeof TextInput> | null>(null);
 
 const form = useForm({
     password: '',
@@ -17,80 +17,59 @@ const form = useForm({
 
 const confirmUserDeletion = () => {
     confirmingUserDeletion.value = true;
-
-    nextTick(() => passwordInput.value.focus());
+    nextTick(() => passwordInput.value?.$el?.focus());
 };
 
 const deleteUser = () => {
     form.delete(route('profile.destroy'), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
-        onError: () => passwordInput.value.focus(),
+        onError: () => passwordInput.value?.$el?.focus(),
         onFinish: () => form.reset(),
     });
 };
 
 const closeModal = () => {
     confirmingUserDeletion.value = false;
-
     form.clearErrors();
     form.reset();
 };
 </script>
 
 <template>
-    <section class="space-y-6">
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Dzēst kontu
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet jebkuru datu vai informāciju, kuru vēlaties saglabāt.
-            </p>
-        </header>
+    <section class="space-y-4">
+        <p class="text-sm text-gray-600">
+            Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet jebkuru datu vai informāciju, kuru vēlaties saglabāt.
+        </p>
 
         <DangerButton @click="confirmUserDeletion">Dzēst kontu</DangerButton>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
-                <h2
-                    class="text-lg font-medium text-gray-900"
-                >
+                <h2 class="text-lg font-semibold text-gray-900">
                     Vai esat pārliecināts, ka vēlaties neatgriezeniski dzēst savu kontu?
                 </h2>
-
                 <p class="mt-1 text-sm text-gray-600">
-                    Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu, ka vēlaties neatgriezeniski dzēst savu kontu.
+                    Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu.
                 </p>
 
                 <div class="mt-6">
-                    <InputLabel
-                        for="password"
-                        value="Parole"
-                        class="sr-only"
-                    />
-
+                    <InputLabel for="password" value="Parole" class="sr-only" />
                     <TextInput
                         id="password"
                         ref="passwordInput"
                         v-model="form.password"
                         type="password"
                         class="mt-1 block w-3/4"
-                        placeholder="Parole"
+                        placeholder="Ievadiet paroli"
                         @keyup.enter="deleteUser"
                     />
-
                     <InputError :message="form.errors.password" class="mt-2" />
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="closeModal">
-                        Atcelt
-                    </SecondaryButton>
-
+                <div class="mt-6 flex justify-end gap-3">
+                    <SecondaryButton @click="closeModal">Atcelt</SecondaryButton>
                     <DangerButton
-                        class="ms-3"
                         :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing"
                         @click="deleteUser"
