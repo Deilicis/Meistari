@@ -1,0 +1,202 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import Modal from '@/Components/Common/Modal.vue';
+import {
+    XMarkIcon,
+    MapPinIcon,
+    CurrencyEuroIcon,
+    CheckBadgeIcon,
+    BriefcaseIcon,
+    PhotoIcon,
+} from '@heroicons/vue/24/outline';
+import type { ServiceWithMaster } from '@/types/models';
+
+const props = defineProps<{
+    show: boolean;
+    service: ServiceWithMaster | null;
+    applied: boolean;
+}>();
+
+const emit = defineEmits<{
+    close: [];
+    apply: [];
+}>();
+
+const profile = computed(() => props.service?.user?.profile ?? null);
+
+const masterName = computed(() => {
+    if (!profile.value) return props.service?.user?.name ?? '—';
+    if (profile.value.type === 'company') return profile.value.company_name ?? props.service!.user.name;
+    const parts = [profile.value.first_name, profile.value.last_name].filter(Boolean);
+    return parts.length ? parts.join(' ') : props.service!.user.name;
+});
+
+const avatarInitials = computed(() => masterName.value.slice(0, 2).toUpperCase());
+
+const formatPrice = (): string => {
+    if (!props.service) return '—';
+    if (props.service.price_type === 'negotiable') return 'Vienojoties';
+    if (!props.service.price) return '—';
+    const formatted = new Intl.NumberFormat('lv-LV', {
+        style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
+    }).format(props.service.price);
+    return props.service.price_type === 'hourly' ? `${formatted} / stundā` : formatted;
+};
+
+const priceTypeLabel = computed(() => {
+    if (!props.service) return '';
+    return { fixed: 'Fiksēta cena', hourly: 'Stundas likme', negotiable: 'Vienojoties' }[props.service.price_type] ?? '';
+});
+</script>
+
+<template>
+    <Modal :show="show" @close="emit('close')" maxWidth="3xl">
+        <div v-if="service" class="flex flex-col max-h-[90vh]">
+
+            <!-- Header -->
+            <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
+                <div class="min-w-0">
+                    <span v-if="service.category" class="inline-flex text-xs font-bold text-gold tracking-widest uppercase mb-1">
+                        {{ service.category.name }}
+                    </span>
+                    <h2 class="text-lg font-bold text-white leading-snug">{{ service.title }}</h2>
+                </div>
+                <button @click="emit('close')" class="text-white/60 hover:text-white transition-colors flex-shrink-0 mt-0.5">
+                    <XMarkIcon class="w-5 h-5" />
+                </button>
+            </div>
+
+            <!-- Scrollable body -->
+            <div class="overflow-y-auto flex-grow">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-0">
+
+                    <!-- Left: service details -->
+                    <div class="md:col-span-2 p-6 border-r border-gray-100">
+
+                        <!-- Price info -->
+                        <div class="flex items-center gap-3 mb-5 pb-5 border-b border-gray-100">
+                            <div class="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                                <CurrencyEuroIcon class="w-5 h-5 text-gold" />
+                            </div>
+                            <div>
+                                <p class="text-xl font-extrabold text-navy">{{ formatPrice() }}</p>
+                                <p class="text-xs text-gray-400">{{ priceTypeLabel }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-5">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Apraksts</h3>
+                            <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ service.description }}</p>
+                        </div>
+
+                        <!-- Locations -->
+                        <div v-if="service.location?.length">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Pakalpojuma vietas</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    v-for="loc in service.location"
+                                    :key="loc"
+                                    class="inline-flex items-center gap-1.5 text-sm text-gray-600 bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5"
+                                >
+                                    <MapPinIcon class="w-3.5 h-3.5 text-gray-400" />
+                                    {{ loc }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: master profile -->
+                    <div class="md:col-span-1 p-6 bg-gray-50/60">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Par meistaru</h3>
+
+                        <!-- Avatar + name -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
+                                <img
+                                    v-if="profile?.avatar"
+                                    :src="`/storage/${profile.avatar}`"
+                                    :alt="masterName"
+                                    class="w-full h-full object-cover"
+                                />
+                                <span v-else>{{ avatarInitials }}</span>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <p class="text-sm font-bold text-gray-900 truncate">{{ masterName }}</p>
+                                    <CheckBadgeIcon v-if="profile?.is_verified" class="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                                </div>
+                                <p v-if="profile?.city" class="text-xs text-gray-500">{{ profile.city }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-4">
+                            {{ profile.bio }}
+                        </p>
+
+                        <!-- Experiences -->
+                        <div v-if="profile?.experiences?.length" class="mb-4">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                                <BriefcaseIcon class="w-3.5 h-3.5" />
+                                Pieredze
+                            </h4>
+                            <ul class="space-y-2">
+                                <li
+                                    v-for="(exp, i) in profile.experiences.slice(0, 3)"
+                                    :key="i"
+                                    class="text-sm"
+                                >
+                                    <p class="font-semibold text-gray-800">{{ (exp as any).title }}</p>
+                                    <p class="text-xs text-gray-500">{{ (exp as any).company }}</p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Portfolio thumbnails -->
+                        <div v-if="profile?.portfolio_images?.length" class="mb-4">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                                <PhotoIcon class="w-3.5 h-3.5" />
+                                Portfolio
+                            </h4>
+                            <div class="grid grid-cols-4 gap-1.5">
+                                <div
+                                    v-for="img in profile.portfolio_images.slice(0, 4)"
+                                    :key="img"
+                                    class="aspect-square rounded-lg overflow-hidden bg-gray-100"
+                                >
+                                    <img :src="`/storage/${img}`" class="w-full h-full object-cover" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 flex-shrink-0 bg-white">
+                <button
+                    @click="emit('close')"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                    Aizvērt
+                </button>
+
+                <div
+                    v-if="applied"
+                    class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold"
+                >
+                    <CheckBadgeIcon class="w-4 h-4" />
+                    Pieteikums iesniegts
+                </div>
+                <button
+                    v-else
+                    @click="emit('apply')"
+                    class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors"
+                >
+                    Pieteikties
+                </button>
+            </div>
+        </div>
+    </Modal>
+</template>

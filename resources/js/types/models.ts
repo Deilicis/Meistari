@@ -61,3 +61,37 @@ export interface AuthUser {
     email: string;
     roles: string[];
 }
+
+export type ServiceApplicationStatus = 'pending' | 'accepted' | 'rejected';
+
+export interface ServiceApplication {
+    id: number;
+    service_id: number;
+    user_id: number;
+    message: string;
+    budget_offer: number | null;
+    status: ServiceApplicationStatus;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ServiceMasterProfile {
+    type: 'individual' | 'company';
+    first_name: string | null;
+    last_name: string | null;
+    company_name: string | null;
+    city: string;
+    bio: string | null;
+    avatar: string | null;
+    is_verified: boolean;
+    experiences: { title: string; company: string; description?: string }[];
+    portfolio_images: string[];
+}
+
+export interface ServiceWithMaster extends Service {
+    user: {
+        id: number;
+        name: string;
+        profile: ServiceMasterProfile | null;
+    };
+}

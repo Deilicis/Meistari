@@ -17,6 +17,19 @@ class ServiceDbRepository
             ->paginate($perPage);
     }
 
+    public function getPublicPaginated(array $filters = [], int $perPage = 12): LengthAwarePaginator
+    {
+        return Service::with(['user.profile', 'category'])
+            ->where(Service::IS_ACTIVE, true)
+            ->when($filters['search'] ?? null, fn ($q, $v) => $q->where(Service::TITLE, 'like', "%{$v}%"))
+            ->when($filters['category_id'] ?? null, fn ($q, $v) => $q->where(Service::CATEGORY_ID, $v))
+            ->when($filters['price_min'] ?? null, fn ($q, $v) => $q->where(Service::PRICE, '>=', $v))
+            ->when($filters['price_max'] ?? null, fn ($q, $v) => $q->where(Service::PRICE, '<=', $v))
+            ->latest()
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
     public function getByUserId(int $userId): Collection
     {
         return Service::with('category')

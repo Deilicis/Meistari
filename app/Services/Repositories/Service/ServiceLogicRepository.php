@@ -21,6 +21,11 @@ class ServiceLogicRepository
         return $this->dbRepository->getPaginated();
     }
 
+    public function getPublicServices(array $filters = []): LengthAwarePaginator
+    {
+        return $this->dbRepository->getPublicPaginated($filters);
+    }
+
     public function getUserServices(int $userId, array $filters = [])
     {
         return $this->dbRepository->getUserServices($userId, $filters);

@@ -10,6 +10,7 @@ import {
     HomeIcon,
     BriefcaseIcon,
     ClipboardDocumentListIcon,
+    MagnifyingGlassIcon,
     ChevronDownIcon,
     Bars3Icon,
     XMarkIcon,
@@ -82,6 +83,15 @@ const navLinkClass = (active: boolean) =>
                             >
                                 <BriefcaseIcon class="w-3.5 h-3.5" />
                                 Mani Pakalpojumi
+                            </Link>
+
+                            <Link
+                                v-if="isSeeker"
+                                :href="route('seeker.services.index')"
+                                :class="navLinkClass(route().current('seeker.services.index'))"
+                            >
+                                <MagnifyingGlassIcon class="w-3.5 h-3.5" />
+                                Pakalpojumi
                             </Link>
 
                             <Link
@@ -165,6 +175,14 @@ const navLinkClass = (active: boolean) =>
                         @click="showingNavigationDropdown = false">
                         <BriefcaseIcon class="w-4 h-4" />
                         Mani Pakalpojumi
+                    </Link>
+
+                    <Link v-if="isSeeker" :href="route('seeker.services.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('seeker.services.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <MagnifyingGlassIcon class="w-4 h-4" />
+                        Pakalpojumi
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.job-requests.index')"
