@@ -32,6 +32,12 @@ class Profile extends Model
     public const PORTFOLIO_IMAGES = 'portfolio_images';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
+
+    public const STORAGE_DISK       = 'public';
+    public const AVATAR_DIR         = 'avatars';
+    public const PORTFOLIO_DIR      = 'portfolio';
+    public const AVATAR_DELETE_FLAG = 'delete';
+
     private const BOOLEAN = 'boolean';
     private const ARRAY_CAST = 'array';
 

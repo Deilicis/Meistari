@@ -31,6 +31,10 @@ class JobRequest extends Model
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';
+
+    public const STORAGE_DISK = 'public';
+    public const IMAGES_DIR   = 'job-requests';
+
     private const ARRAY_CAST = 'array';
 
     protected $table = self::TABLE;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\JobRequest;
 
+use App\Constants\ErrorMessages;
 use App\DataTransferObjects\JobRequest\SaveJobRequestData;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
@@ -41,7 +42,7 @@ class JobRequestLogicRepository
         if (!empty($dto->images)) {
             foreach ($dto->images as $image) {
                 if ($image instanceof UploadedFile) {
-                    $images[] = $image->store('job-requests', 'public');
+                    $images[] = $image->store(JobRequest::IMAGES_DIR, JobRequest::STORAGE_DISK);
                 }
             }
         }
@@ -49,16 +50,16 @@ class JobRequestLogicRepository
         $slug = Str::slug($dto->title) . '-' . uniqid();
 
         $dataToSave = [
-            JobRequest::USER_ID => $dto->userId,
+            JobRequest::USER_ID     => $dto->userId,
             JobRequest::CATEGORY_ID => $dto->categoryId,
-            JobRequest::SLUG => $slug,
-            JobRequest::TITLE => $dto->title,
+            JobRequest::SLUG        => $slug,
+            JobRequest::TITLE       => $dto->title,
             JobRequest::DESCRIPTION => $dto->description,
-            JobRequest::STATUS => $dto->status->value,
-            JobRequest::BUDGET => $dto->budget,
-            JobRequest::DEADLINE => $dto->deadline,
-            JobRequest::LOCATION => $dto->location,
-            JobRequest::IMAGES => $images,
+            JobRequest::STATUS      => $dto->status->value,
+            JobRequest::BUDGET      => $dto->budget,
+            JobRequest::DEADLINE    => $dto->deadline,
+            JobRequest::LOCATION    => $dto->location,
+            JobRequest::IMAGES      => $images,
         ];
 
         return $this->dbRepository->create($dataToSave);
@@ -67,14 +68,14 @@ class JobRequestLogicRepository
     public function updateJobRequest(JobRequest $jobRequest, SaveJobRequestData $dto, int $currentUserId): bool
     {
         if ($jobRequest->getUserId() !== $currentUserId) {
-            abort(403, 'Jums nav tiesību rediģēt šo darba sludinājumu.');
+            abort(403, ErrorMessages::JOB_REQUEST_EDIT_FORBIDDEN);
         }
 
         $images = $jobRequest->getImages();
 
         if (!empty($dto->imagesToDelete)) {
             foreach ($dto->imagesToDelete as $path) {
-                Storage::disk('public')->delete($path);
+                Storage::disk(JobRequest::STORAGE_DISK)->delete($path);
                 $images = array_filter($images, fn($p) => $p !== $path);
             }
             $images = array_values($images);
@@ -83,19 +84,19 @@ class JobRequestLogicRepository
         if (!empty($dto->images)) {
             foreach ($dto->images as $image) {
                 if ($image instanceof UploadedFile) {
-                    $images[] = $image->store('job-requests', 'public');
+                    $images[] = $image->store(JobRequest::IMAGES_DIR, JobRequest::STORAGE_DISK);
                 }
             }
         }
 
         $dataToUpdate = [
             JobRequest::CATEGORY_ID => $dto->categoryId,
-            JobRequest::TITLE => $dto->title,
+            JobRequest::TITLE       => $dto->title,
             JobRequest::DESCRIPTION => $dto->description,
-            JobRequest::BUDGET => $dto->budget,
-            JobRequest::DEADLINE => $dto->deadline,
-            JobRequest::LOCATION => $dto->location,
-            JobRequest::IMAGES => $images,
+            JobRequest::BUDGET      => $dto->budget,
+            JobRequest::DEADLINE    => $dto->deadline,
+            JobRequest::LOCATION    => $dto->location,
+            JobRequest::IMAGES      => $images,
         ];
 
         return $this->dbRepository->update($jobRequest, $dataToUpdate);
@@ -104,7 +105,7 @@ class JobRequestLogicRepository
     public function deleteJobRequest(JobRequest $jobRequest, int $currentUserId): ?bool
     {
         if ($jobRequest->getUserId() !== $currentUserId) {
-            abort(403, 'Jums nav tiesību dzēst šo darba sludinājumu.');
+            abort(403, ErrorMessages::JOB_REQUEST_DELETE_FORBIDDEN);
         }
 
         return $this->dbRepository->delete($jobRequest);

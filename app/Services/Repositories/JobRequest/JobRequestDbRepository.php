@@ -10,6 +10,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class JobRequestDbRepository
 {
+    private const LIKE = 'like';
+    private const GTE = '>=';
+    private const LTE = '<=';
+    private const FILTER_SEARCH = 'search';
+    private const FILTER_CATEGORY = 'category_id';
+    private const FILTER_STATUS = 'status';
+    private const FILTER_BUDGET_MIN = 'budget_min';
+    private const FILTER_BUDGET_MAX = 'budget_max';
+
     public function getPaginated(int $perPage = 15): LengthAwarePaginator
     {
         return JobRequest::with(['category', 'user'])
@@ -22,24 +31,24 @@ class JobRequestDbRepository
         $query = JobRequest::with(['category', 'applications'])
             ->where(JobRequest::USER_ID, $userId);
 
-        if (!empty($filters['search'])) {
-            $query->where(JobRequest::TITLE, 'like', '%' . $filters['search'] . '%');
+        if (!empty($filters[self::FILTER_SEARCH])) {
+            $query->where(JobRequest::TITLE, self::LIKE, '%' . $filters[self::FILTER_SEARCH] . '%');
         }
 
-        if (!empty($filters['category_id'])) {
-            $query->where(JobRequest::CATEGORY_ID, $filters['category_id']);
+        if (!empty($filters[self::FILTER_CATEGORY])) {
+            $query->where(JobRequest::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
         }
 
-        if (!empty($filters['status'])) {
-            $query->where(JobRequest::STATUS, $filters['status']);
+        if (!empty($filters[self::FILTER_STATUS])) {
+            $query->where(JobRequest::STATUS, $filters[self::FILTER_STATUS]);
         }
 
-        if (!empty($filters['budget_min'])) {
-            $query->where(JobRequest::BUDGET, '>=', $filters['budget_min']);
+        if (!empty($filters[self::FILTER_BUDGET_MIN])) {
+            $query->where(JobRequest::BUDGET, self::GTE, $filters[self::FILTER_BUDGET_MIN]);
         }
 
-        if (!empty($filters['budget_max'])) {
-            $query->where(JobRequest::BUDGET, '<=', $filters['budget_max']);
+        if (!empty($filters[self::FILTER_BUDGET_MAX])) {
+            $query->where(JobRequest::BUDGET, self::LTE, $filters[self::FILTER_BUDGET_MAX]);
         }
 
         return $query->latest()->get();

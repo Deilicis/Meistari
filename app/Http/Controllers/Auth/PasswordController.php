@@ -11,6 +11,9 @@ use Illuminate\Http\RedirectResponse;
 
 class PasswordController extends Controller
 {
+    private const MSG_PASSWORD_UPDATED = 'Jūsu parole ir veiksmīgi nomainīta!';
+    private const FLASH_SUCCESS        = 'success';
+
     public function __construct(
         private readonly UserLogicRepository $userLogicRepository
     ) {
@@ -20,6 +23,6 @@ class PasswordController extends Controller
     {
         $this->authLogicRepository->updatePassword($request->toDTO(), $request->user());
 
-        return back()->with('success', 'Jūsu parole ir veiksmīgi nomainīta!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_PASSWORD_UPDATED);
     }
 }

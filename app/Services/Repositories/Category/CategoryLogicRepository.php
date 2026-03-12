@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\Category;
 
+use App\Constants\ErrorMessages;
 use App\DataTransferObjects\Category\SaveCategoryRequestData;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +21,7 @@ class CategoryLogicRepository
     {
         return $this->dbRepository->getAllNested();
     }
-    
+
     public function getFlatCategories(): Collection
     {
         return $this->dbRepository->getAllFlat();
@@ -40,7 +41,7 @@ class CategoryLogicRepository
     {
         if ($dto->parentId === $category->getId()) {
             throw ValidationException::withMessages([
-                Category::PARENT_ID => 'Kategorija nevar būt pakārtota sev.'
+                Category::PARENT_ID => ErrorMessages::CATEGORY_SELF_PARENT,
             ]);
         }
 
@@ -51,14 +52,14 @@ class CategoryLogicRepository
     {
         if ($category->children()->exists()) {
             throw ValidationException::withMessages([
-                'error' => 'Nevar izdzēst kategoriju, kurai ir apakškategorijas.'
+                'error' => ErrorMessages::CATEGORY_HAS_CHILDREN,
             ]);
         }
 
         if ($category->jobRequests()->exists()) {
-             throw ValidationException::withMessages([
-                 'error' => 'Nevar izdzēst kategoriju, jo tai ir piesaistīti darba sludinājumi.'
-             ]);
+            throw ValidationException::withMessages([
+                'error' => ErrorMessages::CATEGORY_HAS_JOB_REQUESTS,
+            ]);
         }
 
         return $this->dbRepository->delete($category);

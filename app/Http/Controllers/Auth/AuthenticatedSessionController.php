@@ -14,6 +14,9 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
+    private const MSG_LOGIN_SUCCESS = 'Ielogojies veiksmīgi!';
+    private const FLASH_SUCCESS     = 'success';
+
     public function __construct(
         private readonly AuthLogicRepository $authLogicRepository
     ) {
@@ -23,7 +26,7 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'status'           => session('status'),
         ]);
     }
 
@@ -31,7 +34,7 @@ class AuthenticatedSessionController extends Controller
     {
         $this->authLogicRepository->login($request->toDTO(), $request->ip());
 
-        return redirect()->intended(route('dashboard', absolute: false))->with('success', 'Ielogojies veiksmīgi!');
+        return redirect()->intended(route('dashboard', absolute: false))->with(self::FLASH_SUCCESS, self::MSG_LOGIN_SUCCESS);
     }
 
     public function logoutUser(): RedirectResponse

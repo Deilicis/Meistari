@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\Service;
 
+use App\Constants\ErrorMessages;
 use App\DataTransferObjects\Service\SaveServiceRequestData;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection;
@@ -43,8 +44,8 @@ class ServiceLogicRepository
 
     public function updateService(Service $service, SaveServiceRequestData $dto, int $currentUserId): bool
     {
-        if ($service->user_id !== $currentUserId) {
-            abort(403, 'Jums nav tiesību rediģēt šo pakalpojumu.');
+        if ($service->getUserId() !== $currentUserId) {
+            abort(403, ErrorMessages::SERVICE_EDIT_FORBIDDEN);
         }
 
         return $this->dbRepository->update($service, $dto->toArray());
@@ -52,8 +53,8 @@ class ServiceLogicRepository
 
     public function deleteService(Service $service, int $currentUserId): ?bool
     {
-        if ($service->user_id !== $currentUserId) {
-            abort(403, 'Jums nav tiesību dzēst šo pakalpojumu.');
+        if ($service->getUserId() !== $currentUserId) {
+            abort(403, ErrorMessages::SERVICE_DELETE_FORBIDDEN);
         }
 
         return $this->dbRepository->delete($service);

@@ -14,6 +14,12 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    private const MSG_CREATED = 'Pakalpojums veiksmīgi izveidots!';
+    private const MSG_UPDATED = 'Pakalpojums atjaunināts!';
+    private const MSG_DELETED = 'Pakalpojums izdzēsts!';
+    private const KEY_MESSAGE = 'message';
+    private const KEY_DATA    = 'data';
+
     public function __construct(
         private readonly ServiceLogicRepository $logicRepository
     ) {
@@ -42,8 +48,8 @@ class ServiceController extends Controller
         $service = $this->logicRepository->createService($request->toDTO());
 
         return response()->json([
-            'message' => 'Pakalpojums veiksmīgi izveidots!',
-            'data' => new ServiceResource($service),
+            self::KEY_MESSAGE => self::MSG_CREATED,
+            self::KEY_DATA    => new ServiceResource($service),
         ], 201);
     }
 
@@ -53,8 +59,8 @@ class ServiceController extends Controller
         $service->refresh();
 
         return response()->json([
-            'message' => 'Pakalpojums atjaunināts!',
-            'data' => new ServiceResource($service),
+            self::KEY_MESSAGE => self::MSG_UPDATED,
+            self::KEY_DATA    => new ServiceResource($service),
         ], 200);
     }
 
@@ -63,7 +69,7 @@ class ServiceController extends Controller
         $this->logicRepository->deleteService($service, $request->user()->id);
 
         return response()->json([
-            'message' => 'Pakalpojums izdzēsts!'
+            self::KEY_MESSAGE => self::MSG_DELETED,
         ], 200);
     }
 }

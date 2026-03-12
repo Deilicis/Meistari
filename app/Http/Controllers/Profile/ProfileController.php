@@ -9,10 +9,14 @@ use App\Http\Requests\Profile\DeleteAccountRequest;
 use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Services\Repositories\Profile\ProfileLogicRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
+    private const MSG_UPDATED   = 'Profila informācija veiksmīgi atjaunināta!';
+    private const MSG_DELETED   = 'Jūsu konts ir veiksmīgi izdzēsts.';
+    private const FLASH_SUCCESS = 'success';
+    private const FLASH_INFO    = 'info';
+
     public function __construct(
         private readonly ProfileLogicRepository $profileLogicRepository
     ) {
@@ -22,7 +26,7 @@ class ProfileController extends Controller
     {
         $this->profileLogicRepository->updateProfile($request->user(), $request->toDTO());
 
-        return back()->with('success', 'Profila informācija veiksmīgi atjaunināta!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_UPDATED);
     }
 
     public function destroy(DeleteAccountRequest $request): RedirectResponse
@@ -34,6 +38,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('info', 'Jūsu konts ir veiksmīgi izdzēsts.');
+        return redirect('/')->with(self::FLASH_INFO, self::MSG_DELETED);
     }
 }

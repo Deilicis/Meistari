@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\ServiceApplication;
 
+use App\Constants\ErrorMessages;
 use App\DataTransferObjects\ServiceApplication\SaveServiceApplicationData;
 use App\Models\Service;
 use App\Models\ServiceApplication;
@@ -20,7 +21,7 @@ class ServiceApplicationLogicRepository
         $service = Service::findOrFail($dto->serviceId);
 
         if ($service->getUserId() === $dto->userId) {
-            abort(403, 'Nevar pieteikties uz savu pakalpojumu.');
+            abort(403, ErrorMessages::OWN_SERVICE_APPLICATION);
         }
 
         return $this->dbRepository->create($dto->toArray());

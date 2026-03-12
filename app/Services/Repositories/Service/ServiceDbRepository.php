@@ -10,6 +10,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ServiceDbRepository
 {
+    private const LIKE = 'like';
+    private const GTE = '>=';
+    private const LTE = '<=';
+    private const FILTER_SEARCH = 'search';
+    private const FILTER_CATEGORY = 'category_id';
+    private const FILTER_PRICE_MIN = 'price_min';
+    private const FILTER_PRICE_MAX = 'price_max';
+    private const FILTER_IS_ACTIVE = 'is_active';
+
     public function getPaginated(int $perPage = 15): LengthAwarePaginator
     {
         return Service::with(['category', 'user'])
@@ -21,10 +30,10 @@ class ServiceDbRepository
     {
         return Service::with(['user.profile', 'category'])
             ->where(Service::IS_ACTIVE, true)
-            ->when($filters['search'] ?? null, fn ($q, $v) => $q->where(Service::TITLE, 'like', "%{$v}%"))
-            ->when($filters['category_id'] ?? null, fn ($q, $v) => $q->where(Service::CATEGORY_ID, $v))
-            ->when($filters['price_min'] ?? null, fn ($q, $v) => $q->where(Service::PRICE, '>=', $v))
-            ->when($filters['price_max'] ?? null, fn ($q, $v) => $q->where(Service::PRICE, '<=', $v))
+            ->when($filters[self::FILTER_SEARCH] ?? null, fn ($q, $v) => $q->where(Service::TITLE, self::LIKE, "%{$v}%"))
+            ->when($filters[self::FILTER_CATEGORY] ?? null, fn ($q, $v) => $q->where(Service::CATEGORY_ID, $v))
+            ->when($filters[self::FILTER_PRICE_MIN] ?? null, fn ($q, $v) => $q->where(Service::PRICE, self::GTE, $v))
+            ->when($filters[self::FILTER_PRICE_MAX] ?? null, fn ($q, $v) => $q->where(Service::PRICE, self::LTE, $v))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -49,28 +58,28 @@ class ServiceDbRepository
             ->where(Service::USER_ID, $userId)
             ->with('category');
 
-        if (!empty($filters['search'])) {
-            $search = '%' . $filters['search'] . '%';
+        if (!empty($filters[self::FILTER_SEARCH])) {
+            $search = '%' . $filters[self::FILTER_SEARCH] . '%';
             $query->where(function ($q) use ($search) {
-                $q->where(Service::TITLE, 'like', $search)
-                  ->orWhere(Service::DESCRIPTION, 'like', $search);
+                $q->where(Service::TITLE, self::LIKE, $search)
+                  ->orWhere(Service::DESCRIPTION, self::LIKE, $search);
             });
         }
 
-        if (!empty($filters['category_id'])) {
-            $query->where(Service::CATEGORY_ID, $filters['category_id']);
+        if (!empty($filters[self::FILTER_CATEGORY])) {
+            $query->where(Service::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
         }
 
-        if (isset($filters['is_active']) && $filters['is_active'] !== '') {
-            $query->where(Service::IS_ACTIVE, (bool) $filters['is_active']);
+        if (isset($filters[self::FILTER_IS_ACTIVE]) && $filters[self::FILTER_IS_ACTIVE] !== '') {
+            $query->where(Service::IS_ACTIVE, (bool) $filters[self::FILTER_IS_ACTIVE]);
         }
 
-        if (!empty($filters['price_min'])) {
-            $query->where(Service::PRICE, '>=', $filters['price_min']);
+        if (!empty($filters[self::FILTER_PRICE_MIN])) {
+            $query->where(Service::PRICE, self::GTE, $filters[self::FILTER_PRICE_MIN]);
         }
 
-        if (!empty($filters['price_max'])) {
-            $query->where(Service::PRICE, '<=', $filters['price_max']);
+        if (!empty($filters[self::FILTER_PRICE_MAX])) {
+            $query->where(Service::PRICE, self::LTE, $filters[self::FILTER_PRICE_MAX]);
         }
 
         return $query->latest()->get();

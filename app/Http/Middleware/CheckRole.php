@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Constants\ErrorMessages;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,12 +20,12 @@ class CheckRole
             abort(401);
         }
 
-        // Iegūstam lomas un droši izvelkam tekstu, neatkarīgi no tā, 
+        // Iegūstam lomas un droši izvelkam tekstu, neatkarīgi no tā,
         // vai tas ir Enum objekts vai parasts string
         $userRoles = $request->user()->roles->pluck('name')->map(function ($role) {
             // Ja $role ir Enum (kā RoleNameEnum), tad ņemam tā ->value
             $roleValue = $role instanceof \BackedEnum ? $role->value : $role;
-            
+
             return strtolower((string) $roleValue);
         })->toArray();
 
@@ -37,6 +38,6 @@ class CheckRole
             }
         }
 
-        abort(403, 'Jums nav piekļuves tiesību šai lapai.');
+        abort(403, ErrorMessages::ACCESS_FORBIDDEN);
     }
 }

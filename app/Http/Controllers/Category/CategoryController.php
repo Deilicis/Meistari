@@ -16,6 +16,13 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
+    private const MSG_CREATED   = 'Kategorija veiksmīgi izveidota!';
+    private const MSG_UPDATED   = 'Kategorija atjaunināta!';
+    private const MSG_DELETED   = 'Kategorija izdzēsta!';
+    private const FLASH_SUCCESS = 'success';
+    private const KEY_MESSAGE   = 'message';
+    private const KEY_DATA      = 'data';
+
     public function __construct(
         private readonly CategoryLogicRepository $logicRepository
     ) {
@@ -24,7 +31,7 @@ class CategoryController extends Controller
     public function index(): Response
     {
         return Inertia::render('Admin/Categories/Index', [
-            'categories' => $this->logicRepository->getNestedCategories(),
+            'categories'     => $this->logicRepository->getNestedCategories(),
             'flatCategories' => $this->logicRepository->getFlatCategories(),
         ]);
     }
@@ -32,32 +39,32 @@ class CategoryController extends Controller
     public function store(CreateCategoryRequest $request): RedirectResponse
     {
         $this->logicRepository->createCategory($request->toDTO());
-        return back()->with('success', 'Kategorija veiksmīgi izveidota!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_CREATED);
     }
 
     public function update(CreateCategoryRequest $request, Category $category): RedirectResponse
     {
         $this->logicRepository->updateCategory($category, $request->toDTO());
-        return back()->with('success', 'Kategorija atjaunināta!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_UPDATED);
     }
 
     public function destroy(Category $category): RedirectResponse
     {
         $this->logicRepository->deleteCategory($category);
-        return back()->with('success', 'Kategorija izdzēsta!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_DELETED);
     }
 
     public function apiIndex(): JsonResponse
     {
         $categories = $this->logicRepository->getNestedCategories();
-        
+
         return response()->json(CategoryResource::collection($categories));
     }
 
     public function apiShow(int $id): JsonResponse
     {
         $category = $this->logicRepository->getCategoryById($id);
-        
+
         return response()->json(new CategoryResource($category));
     }
 
@@ -66,11 +73,10 @@ class CategoryController extends Controller
         $category = $this->logicRepository->createCategory($request->toDTO());
 
         return response()->json([
-            'message' => 'Kategorija veiksmīgi izveidota!',
-            'data' => new CategoryResource($category),
+            self::KEY_MESSAGE => self::MSG_CREATED,
+            self::KEY_DATA    => new CategoryResource($category),
         ], 201);
     }
-
 
     public function apiUpdate(CreateCategoryRequest $request, Category $category): JsonResponse
     {
@@ -79,8 +85,8 @@ class CategoryController extends Controller
         $category->refresh();
 
         return response()->json([
-            'message' => 'Kategorija veiksmīgi atjaunināta!',
-            'data' => new CategoryResource($category),
+            self::KEY_MESSAGE => self::MSG_UPDATED,
+            self::KEY_DATA    => new CategoryResource($category),
         ], 200);
     }
 
@@ -89,7 +95,7 @@ class CategoryController extends Controller
         $this->logicRepository->deleteCategory($category);
 
         return response()->json([
-            'message' => 'Kategorija veiksmīgi izdzēsta!'
+            self::KEY_MESSAGE => self::MSG_DELETED,
         ], 200);
     }
 }

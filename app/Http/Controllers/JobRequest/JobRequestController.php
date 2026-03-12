@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Auth;
 
 class JobRequestController extends Controller
 {
+    private const MSG_CREATED   = 'Darba sludinājums veiksmīgi izveidots!';
+    private const MSG_UPDATED   = 'Sludinājums veiksmīgi atjaunināts!';
+    private const MSG_DELETED   = 'Sludinājums ir izdzēsts.';
+    private const FLASH_SUCCESS = 'success';
+    private const FLASH_INFO    = 'info';
+
     public function __construct(
         private readonly JobRequestLogicRepository $logicRepository
     ) {
@@ -22,24 +28,24 @@ class JobRequestController extends Controller
     {
         $this->logicRepository->createJobRequest($request->toDTO());
 
-        return redirect()->route('seeker.job-requests.index')->with('success', 'Darba sludinājums veiksmīgi izveidots!');
+        return redirect()->route('seeker.job-requests.index')->with(self::FLASH_SUCCESS, self::MSG_CREATED);
     }
 
     public function update(SaveJobRequest $request, JobRequest $jobRequest): RedirectResponse
     {
         $this->logicRepository->updateJobRequest(
-            $jobRequest, 
-            $request->toDTO(), 
+            $jobRequest,
+            $request->toDTO(),
             Auth::id()
         );
 
-        return back()->with('success', 'Sludinājums veiksmīgi atjaunināts!');
+        return back()->with(self::FLASH_SUCCESS, self::MSG_UPDATED);
     }
 
     public function destroy(JobRequest $jobRequest): RedirectResponse
     {
         $this->logicRepository->deleteJobRequest($jobRequest, Auth::id());
 
-        return back()->with('info', 'Sludinājums ir izdzēsts.');
+        return back()->with(self::FLASH_INFO, self::MSG_DELETED);
     }
 }
