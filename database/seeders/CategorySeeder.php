@@ -13,12 +13,12 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Santehnika' => 'fa-solid fa-faucet',
-            'Elektrika' => 'fa-solid fa-bolt',
-            'Būvniecība un Remonts' => 'fa-solid fa-hammer',
-            'Uzkopšana' => 'fa-solid fa-broom',
-            'IT un Datori' => 'fa-solid fa-laptop',
-            'Auto Remonts' => 'fa-solid fa-wrench',
+            'Santehnika'           => 'WrenchScrewdriverIcon',
+            'Elektrika'            => 'BoltIcon',
+            'Būvniecība un Remonts' => 'HomeModernIcon',
+            'Uzkopšana'            => 'SparklesIcon',
+            'IT un Datori'         => 'ComputerDesktopIcon',
+            'Auto Remonts'         => 'TruckIcon',
         ];
 
         foreach ($categories as $name => $icon) {

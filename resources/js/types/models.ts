@@ -62,7 +62,7 @@ export interface AuthUser {
     roles: string[];
 }
 
-export type ServiceApplicationStatus = 'pending' | 'accepted' | 'rejected';
+export type ServiceApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
 
 export interface ServiceApplication {
     id: number;
@@ -73,6 +73,30 @@ export interface ServiceApplication {
     status: ServiceApplicationStatus;
     created_at: string;
     updated_at: string;
+}
+
+export interface ServiceApplicationWithService {
+    id: number;
+    message: string;
+    budget_offer: number | null;
+    status: ServiceApplicationStatus;
+    created_at: string;
+    service: {
+        id: number;
+        title: string;
+        slug: string;
+        description: string;
+        price: number | null;
+        price_type: 'hourly' | 'fixed' | 'negotiable';
+        location: string[];
+        is_active: boolean;
+        category: { id: number; name: string } | null;
+        user: {
+            id: number;
+            name: string;
+            profile: ServiceMasterProfile | null;
+        };
+    };
 }
 
 export interface ServiceMasterProfile {

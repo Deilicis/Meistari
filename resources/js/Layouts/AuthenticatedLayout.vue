@@ -11,6 +11,7 @@ import {
     BriefcaseIcon,
     ClipboardDocumentListIcon,
     MagnifyingGlassIcon,
+    InboxArrowDownIcon,
     ChevronDownIcon,
     Bars3Icon,
     XMarkIcon,
@@ -57,7 +58,7 @@ const navLinkClass = (active: boolean) =>
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-15 py-2.5 justify-between items-center">
 
-                    <!-- Kreisā puse: logotips un navigācijas saites -->
+                    <!-- Kreisā puse -->
                     <div class="flex items-center gap-6">
                         <Link :href="route('dashboard')" class="flex items-center gap-2.5 shrink-0">
                             <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
@@ -66,7 +67,7 @@ const navLinkClass = (active: boolean) =>
                             </span>
                         </Link>
 
-                        <!-- Navigācijas saites datoriem -->
+                        <!-- Navigācija -->
                         <div class="hidden sm:flex items-center gap-1">
                             <Link
                                 :href="route('dashboard')"
@@ -87,11 +88,20 @@ const navLinkClass = (active: boolean) =>
 
                             <Link
                                 v-if="isSeeker"
-                                :href="route('seeker.services.index')"
-                                :class="navLinkClass(route().current('seeker.services.index'))"
+                                :href="route('seeker.categories.index')"
+                                :class="navLinkClass(route().current('seeker.categories.index') || route().current('seeker.services.index'))"
                             >
                                 <MagnifyingGlassIcon class="w-3.5 h-3.5" />
                                 Pakalpojumi
+                            </Link>
+
+                            <Link
+                                v-if="isSeeker"
+                                :href="route('seeker.service-applications.index')"
+                                :class="navLinkClass(route().current('seeker.service-applications.index'))"
+                            >
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                Mani Pieteikumi
                             </Link>
 
                             <Link
@@ -106,7 +116,7 @@ const navLinkClass = (active: boolean) =>
                     </div>
 
                     <div class="hidden sm:flex items-center gap-3">
-                        <!-- Lomas indikators -->
+                        <!-- Loma -->
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg">
                             {{ roleLabel }}
                         </span>
@@ -118,7 +128,7 @@ const navLinkClass = (active: boolean) =>
                                     type="button"
                                     class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
                                 >
-                                    <!-- Lietotāja iniciāļu aplis -->
+                                    <!-- Lietotāja iniciālis -->
                                     <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                                         :class="accentBg">
                                         {{ user.name.charAt(0).toUpperCase() }}
@@ -142,7 +152,7 @@ const navLinkClass = (active: boolean) =>
                         </Dropdown>
                     </div>
 
-                    <!-- Mobilā izvēlne (hamburger poga) -->
+                    <!-- Hamburger poga -->
                     <div class="-me-2 flex items-center sm:hidden">
                         <button
                             @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -155,7 +165,7 @@ const navLinkClass = (active: boolean) =>
                 </div>
             </div>
 
-            <!-- Mobilā navigācijas izvēlne -->
+            <!-- Mobilā navigācija -->
             <div
                 :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                 class="sm:hidden border-t border-white/10"
@@ -177,12 +187,20 @@ const navLinkClass = (active: boolean) =>
                         Mani Pakalpojumi
                     </Link>
 
-                    <Link v-if="isSeeker" :href="route('seeker.services.index')"
+                    <Link v-if="isSeeker" :href="route('seeker.categories.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('seeker.services.index') }"
+                        :class="{ 'bg-white/10 text-white': route().current('seeker.categories.index') || route().current('seeker.services.index') }"
                         @click="showingNavigationDropdown = false">
                         <MagnifyingGlassIcon class="w-4 h-4" />
                         Pakalpojumi
+                    </Link>
+
+                    <Link v-if="isSeeker" :href="route('seeker.service-applications.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('seeker.service-applications.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <InboxArrowDownIcon class="w-4 h-4" />
+                        Mani Pieteikumi
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.job-requests.index')"
@@ -223,14 +241,14 @@ const navLinkClass = (active: boolean) =>
             </div>
         </nav>
 
-        <!-- Lapas galvenes slots -->
+        <!-- Galvene -->
         <header v-if="$slots.header" class="bg-white border-b border-gray-200">
             <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
                 <slot name="header" />
             </div>
         </header>
 
-        <!-- Galvenais saturs -->
+        <!-- Saturs -->
         <main>
             <slot />
         </main>

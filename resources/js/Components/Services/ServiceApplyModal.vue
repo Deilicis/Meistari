@@ -62,7 +62,7 @@ const submit = async () => {
 </script>
 
 <template>
-    <Modal :show="show" @close="close">
+    <Modal :show="show" @close="close" max-width="xl">
         <div class="bg-navy px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-400/20 rounded-lg flex items-center justify-center">

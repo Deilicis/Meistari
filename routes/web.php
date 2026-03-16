@@ -15,6 +15,8 @@ use App\Http\Controllers\JobRequest\JobRequestController;
 use App\Http\Controllers\JobRequest\JobRequestPageController;
 use App\Http\Controllers\Service\ServiceApplicationController;
 use App\Http\Controllers\Service\ServiceBrowsePageController;
+use App\Http\Controllers\Category\CategoryBrowsePageController;
+use App\Http\Controllers\ServiceApplication\MyServiceApplicationsPageController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -45,7 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(['role:seeker'])->prefix('seeker')->name('seeker.')->group(function () {
         Route::get('/my-requests', [JobRequestPageController::class, 'index'])->name('job-requests.index');
+        Route::get('/categories', [CategoryBrowsePageController::class, 'index'])->name('categories.index');
         Route::get('/services', [ServiceBrowsePageController::class, 'index'])->name('services.index');
+        Route::get('/my-applications', [MyServiceApplicationsPageController::class, 'index'])->name('service-applications.index');
     });
 
 });
@@ -77,6 +81,7 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
 
     Route::middleware(['role:seeker'])->prefix('service-applications')->name('service-applications.')->group(function () {
         Route::post('/', [ServiceApplicationController::class, 'store'])->name('store');
+        Route::delete('/{application}', [ServiceApplicationController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('job-requests')->name('job-requests.')->group(function () {

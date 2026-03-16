@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects\ServiceApplication;
 
+use App\Enums\Job\ApplicationStatusEnum;
 use App\Models\ServiceApplication;
 
 class SaveServiceApplicationData
@@ -20,6 +21,7 @@ class SaveServiceApplicationData
             ServiceApplication::USER_ID      => $this->userId,
             ServiceApplication::MESSAGE      => $this->message,
             ServiceApplication::BUDGET_OFFER => $this->budgetOffer,
+            ServiceApplication::STATUS       => ApplicationStatusEnum::PENDING->value,
         ];
     }
 }

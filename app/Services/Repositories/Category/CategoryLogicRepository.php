@@ -27,6 +27,11 @@ class CategoryLogicRepository
         return $this->dbRepository->getAllFlat();
     }
 
+    public function getFlatCategoriesWithServiceCount(): Collection
+    {
+        return $this->dbRepository->getAllFlatWithServiceCount();
+    }
+
     public function getCategoryById(int $id): Category
     {
         return $this->dbRepository->getById($id);

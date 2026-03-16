@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
-import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
-import ConfirmationModal from '@/Components/Common/ConfirmationModal.vue';
+import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import JobRequestModal from '@/Components/JobRequests/JobRequestModal.vue';
 import MyJobRequestsSearchBar from '@/Components/Search/MyJobRequestsSearchBar.vue';
 import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
@@ -82,19 +81,18 @@ const confirmDelete = (id: number) => {
     isDeleteModalOpen.value = true;
 };
 
-const executeDelete = async () => {
+const executeDelete = () => {
     if (!jobToDelete.value) return;
 
-    try {
-        await axios.delete(`/api/job-requests/${jobToDelete.value}`);
-        toast.success('Sludinājums veiksmīgi izdzēsts!');
-        router.reload({ only: ['jobRequests'] });
-    } catch {
-        toast.error('Neizdevās izdzēst sludinājumu.');
-    } finally {
-        isDeleteModalOpen.value = false;
-        jobToDelete.value = null;
-    }
+    router.delete(route('api.job-requests.destroy', jobToDelete.value), {
+        preserveScroll: true,
+        onSuccess: () => toast.success('Sludinājums veiksmīgi izdzēsts!'),
+        onError: () => toast.error('Neizdevās izdzēst sludinājumu.'),
+        onFinish: () => {
+            isDeleteModalOpen.value = false;
+            jobToDelete.value = null;
+        },
+    });
 };
 
 const formatDate = (dateString: string | null): string => {
@@ -140,7 +138,7 @@ const formatBudget = (budget: number | null): string => {
                     :categories="categories"
                 />
 
-                <!-- Tukši sludinājumi -->
+                <!-- Tukšs -->
                 <div v-if="!jobRequests || jobRequests.length === 0"
                     class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
                     <div class="mx-auto w-16 h-16 rounded-2xl bg-navy/5 flex items-center justify-center mb-4">
@@ -196,7 +194,6 @@ const formatBudget = (budget: number | null): string => {
                             </h3>
                         </div>
 
-                        <!-- Attēls -->
                         <div v-if="job.images && job.images.length > 0" class="-mt-4 mx-4 rounded-xl overflow-hidden shadow-sm h-32 flex-shrink-0">
                             <img
                                 :src="`/storage/${job.images[0]}`"
@@ -205,11 +202,8 @@ const formatBudget = (budget: number | null): string => {
                             />
                         </div>
 
-                        <!-- Kartes body -->
                         <div class="p-5 flex-grow flex flex-col" :class="{ 'pt-3': job.images && job.images.length > 0 }">
                             <p class="text-sm text-gray-600 line-clamp-2 mb-4">{{ job.description }}</p>
-
-                            <!-- Meta info -->
                             <div class="space-y-1.5 mb-4">
                                 <div class="flex items-center gap-1.5 text-xs text-gray-500">
                                     <MapPinIcon class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
@@ -222,7 +216,7 @@ const formatBudget = (budget: number | null): string => {
                                 </div>
                             </div>
 
-                            <!-- Footer -->
+                            <!-- Footeris -->
                             <div class="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <span v-if="job.budget" class="text-sm font-bold text-navy">
@@ -265,14 +259,13 @@ const formatBudget = (budget: number | null): string => {
             @saved="refreshJobs"
         />
 
-        <ConfirmationModal
+        <ConfirmDialog
             :show="isDeleteModalOpen"
-            title="Dzēst sludinājumu"
+            title="Dzēst sludinājumu?"
             message="Vai tiešām vēlaties neatgriezeniski dzēst šo sludinājumu? Visi saistītie pieteikumi un faili tiks dzēsti."
-            confirmText="Jā, dzēst"
-            confirmButtonClass="bg-red-600 hover:bg-red-700"
-            @close="isDeleteModalOpen = false"
+            confirmLabel="Jā, dzēst"
             @confirm="executeDelete"
+            @cancel="isDeleteModalOpen = false"
         />
 
     </AuthenticatedLayout>

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\ServiceApplication;
 
+use App\Enums\Job\ApplicationStatusEnum;
 use App\Models\ServiceApplication;
+use Illuminate\Support\Collection;
 
 class ServiceApplicationDbRepository
 {
@@ -18,5 +20,26 @@ class ServiceApplicationDbRepository
         return ServiceApplication::where(ServiceApplication::USER_ID, $userId)
             ->pluck(ServiceApplication::SERVICE_ID)
             ->toArray();
+    }
+
+    public function getByUserIdWithRelations(int $userId): Collection
+    {
+        return ServiceApplication::where(ServiceApplication::USER_ID, $userId)
+            ->with(['service.user.profile', 'service.category'])
+            ->orderByDesc(ServiceApplication::CREATED_AT)
+            ->get();
+    }
+
+    public function findByIdForUser(int $id, int $userId): ?ServiceApplication
+    {
+        return ServiceApplication::where(ServiceApplication::ID, $id)
+            ->where(ServiceApplication::USER_ID, $userId)
+            ->first();
+    }
+
+    public function cancel(ServiceApplication $application): ServiceApplication
+    {
+        $application->update([ServiceApplication::STATUS => ApplicationStatusEnum::CANCELLED->value]);
+        return $application;
     }
 }

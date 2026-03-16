@@ -22,6 +22,13 @@ class CategoryDbRepository
         return Category::orderBy(Category::NAME)->get();
     }
 
+    public function getAllFlatWithServiceCount(): Collection
+    {
+        return Category::withCount('services')
+            ->orderBy(Category::NAME)
+            ->get();
+    }
+
     public function getById(int $id): Category
     {
         return Category::findOrFail($id);
