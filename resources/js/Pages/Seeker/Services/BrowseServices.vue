@@ -32,10 +32,10 @@ const props = defineProps<{
 const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
     'seeker.services.index',
     {
-        search:      props.filters?.search      ?? '',
+        search: props.filters?.search      ?? '',
         category_id: props.filters?.category_id ?? '',
-        price_min:   props.filters?.price_min   ?? '',
-        price_max:   props.filters?.price_max   ?? '',
+        price_min: props.filters?.price_min   ?? '',
+        price_max: props.filters?.price_max   ?? '',
     },
     { search: '', category_id: '', price_min: '', price_max: '' }
 );

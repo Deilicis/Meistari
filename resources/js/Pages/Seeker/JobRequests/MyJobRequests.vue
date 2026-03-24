@@ -27,18 +27,18 @@ const props = defineProps<{
 const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
     'seeker.job-requests.index',
     {
-        search:      props.filters?.search      ?? '',
+        search: props.filters?.search      ?? '',
         category_id: props.filters?.category_id ?? '',
-        status:      props.filters?.status      ?? '',
-        budget_min:  props.filters?.budget_min  ?? '',
-        budget_max:  props.filters?.budget_max  ?? '',
+        status: props.filters?.status      ?? '',
+        budget_min: props.filters?.budget_min  ?? '',
+        budget_max: props.filters?.budget_max  ?? '',
     },
     { search: '', category_id: '', status: '', budget_min: '', budget_max: '' }
 );
 
 const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    active:    { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
-    assigned:  { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-800 ring-1 ring-blue-200' },
+    active: { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
+    assigned: { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-800 ring-1 ring-blue-200' },
     completed: { label: 'Pabeigts',  classes: 'bg-navy-light text-white' },
     cancelled: { label: 'Atcelts',   classes: 'bg-red-100 text-red-800 ring-1 ring-red-200' },
 };
@@ -63,15 +63,15 @@ const openEditModal = (job: JobRequest) => {
 
 const {
     deleteTarget: jobToDelete,
-    isDeleting:   isDeleteProcessing,
+    isDeleting: isDeleteProcessing,
     confirmDelete,
     cancelDelete,
     executeDelete,
 } = useConfirmDelete<number>({
-    routeName:      'api.job-requests.destroy',
-    getRouteId:     (id) => id,
+    routeName: 'api.job-requests.destroy',
+    getRouteId: (id) => id,
     successMessage: 'Sludinājums veiksmīgi izdzēsts!',
-    errorMessage:   'Neizdevās izdzēst sludinājumu.',
+    errorMessage: 'Neizdevās izdzēst sludinājumu.',
 });
 
 const formatDate = (dateString: string | null): string => {

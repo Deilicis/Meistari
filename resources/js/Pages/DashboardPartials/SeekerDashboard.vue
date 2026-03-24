@@ -17,8 +17,8 @@ defineProps<{
 }>();
 
 const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    active:    { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-700' },
-    assigned:  { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-700' },
+    active: { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-700' },
+    assigned: { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-700' },
     completed: { label: 'Pabeigts',  classes: 'bg-navy/10 text-navy' },
     cancelled: { label: 'Atcelts',   classes: 'bg-red-100 text-red-700' },
 };

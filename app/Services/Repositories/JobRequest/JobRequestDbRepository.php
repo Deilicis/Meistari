@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\JobRequest;
 
+use App\Enums\Job\JobStatusEnum;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,6 +25,28 @@ class JobRequestDbRepository
         return JobRequest::with(['category', 'user'])
             ->latest()
             ->paginate($perPage);
+    }
+
+    public function getPublicPaginated(array $filters = [], int $perPage = 12): LengthAwarePaginator
+    {
+        $query = JobRequest::with(['category', 'user.profile'])
+            ->withCount('applications')
+            ->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value);
+
+        if (!empty($filters[self::FILTER_SEARCH])) {
+            $query->where(JobRequest::TITLE, self::LIKE, '%' . $filters[self::FILTER_SEARCH] . '%');
+        }
+        if (!empty($filters[self::FILTER_CATEGORY])) {
+            $query->where(JobRequest::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
+        }
+        if (!empty($filters[self::FILTER_BUDGET_MIN])) {
+            $query->where(JobRequest::BUDGET, self::GTE, $filters[self::FILTER_BUDGET_MIN]);
+        }
+        if (!empty($filters[self::FILTER_BUDGET_MAX])) {
+            $query->where(JobRequest::BUDGET, self::LTE, $filters[self::FILTER_BUDGET_MAX]);
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function getByUserId(int $userId, array $filters = []): Collection

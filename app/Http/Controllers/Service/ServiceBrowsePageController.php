@@ -27,9 +27,9 @@ class ServiceBrowsePageController extends Controller
         $filters = $request->only(['search', 'category_id', 'price_min', 'price_max']);
 
         return Inertia::render('Seeker/Services/BrowseServices', [
-            'services'          => $this->serviceLogicRepo->getPublicServices($filters),
-            'categories'        => $this->categoryLogicRepo->getFlatCategories(),
-            'filters'           => $filters,
+            'services' => $this->serviceLogicRepo->getPublicServices($filters),
+            'categories' => $this->categoryLogicRepo->getFlatCategories(),
+            'filters' => $filters,
             'appliedServiceIds' => $this->applicationLogicRepo->getAppliedServiceIds(Auth::id()),
         ]);
     }

@@ -13,7 +13,7 @@ defineProps<{
 
     <div class="min-h-screen flex flex-col font-sans bg-gray-50">
 
-        <!-- ── Navigācija ── -->
+        <!-- Navigācija -->
         <nav class="bg-navy relative z-20">
             <div class="h-0.5 w-full bg-gold" />
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
@@ -49,7 +49,7 @@ defineProps<{
             </div>
         </nav>
 
-        <!-- Hero -->
+        <!-- Hero sadaļa -->
         <section class="bg-navy text-white pb-24 pt-16 relative overflow-hidden">
             <!-- Background shapes -->
             <div class="absolute inset-0 pointer-events-none overflow-hidden">
@@ -71,7 +71,7 @@ defineProps<{
                     Sertificēti un pārbaudīti meistari visā Latvijā. Publicē sludinājumu un saņem piedāvājumus, vai reģistrējies kā meistars un atrod darbu.
                 </p>
 
-                <!-- Search bar -->
+                <!-- Meklēšanas josla -->
                 <div class="w-full bg-white/10 backdrop-blur-sm border border-white/10 p-2 rounded-2xl flex flex-col sm:flex-row gap-2 max-w-3xl mx-auto">
                     <div class="flex-1 flex items-center bg-white/10 rounded-xl px-4 py-3 border border-white/10 focus-within:border-gold/50 focus-within:bg-white/15 transition-all">
                         <svg class="w-4 h-4 text-white/40 mr-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,7 +99,7 @@ defineProps<{
                     </button>
                 </div>
 
-                <!-- Populāri tags -->
+                <!-- Populāri tagi -->
                 <div class="mt-6 flex flex-wrap justify-center items-center gap-2">
                     <span class="text-white/40 text-xs mr-1">Populāri:</span>
                     <span v-for="tag in ['Elektriķis', 'Santehniķis', 'Apdares darbi', 'Uzkopšana', 'Mēbeļu montāža']" :key="tag"
@@ -110,7 +110,7 @@ defineProps<{
             </div>
         </section>
 
-        <!-- ── Kā tas strādā ── -->
+        <!-- Kā tas strādā -->
         <section class="py-16 bg-gray-50">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">

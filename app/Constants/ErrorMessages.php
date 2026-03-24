@@ -11,7 +11,9 @@ class ErrorMessages
     public const SERVICE_DELETE_FORBIDDEN = 'Jums nav tiesību dzēst šo pakalpojumu.';
     public const JOB_REQUEST_EDIT_FORBIDDEN = 'Jums nav tiesību rediģēt šo darba sludinājumu.';
     public const JOB_REQUEST_DELETE_FORBIDDEN = 'Jums nav tiesību dzēst šo darba sludinājumu.';
-    public const OWN_SERVICE_APPLICATION  = 'Nevar pieteikties uz savu pakalpojumu.';
+    public const OWN_SERVICE_APPLICATION         = 'Nevar pieteikties uz savu pakalpojumu.';
+    public const OWN_JOB_REQUEST_APPLICATION     = 'Nevar pieteikties uz savu darba sludinājumu.';
+    public const JOB_APPLICATION_ALREADY_APPLIED = 'Jūs jau esat pieteicies šim darba sludinājumam.';
     public const APPLICATION_CANCEL_FORBIDDEN = 'Jums nav tiesību atcelt šo pieteikumu.';
     public const APPLICATION_NOT_CANCELLABLE = 'Šo pieteikumu nevar atcelt, jo tas jau ir pieņemts vai pabeigts.';
 

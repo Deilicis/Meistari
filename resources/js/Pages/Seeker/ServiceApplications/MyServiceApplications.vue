@@ -17,17 +17,17 @@ const activeFilter = ref<ServiceApplicationStatus | 'all'>('all');
 
 const statusConfig: Record<ServiceApplicationStatus, { label: string; badgeClass: string }> = {
     pending:   { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-800' },
-    accepted:  { label: 'Pieņemts',             badgeClass: 'bg-green-100 text-green-800' },
-    rejected:  { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-800' },
-    completed: { label: 'Pabeigts',             badgeClass: 'bg-blue-100 text-blue-800' },
-    cancelled: { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-600' },
+    accepted:  { label: 'Pieņemts', badgeClass: 'bg-green-100 text-green-800' },
+    rejected:  { label: 'Noraidīts', badgeClass: 'bg-red-100 text-red-800' },
+    completed: { label: 'Pabeigts', badgeClass: 'bg-blue-100 text-blue-800' },
+    cancelled: { label: 'Atcelts', badgeClass: 'bg-gray-100 text-gray-600' },
 };
 
 const tabs: { key: ServiceApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',       label: 'Visi' },
-    { key: 'pending',   label: 'Gaida' },
-    { key: 'accepted',  label: 'Pieņemti' },
-    { key: 'rejected',  label: 'Noraidīti' },
+    { key: 'all', label: 'Visi' },
+    { key: 'pending', label: 'Gaida' },
+    { key: 'accepted', label: 'Pieņemti' },
+    { key: 'rejected', label: 'Noraidīti' },
     { key: 'completed', label: 'Pabeigti' },
     { key: 'cancelled', label: 'Atcelti' },
 ];
@@ -46,8 +46,8 @@ const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const priceTypeLabel: Record<string, string> = {
-    hourly:     '/ stundā',
-    fixed:      'fiksēta',
+    hourly: '/ stundā',
+    fixed: 'fiksēta',
     negotiable: 'pēc vienošanās',
 };
 
@@ -57,7 +57,7 @@ const showDetailModal = ref(false);
 const openDetail = (app: ServiceApplicationWithService) => {
     detailService.value = {
         ...app.service,
-        user_id:     app.service.user.id,
+        user_id: app.service.user.id,
         category_id: app.service.category?.id ?? 0,
     } as ServiceWithMaster;
     showDetailModal.value = true;
@@ -65,15 +65,15 @@ const openDetail = (app: ServiceApplicationWithService) => {
 
 const {
     deleteTarget: cancelTarget,
-    isDeleting:   cancelling,
+    isDeleting: cancelling,
     confirmDelete: startCancel,
     cancelDelete,
     executeDelete: confirmCancel,
 } = useConfirmDelete<ServiceApplicationWithService>({
-    routeName:      'api.service-applications.destroy',
-    getRouteId:     (app) => app.id,
+    routeName: 'api.service-applications.destroy',
+    getRouteId: (app) => app.id,
     successMessage: 'Pieteikums atcelts.',
-    errorMessage:   'Neizdevās atcelt pieteikumu.',
+    errorMessage: 'Neizdevās atcelt pieteikumu.',
 });
 </script>
 

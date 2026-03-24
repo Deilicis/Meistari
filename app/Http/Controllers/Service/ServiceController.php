@@ -18,7 +18,7 @@ class ServiceController extends Controller
     private const MSG_UPDATED = 'Pakalpojums atjaunināts!';
     private const MSG_DELETED = 'Pakalpojums izdzēsts!';
     private const KEY_MESSAGE = 'message';
-    private const KEY_DATA    = 'data';
+    private const KEY_DATA = 'data';
 
     public function __construct(
         private readonly ServiceLogicRepository $logicRepository
@@ -49,7 +49,7 @@ class ServiceController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_CREATED,
-            self::KEY_DATA    => new ServiceResource($service),
+            self::KEY_DATA => new ServiceResource($service),
         ], 201);
     }
 
@@ -60,7 +60,7 @@ class ServiceController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_UPDATED,
-            self::KEY_DATA    => new ServiceResource($service),
+            self::KEY_DATA => new ServiceResource($service),
         ], 200);
     }
 
