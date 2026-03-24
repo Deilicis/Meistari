@@ -17,6 +17,10 @@ use App\Http\Controllers\Service\ServiceApplicationController;
 use App\Http\Controllers\Service\ServiceBrowsePageController;
 use App\Http\Controllers\Category\CategoryBrowsePageController;
 use App\Http\Controllers\ServiceApplication\MyServiceApplicationsPageController;
+use App\Http\Controllers\JobRequest\JobRequestCategoryBrowsePageController;
+use App\Http\Controllers\JobRequest\JobRequestBrowsePageController;
+use App\Http\Controllers\Application\ApplicationController;
+use App\Http\Controllers\Application\ApplicationPageController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -45,7 +49,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Meistara panelis
     Route::middleware(['role:master'])->prefix('master')->name('master.')->group(function () {
-        Route::get('/my-services', [ServicePageController::class, 'index'])->name('services.index');
+        Route::get('/my-services',       [ServicePageController::class,                   'index'])->name('services.index');
+        Route::get('/browse-categories', [JobRequestCategoryBrowsePageController::class,  'index'])->name('job-requests.categories');
+        Route::get('/browse-jobs',       [JobRequestBrowsePageController::class,          'index'])->name('job-requests.index');
+        Route::get('/my-applications',   [ApplicationPageController::class,               'index'])->name('applications.index');
     });
 
     // Meklētāja panelis
