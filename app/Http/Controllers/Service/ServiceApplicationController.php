@@ -12,10 +12,10 @@ use Illuminate\Http\JsonResponse;
 
 class ServiceApplicationController extends Controller
 {
-    private const MSG_CREATED   = 'Pieteikums veiksmīgi iesniegts!';
+    private const MSG_CREATED = 'Pieteikums veiksmīgi iesniegts!';
     private const MSG_CANCELLED = 'Pieteikums atcelts.';
     private const KEY_MESSAGE = 'message';
-    private const KEY_DATA    = 'data';
+    private const KEY_DATA = 'data';
 
     public function __construct(
         private readonly ServiceApplicationLogicRepository $logicRepository
@@ -28,7 +28,7 @@ class ServiceApplicationController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_CREATED,
-            self::KEY_DATA    => new ServiceApplicationResource($application),
+            self::KEY_DATA => new ServiceApplicationResource($application),
         ], 201);
     }
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
-import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ServiceDetailModal from '@/Components/Services/ServiceDetailModal.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
+import EmptyState from '@/Components/Common/EmptyState.vue';
+import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import type { ServiceApplicationWithService, ServiceApplicationStatus, ServiceWithMaster } from '@/types/models';
 
 const props = defineProps<{
@@ -15,18 +16,18 @@ const props = defineProps<{
 const activeFilter = ref<ServiceApplicationStatus | 'all'>('all');
 
 const statusConfig: Record<ServiceApplicationStatus, { label: string; badgeClass: string }> = {
-    pending: { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-800' },
-    accepted: { label: 'Pieņemts', badgeClass: 'bg-green-100 text-green-800' },
-    rejected: { label: 'Noraidīts', badgeClass: 'bg-red-100 text-red-800' },
-    completed: { label: 'Pabeigts', badgeClass: 'bg-blue-100 text-blue-800' },
-    cancelled: { label: 'Atcelts', badgeClass: 'bg-gray-100 text-gray-600' },
+    pending:   { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-800' },
+    accepted:  { label: 'Pieņemts',             badgeClass: 'bg-green-100 text-green-800' },
+    rejected:  { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-800' },
+    completed: { label: 'Pabeigts',             badgeClass: 'bg-blue-100 text-blue-800' },
+    cancelled: { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-600' },
 };
 
 const tabs: { key: ServiceApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all', label: 'Visi' },
-    { key: 'pending', label: 'Gaida' },
-    { key: 'accepted', label: 'Pieņemti' },
-    { key: 'rejected', label: 'Noraidīti' },
+    { key: 'all',       label: 'Visi' },
+    { key: 'pending',   label: 'Gaida' },
+    { key: 'accepted',  label: 'Pieņemti' },
+    { key: 'rejected',  label: 'Noraidīti' },
     { key: 'completed', label: 'Pabeigti' },
     { key: 'cancelled', label: 'Atcelti' },
 ];
@@ -41,13 +42,12 @@ const tabCount = (key: ServiceApplicationStatus | 'all') => {
     return props.applications.filter(a => a.status === key).length;
 };
 
-const formatDate = (iso: string) => {
-    return new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
-};
+const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const priceTypeLabel: Record<string, string> = {
-    hourly: '/ stundā',
-    fixed: 'fiksēta',
+    hourly:     '/ stundā',
+    fixed:      'fiksēta',
     negotiable: 'pēc vienošanās',
 };
 
@@ -57,29 +57,24 @@ const showDetailModal = ref(false);
 const openDetail = (app: ServiceApplicationWithService) => {
     detailService.value = {
         ...app.service,
-        user_id: app.service.user.id,
+        user_id:     app.service.user.id,
         category_id: app.service.category?.id ?? 0,
     } as ServiceWithMaster;
     showDetailModal.value = true;
 };
 
-const cancelTarget = ref<ServiceApplicationWithService | null>(null);
-const cancelling = ref(false);
-
-const confirmCancel = async () => {
-    if (!cancelTarget.value) return;
-    cancelling.value = true;
-    try {
-        await axios.delete(route('api.service-applications.destroy', cancelTarget.value.id));
-        toast.success('Pieteikums atcelts.');
-        cancelTarget.value = null;
-        router.reload({ only: ['applications'] });
-    } catch {
-        toast.error('Neizdevās atcelt pieteikumu.');
-    } finally {
-        cancelling.value = false;
-    }
-};
+const {
+    deleteTarget: cancelTarget,
+    isDeleting:   cancelling,
+    confirmDelete: startCancel,
+    cancelDelete,
+    executeDelete: confirmCancel,
+} = useConfirmDelete<ServiceApplicationWithService>({
+    routeName:      'api.service-applications.destroy',
+    getRouteId:     (app) => app.id,
+    successMessage: 'Pieteikums atcelts.',
+    errorMessage:   'Neizdevās atcelt pieteikumu.',
+});
 </script>
 
 <template>
@@ -89,7 +84,6 @@ const confirmCancel = async () => {
         <div class="py-8">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 
-                <!-- Galvene -->
                 <div class="flex items-center gap-3 mb-6">
                     <h1 class="text-2xl font-bold text-navy">Mani Pieteikumi</h1>
                     <span class="text-sm font-semibold bg-navy/10 text-navy px-2.5 py-0.5 rounded-full">
@@ -97,7 +91,6 @@ const confirmCancel = async () => {
                     </span>
                 </div>
 
-                <!-- Statusa filtrs-->
                 <div class="flex gap-1 flex-wrap mb-6 border-b border-gray-200">
                     <button
                         v-for="tab in tabs"
@@ -117,7 +110,6 @@ const confirmCancel = async () => {
                     </button>
                 </div>
 
-                <!-- Pieteikumu saraksts -->
                 <div v-if="filteredApplications.length > 0" class="space-y-3">
                     <div
                         v-for="app in filteredApplications"
@@ -167,7 +159,7 @@ const confirmCancel = async () => {
                                 <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
                                 <button
                                     v-if="app.status === 'pending'"
-                                    @click="cancelTarget = app"
+                                    @click="startCancel(app)"
                                     class="text-xs font-semibold text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 hover:border-red-300 rounded-md px-2.5 py-1 transition-colors"
                                 >
                                     Atcelt pieteikumu
@@ -177,20 +169,17 @@ const confirmCancel = async () => {
                     </div>
                 </div>
 
-                <!-- Tukšs -->
-                <div v-else class="text-center py-16 bg-white rounded-xl border border-gray-100 shadow-sm">
-                    <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                <EmptyState
+                    v-else
+                    :title="activeFilter === 'all' ? 'Vēl nav neviena pieteikuma' : 'Nav pieteikumu šajā kategorijā'"
+                    :description="activeFilter === 'all' ? 'Atrodi pakalpojumus un piesakies!' : 'Izmēģini citu filtru.'"
+                >
+                    <template #icon>
                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
                         </svg>
-                    </div>
-                    <p class="text-gray-500 font-medium">
-                        {{ activeFilter === 'all' ? 'Vēl nav neviena pieteikuma' : 'Nav pieteikumu šajā kategorijā' }}
-                    </p>
-                    <p class="text-sm text-gray-400 mt-1">
-                        {{ activeFilter === 'all' ? 'Atrodi pakalpojumus un piesakies!' : 'Izmēģini citu filtru.' }}
-                    </p>
-                </div>
+                    </template>
+                </EmptyState>
 
             </div>
         </div>
@@ -211,6 +200,6 @@ const confirmCancel = async () => {
         confirmLabel="Atcelt pieteikumu"
         :processing="cancelling"
         @confirm="confirmCancel"
-        @cancel="cancelTarget = null"
+        @cancel="cancelDelete"
     />
 </template>

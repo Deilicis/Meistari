@@ -26,7 +26,8 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
+    // Informācijas panelis un profils
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -35,16 +36,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
     });
 
+    // Administratora panelis
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get('/', [CategoryPageController::class, 'index'])->name('index');
         });
     });
 
+    // Meistara panelis
     Route::middleware(['role:master'])->prefix('master')->name('master.')->group(function () {
         Route::get('/my-services', [ServicePageController::class, 'index'])->name('services.index');
     });
 
+    // Meklētāja panelis
     Route::middleware(['role:seeker'])->prefix('seeker')->name('seeker.')->group(function () {
         Route::get('/my-requests', [JobRequestPageController::class, 'index'])->name('job-requests.index');
         Route::get('/categories', [CategoryBrowsePageController::class, 'index'])->name('categories.index');
@@ -56,6 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
 
+    // API: Kategorijas
     Route::prefix('categories')->name('categories.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
@@ -67,6 +72,7 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
         });
     });
 
+    // API: Pakalpojumi
     Route::prefix('services')->name('services.')->group(function () {
         Route::get('/', [ServiceController::class, 'index'])->name('index');
         Route::get('/{id}', [ServiceController::class, 'show'])->name('show');
@@ -79,11 +85,13 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
         });
     });
 
+    // API: Pakalpojumu pieteikumi (meklētāji)
     Route::middleware(['role:seeker'])->prefix('service-applications')->name('service-applications.')->group(function () {
         Route::post('/', [ServiceApplicationController::class, 'store'])->name('store');
         Route::delete('/{application}', [ServiceApplicationController::class, 'destroy'])->name('destroy');
     });
 
+    // API: Darba sludinājumi
     Route::prefix('job-requests')->name('job-requests.')->group(function () {
         Route::get('/', [JobRequestController::class, 'index'])->name('index');
         Route::get('/{id}', [JobRequestController::class, 'show'])->name('show');

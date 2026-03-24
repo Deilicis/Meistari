@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Auth;
 
 class JobRequestController extends Controller
 {
-    private const MSG_CREATED   = 'Darba sludinājums veiksmīgi izveidots!';
-    private const MSG_UPDATED   = 'Sludinājums veiksmīgi atjaunināts!';
-    private const MSG_DELETED   = 'Sludinājums ir izdzēsts.';
+    private const MSG_CREATED = 'Darba sludinājums veiksmīgi izveidots!';
+    private const MSG_UPDATED = 'Sludinājums veiksmīgi atjaunināts!';
+    private const MSG_DELETED = 'Sludinājums ir izdzēsts.';
     private const FLASH_SUCCESS = 'success';
-    private const FLASH_INFO    = 'info';
+    private const FLASH_INFO = 'info';
 
     public function __construct(
         private readonly JobRequestLogicRepository $logicRepository

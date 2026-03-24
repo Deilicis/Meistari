@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import CategoryCard from '@/Components/Category/CategoryCard.vue';
+import EmptyState from '@/Components/Common/EmptyState.vue';
 import { MagnifyingGlassIcon, Squares2X2Icon } from '@heroicons/vue/24/outline';
 import type { Category } from '@/types/models';
 
@@ -49,16 +50,15 @@ const totalServices = computed(() =>
                     />
                 </div>
 
-                <div
+                <EmptyState
                     v-if="filtered.length === 0"
-                    class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center"
+                    title="Nav atrasta neviena kategorija"
+                    description="Mēģiniet mainīt meklēšanas vārdu."
                 >
-                    <div class="mx-auto w-16 h-16 rounded-2xl bg-navy/5 flex items-center justify-center mb-4">
+                    <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-900 mb-1">Nav atrasta neviena kategorija</h3>
-                    <p class="text-sm text-gray-500">Mēģiniet mainīt meklēšanas vārdu.</p>
-                </div>
+                    </template>
+                </EmptyState>
 
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 

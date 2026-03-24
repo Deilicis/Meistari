@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BrowseServicesSearchBar from '@/Components/Search/BrowseServicesSearchBar.vue';
 import PublicServiceCard from '@/Components/Services/PublicServiceCard.vue';
 import ServiceDetailModal from '@/Components/Services/ServiceDetailModal.vue';
 import ServiceApplyModal from '@/Components/Services/ServiceApplyModal.vue';
+import EmptyState from '@/Components/Common/EmptyState.vue';
+import { useDebouncedFilter } from '@/composables/useDebouncedFilter';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import type { ServiceWithMaster, Category } from '@/types/models';
 
@@ -27,31 +29,16 @@ const props = defineProps<{
     appliedServiceIds: number[];
 }>();
 
-const filterForm = ref({
-    search: props.filters?.search ?? '',
-    category_id: props.filters?.category_id ?? '',
-    price_min: props.filters?.price_min ?? '',
-    price_max: props.filters?.price_max ?? '',
-});
-
-let searchTimeout: ReturnType<typeof setTimeout>;
-
-watch(filterForm, (newFilters) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        router.get(route('seeker.services.index'), newFilters, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    }, 300);
-}, { deep: true });
-
-const clearFilters = () => {
-    filterForm.value = { search: '', category_id: '', price_min: '', price_max: '' };
-};
-
-const hasActiveFilters = () => Object.values(filterForm.value).some(x => x !== '');
+const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
+    'seeker.services.index',
+    {
+        search:      props.filters?.search      ?? '',
+        category_id: props.filters?.category_id ?? '',
+        price_min:   props.filters?.price_min   ?? '',
+        price_max:   props.filters?.price_max   ?? '',
+    },
+    { search: '', category_id: '', price_min: '', price_max: '' }
+);
 
 const selectedService = ref<ServiceWithMaster | null>(null);
 const applyTarget = ref<ServiceWithMaster | null>(null);
@@ -59,26 +46,13 @@ const localApplied = ref<number[]>([...props.appliedServiceIds]);
 
 const isApplied = (serviceId: number) => localApplied.value.includes(serviceId);
 
-const openDetail = (service: ServiceWithMaster) => {
-    selectedService.value = service;
-};
-
-const closeDetail = () => {
-    selectedService.value = null;
-};
-
-const openApply = () => {
-    applyTarget.value = selectedService.value;
-};
-
-const closeApply = () => {
-    applyTarget.value = null;
-};
+const openDetail = (service: ServiceWithMaster) => { selectedService.value = service; };
+const closeDetail = () => { selectedService.value = null; };
+const openApply = () => { applyTarget.value = selectedService.value; };
+const closeApply = () => { applyTarget.value = null; };
 
 const onApplied = () => {
-    if (applyTarget.value) {
-        localApplied.value.push(applyTarget.value.id);
-    }
+    if (applyTarget.value) localApplied.value.push(applyTarget.value.id);
     closeApply();
     closeDetail();
 };
@@ -100,27 +74,24 @@ const onApplied = () => {
 
                 <BrowseServicesSearchBar v-model="filterForm" :categories="categories" />
 
-                <div
+                <EmptyState
                     v-if="services.data.length === 0"
-                    class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center"
+                    :title="hasActiveFilters() ? 'Nav atrasts neviens pakalpojums' : 'Pagaidām nav pieejamu pakalpojumu'"
+                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meistari vēl nav publicējuši savus pakalpojumus.'"
                 >
-                    <div class="mx-auto w-16 h-16 rounded-2xl bg-navy/5 flex items-center justify-center mb-4">
+                    <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-900 mb-1">
-                        {{ hasActiveFilters() ? 'Nav atrasts neviens pakalpojums' : 'Pagaidām nav pieejamu pakalpojumu' }}
-                    </h3>
-                    <p class="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-                        {{ hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meistari vēl nav publicējuši savus pakalpojumus.' }}
-                    </p>
-                    <button
-                        v-if="hasActiveFilters()"
-                        @click="clearFilters"
-                        class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
-                    >
-                        Notīrīt filtrus
-                    </button>
-                </div>
+                    </template>
+                    <template #action>
+                        <button
+                            v-if="hasActiveFilters()"
+                            @click="clearFilters"
+                            class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
+                        >
+                            Notīrīt filtrus
+                        </button>
+                    </template>
+                </EmptyState>
 
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <PublicServiceCard

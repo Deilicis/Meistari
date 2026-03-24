@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
+import EmptyState from '@/Components/Common/EmptyState.vue';
 import JobRequestModal from '@/Components/JobRequests/JobRequestModal.vue';
 import MyJobRequestsSearchBar from '@/Components/Search/MyJobRequestsSearchBar.vue';
+import { useDebouncedFilter } from '@/composables/useDebouncedFilter';
+import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category, JobStatus } from '@/types/models';
 
@@ -22,32 +24,17 @@ const props = defineProps<{
     };
 }>();
 
-const filterForm = ref({
-    search: props.filters?.search ?? '',
-    category_id: props.filters?.category_id ?? '',
-    status: props.filters?.status ?? '',
-    budget_min: props.filters?.budget_min ?? '',
-    budget_max: props.filters?.budget_max ?? '',
-});
-
-let searchTimeout: ReturnType<typeof setTimeout>;
-
-watch(filterForm, (newFilters) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        router.get(route('seeker.job-requests.index'), newFilters, {
-            preserveState: true,
-            preserveScroll: true,
-            replace: true,
-        });
-    }, 300);
-}, { deep: true });
-
-const clearFilters = () => {
-    filterForm.value = { search: '', category_id: '', status: '', budget_min: '', budget_max: '' };
-};
-
-const hasActiveFilters = () => Object.values(filterForm.value).some(x => x !== '');
+const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
+    'seeker.job-requests.index',
+    {
+        search:      props.filters?.search      ?? '',
+        category_id: props.filters?.category_id ?? '',
+        status:      props.filters?.status      ?? '',
+        budget_min:  props.filters?.budget_min  ?? '',
+        budget_max:  props.filters?.budget_max  ?? '',
+    },
+    { search: '', category_id: '', status: '', budget_min: '', budget_max: '' }
+);
 
 const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
     active:    { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
@@ -58,8 +45,6 @@ const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
 
 const isJobModalOpen = ref(false);
 const jobToEdit = ref<JobRequest | null>(null);
-const isDeleteModalOpen = ref(false);
-const jobToDelete = ref<number | null>(null);
 
 const refreshJobs = () => {
     toast.success('Sludinājums veiksmīgi saglabāts!');
@@ -76,31 +61,23 @@ const openEditModal = (job: JobRequest) => {
     isJobModalOpen.value = true;
 };
 
-const confirmDelete = (id: number) => {
-    jobToDelete.value = id;
-    isDeleteModalOpen.value = true;
-};
-
-const executeDelete = () => {
-    if (!jobToDelete.value) return;
-
-    router.delete(route('api.job-requests.destroy', jobToDelete.value), {
-        preserveScroll: true,
-        onSuccess: () => toast.success('Sludinājums veiksmīgi izdzēsts!'),
-        onError: () => toast.error('Neizdevās izdzēst sludinājumu.'),
-        onFinish: () => {
-            isDeleteModalOpen.value = false;
-            jobToDelete.value = null;
-        },
-    });
-};
+const {
+    deleteTarget: jobToDelete,
+    isDeleting:   isDeleteProcessing,
+    confirmDelete,
+    cancelDelete,
+    executeDelete,
+} = useConfirmDelete<number>({
+    routeName:      'api.job-requests.destroy',
+    getRouteId:     (id) => id,
+    successMessage: 'Sludinājums veiksmīgi izdzēsts!',
+    errorMessage:   'Neizdevās izdzēst sludinājumu.',
+});
 
 const formatDate = (dateString: string | null): string => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('lv-LV', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+        year: 'numeric', month: 'short', day: 'numeric',
     });
 };
 
@@ -133,45 +110,37 @@ const formatBudget = (budget: number | null): string => {
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
-                <MyJobRequestsSearchBar
-                    v-model="filterForm"
-                    :categories="categories"
-                />
+                <MyJobRequestsSearchBar v-model="filterForm" :categories="categories" />
 
-                <!-- Tukšs -->
-                <div v-if="!jobRequests || jobRequests.length === 0"
-                    class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
-                    <div class="mx-auto w-16 h-16 rounded-2xl bg-navy/5 flex items-center justify-center mb-4">
+                <EmptyState
+                    v-if="!jobRequests || jobRequests.length === 0"
+                    :title="hasActiveFilters() ? 'Nav atrasts neviens sludinājums' : 'Nav neviena sludinājuma'"
+                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Publicējiet savu pirmo darba sludinājumu un saņemiet piedāvājumus no meistariem.'"
+                >
+                    <template #icon>
                         <svg class="w-8 h-8 text-navy/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-900 mb-1">
-                        {{ hasActiveFilters() ? 'Nav atrasts neviens sludinājums' : 'Nav neviena sludinājuma' }}
-                    </h3>
-                    <p class="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-                        {{ hasActiveFilters()
-                            ? 'Mēģiniet mainīt meklēšanas kritērijus.'
-                            : 'Publicējiet savu pirmo darba sludinājumu un saņemiet piedāvājumus no meistariem.' }}
-                    </p>
-                    <button
-                        v-if="hasActiveFilters()"
-                        @click="clearFilters"
-                        class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
-                    >
-                        Notīrīt filtrus
-                    </button>
-                    <button
-                        v-else
-                        @click="openCreateModal"
-                        class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
-                    >
-                        Izveidot pirmo sludinājumu
-                    </button>
-                </div>
+                    </template>
+                    <template #action>
+                        <button
+                            v-if="hasActiveFilters()"
+                            @click="clearFilters"
+                            class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
+                        >
+                            Notīrīt filtrus
+                        </button>
+                        <button
+                            v-else
+                            @click="openCreateModal"
+                            class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
+                        >
+                            Izveidot pirmo sludinājumu
+                        </button>
+                    </template>
+                </EmptyState>
 
-                <!-- Sludinājumi -->
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div
                         v-for="job in jobRequests"
@@ -188,7 +157,6 @@ const formatBudget = (budget: number | null): string => {
                             <span v-if="job.category" class="inline-flex items-center gap-1 text-xs font-semibold text-gold bg-navy-light rounded px-2 py-0.5 mb-2 tracking-wide uppercase">
                                 {{ job.category.name }}
                             </span>
-
                             <h3 class="text-base font-bold text-white line-clamp-2 pr-16">
                                 {{ job.title }}
                             </h3>
@@ -209,14 +177,12 @@ const formatBudget = (budget: number | null): string => {
                                     <MapPinIcon class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
                                     <span>{{ job.location?.length ? job.location.join(', ') : 'Nav norādīts' }}</span>
                                 </div>
-
                                 <div v-if="job.deadline" class="flex items-center gap-1.5 text-xs text-gray-500">
                                     <CalendarIcon class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
                                     <span>Termiņš: {{ formatDate(job.deadline) }}</span>
                                 </div>
                             </div>
 
-                            <!-- Footeris -->
                             <div class="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     <span v-if="job.budget" class="text-sm font-bold text-navy">
@@ -226,7 +192,6 @@ const formatBudget = (budget: number | null): string => {
                                         {{ job.applications_count ?? 0 }} pieteikum{{ (job.applications_count ?? 0) === 1 ? 's' : 'i' }}
                                     </span>
                                 </div>
-
                                 <div class="flex items-center gap-1">
                                     <button
                                         @click="openEditModal(job)"
@@ -260,12 +225,13 @@ const formatBudget = (budget: number | null): string => {
         />
 
         <ConfirmDialog
-            :show="isDeleteModalOpen"
+            :show="jobToDelete !== null"
             title="Dzēst sludinājumu?"
             message="Vai tiešām vēlaties neatgriezeniski dzēst šo sludinājumu? Visi saistītie pieteikumi un faili tiks dzēsti."
             confirmLabel="Jā, dzēst"
+            :processing="isDeleteProcessing"
             @confirm="executeDelete"
-            @cancel="isDeleteModalOpen = false"
+            @cancel="cancelDelete"
         />
 
     </AuthenticatedLayout>

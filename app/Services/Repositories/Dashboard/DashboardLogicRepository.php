@@ -13,8 +13,6 @@ class DashboardLogicRepository
 {
     public function getDashboardData(User $user): array
     {
-        // Role.name is cast to RoleNameEnum, so pluck() returns enum objects.
-        // Map to backing string values so in_array comparisons work correctly.
         $roles = $user->roles->pluck('name')
             ->map(fn ($r) => $r instanceof RoleNameEnum ? $r->value : (string) $r)
             ->toArray();
