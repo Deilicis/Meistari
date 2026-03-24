@@ -5,18 +5,30 @@ import * as HeroIcons from '@heroicons/vue/24/outline';
 import type { Category } from '@/types/models';
 
 const props = defineProps<{
-    category: Category & { services_count: number };
+    category: Category & { services_count?: number; job_requests_count?: number };
+    href?: string;
+    countLabel?: string;
 }>();
 
 const iconComponent = computed(() => {
     if (!props.category.icon) return null;
     return (HeroIcons as Record<string, unknown>)[props.category.icon] ?? null;
 });
+
+const resolvedHref = computed(() =>
+    props.href ?? route('seeker.services.index', { category_id: props.category.id })
+);
+
+const count = computed(() =>
+    props.category.services_count ?? props.category.job_requests_count ?? 0
+);
+
+const label = computed(() => props.countLabel ?? 'pakalpojumi');
 </script>
 
 <template>
     <Link
-        :href="route('seeker.services.index', { category_id: category.id })"
+        :href="resolvedHref"
         class="group flex flex-col items-center justify-center gap-3 rounded-2xl bg-white border border-gray-100 p-6 text-center shadow-sm hover:shadow-md hover:border-navy/20 hover:-translate-y-0.5 transition-all duration-200"
     >
         <div class="w-14 h-14 rounded-2xl bg-navy/5 flex items-center justify-center group-hover:bg-navy/10 transition-colors">
@@ -32,7 +44,7 @@ const iconComponent = computed(() => {
 
         <div>
             <p class="font-semibold text-navy text-sm leading-snug">{{ category.name }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ category.services_count }} pakalpojumi</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ count }} {{ label }}</p>
         </div>
     </Link>
 </template>

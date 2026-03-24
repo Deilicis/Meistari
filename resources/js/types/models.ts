@@ -112,6 +112,49 @@ export interface ServiceMasterProfile {
     portfolio_images: string[];
 }
 
+export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+
+export interface SeekerProfile {
+    type: 'individual' | 'company';
+    first_name: string | null;
+    last_name: string | null;
+    company_name: string | null;
+    city: string;
+    avatar: string | null;
+}
+
+export interface JobRequestWithSeeker extends JobRequest {
+    applications_count: number;
+    user: {
+        id: number;
+        name: string;
+        profile: SeekerProfile | null;
+    };
+}
+
+export interface ApplicationWithJobRequest {
+    id: number;
+    cover_letter: string | null;
+    price_offer: number | null;
+    status: ApplicationStatus;
+    created_at: string;
+    job_request: {
+        id: number;
+        title: string;
+        description: string;
+        budget: number | null;
+        deadline: string | null;
+        location: string[];
+        status: JobStatus;
+        category: { id: number; name: string } | null;
+        user: {
+            id: number;
+            name: string;
+            profile: SeekerProfile | null;
+        } | null;
+    } | null;
+}
+
 export interface ServiceWithMaster extends Service {
     user: {
         id: number;

@@ -98,6 +98,12 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
         Route::delete('/{application}', [ServiceApplicationController::class, 'destroy'])->name('destroy');
     });
 
+    // API: Meistaru pieteikumi uz darba sludinājumiem
+    Route::middleware(['role:master'])->prefix('applications')->name('applications.')->group(function () {
+        Route::post('/',                [ApplicationController::class, 'store'])->name('store');
+        Route::delete('/{application}', [ApplicationController::class, 'destroy'])->name('destroy');
+    });
+
     // API: Darba sludinājumi
     Route::prefix('job-requests')->name('job-requests.')->group(function () {
         Route::get('/', [JobRequestController::class, 'index'])->name('index');
