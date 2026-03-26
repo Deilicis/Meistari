@@ -18,6 +18,7 @@ class ApplicationDbRepository
     public function getAppliedJobIds(int $userId): array
     {
         return Application::where(Application::USER_ID, $userId)
+            ->whereNotIn(Application::STATUS, [ApplicationStatusEnum::CANCELLED->value])
             ->pluck(Application::JOB_REQUEST_ID)
             ->toArray();
     }

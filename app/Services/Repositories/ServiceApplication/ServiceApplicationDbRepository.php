@@ -18,6 +18,7 @@ class ServiceApplicationDbRepository
     public function getAppliedServiceIds(int $userId): array
     {
         return ServiceApplication::where(ServiceApplication::USER_ID, $userId)
+            ->whereNotIn(ServiceApplication::STATUS, [ApplicationStatusEnum::CANCELLED->value])
             ->pluck(ServiceApplication::SERVICE_ID)
             ->toArray();
     }

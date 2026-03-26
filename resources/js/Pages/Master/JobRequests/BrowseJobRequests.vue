@@ -2,18 +2,18 @@
 import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import BrowseServicesSearchBar from '@/Components/Search/BrowseServicesSearchBar.vue';
-import PublicServiceCard from '@/Components/Services/PublicServiceCard.vue';
-import ServiceDetailModal from '@/Components/Services/ServiceDetailModal.vue';
-import ServiceApplyModal from '@/Components/Services/ServiceApplyModal.vue';
+import BrowseJobRequestsSearchBar from '@/Components/Search/BrowseJobRequestsSearchBar.vue';
+import PublicJobRequestCard from '@/Components/JobRequests/PublicJobRequestCard.vue';
+import JobRequestDetailModal from '@/Components/JobRequests/JobRequestDetailModal.vue';
+import JobApplyModal from '@/Components/JobRequests/JobApplyModal.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
 import { useDebouncedFilter } from '@/composables/useDebouncedFilter';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
-import type { ServiceWithMaster, Category } from '@/types/models';
+import type { JobRequestWithSeeker, Category } from '@/types/models';
 
 const props = defineProps<{
-    services: {
-        data: ServiceWithMaster[];
+    jobRequests: {
+        data: JobRequestWithSeeker[];
         current_page: number;
         last_page: number;
         total: number;
@@ -23,32 +23,32 @@ const props = defineProps<{
     filters: {
         search?: string;
         category_id?: string;
-        price_min?: string;
-        price_max?: string;
+        budget_min?: string;
+        budget_max?: string;
     };
-    appliedServiceIds: number[];
+    appliedJobIds: number[];
 }>();
 
 const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
-    'seeker.services.index',
+    'master.job-requests.index',
     {
-        search: props.filters?.search      ?? '',
+        search:      props.filters?.search      ?? '',
         category_id: props.filters?.category_id ?? '',
-        price_min: props.filters?.price_min   ?? '',
-        price_max: props.filters?.price_max   ?? '',
+        budget_min:  props.filters?.budget_min  ?? '',
+        budget_max:  props.filters?.budget_max  ?? '',
     },
-    { search: '', category_id: '', price_min: '', price_max: '' }
+    { search: '', category_id: '', budget_min: '', budget_max: '' }
 );
 
-const selectedService = ref<ServiceWithMaster | null>(null);
-const applyTarget = ref<ServiceWithMaster | null>(null);
-const localApplied = ref<number[]>([...props.appliedServiceIds]);
+const selectedJob = ref<JobRequestWithSeeker | null>(null);
+const applyTarget = ref<JobRequestWithSeeker | null>(null);
+const localApplied = ref<number[]>([...props.appliedJobIds]);
 
-const isApplied = (serviceId: number) => localApplied.value.includes(serviceId);
+const isApplied = (jobId: number) => localApplied.value.includes(jobId);
 
-const openDetail = (service: ServiceWithMaster) => { selectedService.value = service; };
-const closeDetail = () => { selectedService.value = null; };
-const openApply = () => { applyTarget.value = selectedService.value; };
+const openDetail = (job: JobRequestWithSeeker) => { selectedJob.value = job; };
+const closeDetail = () => { selectedJob.value = null; };
+const openApply = () => { applyTarget.value = selectedJob.value; };
 const closeApply = () => { applyTarget.value = null; };
 
 const onApplied = () => {
@@ -59,25 +59,25 @@ const onApplied = () => {
 </script>
 
 <template>
-    <Head title="Pakalpojumi" />
+    <Head title="Darba sludinājumi" />
 
     <AuthenticatedLayout>
         <template #header>
             <div>
-                <h2 class="text-xl font-bold text-navy">Pakalpojumi</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ services.total }} pieejami pakalpojumi</p>
+                <h2 class="text-xl font-bold text-navy">Darba sludinājumi</h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ jobRequests.total }} aktīvi sludinājumi</p>
             </div>
         </template>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
-                <BrowseServicesSearchBar v-model="filterForm" :categories="categories" />
+                <BrowseJobRequestsSearchBar v-model="filterForm" :categories="categories" />
 
                 <EmptyState
-                    v-if="services.data.length === 0"
-                    :title="hasActiveFilters() ? 'Nav atrasts neviens pakalpojums' : 'Pagaidām nav pieejamu pakalpojumu'"
-                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meistari vēl nav publicējuši savus pakalpojumus.'"
+                    v-if="jobRequests.data.length === 0"
+                    :title="hasActiveFilters() ? 'Nav atrasts neviens sludinājums' : 'Pagaidām nav aktīvu sludinājumu'"
+                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meklētāji vēl nav publicējuši darba sludinājumus.'"
                 >
                     <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
@@ -94,17 +94,17 @@ const onApplied = () => {
                 </EmptyState>
 
                 <div v-else class="flex flex-col gap-3">
-                    <PublicServiceCard
-                        v-for="service in services.data"
-                        :key="service.id"
-                        :service="service"
-                        :applied="isApplied(service.id)"
+                    <PublicJobRequestCard
+                        v-for="job in jobRequests.data"
+                        :key="job.id"
+                        :job="job"
+                        :applied="isApplied(job.id)"
                         @open="openDetail"
                     />
                 </div>
 
-                <div v-if="services.last_page > 1" class="mt-8 flex justify-center gap-1">
-                    <template v-for="link in services.links" :key="link.label">
+                <div v-if="jobRequests.last_page > 1" class="mt-8 flex justify-center gap-1">
+                    <template v-for="link in jobRequests.links" :key="link.label">
                         <button
                             v-if="link.url"
                             @click="router.get(link.url)"
@@ -125,17 +125,17 @@ const onApplied = () => {
             </div>
         </div>
 
-        <ServiceDetailModal
-            :show="!!selectedService"
-            :service="selectedService"
-            :applied="selectedService ? isApplied(selectedService.id) : false"
+        <JobRequestDetailModal
+            :show="!!selectedJob"
+            :job="selectedJob"
+            :applied="selectedJob ? isApplied(selectedJob.id) : false"
             @close="closeDetail"
             @apply="openApply"
         />
 
-        <ServiceApplyModal
+        <JobApplyModal
             :show="!!applyTarget"
-            :service="applyTarget"
+            :job="applyTarget"
             @close="closeApply"
             @applied="onApplied"
         />

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import Modal from '@/Components/Common/Modal.vue';
+import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import {
     XMarkIcon,
     MapPinIcon,
@@ -47,6 +48,8 @@ const priceTypeLabel = computed(() => {
     if (!props.service) return '';
     return { fixed: 'Fiksēta cena', hourly: 'Stundas likme', negotiable: 'Vienojoties' }[props.service.price_type] ?? '';
 });
+
+const lightboxIndex = ref<number | null>(null);
 </script>
 
 <template>
@@ -161,9 +164,10 @@ const priceTypeLabel = computed(() => {
                             </h4>
                             <div class="grid grid-cols-4 gap-1.5">
                                 <div
-                                    v-for="img in profile.portfolio_images.slice(0, 4)"
+                                    v-for="(img, i) in profile.portfolio_images"
                                     :key="img"
-                                    class="aspect-square rounded-lg overflow-hidden bg-gray-100"
+                                    class="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 transition-opacity"
+                                    @click="lightboxIndex = i"
                                 >
                                     <img :src="`/storage/${img}`" class="w-full h-full object-cover" />
                                 </div>
@@ -199,4 +203,11 @@ const priceTypeLabel = computed(() => {
             </div>
         </div>
     </Modal>
+
+    <ImageLightbox
+        v-if="profile?.portfolio_images?.length"
+        :images="profile.portfolio_images"
+        :index="lightboxIndex"
+        @close="lightboxIndex = null"
+    />
 </template>

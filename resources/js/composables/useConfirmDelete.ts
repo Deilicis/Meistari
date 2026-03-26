@@ -12,14 +12,14 @@ export function useConfirmDelete<T>(options: {
         routeName,
         getRouteId,
         successMessage = 'Veiksmīgi izdzēsts!',
-        errorMessage   = 'Neizdevās izdzēst.',
+        errorMessage = 'Neizdevās izdzēst.',
     } = options;
 
     const deleteTarget = ref<T | null>(null);
-    const isDeleting   = ref(false);
+    const isDeleting = ref(false);
 
     const confirmDelete = (target: T) => { deleteTarget.value = target; };
-    const cancelDelete  = () => { deleteTarget.value = null; };
+    const cancelDelete = () => { deleteTarget.value = null; };
 
     const executeDelete = () => {
         if (!deleteTarget.value) return;
@@ -27,8 +27,8 @@ export function useConfirmDelete<T>(options: {
         router.delete(route(routeName, getRouteId(deleteTarget.value)), {
             preserveScroll: true,
             onSuccess: () => toast.success(successMessage),
-            onError:   () => toast.error(errorMessage),
-            onFinish:  () => { isDeleting.value = false; deleteTarget.value = null; },
+            onError: () => toast.error(errorMessage),
+            onFinish: () => { isDeleting.value = false; deleteTarget.value = null; },
         });
     };
 

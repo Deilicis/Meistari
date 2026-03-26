@@ -87,6 +87,24 @@ const navLinkClass = (active: boolean) =>
                             </Link>
 
                             <Link
+                                v-if="isMaster"
+                                :href="route('master.job-requests.categories')"
+                                :class="navLinkClass(route().current('master.job-requests.categories') || route().current('master.job-requests.index'))"
+                            >
+                                <MagnifyingGlassIcon class="w-3.5 h-3.5" />
+                                Darba Sludinājumi
+                            </Link>
+
+                            <Link
+                                v-if="isMaster"
+                                :href="route('master.applications.index')"
+                                :class="navLinkClass(route().current('master.applications.index'))"
+                            >
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                Mani Pieteikumi
+                            </Link>
+
+                            <Link
                                 v-if="isSeeker"
                                 :href="route('seeker.categories.index')"
                                 :class="navLinkClass(route().current('seeker.categories.index') || route().current('seeker.services.index'))"
@@ -185,6 +203,22 @@ const navLinkClass = (active: boolean) =>
                         @click="showingNavigationDropdown = false">
                         <BriefcaseIcon class="w-4 h-4" />
                         Mani Pakalpojumi
+                    </Link>
+
+                    <Link v-if="isMaster" :href="route('master.job-requests.categories')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('master.job-requests.categories') || route().current('master.job-requests.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <MagnifyingGlassIcon class="w-4 h-4" />
+                        Darba Sludinājumi
+                    </Link>
+
+                    <Link v-if="isMaster" :href="route('master.applications.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('master.applications.index') }"
+                        @click="showingNavigationDropdown = false">
+                        <InboxArrowDownIcon class="w-4 h-4" />
+                        Mani Pieteikumi
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.categories.index')"
