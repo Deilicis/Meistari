@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ServiceDetailModal from '@/Components/Services/ServiceDetailModal.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
-import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import type { ServiceApplicationWithService, ServiceApplicationStatus, ServiceWithMaster } from '@/types/models';
 
 const props = defineProps<{
@@ -63,18 +63,26 @@ const openDetail = (app: ServiceApplicationWithService) => {
     showDetailModal.value = true;
 };
 
-const {
-    deleteTarget: cancelTarget,
-    isDeleting: cancelling,
-    confirmDelete: startCancel,
-    cancelDelete,
-    executeDelete: confirmCancel,
-} = useConfirmDelete<ServiceApplicationWithService>({
-    routeName: 'api.service-applications.destroy',
-    getRouteId: (app) => app.id,
-    successMessage: 'Pieteikums atcelts.',
-    errorMessage: 'Neizdevās atcelt pieteikumu.',
-});
+const cancelTarget = ref<ServiceApplicationWithService | null>(null);
+const cancelling = ref(false);
+
+const startCancel = (app: ServiceApplicationWithService) => { cancelTarget.value = app; };
+const cancelDelete = () => { cancelTarget.value = null; };
+
+const confirmCancel = async () => {
+    if (!cancelTarget.value) return;
+    cancelling.value = true;
+    try {
+        await axios.delete(route('api.service-applications.destroy', cancelTarget.value.id));
+        toast.success('Pieteikums atcelts.');
+        cancelTarget.value = null;
+        router.reload({ only: ['applications'] });
+    } catch {
+        toast.error('Neizdevās atcelt pieteikumu.');
+    } finally {
+        cancelling.value = false;
+    }
+};
 </script>
 
 <template>

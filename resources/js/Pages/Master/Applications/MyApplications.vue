@@ -6,7 +6,9 @@ import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
-import type { ApplicationWithJobRequest, ApplicationStatus } from '@/types/models';
+import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
+import JobRequestDetailModal from '@/Components/JobRequests/JobRequestDetailModal.vue';
+import type { ApplicationWithJobRequest, ApplicationStatus, JobRequestWithSeeker } from '@/types/models';
 
 const props = defineProps<{
     applications: ApplicationWithJobRequest[];
@@ -50,6 +52,35 @@ const seekerName = (app: ApplicationWithJobRequest): string => {
     if (profile.type === 'company') return profile.company_name ?? user?.name ?? '—';
     const parts = [profile.first_name, profile.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : (user?.name ?? '—');
+};
+
+// Review modal
+const reviewJobRequestId = ref<number | null>(null);
+const revieweeId = ref<number | null>(null);
+const revieweeName = ref('');
+
+const openReview = (app: ApplicationWithJobRequest) => {
+    revieweeId.value = app.job_request?.user?.id ?? null;
+    reviewJobRequestId.value = app.job_request?.id ?? null;
+    const profile = app.job_request?.user?.profile;
+    const user = app.job_request?.user;
+    if (profile?.type === 'company') {
+        revieweeName.value = profile.company_name ?? user?.name ?? '';
+    } else {
+        const parts = [profile?.first_name, profile?.last_name].filter(Boolean);
+        revieweeName.value = parts.length ? parts.join(' ') : (user?.name ?? '');
+    }
+};
+
+const closeReview = () => {
+    revieweeId.value = null;
+    reviewJobRequestId.value = null;
+    revieweeName.value = '';
+};
+
+const detailJob = ref<JobRequestWithSeeker | null>(null);
+const openJobDetail = (app: ApplicationWithJobRequest) => {
+    if (app.job_request) detailJob.value = app.job_request as JobRequestWithSeeker;
 };
 
 const cancelTarget = ref<ApplicationWithJobRequest | null>(null);
@@ -125,12 +156,24 @@ const confirmCancel = async () => {
                                     </span>
                                 </div>
 
-                                <p class="text-sm text-gray-500 mb-3">
-                                    Pasūtītājs: <span class="font-medium text-gray-700">{{ seekerName(app) }}</span>
+                                <p class="text-sm text-gray-500 mb-1">
+                                    Pasūtītājs: <a
+                                        v-if="app.job_request?.user?.id"
+                                        :href="route('seeker.public-profile', app.job_request.user.id)"
+                                        class="font-medium text-gray-700 hover:text-navy hover:underline transition-colors"
+                                    >{{ seekerName(app) }}</a><span v-else class="font-medium text-gray-700">{{ seekerName(app) }}</span>
                                     <span v-if="app.job_request?.user?.profile?.city" class="text-gray-400">
                                         · {{ app.job_request.user.profile.city }}
                                     </span>
                                 </p>
+
+                                <button
+                                    v-if="app.job_request"
+                                    @click="openJobDetail(app)"
+                                    class="text-xs font-semibold text-navy/60 hover:text-navy hover:underline transition-colors mb-3"
+                                >
+                                    Skatīt sludinājumu →
+                                </button>
 
                                 <p v-if="app.cover_letter" class="text-sm text-gray-600 line-clamp-2 mb-3">
                                     {{ app.cover_letter }}
@@ -161,6 +204,13 @@ const confirmCancel = async () => {
                                 >
                                     Atcelt pieteikumu
                                 </button>
+                                <button
+                                    v-if="app.status === 'completed' && app.job_request?.status === 'completed'"
+                                    @click="openReview(app)"
+                                    class="text-xs font-semibold text-navy border border-navy/30 bg-navy/5 hover:bg-navy/10 rounded-md px-2.5 py-1 transition-colors"
+                                >
+                                    Atstāt atsauksmi
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -190,5 +240,22 @@ const confirmCancel = async () => {
         :processing="cancelling"
         @confirm="confirmCancel"
         @cancel="cancelDelete"
+    />
+
+    <JobRequestDetailModal
+        :show="detailJob !== null"
+        :job="detailJob"
+        :applied="true"
+        @close="detailJob = null"
+        @apply="() => {}"
+    />
+
+    <LeaveReviewModal
+        :show="revieweeId !== null"
+        :job-request-id="reviewJobRequestId"
+        :reviewee-id="revieweeId"
+        :reviewee-name="revieweeName"
+        @close="closeReview"
+        @submitted="closeReview"
     />
 </template>

@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
 import JobRequestModal from '@/Components/JobRequests/JobRequestModal.vue';
+import JobApplicationsModal from '@/Components/JobRequests/JobApplicationsModal.vue';
+import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
 import MyJobRequestsSearchBar from '@/Components/Search/MyJobRequestsSearchBar.vue';
 import { useDebouncedFilter } from '@/composables/useDebouncedFilter';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
-import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon, UsersIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
-import type { JobRequest, Category, JobStatus } from '@/types/models';
+import type { JobRequest, Category, JobStatus, JobApplication } from '@/types/models';
 
 const props = defineProps<{
     jobRequests: JobRequest[];
@@ -74,6 +77,54 @@ const {
     successMessage: 'Sludinājums veiksmīgi izdzēsts!',
     errorMessage: 'Neizdevās izdzēst sludinājumu.',
 });
+
+// Applications modal
+const applicationsJob = ref<JobRequest | null>(null);
+const applicationsData = ref<JobApplication[]>([]);
+const loadingApplications = ref(false);
+
+const openApplications = async (job: JobRequest) => {
+    loadingApplications.value = true;
+    applicationsJob.value = job;
+    try {
+        const { data } = await axios.get(route('api.applications.index', { job_request_id: job.id }));
+        applicationsData.value = data.data ?? [];
+    } catch {
+        toast.error('Neizdevās ielādēt pieteikumus.');
+        applicationsJob.value = null;
+    } finally {
+        loadingApplications.value = false;
+    }
+};
+
+const closeApplications = () => {
+    applicationsJob.value = null;
+    applicationsData.value = [];
+};
+
+const onApplicationsUpdated = async () => {
+    if (applicationsJob.value) {
+        await openApplications(applicationsJob.value);
+    }
+    router.reload({ only: ['jobRequests'] });
+};
+
+// Review modal
+const reviewJobRequestId = ref<number | null>(null);
+const revieweeId = ref<number | null>(null);
+const revieweeName = ref('');
+
+const openReview = (revieweeUserId: number, jobRequestId: number, name: string) => {
+    revieweeId.value = revieweeUserId;
+    reviewJobRequestId.value = jobRequestId;
+    revieweeName.value = name;
+};
+
+const closeReview = () => {
+    revieweeId.value = null;
+    reviewJobRequestId.value = null;
+    revieweeName.value = '';
+};
 
 const categoryIcon = (job: JobRequest) => {
     const icon = job.category?.icon;
@@ -197,16 +248,29 @@ const formatBudget = (budget: number | null): string => {
                             </div>
                         </div>
 
-                        <!-- Right: budget + app count + edit/delete -->
-                        <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[90px]">
+                        <!-- Right: budget + app count + actions -->
+                        <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[110px]">
                             <div class="text-right">
                                 <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatBudget(job.budget) }}</span>
-                                <span class="text-xs text-gray-400">
-                                    {{ job.applications_count ?? 0 }} piet.
+                                <button
+                                    v-if="job.status === 'active' || job.status === 'assigned' || job.status === 'completed'"
+                                    @click="openApplications(job)"
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 transition-colors mt-0.5"
+                                    :class="(job.applications_count ?? 0) > 0
+                                        ? 'bg-navy text-white hover:bg-navy-hover'
+                                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
+                                >
+                                    <UsersIcon class="w-3.5 h-3.5" />
+                                    {{ job.applications_count ?? 0 }} pieteikumi
+                                </button>
+                                <span v-else class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 mt-0.5">
+                                    <UsersIcon class="w-3.5 h-3.5" />
+                                    {{ job.applications_count ?? 0 }} pieteikumi
                                 </span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <button
+                                    v-if="job.status === 'active'"
                                     @click="openEditModal(job)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
                                     title="Rediģēt"
@@ -214,6 +278,7 @@ const formatBudget = (budget: number | null): string => {
                                     <PencilIcon class="w-4 h-4" />
                                 </button>
                                 <button
+                                    v-if="job.status === 'active'"
                                     @click="confirmDelete(job.id)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                     title="Dzēst"
@@ -247,4 +312,25 @@ const formatBudget = (budget: number | null): string => {
         />
 
     </AuthenticatedLayout>
+
+    <JobApplicationsModal
+        :show="applicationsJob !== null"
+        :job="applicationsJob"
+        :applications="applicationsData"
+        @close="closeApplications"
+        @updated="onApplicationsUpdated"
+        @review="(revieweeUserId, jobReqId) => {
+            const acceptedApp = applicationsData.find(a => a.status === 'accepted');
+            openReview(revieweeUserId, jobReqId, acceptedApp ? (acceptedApp.user.profile?.first_name ?? acceptedApp.user.name) : '');
+        }"
+    />
+
+    <LeaveReviewModal
+        :show="revieweeId !== null"
+        :job-request-id="reviewJobRequestId"
+        :reviewee-id="revieweeId"
+        :reviewee-name="revieweeName"
+        @close="closeReview"
+        @submitted="closeReview"
+    />
 </template>

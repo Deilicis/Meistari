@@ -155,6 +155,40 @@ export interface ApplicationWithJobRequest {
     } | null;
 }
 
+export interface JobApplication {
+    id: number;
+    cover_letter: string | null;
+    price_offer: number | null;
+    status: ApplicationStatus;
+    created_at: string;
+    user: {
+        id: number;
+        name: string;
+        profile: SeekerProfile | null;
+    };
+}
+
+export interface ReviewData {
+    id: number;
+    rating: number;
+    comment: string | null;
+    reviewer_id: number;
+    reviewee_id: number;
+    created_at: string;
+}
+
+export interface MasterPublicReview {
+    id: number;
+    rating: number;
+    comment: string | null;
+    created_at: string;
+    reviewer: {
+        id: number;
+        name: string;
+        profile: SeekerProfile | null;
+    };
+}
+
 export interface ServiceWithMaster extends Service {
     user: {
         id: number;

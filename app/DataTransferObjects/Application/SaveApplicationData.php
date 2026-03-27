@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects\Application;
 
+use App\Enums\Job\ApplicationStatusEnum;
+
 class SaveApplicationData
 {
     public function __construct(
@@ -20,6 +22,7 @@ class SaveApplicationData
             'user_id'        => $this->userId,
             'cover_letter'   => $this->coverLetter,
             'price_offer'    => $this->priceOffer,
+            'status'         => ApplicationStatusEnum::PENDING->value,
         ];
     }
 }

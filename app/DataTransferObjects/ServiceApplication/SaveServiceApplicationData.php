@@ -17,11 +17,11 @@ class SaveServiceApplicationData
     public function toArray(): array
     {
         return [
-            ServiceApplication::SERVICE_ID   => $this->serviceId,
-            ServiceApplication::USER_ID      => $this->userId,
-            ServiceApplication::MESSAGE      => $this->message,
+            ServiceApplication::SERVICE_ID => $this->serviceId,
+            ServiceApplication::USER_ID => $this->userId,
+            ServiceApplication::MESSAGE => $this->message,
             ServiceApplication::BUDGET_OFFER => $this->budgetOffer,
-            ServiceApplication::STATUS       => ApplicationStatusEnum::PENDING->value,
+            ServiceApplication::STATUS => ApplicationStatusEnum::PENDING->value,
         ];
     }
 }

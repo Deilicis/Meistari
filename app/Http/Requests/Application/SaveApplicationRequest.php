@@ -14,7 +14,7 @@ class SaveApplicationRequest extends FormRequest
         return [
             'job_request_id' => ['required', 'integer', 'exists:job_requests,id'],
             'cover_letter'   => ['nullable', 'string', 'max:2000'],
-            'price_offer'    => ['nullable', 'numeric', 'min:0'],
+            'price_offer'    => ['nullable', 'numeric', 'min:0', 'max:99999999'],
         ];
     }
 

@@ -42,13 +42,70 @@ class ApplicationDbRepository
     {
         return Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
             ->where(Application::USER_ID, $userId)
+            ->where(Application::STATUS, '!=', ApplicationStatusEnum::CANCELLED->value)
             ->whereNull(Application::DELETED_AT)
             ->first();
+    }
+
+    public function findCancelledByJobRequestAndUser(int $jobRequestId, int $userId): ?Application
+    {
+        return Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
+            ->where(Application::USER_ID, $userId)
+            ->where(Application::STATUS, ApplicationStatusEnum::CANCELLED->value)
+            ->whereNull(Application::DELETED_AT)
+            ->first();
+    }
+
+    public function reapply(Application $application, array $data): Application
+    {
+        $application->update($data);
+        return $application;
     }
 
     public function cancel(Application $application): Application
     {
         $application->update([Application::STATUS => ApplicationStatusEnum::CANCELLED->value]);
         return $application;
+    }
+
+    public function getByJobRequestId(int $jobRequestId): Collection
+    {
+        return Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
+            ->with(['user.profile'])
+            ->orderByDesc(Application::CREATED_AT)
+            ->get();
+    }
+
+    public function accept(Application $application): Application
+    {
+        $application->update([Application::STATUS => ApplicationStatusEnum::ACCEPTED->value]);
+        return $application;
+    }
+
+    public function reject(Application $application): Application
+    {
+        $application->update([Application::STATUS => ApplicationStatusEnum::REJECTED->value]);
+        return $application;
+    }
+
+    public function setCompleted(Application $application): Application
+    {
+        $application->update([Application::STATUS => ApplicationStatusEnum::COMPLETED->value]);
+        return $application;
+    }
+
+    public function rejectAllPendingForJob(int $jobRequestId, int $exceptApplicationId): void
+    {
+        Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
+            ->where(Application::STATUS, ApplicationStatusEnum::PENDING->value)
+            ->where(Application::ID, '!=', $exceptApplicationId)
+            ->update([Application::STATUS => ApplicationStatusEnum::REJECTED->value]);
+    }
+
+    public function findAcceptedForJob(int $jobRequestId): ?Application
+    {
+        return Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
+            ->where(Application::STATUS, ApplicationStatusEnum::ACCEPTED->value)
+            ->first();
     }
 }

@@ -6,7 +6,9 @@ namespace App\Services\Repositories\JobRequest;
 
 use App\Constants\ErrorMessages;
 use App\DataTransferObjects\JobRequest\SaveJobRequestData;
+use App\Enums\Job\JobStatusEnum;
 use App\Models\JobRequest;
+use App\Services\Repositories\Application\ApplicationDbRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
@@ -16,7 +18,8 @@ use Illuminate\Support\Str;
 class JobRequestLogicRepository
 {
     public function __construct(
-        private readonly JobRequestDbRepository $dbRepository
+        private readonly JobRequestDbRepository $dbRepository,
+        private readonly ApplicationDbRepository $applicationDbRepository,
     ) {
     }
 
@@ -114,5 +117,27 @@ class JobRequestLogicRepository
         }
 
         return $this->dbRepository->delete($jobRequest);
+    }
+
+    public function completeJob(int $jobRequestId, int $seekerId): JobRequest
+    {
+        $jobRequest = JobRequest::findOrFail($jobRequestId);
+
+        if ($jobRequest->getUserId() !== $seekerId) {
+            abort(403, ErrorMessages::JOB_NOT_YOURS);
+        }
+
+        if ($jobRequest->getStatus() !== JobStatusEnum::ASSIGNED) {
+            abort(422, ErrorMessages::JOB_NOT_ASSIGNED);
+        }
+
+        $completed = $this->dbRepository->setCompleted($jobRequest);
+
+        $acceptedApplication = $this->applicationDbRepository->findAcceptedForJob($jobRequestId);
+        if ($acceptedApplication) {
+            $this->applicationDbRepository->setCompleted($acceptedApplication);
+        }
+
+        return $completed;
     }
 }

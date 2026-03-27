@@ -42,7 +42,11 @@ const formatBudget = (): string => {
     <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-stretch">
 
         <!-- Left: avatar + seeker info -->
-        <div class="w-28 shrink-0 flex flex-col items-center justify-center gap-1.5 px-3 py-4 border-r border-gray-100">
+        <a
+            :href="route('seeker.public-profile', job.user.id)"
+            class="w-28 shrink-0 flex flex-col items-center justify-center gap-1.5 px-3 py-4 border-r border-gray-100 hover:bg-gray-50 transition-colors"
+            @click.stop
+        >
             <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white text-sm font-bold overflow-hidden shrink-0">
                 <img
                     v-if="profile?.avatar"
@@ -59,7 +63,7 @@ const formatBudget = (): string => {
                     <p class="text-xs text-gray-400 truncate">{{ profile.city }}</p>
                 </div>
             </div>
-        </div>
+        </a>
 
         <!-- Middle: icon + category, title, description, location/deadline -->
         <div class="flex-1 min-w-0 px-4 py-4">

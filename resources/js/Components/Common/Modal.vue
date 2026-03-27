@@ -17,7 +17,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-const dialog = ref();
 const showSlot = ref(props.show);
 
 watch(
@@ -26,13 +25,10 @@ watch(
         if (props.show) {
             document.body.style.overflow = 'hidden';
             showSlot.value = true;
-
-            dialog.value?.showModal();
         } else {
             document.body.style.overflow = '';
 
             setTimeout(() => {
-                dialog.value?.close();
                 showSlot.value = false;
             }, 200);
         }
@@ -78,14 +74,7 @@ const maxWidthClass = computed(() => {
 </script>
 
 <template>
-    <dialog
-        class="z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent backdrop:bg-transparent"
-        ref="dialog"
-    >
-        <div
-            class="fixed inset-0 z-50 overflow-y-auto px-4 sm:px-0"
-            scroll-region
-        >
+    <div v-if="showSlot" class="fixed inset-0 z-50 overflow-y-auto px-4 sm:px-0" scroll-region>
         <div class="flex min-h-full items-center justify-center py-6">
             <Transition
                 enter-active-class="ease-out duration-300"
@@ -123,6 +112,5 @@ const maxWidthClass = computed(() => {
                 </div>
             </Transition>
         </div>
-        </div>
-    </dialog>
+    </div>
 </template>

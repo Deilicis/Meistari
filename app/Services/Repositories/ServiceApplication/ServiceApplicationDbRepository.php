@@ -38,6 +38,13 @@ class ServiceApplicationDbRepository
             ->first();
     }
 
+    public function findByServiceAndUser(int $serviceId, int $userId): ?ServiceApplication
+    {
+        return ServiceApplication::where(ServiceApplication::SERVICE_ID, $serviceId)
+            ->where(ServiceApplication::USER_ID, $userId)
+            ->first();
+    }
+
     public function cancel(ServiceApplication $application): ServiceApplication
     {
         $application->update([ServiceApplication::STATUS => ApplicationStatusEnum::CANCELLED->value]);

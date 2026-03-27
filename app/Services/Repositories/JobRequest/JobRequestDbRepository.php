@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Repositories\JobRequest;
 
 use App\Enums\Job\JobStatusEnum;
+use App\Models\Application;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -51,7 +52,8 @@ class JobRequestDbRepository
 
     public function getByUserId(int $userId, array $filters = []): Collection
     {
-        $query = JobRequest::with(['category', 'applications'])
+        $query = JobRequest::with(['category'])
+            ->withCount('applications')
             ->where(JobRequest::USER_ID, $userId);
 
         if (!empty($filters[self::FILTER_SEARCH])) {
@@ -95,5 +97,17 @@ class JobRequestDbRepository
     public function delete(JobRequest $jobRequest): ?bool
     {
         return $jobRequest->delete();
+    }
+
+    public function setAssigned(JobRequest $jobRequest): JobRequest
+    {
+        $jobRequest->update([JobRequest::STATUS => JobStatusEnum::ASSIGNED->value]);
+        return $jobRequest;
+    }
+
+    public function setCompleted(JobRequest $jobRequest): JobRequest
+    {
+        $jobRequest->update([JobRequest::STATUS => JobStatusEnum::COMPLETED->value]);
+        return $jobRequest;
     }
 }

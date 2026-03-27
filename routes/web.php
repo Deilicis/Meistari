@@ -21,6 +21,9 @@ use App\Http\Controllers\JobRequest\JobRequestCategoryBrowsePageController;
 use App\Http\Controllers\JobRequest\JobRequestBrowsePageController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\ApplicationPageController;
+use App\Http\Controllers\Review\ReviewController;
+use App\Http\Controllers\Profile\MasterPublicProfileController;
+use App\Http\Controllers\Profile\SeekerPublicProfileController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -54,6 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/browse-jobs',       [JobRequestBrowsePageController::class,          'index'])->name('job-requests.index');
         Route::get('/my-applications',   [ApplicationPageController::class,               'index'])->name('applications.index');
     });
+
+    // Publiskie profili (pieejami abām lomām)
+    Route::get('/meistars/{id}',  [MasterPublicProfileController::class,  'show'])->name('master.public-profile');
+    Route::get('/mekletajs/{id}', [SeekerPublicProfileController::class,  'show'])->name('seeker.public-profile');
 
     // Meklētāja panelis
     Route::middleware(['role:seeker'])->prefix('seeker')->name('seeker.')->group(function () {
@@ -104,16 +111,27 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
         Route::delete('/{application}', [ApplicationController::class, 'destroy'])->name('destroy');
     });
 
+    // API: Pieteikumu pārvaldība (meklētāji pieņem/noraida)
+    Route::middleware(['role:seeker'])->prefix('applications')->name('applications.')->group(function () {
+        Route::get('/', [ApplicationController::class, 'index'])->name('index');
+        Route::patch('/{application}/accept', [ApplicationController::class, 'accept'])->name('accept');
+        Route::patch('/{application}/reject', [ApplicationController::class, 'reject'])->name('reject');
+    });
+
+    // API: Atsauksmes
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
     // API: Darba sludinājumi
     Route::prefix('job-requests')->name('job-requests.')->group(function () {
         Route::get('/', [JobRequestController::class, 'index'])->name('index');
         Route::get('/{id}', [JobRequestController::class, 'show'])->name('show');
-        
+
         Route::middleware(['role:seeker'])->group(function () {
             Route::get('/my/list', [JobRequestController::class, 'myRequests'])->name('my-requests');
             Route::post('/', [JobRequestController::class, 'store'])->name('store');
             Route::put('/{job_request}', [JobRequestController::class, 'update'])->name('update');
             Route::delete('/{job_request}', [JobRequestController::class, 'destroy'])->name('destroy');
+            Route::patch('/{job_request}/complete', [JobRequestController::class, 'complete'])->name('complete');
         });
     });
 

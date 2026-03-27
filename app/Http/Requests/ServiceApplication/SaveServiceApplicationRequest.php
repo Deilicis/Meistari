@@ -35,6 +35,7 @@ class SaveServiceApplicationRequest extends FormRequest
                 Rules::NULLABLE,
                 Rules::NUMERIC,
                 Rules::MIN . ':0',
+                Rules::MAX . ':99999999',
             ],
         ];
     }

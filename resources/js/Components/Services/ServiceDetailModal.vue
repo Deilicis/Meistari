@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import {
@@ -50,6 +50,10 @@ const priceTypeLabel = computed(() => {
 });
 
 const lightboxIndex = ref<number | null>(null);
+
+watch(() => props.show, (newVal) => {
+    if (!newVal) lightboxIndex.value = null;
+});
 </script>
 
 <template>
@@ -202,12 +206,12 @@ const lightboxIndex = ref<number | null>(null);
                 </button>
             </div>
         </div>
-    </Modal>
 
-    <ImageLightbox
-        v-if="profile?.portfolio_images?.length"
-        :images="profile.portfolio_images"
-        :index="lightboxIndex"
-        @close="lightboxIndex = null"
-    />
+        <ImageLightbox
+            v-if="profile?.portfolio_images?.length"
+            :images="profile.portfolio_images"
+            :index="lightboxIndex"
+            @close="lightboxIndex = null"
+        />
+    </Modal>
 </template>

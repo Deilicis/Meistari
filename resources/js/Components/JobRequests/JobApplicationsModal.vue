@@ -1,0 +1,248 @@
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import axios from 'axios';
+import { toast } from 'vue-sonner';
+import Modal from '@/Components/Common/Modal.vue';
+import {
+    XMarkIcon,
+    CheckIcon,
+    XCircleIcon,
+    CheckBadgeIcon,
+    CurrencyEuroIcon,
+    ClipboardDocumentListIcon,
+} from '@heroicons/vue/24/outline';
+import type { JobRequest, JobApplication } from '@/types/models';
+
+const props = defineProps<{
+    show: boolean;
+    job: JobRequest | null;
+    applications: JobApplication[];
+    acceptedMasterId?: number | null;
+}>();
+
+const emit = defineEmits<{
+    close: [];
+    updated: [];
+    review: [revieweeId: number, jobRequestId: number];
+}>();
+
+const processing = ref<number | null>(null);
+const completing = ref(false);
+
+const statusConfig: Record<string, { label: string; badgeClass: string }> = {
+    pending:   { label: 'Gaida',      badgeClass: 'bg-amber-100 text-amber-700' },
+    accepted:  { label: 'Pieņemts',   badgeClass: 'bg-emerald-100 text-emerald-700' },
+    rejected:  { label: 'Noraidīts',  badgeClass: 'bg-red-100 text-red-700' },
+    completed: { label: 'Pabeigts',   badgeClass: 'bg-blue-100 text-blue-700' },
+    cancelled: { label: 'Atcelts',    badgeClass: 'bg-gray-100 text-gray-600' },
+};
+
+const acceptedApplication = computed(() =>
+    props.applications.find(a => a.status === 'accepted') ?? null
+);
+
+const applicantName = (app: JobApplication): string => {
+    const p = app.user.profile;
+    if (!p) return app.user.name;
+    if (p.type === 'company') return p.company_name ?? app.user.name;
+    const parts = [p.first_name, p.last_name].filter(Boolean);
+    return parts.length ? parts.join(' ') : app.user.name;
+};
+
+const accept = async (app: JobApplication) => {
+    processing.value = app.id;
+    try {
+        await axios.patch(route('api.applications.accept', app.id));
+        toast.success('Pieteikums pieņemts!');
+        emit('updated');
+    } catch (e: any) {
+        toast.error(e.response?.data?.message ?? 'Kļūda pieņemot pieteikumu.');
+    } finally {
+        processing.value = null;
+    }
+};
+
+const reject = async (app: JobApplication) => {
+    processing.value = app.id;
+    try {
+        await axios.patch(route('api.applications.reject', app.id));
+        toast.success('Pieteikums noraidīts.');
+        emit('updated');
+    } catch (e: any) {
+        toast.error(e.response?.data?.message ?? 'Kļūda noraidot pieteikumu.');
+    } finally {
+        processing.value = null;
+    }
+};
+
+const completeJob = async () => {
+    if (!props.job) return;
+    completing.value = true;
+    try {
+        await axios.patch(route('api.job-requests.complete', props.job.id));
+        toast.success('Darbs atzīmēts kā pabeigts!');
+        emit('updated');
+    } catch (e: any) {
+        toast.error(e.response?.data?.message ?? 'Kļūda pabeidzot darbu.');
+    } finally {
+        completing.value = false;
+    }
+};
+</script>
+
+<template>
+    <Modal :show="show" @close="emit('close')" maxWidth="2xl">
+        <div v-if="job" class="flex flex-col max-h-[85vh]">
+
+            <!-- Header -->
+            <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">Pieteikumi</p>
+                    <h2 class="text-base font-bold text-white leading-snug truncate">{{ job.title }}</h2>
+                </div>
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <span class="text-xs font-bold text-white/60 bg-white/10 px-2.5 py-1 rounded-full">
+                        {{ applications.length }}
+                    </span>
+                    <button @click="emit('close')" class="text-white/60 hover:text-white transition-colors">
+                        <XMarkIcon class="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="overflow-y-auto flex-grow p-5 space-y-3">
+
+                <!-- Empty state -->
+                <div v-if="applications.length === 0" class="py-12 text-center">
+                    <ClipboardDocumentListIcon class="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                    <p class="text-sm font-medium text-gray-500">Vēl nav neviena pieteikuma.</p>
+                    <p class="text-xs text-gray-400 mt-1">Meistari drīzumā iesniegs savus piedāvājumus.</p>
+                </div>
+
+                <!-- Application cards -->
+                <div
+                    v-for="app in applications"
+                    :key="app.id"
+                    class="rounded-xl border p-4 transition-all"
+                    :class="app.status === 'accepted'
+                        ? 'border-emerald-200 bg-emerald-50/50'
+                        : app.status === 'rejected'
+                            ? 'border-gray-100 bg-gray-50 opacity-60'
+                            : 'border-gray-100 bg-white'"
+                >
+                    <div class="flex items-start gap-3">
+                        <!-- Avatar -->
+                        <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
+                            <img
+                                v-if="app.user.profile?.avatar"
+                                :src="`/storage/${app.user.profile.avatar}`"
+                                :alt="applicantName(app)"
+                                class="w-full h-full object-cover"
+                            />
+                            <span v-else>{{ applicantName(app).slice(0, 2).toUpperCase() }}</span>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <a
+                                    :href="route('master.public-profile', app.user.id)"
+                                    class="text-sm font-bold text-gray-900 hover:text-navy hover:underline transition-colors"
+                                >{{ applicantName(app) }}</a>
+                                <span
+                                    v-if="app.status === 'accepted'"
+                                    class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700"
+                                >
+                                    <CheckBadgeIcon class="w-3.5 h-3.5" />
+                                    Pieņemts
+                                </span>
+                                <span
+                                    v-else
+                                    class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                                    :class="statusConfig[app.status]?.badgeClass"
+                                >
+                                    {{ statusConfig[app.status]?.label }}
+                                </span>
+                            </div>
+
+                            <p v-if="app.user.profile?.city" class="text-xs text-gray-400 mb-2">{{ app.user.profile.city }}</p>
+
+                            <!-- Price offer -->
+                            <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-2">
+                                <CurrencyEuroIcon class="w-4 h-4 text-gold" />
+                                {{ new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(app.price_offer) }}
+                            </div>
+
+                            <!-- Cover letter -->
+                            <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                {{ app.cover_letter }}
+                            </p>
+                            <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                        </div>
+
+                        <!-- Actions (only for pending when job is active) -->
+                        <div v-if="job.status === 'active' && app.status === 'pending'" class="flex flex-col gap-2 flex-shrink-0">
+                            <button
+                                @click="accept(app)"
+                                :disabled="processing !== null"
+                                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                                <CheckIcon class="w-3.5 h-3.5" />
+                                Pieņemt
+                            </button>
+                            <button
+                                @click="reject(app)"
+                                :disabled="processing !== null"
+                                class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
+                            >
+                                <XCircleIcon class="w-3.5 h-3.5" />
+                                Noraidīt
+                            </button>
+                        </div>
+
+                        <!-- Review button for completed job -->
+                        <div v-else-if="job.status === 'completed' && app.status === 'completed'" class="flex-shrink-0">
+                            <button
+                                @click="emit('review', app.user.id, job.id)"
+                                class="px-3 py-1.5 text-xs font-semibold text-navy border border-navy/30 hover:bg-navy/5 rounded-lg transition-colors"
+                            >
+                                Atsauksme
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3 flex-shrink-0 bg-white">
+                <button
+                    @click="emit('close')"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                    Aizvērt
+                </button>
+
+                <button
+                    v-if="job.status === 'assigned'"
+                    @click="completeJob"
+                    :disabled="completing"
+                    class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors disabled:opacity-50 flex items-center gap-2"
+                >
+                    <svg v-if="completing" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    {{ completing ? 'Apstiprina...' : 'Pabeigt darbu' }}
+                </button>
+
+                <div
+                    v-else-if="job.status === 'completed'"
+                    class="text-sm font-semibold text-emerald-700 flex items-center gap-2"
+                >
+                    <CheckBadgeIcon class="w-4 h-4" />
+                    Darbs pabeigts
+                </div>
+            </div>
+        </div>
+    </Modal>
+</template>

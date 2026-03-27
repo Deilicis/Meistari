@@ -57,14 +57,15 @@ class Application extends Model
         return $this->getAttribute(self::USER_ID);
     }
 
-    public function getCoverLetter(): string
+    public function getCoverLetter(): ?string
     {
         return $this->getAttribute(self::COVER_LETTER);
     }
 
-    public function getPriceOffer(): float
+    public function getPriceOffer(): ?float
     {
-        return (float) $this->getAttribute(self::PRICE_OFFER);
+        $val = $this->getAttribute(self::PRICE_OFFER);
+        return $val !== null ? (float) $val : null;
     }
 
     public function getStatus(): ApplicationStatusEnum

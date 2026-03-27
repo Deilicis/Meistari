@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Repositories\Review;
+
+use App\Constants\ErrorMessages;
+use App\Enums\Job\ApplicationStatusEnum;
+use App\Enums\Job\JobStatusEnum;
+use App\Models\JobRequest;
+use App\Models\Review;
+use App\Services\Repositories\Application\ApplicationDbRepository;
+
+class ReviewLogicRepository
+{
+    public function __construct(
+        private readonly ReviewDbRepository      $dbRepository,
+        private readonly ApplicationDbRepository $applicationDbRepository,
+    ) {}
+
+    public function createReview(
+        int $jobRequestId,
+        int $reviewerId,
+        int $revieweeId,
+        int $rating,
+        ?string $comment,
+    ): Review {
+        $jobRequest = JobRequest::findOrFail($jobRequestId);
+
+        if ($jobRequest->getStatus() !== JobStatusEnum::COMPLETED) {
+            abort(422, ErrorMessages::JOB_NOT_COMPLETED);
+        }
+
+        // Verify reviewer is a participant: either the seeker who owns the job,
+        // or the master whose application was accepted.
+        $isSeeker = $jobRequest->getUserId() === $reviewerId;
+
+        if (!$isSeeker) {
+            $accepted = $this->applicationDbRepository->findAcceptedForJob($jobRequestId);
+            $isMaster = $accepted && $accepted->getUserId() === $reviewerId;
+
+            if (!$isMaster) {
+                abort(403, ErrorMessages::REVIEW_NOT_PARTICIPANT);
+            }
+        }
+
+        if ($this->dbRepository->findByJobAndReviewer($jobRequestId, $reviewerId)) {
+            abort(422, ErrorMessages::REVIEW_ALREADY_SUBMITTED);
+        }
+
+        return $this->dbRepository->create([
+            Review::JOB_REQUEST_ID => $jobRequestId,
+            Review::REVIEWER_ID    => $reviewerId,
+            Review::REVIEWEE_ID    => $revieweeId,
+            Review::RATING         => $rating,
+            Review::COMMENT        => $comment,
+        ]);
+    }
+}

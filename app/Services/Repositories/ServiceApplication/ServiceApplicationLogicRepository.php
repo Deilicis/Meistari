@@ -26,6 +26,10 @@ class ServiceApplicationLogicRepository
             abort(403, ErrorMessages::OWN_SERVICE_APPLICATION);
         }
 
+        if ($this->dbRepository->findByServiceAndUser($dto->serviceId, $dto->userId)) {
+            abort(422, ErrorMessages::SERVICE_APPLICATION_ALREADY_APPLIED);
+        }
+
         return $this->dbRepository->create($dto->toArray());
     }
 

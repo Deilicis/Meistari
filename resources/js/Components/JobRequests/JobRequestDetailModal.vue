@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import {
@@ -35,6 +35,10 @@ const seekerName = computed(() => {
 const avatarInitials = computed(() => seekerName.value.slice(0, 2).toUpperCase());
 
 const lightboxIndex = ref<number | null>(null);
+
+watch(() => props.show, (newVal) => {
+    if (!newVal) lightboxIndex.value = null;
+});
 
 const formatBudget = (): string => {
     if (!props.job?.budget) return 'Vienojams';
@@ -121,7 +125,11 @@ const formatBudget = (): string => {
                     <div class="md:col-span-1 p-6 bg-gray-50/60">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Par pasūtītāju</h3>
 
-                        <div class="flex items-center gap-3 mb-4">
+                        <a
+                            v-if="job?.user?.id"
+                            :href="route('seeker.public-profile', job.user.id)"
+                            class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity"
+                        >
                             <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                                 <img
                                     v-if="profile?.avatar"
@@ -141,7 +149,7 @@ const formatBudget = (): string => {
                                     {{ profile.type === 'company' ? 'Uzņēmums' : 'Privātpersona' }}
                                 </span>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -170,12 +178,12 @@ const formatBudget = (): string => {
                 </button>
             </div>
         </div>
-    </Modal>
 
-    <ImageLightbox
-        v-if="job?.images?.length"
-        :images="job.images"
-        :index="lightboxIndex"
-        @close="lightboxIndex = null"
-    />
+        <ImageLightbox
+            v-if="job?.images?.length"
+            :images="job.images"
+            :index="lightboxIndex"
+            @close="lightboxIndex = null"
+        />
+    </Modal>
 </template>
