@@ -38,6 +38,17 @@ class CategoryDbRepository
             ->get();
     }
 
+    public function getPopular(int $limit = 5): Collection
+    {
+        return Category::withCount('services')
+            ->withCount(['jobRequests as job_requests_count' => fn ($q) =>
+                $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value)
+            ])
+            ->orderByRaw('(services_count + job_requests_count) DESC')
+            ->limit($limit)
+            ->get();
+    }
+
     public function getById(int $id): Category
     {
         return Category::findOrFail($id);

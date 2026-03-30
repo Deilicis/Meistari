@@ -140,7 +140,7 @@ const confirmCancel = async () => {
                                 </div>
 
                                 <p class="text-sm text-gray-500 mb-3">
-                                    Meistars: <span class="font-medium text-gray-700">{{ app.service.user.name }}</span>
+                                    Meistars: <a :href="route('master.public-profile', app.service.user.id)" class="font-medium text-gray-700 hover:text-navy hover:underline transition-colors">{{ app.service.user.name }}</a>
                                 </p>
 
                                 <p class="text-sm text-gray-600 line-clamp-2 mb-3">{{ app.message }}</p>

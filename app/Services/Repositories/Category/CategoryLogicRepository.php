@@ -37,6 +37,11 @@ class CategoryLogicRepository
         return $this->dbRepository->getAllFlatWithJobRequestCount();
     }
 
+    public function getPopularCategories(int $limit = 5): Collection
+    {
+        return $this->dbRepository->getPopular($limit);
+    }
+
     public function getCategoryById(int $id): Category
     {
         return $this->dbRepository->getById($id);

@@ -118,7 +118,7 @@ watch(() => props.show, (newVal) => {
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Par meistaru</h3>
 
                         <!-- Avatar + name -->
-                        <div class="flex items-center gap-3 mb-4">
+                        <a :href="route('master.public-profile', service.user.id)" class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
                             <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                                 <img
                                     v-if="profile?.avatar"
@@ -135,7 +135,7 @@ watch(() => props.show, (newVal) => {
                                 </div>
                                 <p v-if="profile?.city" class="text-xs text-gray-500">{{ profile.city }}</p>
                             </div>
-                        </div>
+                        </a>
 
                         <!-- Bio -->
                         <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-4">

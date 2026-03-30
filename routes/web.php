@@ -23,14 +23,10 @@ use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\ApplicationPageController;
 use App\Http\Controllers\Review\ReviewController;
 use App\Http\Controllers\Profile\MasterPublicProfileController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Profile\SeekerPublicProfileController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

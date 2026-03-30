@@ -28,9 +28,9 @@ class JobRequestLogicRepository
         return $this->dbRepository->getPaginated();
     }
 
-    public function getPublicJobRequests(array $filters = []): LengthAwarePaginator
+    public function getPublicJobRequests(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return $this->dbRepository->getPublicPaginated($filters);
+        return $this->dbRepository->getPublicPaginated($filters, $perPage);
     }
 
     public function getUserJobRequests(int $userId, array $filters = []): Collection

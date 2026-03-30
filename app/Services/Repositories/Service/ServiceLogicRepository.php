@@ -22,9 +22,9 @@ class ServiceLogicRepository
         return $this->dbRepository->getPaginated();
     }
 
-    public function getPublicServices(array $filters = []): LengthAwarePaginator
+    public function getPublicServices(array $filters = [], int $perPage = 12): LengthAwarePaginator
     {
-        return $this->dbRepository->getPublicPaginated($filters);
+        return $this->dbRepository->getPublicPaginated($filters, $perPage);
     }
 
     public function getUserServices(int $userId, array $filters = [])
