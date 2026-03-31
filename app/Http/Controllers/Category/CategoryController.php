@@ -16,12 +16,12 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    private const MSG_CREATED   = 'Kategorija veiksmīgi izveidota!';
-    private const MSG_UPDATED   = 'Kategorija atjaunināta!';
-    private const MSG_DELETED   = 'Kategorija izdzēsta!';
+    private const MSG_CREATED = 'Kategorija veiksmīgi izveidota!';
+    private const MSG_UPDATED = 'Kategorija atjaunināta!';
+    private const MSG_DELETED = 'Kategorija izdzēsta!';
     private const FLASH_SUCCESS = 'success';
-    private const KEY_MESSAGE   = 'message';
-    private const KEY_DATA      = 'data';
+    private const KEY_MESSAGE = 'message';
+    private const KEY_DATA = 'data';
 
     public function __construct(
         private readonly CategoryLogicRepository $logicRepository
@@ -31,7 +31,7 @@ class CategoryController extends Controller
     public function index(): Response
     {
         return Inertia::render('Admin/Categories/Index', [
-            'categories'     => $this->logicRepository->getNestedCategories(),
+            'categories' => $this->logicRepository->getNestedCategories(),
             'flatCategories' => $this->logicRepository->getFlatCategories(),
         ]);
     }
@@ -74,7 +74,7 @@ class CategoryController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_CREATED,
-            self::KEY_DATA    => new CategoryResource($category),
+            self::KEY_DATA => new CategoryResource($category),
         ], 201);
     }
 
@@ -86,7 +86,7 @@ class CategoryController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_UPDATED,
-            self::KEY_DATA    => new CategoryResource($category),
+            self::KEY_DATA => new CategoryResource($category),
         ], 200);
     }
 

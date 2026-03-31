@@ -151,7 +151,6 @@ const submit = () => {
                             v-model="firstName"
                             placeholder="Jānis"
                             class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                            required
                         />
                     </div>
                     <div>
@@ -162,7 +161,6 @@ const submit = () => {
                             v-model="lastName"
                             placeholder="Bērziņš"
                             class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                            required
                         />
                     </div>
                     <InputError class="col-span-2 -mt-2" :message="form.errors.name" />
@@ -177,7 +175,6 @@ const submit = () => {
                         v-model="companyName"
                         placeholder="SIA Piemērs"
                         class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                        required
                     />
                     <InputError class="mt-1" :message="form.errors.name" />
                 </div>

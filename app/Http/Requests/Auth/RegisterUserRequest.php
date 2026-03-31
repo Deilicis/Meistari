@@ -54,6 +54,26 @@ class RegisterUserRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'name.required'           => 'Vārds ir obligāts.',
+            'name.string'             => 'Vārdam jābūt tekstam.',
+            'name.max'                => 'Vārds nedrīkst pārsniegt 255 rakstzīmes.',
+            'email.required'          => 'E-pasts ir obligāts.',
+            'email.string'            => 'E-pastam jābūt tekstam.',
+            'email.lowercase'         => 'E-pastam jābūt ar mazajiem burtiem.',
+            'email.email'             => 'Lūdzu ievadiet derīgu e-pasta adresi.',
+            'email.max'               => 'E-pasts nedrīkst pārsniegt 255 rakstzīmes.',
+            'email.unique'            => 'Šis e-pasts jau ir reģistrēts.',
+            'password.required'       => 'Parole ir obligāta.',
+            'password.confirmed'      => 'Paroles nesakrīt.',
+            'password.min'            => 'Parolei jābūt vismaz 8 rakstzīmes garai.',
+            'role.required'           => 'Loma ir obligāta.',
+            'profile_type.required'   => 'Profila veids ir obligāts.',
+        ];
+    }
+
     public function toDTO(): RegisterUserRequestData
     {
         return RegisterUserRequestData::from([

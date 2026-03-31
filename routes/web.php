@@ -25,6 +25,15 @@ use App\Http\Controllers\Review\ReviewController;
 use App\Http\Controllers\Profile\MasterPublicProfileController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\Profile\SeekerPublicProfileController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\SeekerController as AdminSeekerController;
+use App\Http\Controllers\Admin\MasterController as AdminMasterController;
+use App\Http\Controllers\Admin\AdminJobRequestController;
+use App\Http\Controllers\Admin\AdminServiceController;
+use App\Http\Controllers\Admin\StaffController as AdminStaffController;
+use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
+use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
+use App\Http\Controllers\Complaint\ComplaintController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -39,10 +48,58 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
     });
 
-    // Administratora panelis
+    // Administratora panelis (tikai admin)
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get('/', [CategoryPageController::class, 'index'])->name('index');
+        });
+
+        Route::prefix('seekers')->name('seekers.')->group(function () {
+            Route::get('/',       [AdminSeekerController::class, 'index'])->name('index');
+            Route::get('/{user}', [AdminSeekerController::class, 'show'])->name('show');
+            Route::put('/{user}', [AdminSeekerController::class, 'update'])->name('update');
+            Route::delete('/{user}', [AdminSeekerController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('masters')->name('masters.')->group(function () {
+            Route::get('/',       [AdminMasterController::class, 'index'])->name('index');
+            Route::get('/{user}', [AdminMasterController::class, 'show'])->name('show');
+            Route::put('/{user}', [AdminMasterController::class, 'update'])->name('update');
+            Route::delete('/{user}', [AdminMasterController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('job-requests')->name('job-requests.')->group(function () {
+            Route::get('/',              [AdminJobRequestController::class, 'index'])->name('index');
+            Route::get('/{jobRequest}',  [AdminJobRequestController::class, 'show'])->name('show');
+            Route::put('/{jobRequest}',  [AdminJobRequestController::class, 'update'])->name('update');
+            Route::delete('/{jobRequest}', [AdminJobRequestController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('services')->name('services.')->group(function () {
+            Route::get('/',           [AdminServiceController::class, 'index'])->name('index');
+            Route::get('/{service}',  [AdminServiceController::class, 'show'])->name('show');
+            Route::put('/{service}',  [AdminServiceController::class, 'update'])->name('update');
+            Route::delete('/{service}', [AdminServiceController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('staff')->name('staff.')->group(function () {
+            Route::get('/',       [AdminStaffController::class, 'index'])->name('index');
+            Route::post('/',      [AdminStaffController::class, 'store'])->name('store');
+            Route::put('/{user}', [AdminStaffController::class, 'update'])->name('update');
+            Route::delete('/{user}', [AdminStaffController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+    });
+
+    // Admin + Moderator (kopīgas routes)
+    Route::middleware(['role:admin,moderator'])->prefix('admin')->name('admin.')->group(function () {
+        Route::prefix('complaints')->name('complaints.')->group(function () {
+            Route::get('/',               [AdminComplaintController::class, 'index'])->name('index');
+            Route::get('/{complaint}',    [AdminComplaintController::class, 'show'])->name('show');
+            Route::put('/{complaint}',    [AdminComplaintController::class, 'update'])->name('update');
         });
     });
 
@@ -116,6 +173,9 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
 
     // API: Atsauksmes
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // API: Sūdzības
+    Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
 
     // API: Darba sludinājumi
     Route::prefix('job-requests')->name('job-requests.')->group(function () {

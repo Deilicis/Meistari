@@ -19,19 +19,31 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
         ]);
 
-        $adminRole = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->first();
-        $masterRole = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->first();
-        $seekerRole = Role::where(Role::NAME, RoleNameEnum::SEEKER->value)->first();
+        $adminRole     = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->first();
+        $moderatorRole = Role::where(Role::NAME, RoleNameEnum::MODERATOR->value)->first();
+        $masterRole    = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->first();
+        $seekerRole    = Role::where(Role::NAME, RoleNameEnum::SEEKER->value)->first();
 
         $admin = User::factory()->create([
-            User::NAME => 'Administrators',
-            User::EMAIL => 'admin@meistari.lv',
+            User::NAME     => 'Administrators',
+            User::EMAIL    => 'admin@meistari.lv',
             User::PASSWORD => bcrypt('password'),
         ]);
         $admin->roles()->attach($adminRole);
 
         Profile::factory()->create([
             Profile::USER_ID => $admin->getId(),
+        ]);
+
+        $moderator = User::factory()->create([
+            User::NAME     => 'Moderators',
+            User::EMAIL    => 'moderator@meistari.lv',
+            User::PASSWORD => bcrypt('password'),
+        ]);
+        $moderator->roles()->attach($moderatorRole);
+
+        Profile::factory()->create([
+            Profile::USER_ID => $moderator->getId(),
         ]);
 
         User::factory(10)->create()->each(function (User $user) use ($masterRole) {

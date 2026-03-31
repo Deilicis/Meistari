@@ -25,6 +25,14 @@ class SendPasswordResetLinkRequest extends FormRequest
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'E-pasts ir obligāts.',
+            'email.email'    => 'Lūdzu ievadiet derīgu e-pasta adresi.',
+        ];
+    }
+
     public function toDTO(): SendPasswordResetLinkRequestData
     {
         return SendPasswordResetLinkRequestData::from([

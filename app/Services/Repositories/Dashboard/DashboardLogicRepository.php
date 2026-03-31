@@ -27,7 +27,7 @@ class DashboardLogicRepository
         } elseif (in_array(RoleNameEnum::SEEKER->value, $roles)) {
             $stats = $this->getSeekerStats($user);
             $recentJobRequests = $this->getSeekerRecentJobRequests($user);
-        } elseif (in_array(RoleNameEnum::ADMIN->value, $roles)) {
+        } elseif (in_array(RoleNameEnum::ADMIN->value, $roles) || in_array(RoleNameEnum::MODERATOR->value, $roles)) {
             $stats = $this->getAdminStats($user);
         }
 
