@@ -1,59 +1,172 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Meistari
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<!-- BILDE: Projekta logo vai galvenā bannera bilde -->
 
-## About Laravel
+Tiessaistes platforma, kas savieno Latvijas pakalpojumu sniedzejus (meistarus) ar klientiem (mekletajiem). Platforma nodrosina ertu vidi, kur meistari var publicet savus pakalpojumus un veidot profesionalu profilu, bet klienti var meklet specialistus, iesniegt darba pieprasijumus un novertēt sadarbibas kvalitati.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Par projektu
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Meistari ir tīmekļa platforma, kas veidota ka starpnieks starp pakalpojumu sniedzeju un klientu. Latvijas tirgū trūkst universāla risinājuma, kas aptvertu dažādu nozaru speciālistus vienuviet.
 
-## Learning Laravel
+Šī platforma ļauj jebkuras jomas profesionālim - IT, dizains, tulkošana, reklāma, būvniecība un citi - atrast klientus un demonstrēt savu darbu, savukārt klientiem - ātri atrast uzticamu meistaru un vienoties par sadarbību.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Galvenās iespējas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Lietotāju reģistrācija ar lomu sistēmu (meistars, meklētājs, administrators, moderators)
+- Personalizēti profili ar portfeli, pieredzi un kontaktinformāciju
+- Pakalpojumu publicēšana un pieprasījumu izveide
+- Meklēšana un filtrēšana pēc kategorijām, atrašanās vietas, cenas un vērtējuma
+- Pieteikšanās uz klientu pieprasījumiem
+- Atsauksmju un vērtējumu sistēma
+- Iebūvēta tērzēšanas funkcija
+- Administratīvais panelis satura un lietotāju pārvaldībai
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Izmantotās tehnoloģijas
 
-### Premium Partners
+### Klienta puse (Frontend)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Tehnoloģija | Pielietojums |
+|---|---|
+| **Vue.js 3** | Lietotāja saskarnes izstrāde ar komponentu arhitektūru |
+| **TypeScript** | Statiskā tipēšana, koda kvalitātes uzlabošana |
+| **Inertia.js** | Servera un klienta puses sasaiste bez atsevišķa REST API |
+| **Tailwind CSS** | Adaptīvs un responsīvs dizains ar utilītu klasēm |
+| **Vite** | Frontend build rīks un izstrādes serveris |
 
-## Contributing
+### Servera puse (Backend)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Tehnoloģija | Pielietojums |
+|---|---|
+| **Laravel 12** | PHP ietvars ar MVC arhitektūru |
+| **Inertia.js (Laravel adapter)** | Datu pārsūtīšana starp serveri un klientu |
+| **Laravel Sail** | Docker izstrādes vide |
 
-## Code of Conduct
+### Datubāze un rīki
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Tehnoloģija | Pielietojums |
+|---|---|
+| **MySQL 8.0** | Relāciju datubāze |
+| **Git** | Versiju kontrole |
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Projekta struktūra
 
-## License
+```
+meistari/
+├── app/
+│   ├── Enums/              # PHP enum klases (lomas, statusi, tipi)
+│   ├── Http/
+│   │   ├── Controllers/    # Kontrolieri, sadalīti pa jomām
+│   │   ├── Middleware/     # CheckRole un citi middleware
+│   │   └── Requests/       # FormRequest validācijas klases
+│   └── Models/             # Eloquent modeļi
+├── database/
+│   ├── factories/          # Model factories testēšanai un seedošanai
+│   ├── migrations/         # Datubāzes migrācijas
+│   └── seeders/            # Datu iesēšana
+├── resources/
+│   ├── js/
+│   │   ├── Components/     # Vue komponentes
+│   │   ├── Layouts/        # Izkārtojumu komponentes
+│   │   └── Pages/          # Inertia lapu komponentes
+│   └── css/                # Tailwind stili
+├── routes/
+│   └── web.php             # Visi maršruti
+└── docker-compose.yml      # Sail konfigurācija
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Priekšnosacījumi
+
+Pirms projekta palaišanas pārliecinies, ka tavā datorā ir uzstādīts:
+
+- **Docker Desktop** — [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+- **Git** — [https://git-scm.com](https://git-scm.com)
+
+Sail izmanto Docker, tāpēc nav nepieciešams lokāli instalēt PHP, Composer, Node.js vai MySQL — viss darbojas konteineros.
+
+---
+
+## Instalācija un palaišana
+
+### 1. Klonē repozitoriju
+
+```bash
+git clone https://github.com/TAVS_LIETOTAJVARDS/meistari.git
+cd meistari
+```
+
+### 2. Nokopē vides konfigurācijas failu
+
+```bash
+cp .env.example .env
+```
+
+### 3. Instalē Composer atkarības caur Docker
+
+Ja tev vēl nav Sail instalēts, izmanto šo komandu, lai palaistu Composer caur pagaidu Docker konteineru:
+
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+```
+
+### 4. Palaid Sail konteinerus
+
+```bash
+./vendor/bin/sail up -d
+```
+
+Pirmajā reizē Docker lejupielādēs nepieciešamos attēlus — tas var aizņemt dažas minūtes.
+
+### 5. Ģenerē aplikācijas atslēgu
+
+```bash
+./vendor/bin/sail artisan key:generate
+```
+
+### 6. Izpildi datubāzes migrācijas un iesēj datus
+
+```bash
+./vendor/bin/sail artisan migrate --seed
+```
+
+### 7. Instalē NPM atkarības un palaid frontend izstrādes serveri
+
+```bash
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run dev
+```
+
+### 8. Atver pārlūkprogrammā
+
+Platforma ir pieejama adresē: [http://localhost](http://localhost)
+
+---
+
+## Noklusējuma lietotāji
+
+Pēc `migrate --seed` izpildes ir pieejami šādi testa konti:
+
+| Loma | E-pasts | Parole |
+|---|---|---|
+| Administrators | `admin@meistari.lv` | `password` |
+| Moderators | `moderator@meistari.lv` | `password` |
+| Meistars | `meistars@meistari.lv` | `password` |
+| Meklētājs | `mekletajs@meistari.lv` | `password` |
+
+---
+
+## Licence
+
+Šis projekts ir izstrādāts kā kvalifikācijas eksāmena praktiskā daļa un nav paredzēts komerciālai izmantošanai.
