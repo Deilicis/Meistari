@@ -68,7 +68,7 @@ const mobileNavLinkClass = (active: boolean) =>
 
                     <!-- Left side -->
                     <div class="flex items-center gap-4 min-w-0 flex-1">
-                        <Link :href="route('admin.dashboard')" class="flex items-center gap-2.5 shrink-0">
+                        <Link href="/" class="flex items-center gap-2.5 shrink-0">
                             <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
                             <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden lg:block">
                                 Meistari

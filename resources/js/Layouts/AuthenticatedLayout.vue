@@ -60,7 +60,7 @@ const navLinkClass = (active: boolean) =>
 
                     <!-- Kreisā puse -->
                     <div class="flex items-center gap-6">
-                        <Link :href="route('dashboard')" class="flex items-center gap-2.5 shrink-0">
+                        <Link href="/" class="flex items-center gap-2.5 shrink-0">
                             <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
                             <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
                                 Meistari

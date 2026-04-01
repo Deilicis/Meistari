@@ -123,7 +123,6 @@ class ProfileFactory extends Factory
             mkdir($portfolioDir, 0755, true);
         }
 
-        // Color palettes: [bg-dark, bg-light, accent]
         $palettes = [
             [[139, 90,  43],  [196, 154, 108]],
             [[43,  90,  139], [108, 154, 196]],

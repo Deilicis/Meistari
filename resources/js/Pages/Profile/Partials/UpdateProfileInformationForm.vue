@@ -46,7 +46,6 @@ const submit = () => {
     form.post(route('profile.update'), {
         preserveScroll: true,
         onSuccess: () => {
-            toast.success('Profils veiksmīgi atjaunināts!');
             form.portfolio_images = [];
             form.images_to_delete = [];
             form.avatar = null;
@@ -57,16 +56,7 @@ const submit = () => {
 </script>
 
 <template>
-    <section class="max-w-7xl mx-auto">
-        <header class="mb-8">
-            <h2 class="text-xl font-bold text-navy">
-                Profila informācija
-            </h2>
-            <p class="mt-1 text-sm text-gray-500">
-                Pārvaldiet savu kontaktinformāciju, vizuālo tēlu un profesionālo portfolio, lai klienti jūs labāk iepazītu.
-            </p>
-        </header>
-
+    <section class="max-w-7xl mx-auto p-2">
         <form @submit.prevent="submit" class="space-y-8">
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
