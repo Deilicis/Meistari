@@ -6,6 +6,7 @@ export interface Category {
     slug: string;
     icon: string | null;
     parent_id: number | null;
+    children?: Category[];
 }
 
 export interface JobRequest {

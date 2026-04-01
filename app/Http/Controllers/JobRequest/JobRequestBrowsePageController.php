@@ -27,7 +27,7 @@ class JobRequestBrowsePageController extends Controller
 
         return Inertia::render('Master/JobRequests/BrowseJobRequests', [
             'jobRequests'   => $this->jobRequestLogicRepo->getPublicJobRequests($filters),
-            'categories'    => $this->categoryLogicRepo->getFlatCategories(),
+            'categories'    => $this->categoryLogicRepo->getNestedCategories(),
             'filters'       => $filters,
             'appliedJobIds' => $this->applicationLogicRepo->getAppliedJobIds(Auth::id()),
         ]);

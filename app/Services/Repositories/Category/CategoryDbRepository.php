@@ -49,6 +49,35 @@ class CategoryDbRepository
             ->get();
     }
 
+    public function getNestedWithServiceCount(): Collection
+    {
+        return Category::withCount('services')
+            ->whereNull(Category::PARENT_ID)
+            ->with(['children' => fn ($q) => $q->withCount('services')])
+            ->orderBy(Category::NAME)
+            ->get();
+    }
+
+    public function getNestedWithJobRequestCount(): Collection
+    {
+        $activeOnly = fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value);
+
+        return Category::withCount(['jobRequests' => $activeOnly])
+            ->whereNull(Category::PARENT_ID)
+            ->with(['children' => fn ($q) => $q->withCount(['jobRequests' => fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value)])])
+            ->orderBy(Category::NAME)
+            ->get();
+    }
+
+    public function getCategoryAndChildrenIds(int $categoryId): array
+    {
+        $childIds = Category::where(Category::PARENT_ID, $categoryId)
+            ->pluck(Category::ID)
+            ->toArray();
+
+        return array_merge([$categoryId], $childIds);
+    }
+
     public function getById(int $id): Category
     {
         return Category::findOrFail($id);

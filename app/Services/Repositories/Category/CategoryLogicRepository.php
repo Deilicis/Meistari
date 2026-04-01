@@ -22,6 +22,21 @@ class CategoryLogicRepository
         return $this->dbRepository->getAllNested();
     }
 
+    public function getNestedCategoriesWithServiceCount(): Collection
+    {
+        return $this->dbRepository->getNestedWithServiceCount();
+    }
+
+    public function getNestedCategoriesWithJobRequestCount(): Collection
+    {
+        return $this->dbRepository->getNestedWithJobRequestCount();
+    }
+
+    public function getCategoryAndChildrenIds(int $categoryId): array
+    {
+        return $this->dbRepository->getCategoryAndChildrenIds($categoryId);
+    }
+
     public function getFlatCategories(): Collection
     {
         return $this->dbRepository->getAllFlat();

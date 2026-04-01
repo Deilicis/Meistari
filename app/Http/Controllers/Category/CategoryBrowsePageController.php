@@ -19,7 +19,7 @@ class CategoryBrowsePageController extends Controller
     public function index(): Response
     {
         return Inertia::render('Seeker/Categories/BrowseCategories', [
-            'categories' => $this->categoryRepository->getFlatCategoriesWithServiceCount(),
+            'categories' => $this->categoryRepository->getNestedCategoriesWithServiceCount(),
         ]);
     }
 }

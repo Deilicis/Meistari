@@ -6,6 +6,7 @@ namespace App\Services\Repositories\JobRequest;
 
 use App\Enums\Job\JobStatusEnum;
 use App\Models\Application;
+use App\Models\Category;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -38,7 +39,7 @@ class JobRequestDbRepository
             $query->where(JobRequest::TITLE, self::LIKE, '%' . $filters[self::FILTER_SEARCH] . '%');
         }
         if (!empty($filters[self::FILTER_CATEGORY])) {
-            $query->where(JobRequest::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
+            $query->whereIn(JobRequest::CATEGORY_ID, $this->resolveCategoryIds((int) $filters[self::FILTER_CATEGORY]));
         }
         if (!empty($filters[self::FILTER_BUDGET_MIN])) {
             $query->where(JobRequest::BUDGET, self::GTE, $filters[self::FILTER_BUDGET_MIN]);
@@ -61,7 +62,7 @@ class JobRequestDbRepository
         }
 
         if (!empty($filters[self::FILTER_CATEGORY])) {
-            $query->where(JobRequest::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
+            $query->whereIn(JobRequest::CATEGORY_ID, $this->resolveCategoryIds((int) $filters[self::FILTER_CATEGORY]));
         }
 
         if (!empty($filters[self::FILTER_STATUS])) {
@@ -109,5 +110,14 @@ class JobRequestDbRepository
     {
         $jobRequest->update([JobRequest::STATUS => JobStatusEnum::COMPLETED->value]);
         return $jobRequest;
+    }
+
+    private function resolveCategoryIds(int $categoryId): array
+    {
+        $childIds = Category::where(Category::PARENT_ID, $categoryId)
+            ->pluck(Category::ID)
+            ->toArray();
+
+        return array_merge([$categoryId], $childIds);
     }
 }

@@ -28,7 +28,7 @@ class ServicePageController extends Controller
         
         return Inertia::render('Master/Services/MyServices', [
             'services' => ServiceResource::collection($services),
-            'categories' => $this->categoryLogicRepo->getFlatCategories(),
+            'categories' => $this->categoryLogicRepo->getNestedCategories(),
             'filters' => $filters,
         ]);
     }

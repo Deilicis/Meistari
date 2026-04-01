@@ -28,7 +28,7 @@ class ServiceBrowsePageController extends Controller
 
         return Inertia::render('Seeker/Services/BrowseServices', [
             'services' => $this->serviceLogicRepo->getPublicServices($filters),
-            'categories' => $this->categoryLogicRepo->getFlatCategories(),
+            'categories' => $this->categoryLogicRepo->getNestedCategories(),
             'filters' => $filters,
             'appliedServiceIds' => $this->applicationLogicRepo->getAppliedServiceIds(Auth::id()),
         ]);

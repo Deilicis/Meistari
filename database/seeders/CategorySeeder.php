@@ -12,23 +12,60 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = [
-            'Santehnika'           => 'WrenchScrewdriverIcon',
-            'Elektrika'            => 'BoltIcon',
-            'Būvniecība un Remonts' => 'HomeModernIcon',
-            'Uzkopšana'            => 'SparklesIcon',
-            'IT un Datori'         => 'ComputerDesktopIcon',
-            'Auto Remonts'         => 'TruckIcon',
+        $parents = [
+            'Santehnika'            => ['icon' => 'WrenchScrewdriverIcon', 'children' => [
+                'Cauruļu remonts',
+                'Apkures sistēmas',
+                'Kanalizācija',
+            ]],
+            'Elektrika'             => ['icon' => 'BoltIcon', 'children' => [
+                'Elektroinstalācija',
+                'Apgaismojums',
+                'Drošības sistēmas',
+            ]],
+            'Būvniecība un Remonts' => ['icon' => 'HomeModernIcon', 'children' => [
+                'Iekštelpu remonts',
+                'Fasādes darbi',
+                'Jumta darbi',
+                'Flīzēšana',
+            ]],
+            'Uzkopšana'             => ['icon' => 'SparklesIcon', 'children' => [
+                'Dzīvokļu uzkopšana',
+                'Biroju uzkopšana',
+                'Logu tīrīšana',
+            ]],
+            'IT un Datori'          => ['icon' => 'ComputerDesktopIcon', 'children' => [
+                'Datoru remonts',
+                'Tīmekļa izstrāde',
+                'Tīklu uzstādīšana',
+            ]],
+            'Auto Remonts'          => ['icon' => 'TruckIcon', 'children' => [
+                'Dzinēja remonts',
+                'Virsbūves remonts',
+                'Riepu serviss',
+            ]],
         ];
 
-        foreach ($categories as $name => $icon) {
-            Category::updateOrCreate(
+        foreach ($parents as $name => $config) {
+            $parent = Category::updateOrCreate(
                 [Category::SLUG => Str::slug($name)],
                 [
-                    Category::NAME => $name,
-                    Category::ICON => $icon,
+                    Category::NAME      => $name,
+                    Category::ICON      => $config['icon'],
+                    Category::PARENT_ID => null,
                 ]
             );
+
+            foreach ($config['children'] as $childName) {
+                Category::updateOrCreate(
+                    [Category::SLUG => Str::slug($childName)],
+                    [
+                        Category::NAME      => $childName,
+                        Category::ICON      => null,
+                        Category::PARENT_ID => $parent->getId(),
+                    ]
+                );
+            }
         }
     }
 }

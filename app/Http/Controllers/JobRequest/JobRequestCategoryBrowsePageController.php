@@ -18,7 +18,7 @@ class JobRequestCategoryBrowsePageController extends Controller
     public function index(): Response
     {
         return Inertia::render('Master/JobRequests/BrowseJobCategories', [
-            'categories' => $this->categoryRepository->getFlatCategoriesWithJobRequestCount(),
+            'categories' => $this->categoryRepository->getNestedCategoriesWithJobRequestCount(),
         ]);
     }
 }

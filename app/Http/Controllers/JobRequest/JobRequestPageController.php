@@ -29,7 +29,7 @@ class JobRequestPageController extends Controller
 
         $jobRequests = $this->jobRequestRepository->getUserJobRequests($userId, $filters);
 
-        $categories = $this->categoryRepository->getFlatCategories();
+        $categories = $this->categoryRepository->getNestedCategories();
 
         return Inertia::render('Seeker/JobRequests/MyJobRequests', [
             'jobRequests' => $jobRequests,

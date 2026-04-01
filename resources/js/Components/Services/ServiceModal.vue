@@ -8,6 +8,7 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import Checkbox from '@/Components/Form/Checkbox.vue';
 import TagInput from '@/Components/Tag/TagInput.vue';
+import CategorySelect from '@/Components/Form/CategorySelect.vue';
 import { XMarkIcon, WrenchScrewdriverIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 
@@ -127,14 +128,14 @@ const save = async () => {
                 <!-- Kategorija -->
                 <div>
                     <InputLabel for="category_id" value="Kategorija" class="text-gray-700 font-medium" />
-                    <select
-                        id="category_id"
-                        v-model="form.category_id"
-                        class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                    >
-                        <option value="" disabled>Izvēlieties kategoriju</option>
-                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                    </select>
+                    <div class="mt-1">
+                        <CategorySelect
+                            v-model="form.category_id"
+                            :categories="categories"
+                            :show-all-option="false"
+                            :required="true"
+                        />
+                    </div>
                     <InputError class="mt-1.5" :message="validationErrors.category_id?.[0]" />
                 </div>
 

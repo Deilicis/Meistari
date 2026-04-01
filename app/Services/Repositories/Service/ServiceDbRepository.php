@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\Service;
 
+use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -31,7 +32,7 @@ class ServiceDbRepository
         return Service::with(['user.profile', 'category'])
             ->where(Service::IS_ACTIVE, true)
             ->when($filters[self::FILTER_SEARCH] ?? null, fn ($q, $v) => $q->where(Service::TITLE, self::LIKE, "%{$v}%"))
-            ->when($filters[self::FILTER_CATEGORY] ?? null, fn ($q, $v) => $q->where(Service::CATEGORY_ID, $v))
+            ->when($filters[self::FILTER_CATEGORY] ?? null, fn ($q, $v) => $q->whereIn(Service::CATEGORY_ID, $this->resolveCategoryIds((int) $v)))
             ->when($filters[self::FILTER_PRICE_MIN] ?? null, fn ($q, $v) => $q->where(Service::PRICE, self::GTE, $v))
             ->when($filters[self::FILTER_PRICE_MAX] ?? null, fn ($q, $v) => $q->where(Service::PRICE, self::LTE, $v))
             ->latest()
@@ -67,7 +68,7 @@ class ServiceDbRepository
         }
 
         if (!empty($filters[self::FILTER_CATEGORY])) {
-            $query->where(Service::CATEGORY_ID, $filters[self::FILTER_CATEGORY]);
+            $query->whereIn(Service::CATEGORY_ID, $this->resolveCategoryIds((int) $filters[self::FILTER_CATEGORY]));
         }
 
         if (isset($filters[self::FILTER_IS_ACTIVE]) && $filters[self::FILTER_IS_ACTIVE] !== '') {
@@ -98,5 +99,14 @@ class ServiceDbRepository
     public function delete(Service $service): ?bool
     {
         return $service->delete();
+    }
+
+    private function resolveCategoryIds(int $categoryId): array
+    {
+        $childIds = Category::where(Category::PARENT_ID, $categoryId)
+            ->pluck(Category::ID)
+            ->toArray();
+
+        return array_merge([$categoryId], $childIds);
     }
 }

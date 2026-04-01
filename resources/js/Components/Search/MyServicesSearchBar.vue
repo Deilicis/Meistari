@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TextInput from '@/Components/Form/TextInput.vue';
+import CategorySelect from '@/Components/Form/CategorySelect.vue';
 import type { Category } from '@/types/models';
 
 defineProps<{
@@ -18,7 +19,7 @@ const filterForm = defineModel<{
 
 <template>
     <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
             
             <div class="md:col-span-2">
                 <TextInput 
@@ -30,10 +31,11 @@ const filterForm = defineModel<{
             </div>
             
             <div>
-                <select v-model="filterForm.category_id" class="border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm w-full">
-                    <option value="">Visas kategorijas</option>
-                    <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-                </select>
+                <CategorySelect
+                    v-model="filterForm.category_id"
+                    :categories="categories"
+                    :show-all-option="true"
+                />
             </div>
             
             <div>
