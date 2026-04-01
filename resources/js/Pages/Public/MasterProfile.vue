@@ -110,11 +110,15 @@ const lightboxIndex = ref<number | null>(null);
                         <BriefcaseIcon class="w-4 h-4" />
                         Pieredze
                     </h2>
-                    <ul class="space-y-3">
-                        <li v-for="(exp, i) in profile.experiences" :key="i" class="border-l-2 border-navy/10 pl-4">
-                            <p class="text-sm font-semibold text-gray-800">{{ (exp as any).title }}</p>
-                            <p class="text-xs text-gray-500">{{ (exp as any).company }}</p>
-                            <p v-if="(exp as any).description" class="text-xs text-gray-400 mt-0.5">{{ (exp as any).description }}</p>
+                    <ul class="space-y-4">
+                        <li v-for="(exp, i) in profile.experiences" :key="i" class="border-l-2 border-navy/20 pl-4">
+                            <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                                <p class="text-sm font-semibold text-gray-800">{{ (exp as any).title }}</p>
+                                <span v-if="(exp as any).years" class="text-xs bg-navy/10 text-navy px-2 py-0.5 rounded-full font-medium">
+                                    {{ (exp as any).years }} {{ Number((exp as any).years) === 1 ? 'gads' : 'gadi' }} pieredze
+                                </span>
+                            </div>
+                            <p v-if="(exp as any).description" class="text-xs text-gray-500 leading-relaxed">{{ (exp as any).description }}</p>
                         </li>
                     </ul>
                 </div>

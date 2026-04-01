@@ -26,7 +26,7 @@ class JobRequestFactory extends Factory
             JobRequest::SLUG => Str::slug($title) . '-' . fake()->unique()->numberBetween(1000, 9999),
             JobRequest::DESCRIPTION => fake()->realText(300),
             JobRequest::BUDGET => fake()->randomFloat(2, 50, 1500),
-            JobRequest::LOCATION => fake()->city(),
+            JobRequest::LOCATION => [fake()->city()],
             JobRequest::DEADLINE => fake()->dateTimeBetween('now', '+2 months')->format('Y-m-d'),
             JobRequest::STATUS => fake()->randomElement(JobStatusEnum::cases()),
         ];

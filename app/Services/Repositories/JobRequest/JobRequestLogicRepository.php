@@ -8,6 +8,7 @@ use App\Constants\ErrorMessages;
 use App\DataTransferObjects\JobRequest\SaveJobRequestData;
 use App\Enums\Job\JobStatusEnum;
 use App\Models\JobRequest;
+use App\Notifications\Job\JobCompletedNotification;
 use App\Services\Repositories\Application\ApplicationDbRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -136,6 +137,9 @@ class JobRequestLogicRepository
         $acceptedApplication = $this->applicationDbRepository->findAcceptedForJob($jobRequestId);
         if ($acceptedApplication) {
             $this->applicationDbRepository->setCompleted($acceptedApplication);
+
+            $acceptedApplication->load('user');
+            $acceptedApplication->user->notify(new JobCompletedNotification($completed));
         }
 
         return $completed;

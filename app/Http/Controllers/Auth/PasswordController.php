@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 class PasswordController extends Controller
 {
     private const MSG_PASSWORD_UPDATED = 'Jūsu parole ir veiksmīgi nomainīta!';
-    private const FLASH_SUCCESS        = 'success';
+    private const FLASH_SUCCESS = 'success';
 
     public function __construct(
         private readonly UserLogicRepository $userLogicRepository

@@ -9,6 +9,8 @@ use App\DataTransferObjects\ServiceApplication\SaveServiceApplicationData;
 use App\Enums\Job\ApplicationStatusEnum;
 use App\Models\Service;
 use App\Models\ServiceApplication;
+use App\Models\User;
+use App\Notifications\Service\NewServiceApplicationNotification;
 use Illuminate\Support\Collection;
 
 class ServiceApplicationLogicRepository
@@ -30,7 +32,13 @@ class ServiceApplicationLogicRepository
             abort(422, ErrorMessages::SERVICE_APPLICATION_ALREADY_APPLIED);
         }
 
-        return $this->dbRepository->create($dto->toArray());
+        $application = $this->dbRepository->create($dto->toArray());
+
+        $applicant = User::find($dto->userId);
+        $service->load('user');
+        $service->user->notify(new NewServiceApplicationNotification($application, $applicant));
+
+        return $application;
     }
 
     public function getAppliedServiceIds(int $userId): array

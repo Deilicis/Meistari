@@ -12,10 +12,10 @@ use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
-    private const MSG_UPDATED   = 'Profila informācija veiksmīgi atjaunināta!';
-    private const MSG_DELETED   = 'Jūsu konts ir veiksmīgi izdzēsts.';
+    private const MSG_UPDATED = 'Profila informācija veiksmīgi atjaunināta!';
+    private const MSG_DELETED = 'Jūsu konts ir veiksmīgi izdzēsts.';
     private const FLASH_SUCCESS = 'success';
-    private const FLASH_INFO    = 'info';
+    private const FLASH_INFO = 'info';
 
     public function __construct(
         private readonly ProfileLogicRepository $profileLogicRepository

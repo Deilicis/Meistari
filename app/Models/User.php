@@ -131,4 +131,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Review::class, 'reviewee_id', self::ID);
     }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new \App\Notifications\Auth\VerifyEmailNotification());
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \App\Notifications\Auth\ResetPasswordNotification($token));
+    }
 }

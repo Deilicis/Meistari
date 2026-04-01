@@ -10,6 +10,10 @@ use App\Enums\Job\ApplicationStatusEnum;
 use App\Enums\Job\JobStatusEnum;
 use App\Models\Application;
 use App\Models\JobRequest;
+use App\Models\User;
+use App\Notifications\Application\ApplicationAcceptedNotification;
+use App\Notifications\Application\ApplicationRejectedNotification;
+use App\Notifications\Application\NewJobApplicationNotification;
 use App\Services\Repositories\JobRequest\JobRequestDbRepository;
 use Illuminate\Support\Collection;
 
@@ -34,10 +38,16 @@ class ApplicationLogicRepository
 
         $cancelled = $this->dbRepository->findCancelledByJobRequestAndUser($dto->jobRequestId, $dto->userId);
         if ($cancelled) {
-            return $this->dbRepository->reapply($cancelled, $dto->toArray());
+            $application = $this->dbRepository->reapply($cancelled, $dto->toArray());
+        } else {
+            $application = $this->dbRepository->create($dto->toArray());
         }
 
-        return $this->dbRepository->create($dto->toArray());
+        $applicant = User::find($dto->userId);
+        $jobRequest->load('user');
+        $jobRequest->user->notify(new NewJobApplicationNotification($application, $applicant));
+
+        return $application;
     }
 
     public function getAppliedJobIds(int $userId): array
@@ -82,6 +92,9 @@ class ApplicationLogicRepository
         $this->dbRepository->rejectAllPendingForJob($jobRequest->getId(), $applicationId);
         $this->jobRequestDbRepository->setAssigned($jobRequest);
 
+        $accepted->load('user');
+        $accepted->user->notify(new ApplicationAcceptedNotification($accepted));
+
         return $accepted;
     }
 
@@ -98,7 +111,12 @@ class ApplicationLogicRepository
             abort(422, ErrorMessages::APPLICATION_NOT_PENDING);
         }
 
-        return $this->dbRepository->reject($application);
+        $rejected = $this->dbRepository->reject($application);
+
+        $rejected->load('user');
+        $rejected->user->notify(new ApplicationRejectedNotification($rejected));
+
+        return $rejected;
     }
 
     public function cancelApplication(int $id, int $userId): Application

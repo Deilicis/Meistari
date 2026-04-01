@@ -46,9 +46,29 @@ class DatabaseSeeder extends Seeder
             Profile::USER_ID => $moderator->getId(),
         ]);
 
+        $master = User::factory()->create([
+            User::NAME     => 'Meistars Tests',
+            User::EMAIL    => 'meistars@meistari.lv',
+            User::PASSWORD => bcrypt('password'),
+        ]);
+        $master->roles()->attach($masterRole);
+        Profile::factory()->forMaster()->create([
+            Profile::USER_ID => $master->getId(),
+        ]);
+
+        $seeker = User::factory()->create([
+            User::NAME     => 'Meklētājs Tests',
+            User::EMAIL    => 'mekletajs@meistari.lv',
+            User::PASSWORD => bcrypt('password'),
+        ]);
+        $seeker->roles()->attach($seekerRole);
+        Profile::factory()->create([
+            Profile::USER_ID => $seeker->getId(),
+        ]);
+
         User::factory(10)->create()->each(function (User $user) use ($masterRole) {
             $user->roles()->attach($masterRole);
-            Profile::factory()->create([
+            Profile::factory()->forMaster()->create([
                 Profile::USER_ID => $user->getId()
             ]);
         });
