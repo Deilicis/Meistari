@@ -5,7 +5,7 @@ import Dropdown from '@/Components/Form/Dropdown.vue';
 import DropdownLink from '@/Components/Link/DropdownLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { Toaster, toast } from 'vue-sonner';
-import type { AuthUser } from '@/types/models';
+import type { AuthUser, Profile } from '@/types/models';
 import {
     HomeIcon,
     BriefcaseIcon,
@@ -17,8 +17,10 @@ import {
     XMarkIcon,
 } from '@heroicons/vue/24/outline';
 
+type LayoutUser = AuthUser & { profile?: Profile };
+
 const page = usePage<{
-    auth: { user: AuthUser };
+    auth: { user: LayoutUser };
     flash: { success?: string; error?: string; info?: string };
 }>();
 const user = computed(() => page.props.auth.user);
@@ -58,7 +60,6 @@ const navLinkClass = (active: boolean) =>
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-15 py-2.5 justify-between items-center">
 
-                    <!-- Kreisā puse -->
                     <div class="flex items-center gap-6">
                         <Link href="/" class="flex items-center gap-2.5 shrink-0">
                             <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
@@ -67,7 +68,6 @@ const navLinkClass = (active: boolean) =>
                             </span>
                         </Link>
 
-                        <!-- Navigācija -->
                         <div class="hidden sm:flex items-center gap-1">
                             <Link
                                 :href="route('dashboard')"
@@ -134,23 +134,29 @@ const navLinkClass = (active: boolean) =>
                     </div>
 
                     <div class="hidden sm:flex items-center gap-3">
-                        <!-- Loma -->
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg">
                             {{ roleLabel }}
                         </span>
 
-                        <!-- Lietotāja izvēlne -->
                         <Dropdown align="right" width="48">
                             <template #trigger>
                                 <button
                                     type="button"
                                     class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
                                 >
-                                    <!-- Lietotāja iniciālis -->
-                                    <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                                    <img 
+                                        v-if="user.profile?.avatar" 
+                                        :src="`/storage/${user.profile.avatar}`" 
+                                        alt="Avatar" 
+                                        class="w-7 h-7 rounded-full object-cover border border-white/20 shrink-0" 
+                                    />
+                                    <span 
+                                        v-else
+                                        class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
                                         :class="accentBg">
                                         {{ user.name.charAt(0).toUpperCase() }}
                                     </span>
+                                    
                                     {{ user.name }}
                                     <ChevronDownIcon class="h-3.5 w-3.5 text-white/50" />
                                 </button>
@@ -170,7 +176,6 @@ const navLinkClass = (active: boolean) =>
                         </Dropdown>
                     </div>
 
-                    <!-- Hamburger poga -->
                     <div class="-me-2 flex items-center sm:hidden">
                         <button
                             @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -183,7 +188,6 @@ const navLinkClass = (active: boolean) =>
                 </div>
             </div>
 
-            <!-- Mobilā navigācija -->
             <div
                 :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                 class="sm:hidden border-t border-white/10"
@@ -248,7 +252,15 @@ const navLinkClass = (active: boolean) =>
 
                 <div class="border-t border-white/10 px-4 py-3">
                     <div class="flex items-center gap-3 mb-3">
-                        <span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                        <img 
+                            v-if="user.profile?.avatar" 
+                            :src="`/storage/${user.profile.avatar}`" 
+                            alt="Avatar" 
+                            class="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0" 
+                        />
+                        <span 
+                            v-else
+                            class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                             :class="accentBg">
                             {{ user.name.charAt(0).toUpperCase() }}
                         </span>
@@ -275,14 +287,12 @@ const navLinkClass = (active: boolean) =>
             </div>
         </nav>
 
-        <!-- Galvene -->
         <header v-if="$slots.header" class="bg-white border-b border-gray-200">
             <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
                 <slot name="header" />
             </div>
         </header>
 
-        <!-- Saturs -->
         <main>
             <slot />
         </main>
