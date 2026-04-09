@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use App\Enums\Job\JobStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobRequest extends Model
 {
-    use SoftDeletes, HasFactory;
+    use Auditable, SoftDeletes, HasFactory;
 
     public const TABLE = 'job_requests';
     public const ID = 'id';

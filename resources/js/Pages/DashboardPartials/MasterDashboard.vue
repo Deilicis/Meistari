@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import type { AuthUser, Service } from '@/types/models';
+import type { AuthUser, Service, ApplicationStatus, JobStatus } from '@/types/models';
 import {
     BriefcaseIcon,
     ClipboardDocumentListIcon,
@@ -8,12 +8,29 @@ import {
     ChevronRightIcon,
     CheckCircleIcon,
     XCircleIcon,
+    ClockIcon,
+    ArrowRightIcon,
 } from '@heroicons/vue/24/outline';
+
+interface RecentApplication {
+    id: number;
+    cover_letter: string | null;
+    price_offer: number | null;
+    status: ApplicationStatus;
+    created_at: string;
+    job_request: {
+        id: number;
+        title: string;
+        status: JobStatus;
+        category: { name: string } | null;
+    } | null;
+}
 
 defineProps<{
     stats: Record<string, number>;
     user: AuthUser;
     recentServices: Service[];
+    recentApplications: RecentApplication[];
 }>();
 
 const formatPrice = (service: Service): string => {
@@ -22,112 +39,213 @@ const formatPrice = (service: Service): string => {
     const formatted = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(service.price);
     return service.price_type === 'hourly' ? `${formatted}/h` : formatted;
 };
+
+const appStatusConfig: Record<ApplicationStatus, { label: string; classes: string }> = {
+    pending:   { label: 'Gaida',     classes: 'bg-amber-100 text-amber-700' },
+    accepted:  { label: 'Pieņemts',  classes: 'bg-emerald-100 text-emerald-700' },
+    rejected:  { label: 'Noraidīts', classes: 'bg-red-100 text-red-700' },
+    completed: { label: 'Pabeigts',  classes: 'bg-blue-100 text-blue-700' },
+    cancelled: { label: 'Atcelts',   classes: 'bg-gray-100 text-gray-500' },
+};
+
+const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
 </script>
 
 <template>
     <div class="space-y-6">
 
-        <!-- Sveiciena josla -->
+        <!-- Welcome banner -->
         <div class="bg-navy rounded-2xl overflow-hidden">
             <div class="h-1 w-full bg-gold" />
-            <div class="px-8 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <p class="text-gold text-xs font-bold tracking-widest uppercase mb-1">Meistara panelis</p>
-                    <h2 class="text-2xl font-extrabold text-white">Sveicināts, {{ user.name }}!</h2>
-                    <p class="text-white/50 text-sm mt-1">Pārvaldiet savus pakalpojumus un sekojiet līdzi pieteikumiem.</p>
+            <div class="px-8 py-6">
+                <p class="text-gold text-xs font-bold tracking-widest uppercase mb-1">Meistara panelis</p>
+                <h2 class="text-2xl font-extrabold text-white">Sveicināts, {{ user.name }}!</h2>
+                <p class="text-white/50 text-sm mt-1 mb-5">
+                    Šeit varat pārvaldīt savus pakalpojumus, aplūkot darba sludinājumus un sekot pieteikumu statusam.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <Link
+                        :href="route('master.services.index')"
+                        class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 transition-colors"
+                    >
+                        <PlusIcon class="w-4 h-4" stroke-width="2.5" />
+                        Pievienot pakalpojumu
+                    </Link>
+                    <Link
+                        :href="route('master.job-requests.categories')"
+                        class="inline-flex items-center gap-2 bg-white/10 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-white/20 transition-colors"
+                    >
+                        Meklēt darbus
+                        <ArrowRightIcon class="w-4 h-4" />
+                    </Link>
                 </div>
-                <Link :href="route('master.services.index')"
-                    class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-yellow-400 transition-colors shrink-0">
-                    <PlusIcon class="w-4 h-4" stroke-width="2.5" />
-                    Pievienot pakalpojumu
-                </Link>
             </div>
         </div>
 
-        <!-- Statistikas kartītes -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <!-- Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+            <!-- Pakalpojumi -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
-                <div class="w-12 h-12 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
-                    <BriefcaseIcon class="w-6 h-6 text-navy" />
+                <div class="w-11 h-11 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
+                    <BriefcaseIcon class="w-5 h-5 text-navy" />
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Kopā pakalpojumi</p>
-                    <p class="text-3xl font-extrabold text-navy leading-none">{{ stats.total_services ?? 0 }}</p>
-                    <p class="text-xs text-gray-400 mt-1">{{ stats.active_services ?? 0 }} aktīvi</p>
-                    <Link :href="route('master.services.index')"
-                        class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-navy hover:text-navy-hover transition-colors">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Mani pakalpojumi</p>
+                    <p class="text-3xl font-extrabold text-navy leading-none mt-1">{{ stats.total_services ?? 0 }}</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <span class="text-emerald-600 font-medium">{{ stats.active_services ?? 0 }} aktīvi</span>
+                        · {{ (stats.total_services ?? 0) - (stats.active_services ?? 0) }} neaktīvi
+                    </p>
+                    <Link
+                        :href="route('master.services.index')"
+                        class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-navy hover:underline transition-colors"
+                    >
                         Pārvaldīt
                         <ChevronRightIcon class="w-3.5 h-3.5" stroke-width="2.5" />
                     </Link>
                 </div>
             </div>
 
+            <!-- Pieteikumi -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
-                <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
-                    <ClipboardDocumentListIcon class="w-6 h-6 text-gold" />
+                <div class="w-11 h-11 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
+                    <ClipboardDocumentListIcon class="w-5 h-5 text-gold" />
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Aktīvie pieteikumi</p>
-                    <p class="text-3xl font-extrabold text-navy leading-none">{{ stats.active_applications ?? 0 }}</p>
-                    <span class="inline-flex items-center mt-3 text-xs font-medium text-gray-300">
-                        Drīzumā pieejams
-                    </span>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Mani pieteikumi</p>
+                    <p class="text-3xl font-extrabold text-navy leading-none mt-1">{{ stats.total_applications ?? 0 }}</p>
+                    <p class="text-xs text-gray-400 mt-1">
+                        <span
+                            :class="(stats.pending_applications ?? 0) > 0 ? 'text-amber-600 font-medium' : 'text-gray-400'"
+                        >{{ stats.pending_applications ?? 0 }} gaida atbildi</span>
+                    </p>
+                    <Link
+                        :href="route('master.applications.index')"
+                        class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-navy hover:underline transition-colors"
+                    >
+                        Skatīt visus
+                        <ChevronRightIcon class="w-3.5 h-3.5" stroke-width="2.5" />
+                    </Link>
                 </div>
             </div>
 
         </div>
 
-        <!-- Nesen pievienotie pakalpojumi -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="text-sm font-bold text-gray-900">Mani pakalpojumi</h3>
-                <Link :href="route('master.services.index')"
-                    class="inline-flex items-center gap-1 text-xs font-semibold text-navy hover:text-navy-hover transition-colors">
-                    Skatīt visus
-                    <ChevronRightIcon class="w-3.5 h-3.5" stroke-width="2.5" />
-                </Link>
-            </div>
+        <!-- Two-column: services + applications -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- Tukšs stāvoklis -->
-            <div v-if="recentServices.length === 0" class="px-6 py-10 text-center">
-                <div class="mx-auto w-12 h-12 rounded-xl bg-navy/5 flex items-center justify-center mb-3">
-                    <BriefcaseIcon class="w-6 h-6 text-navy/30" />
+            <!-- Mani pakalpojumi -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Mani pakalpojumi</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Jūsu pēdējie pievienotie pakalpojumi</p>
+                    </div>
+                    <Link
+                        :href="route('master.services.index')"
+                        class="inline-flex items-center gap-1 text-xs font-semibold text-navy hover:underline transition-colors shrink-0"
+                    >
+                        Visi
+                        <ChevronRightIcon class="w-3.5 h-3.5" stroke-width="2.5" />
+                    </Link>
                 </div>
-                <p class="text-sm font-medium text-gray-600 mb-1">Nav neviena pakalpojuma</p>
-                <p class="text-xs text-gray-400 mb-4">Izveidojiet savu pirmo pakalpojumu, lai klienti varētu jūs atrast.</p>
-                <Link :href="route('master.services.index')"
-                    class="inline-flex items-center gap-2 bg-navy text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-navy-hover transition-colors">
-                    <PlusIcon class="w-3.5 h-3.5" stroke-width="2.5" />
-                    Pievienot pakalpojumu
-                </Link>
+
+                <div v-if="recentServices.length === 0" class="px-6 py-10 text-center">
+                    <div class="mx-auto w-11 h-11 rounded-xl bg-navy/5 flex items-center justify-center mb-3">
+                        <BriefcaseIcon class="w-5 h-5 text-navy/30" />
+                    </div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Nav pievienotu pakalpojumu</p>
+                    <p class="text-xs text-gray-400 mb-4">Izveidojiet pakalpojumu, lai klienti varētu jūs atrast.</p>
+                    <Link
+                        :href="route('master.services.index')"
+                        class="inline-flex items-center gap-1.5 bg-navy text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-navy/90 transition-colors"
+                    >
+                        <PlusIcon class="w-3.5 h-3.5" stroke-width="2.5" />
+                        Pievienot pakalpojumu
+                    </Link>
+                </div>
+
+                <ul v-else class="divide-y divide-gray-50">
+                    <li
+                        v-for="service in recentServices"
+                        :key="service.id"
+                        class="flex items-center gap-3 px-6 py-3.5 hover:bg-gray-50/60 transition-colors"
+                    >
+                        <div class="shrink-0">
+                            <CheckCircleIcon v-if="service.is_active" class="w-4 h-4 text-emerald-500" />
+                            <XCircleIcon v-else class="w-4 h-4 text-gray-300" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ service.title }}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ service.category?.name ?? '—' }}</p>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            <p class="text-sm font-bold text-navy">{{ formatPrice(service) }}</p>
+                            <p class="text-xs" :class="service.is_active ? 'text-emerald-500' : 'text-gray-400'">
+                                {{ service.is_active ? 'Aktīvs' : 'Neaktīvs' }}
+                            </p>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
-            <!-- Pakalpojumu saraksts -->
-            <ul v-else class="divide-y divide-gray-50">
-                <li v-for="service in recentServices" :key="service.id"
-                    class="flex items-center gap-4 px-6 py-4 hover:bg-gray-50/60 transition-colors">
-                    <!-- Statusa ikona -->
-                    <div class="shrink-0">
-                        <CheckCircleIcon v-if="service.is_active" class="w-5 h-5 text-emerald-500" />
-                        <XCircleIcon v-else class="w-5 h-5 text-gray-300" />
+            <!-- Mani pieteikumi -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Mani pieteikumi</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Darbi, uz kuriem esat pieteicies</p>
                     </div>
+                    <Link
+                        :href="route('master.applications.index')"
+                        class="inline-flex items-center gap-1 text-xs font-semibold text-navy hover:underline transition-colors shrink-0"
+                    >
+                        Visi
+                        <ChevronRightIcon class="w-3.5 h-3.5" stroke-width="2.5" />
+                    </Link>
+                </div>
 
-                    <!-- Informācija -->
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-semibold text-gray-900 truncate">{{ service.title }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ service.category?.name ?? '—' }}</p>
+                <div v-if="recentApplications.length === 0" class="px-6 py-10 text-center">
+                    <div class="mx-auto w-11 h-11 rounded-xl bg-gold/10 flex items-center justify-center mb-3">
+                        <ClipboardDocumentListIcon class="w-5 h-5 text-gold/50" />
                     </div>
+                    <p class="text-sm font-medium text-gray-600 mb-1">Nav aktīvu pieteikumu</p>
+                    <p class="text-xs text-gray-400 mb-4">Atrodiet darbus un pieteicieties tiem.</p>
+                    <Link
+                        :href="route('master.job-requests.categories')"
+                        class="inline-flex items-center gap-1.5 bg-navy text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-navy/90 transition-colors"
+                    >
+                        Meklēt darbus
+                    </Link>
+                </div>
 
-                    <!-- Cena -->
-                    <div class="shrink-0 text-right">
-                        <p class="text-sm font-bold text-navy">{{ formatPrice(service) }}</p>
-                        <p class="text-xs text-gray-400">
-                            {{ service.is_active ? 'Aktīvs' : 'Neaktīvs' }}
-                        </p>
-                    </div>
-                </li>
-            </ul>
+                <ul v-else class="divide-y divide-gray-50">
+                    <li
+                        v-for="app in recentApplications"
+                        :key="app.id"
+                        class="flex items-center gap-3 px-6 py-3.5 hover:bg-gray-50/60 transition-colors"
+                    >
+                        <ClockIcon class="w-4 h-4 text-gray-300 shrink-0" />
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">
+                                {{ app.job_request?.title ?? '—' }}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-0.5">
+                                {{ app.job_request?.category?.name ?? '—' }} · {{ formatDate(app.created_at) }}
+                            </p>
+                        </div>
+                        <span
+                            class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                            :class="appStatusConfig[app.status as ApplicationStatus]?.classes ?? 'bg-gray-100 text-gray-500'"
+                        >
+                            {{ appStatusConfig[app.status as ApplicationStatus]?.label ?? app.status }}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
 
     </div>

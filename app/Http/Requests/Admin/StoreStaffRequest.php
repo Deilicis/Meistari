@@ -23,7 +23,7 @@ class StoreStaffRequest extends FormRequest
             User::NAME  => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, ValidationRuleHelper::MAX_255],
             User::EMAIL => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::EMAIL, ValidationRuleHelper::MAX_255, ValidationRuleHelper::UNIQUE . ':' . User::TABLE . ',' . User::EMAIL],
             'password'  => [ValidationRuleHelper::REQUIRED, Password::min(8)],
-            'role'      => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, 'in:' . RoleNameEnum::ADMIN->value . ',' . RoleNameEnum::MODERATOR->value],
+            'role'      => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, 'in:' . RoleNameEnum::MODERATOR->value],
         ];
     }
 }

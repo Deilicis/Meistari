@@ -55,12 +55,21 @@ function iconComponent(icon: string | null) {
     <Head title="Kategorijas" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div>
-                <h2 class="text-xl font-bold text-navy">Kategorijas</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Izvēlies kategoriju, lai atrastu piemērotus pakalpojumus</p>
+        <div class="bg-navy">
+            <div class="h-1 bg-emerald-400" />
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex items-center gap-3">
+                    <Squares2X2Icon class="w-6 h-6 text-emerald-400" />
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Kategorijas</h1>
+                        <p class="text-white/50 text-sm mt-0.5">
+                            Izvēlies kategoriju ·
+                            <span class="text-emerald-400 font-semibold">{{ totalServices }}</span> pakalpojumi
+                        </p>
+                    </div>
+                </div>
             </div>
-        </template>
+        </div>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">

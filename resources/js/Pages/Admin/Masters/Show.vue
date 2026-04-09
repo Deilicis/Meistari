@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {
@@ -65,6 +66,10 @@ interface Master {
 
 defineProps<{ master: Master }>();
 
+const fromServiceId = computed(() =>
+    new URLSearchParams(window.location.search).get('from_service_id')
+);
+
 const priceTypeLabel = (type: string) => {
     const map: Record<string, string> = {
         fixed: 'Fiksēta',
@@ -89,13 +94,23 @@ const typeClass = (type: string | null) => type === 'company'
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-                <Link
-                    :href="route('admin.masters.index')"
-                    class="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-sm mb-4 transition-colors"
-                >
-                    <ArrowLeftIcon class="w-4 h-4" />
-                    Atpakaļ uz meistariem
-                </Link>
+                <div class="flex items-center gap-4 mb-4">
+                    <Link
+                        v-if="fromServiceId"
+                        :href="route('admin.services.show', fromServiceId)"
+                        class="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-sm transition-colors"
+                    >
+                        <ArrowLeftIcon class="w-4 h-4" />
+                        Atpakaļ uz pakalpojumu
+                    </Link>
+                    <Link
+                        :href="route('admin.masters.index')"
+                        class="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-sm transition-colors"
+                    >
+                        <ArrowLeftIcon v-if="!fromServiceId" class="w-4 h-4" />
+                        {{ fromServiceId ? 'Meistari' : 'Atpakaļ uz meistariem' }}
+                    </Link>
+                </div>
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl font-extrabold text-white shrink-0 overflow-hidden">
                         <img

@@ -10,6 +10,7 @@ import ConfirmationModal from '@/Components/Common/ConfirmationModal.vue';
 import ServiceCard from '@/Components/Services/ServiceCard.vue';
 import MyServicesSearchBar from '@/Components/Search/MyServicesSearchBar.vue';
 
+import { BriefcaseIcon, PlusIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 
 const props = defineProps<{
@@ -94,20 +95,30 @@ const clearFilters = () => {
     <Head title="Mani Pakalpojumi" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-bold text-navy">Mani Pakalpojumi</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ props.services.data.length }} pakalpojum{{ props.services.data.length === 1 ? 's' : 'i' }}</p>
+        <div class="bg-navy">
+            <div class="h-1 bg-gold" />
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <BriefcaseIcon class="w-6 h-6 text-gold" />
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-white tracking-tight">Mani pakalpojumi</h1>
+                            <p class="text-white/50 text-sm mt-0.5">
+                                <span class="text-gold font-semibold">{{ props.services.data.length }}</span>
+                                pakalpojum{{ props.services.data.length === 1 ? 's' : 'i' }}
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        @click="openCreateModal"
+                        class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 transition-colors shrink-0"
+                    >
+                        <PlusIcon class="w-4 h-4" stroke-width="2.5" />
+                        Jauns pakalpojums
+                    </button>
                 </div>
-                <PrimaryButton @click="openCreateModal">
-                    <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Jauns pakalpojums
-                </PrimaryButton>
             </div>
-        </template>
+        </div>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">

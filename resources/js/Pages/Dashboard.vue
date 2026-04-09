@@ -11,10 +11,12 @@ const props = defineProps<{
     roles: string[];
     recentServices: Service[];
     recentJobRequests: JobRequest[];
+    recentApplications: any[];
+    recentApplicationsReceived: any[];
 }>();
 
-const page = usePage();
-const user = computed(() => page.props.auth.user as AuthUser);
+const page = usePage<{ auth: { user: AuthUser } }>();
+const user = computed(() => page.props.auth.user);
 
 const isMaster = computed(() => props.roles?.includes('master') ?? false);
 </script>
@@ -32,17 +34,19 @@ const isMaster = computed(() => props.roles?.includes('master') ?? false);
 
         <div class="py-8">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <MasterDashboard 
-                    v-if="isMaster" 
-                    :stats="props.stats" 
-                    :user="user" 
-                    :recentServices="props.recentServices" 
+                <MasterDashboard
+                    v-if="isMaster"
+                    :stats="props.stats"
+                    :user="user"
+                    :recentServices="props.recentServices"
+                    :recentApplications="props.recentApplications"
                 />
-                <SeekerDashboard 
-                    v-else 
-                    :stats="props.stats" 
-                    :user="user" 
-                    :recentJobRequests="props.recentJobRequests" 
+                <SeekerDashboard
+                    v-else
+                    :stats="props.stats"
+                    :user="user"
+                    :recentJobRequests="props.recentJobRequests"
+                    :recentApplicationsReceived="props.recentApplicationsReceived"
                 />
             </div>
         </div>

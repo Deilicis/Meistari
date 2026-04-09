@@ -50,8 +50,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Administratora panelis (tikai admin)
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get('/', [CategoryPageController::class, 'index'])->name('index');
         });
@@ -96,6 +94,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Admin + Moderator (kopīgas routes)
     Route::middleware(['role:admin,moderator'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
         Route::prefix('complaints')->name('complaints.')->group(function () {
             Route::get('/',               [AdminComplaintController::class, 'index'])->name('index');
             Route::get('/{complaint}',    [AdminComplaintController::class, 'show'])->name('show');

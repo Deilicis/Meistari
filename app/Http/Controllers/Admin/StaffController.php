@@ -19,9 +19,10 @@ class StaffController extends Controller
     private const MSG_CREATED = 'Darbinieks pievienots.';
     private const MSG_UPDATED = 'Darbinieks atjaunināts.';
     private const MSG_DELETED = 'Darbinieks dzēsts.';
-    private const MSG_SELF_DELETE = 'Nevar dzēst savu kontu.';
-    private const FLASH_SUCCESS = 'success';
-    private const FLASH_ERROR   = 'error';
+    private const MSG_SELF_DELETE  = 'Nevar dzēst savu kontu.';
+    private const MSG_ADMIN_DELETE = 'Administratora kontu nevar dzēst šeit.';
+    private const FLASH_SUCCESS    = 'success';
+    private const FLASH_ERROR      = 'error';
 
     public function index(): Response
     {
@@ -66,6 +67,11 @@ class StaffController extends Controller
     {
         if ($user->getId() === auth()->id()) {
             return back()->with(self::FLASH_ERROR, self::MSG_SELF_DELETE);
+        }
+
+        $isAdmin = $user->roles()->where(Role::NAME, RoleNameEnum::ADMIN->value)->exists();
+        if ($isAdmin) {
+            return back()->with(self::FLASH_ERROR, self::MSG_ADMIN_DELETE);
         }
 
         $user->delete();

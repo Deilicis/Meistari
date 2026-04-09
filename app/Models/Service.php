@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Carbon\Carbon;
 use App\Enums\Service\ServicePriceTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Service extends Model
 {
-    use SoftDeletes, HasFactory;
+    use Auditable, SoftDeletes, HasFactory;
 
     public const TABLE = 'services';
     public const ID = 'id';

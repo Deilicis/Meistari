@@ -55,12 +55,21 @@ function iconComponent(icon: string | null) {
     <Head title="Darba sludinājumi" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div>
-                <h2 class="text-xl font-bold text-navy">Darba sludinājumi</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Izvēlies kategoriju, lai atrastu piemērotus darba sludinājumus</p>
+        <div class="bg-navy">
+            <div class="h-1 bg-gold" />
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex items-center gap-3">
+                    <Squares2X2Icon class="w-6 h-6 text-gold" />
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Darba sludinājumi</h1>
+                        <p class="text-white/50 text-sm mt-0.5">
+                            Izvēlies kategoriju ·
+                            <span class="text-gold font-semibold">{{ totalJobRequests }}</span> aktīvi sludinājumi
+                        </p>
+                    </div>
+                </div>
             </div>
-        </template>
+        </div>
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
