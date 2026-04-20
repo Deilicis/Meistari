@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
+import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
 import {
     MapPinIcon,
     CheckBadgeIcon,
     BriefcaseIcon,
     PhotoIcon,
     StarIcon,
+    FlagIcon,
 } from '@heroicons/vue/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/vue/24/solid';
 import type { MasterPublicReview, ServiceMasterProfile } from '@/types/models';
@@ -47,6 +49,8 @@ const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const lightboxIndex = ref<number | null>(null);
+const complaintOpen = ref(false);
+const authUserId = usePage().props.auth?.user?.id as number | undefined;
 </script>
 
 <template>
@@ -73,6 +77,15 @@ const lightboxIndex = ref<number | null>(null);
                             <div class="flex items-center gap-2 flex-wrap mb-1">
                                 <h1 class="text-2xl font-bold text-navy">{{ displayName }}</h1>
                                 <CheckBadgeIcon v-if="profile?.is_verified" class="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                                <button
+                                    v-if="authUserId !== master.id"
+                                    @click="complaintOpen = true"
+                                    class="ml-auto inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
+                                    title="Ziņot par pārkāpumu"
+                                >
+                                    <FlagIcon class="w-3.5 h-3.5" />
+                                    Ziņot
+                                </button>
                             </div>
 
                             <div class="flex items-center gap-3 text-sm text-gray-500 flex-wrap mb-3">
@@ -204,6 +217,12 @@ const lightboxIndex = ref<number | null>(null);
             :images="profile.portfolio_images"
             :index="lightboxIndex"
             @close="lightboxIndex = null"
+        />
+
+        <ComplaintModal
+            :show="complaintOpen"
+            :reported-user-id="master.id"
+            @close="complaintOpen = false"
         />
     </AuthenticatedLayout>
 </template>

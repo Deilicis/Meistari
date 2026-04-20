@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
+import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
 import {
     XMarkIcon,
     MapPinIcon,
@@ -9,6 +11,7 @@ import {
     CheckBadgeIcon,
     BriefcaseIcon,
     PhotoIcon,
+    FlagIcon,
 } from '@heroicons/vue/24/outline';
 import type { ServiceWithMaster } from '@/types/models';
 
@@ -50,9 +53,14 @@ const priceTypeLabel = computed(() => {
 });
 
 const lightboxIndex = ref<number | null>(null);
+const complaintOpen = ref(false);
+const authUserId = usePage().props.auth?.user?.id as number | undefined;
 
 watch(() => props.show, (newVal) => {
-    if (!newVal) lightboxIndex.value = null;
+    if (!newVal) {
+        lightboxIndex.value = null;
+        complaintOpen.value = false;
+    }
 });
 </script>
 
@@ -182,7 +190,18 @@ watch(() => props.show, (newVal) => {
             </div>
 
             <!-- Footer -->
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 flex-shrink-0 bg-white">
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3 flex-shrink-0 bg-white">
+                <button
+                    v-if="authUserId !== service.user?.id"
+                    @click="complaintOpen = true"
+                    class="inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
+                    title="Ziņot par pārkāpumu"
+                >
+                    <FlagIcon class="w-3.5 h-3.5" />
+                    Ziņot
+                </button>
+                <div v-else />
+                <div class="flex items-center gap-3">
                 <button
                     @click="emit('close')"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -204,8 +223,19 @@ watch(() => props.show, (newVal) => {
                 >
                     Pieteikties
                 </button>
+                </div>
             </div>
         </div>
+
+        <ComplaintModal
+            v-if="service"
+            :show="complaintOpen"
+            :reported-user-id="service.user.id"
+            reported-entity-type="App\Models\Service"
+            :reported-entity-id="service.id"
+            entity-label="šo pakalpojumu"
+            @close="complaintOpen = false"
+        />
 
         <ImageLightbox
             v-if="profile?.portfolio_images?.length"

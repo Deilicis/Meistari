@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
+import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
 import {
     XMarkIcon,
     MapPinIcon,
@@ -9,6 +11,7 @@ import {
     CalendarDaysIcon,
     CheckBadgeIcon,
     PhotoIcon,
+    FlagIcon,
 } from '@heroicons/vue/24/outline';
 import type { JobRequestWithSeeker } from '@/types/models';
 
@@ -35,9 +38,14 @@ const seekerName = computed(() => {
 const avatarInitials = computed(() => seekerName.value.slice(0, 2).toUpperCase());
 
 const lightboxIndex = ref<number | null>(null);
+const complaintOpen = ref(false);
+const authUserId = usePage().props.auth?.user?.id as number | undefined;
 
 watch(() => props.show, (newVal) => {
-    if (!newVal) lightboxIndex.value = null;
+    if (!newVal) {
+        lightboxIndex.value = null;
+        complaintOpen.value = false;
+    }
 });
 
 const formatBudget = (): string => {
@@ -154,30 +162,52 @@ const formatBudget = (): string => {
                 </div>
             </div>
 
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 flex-shrink-0 bg-white">
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3 flex-shrink-0 bg-white">
                 <button
-                    @click="emit('close')"
-                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    v-if="authUserId !== job.user?.id"
+                    @click="complaintOpen = true"
+                    class="inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
+                    title="Ziņot par pārkāpumu"
                 >
-                    Aizvērt
+                    <FlagIcon class="w-3.5 h-3.5" />
+                    Ziņot
                 </button>
+                <div v-else />
+                <div class="flex items-center gap-3">
+                    <button
+                        @click="emit('close')"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        Aizvērt
+                    </button>
 
-                <div
-                    v-if="applied"
-                    class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold"
-                >
-                    <CheckBadgeIcon class="w-4 h-4" />
-                    Jau pieteicies
+                    <div
+                        v-if="applied"
+                        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold"
+                    >
+                        <CheckBadgeIcon class="w-4 h-4" />
+                        Jau pieteicies
+                    </div>
+                    <button
+                        v-else
+                        @click="emit('apply')"
+                        class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors"
+                    >
+                        Pieteikties
+                    </button>
                 </div>
-                <button
-                    v-else
-                    @click="emit('apply')"
-                    class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors"
-                >
-                    Pieteikties
-                </button>
             </div>
         </div>
+
+        <ComplaintModal
+            v-if="job"
+            :show="complaintOpen"
+            :reported-user-id="job.user.id"
+            reported-entity-type="App\Models\JobRequest"
+            :reported-entity-id="job.id"
+            entity-label="šo sludinājumu"
+            @close="complaintOpen = false"
+        />
 
         <ImageLightbox
             v-if="job?.images?.length"

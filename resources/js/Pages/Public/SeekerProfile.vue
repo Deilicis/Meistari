@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
 import {
     MapPinIcon,
     StarIcon,
     BriefcaseIcon,
+    FlagIcon,
 } from '@heroicons/vue/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/vue/24/solid';
 import type { MasterPublicReview, SeekerProfile } from '@/types/models';
@@ -49,6 +52,9 @@ const reviewerName = (review: MasterPublicReview): string => {
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
+const complaintOpen = ref(false);
+const authUserId = usePage().props.auth?.user?.id as number | undefined;
+
 const formatBudget = (budget: number | null): string => {
     if (!budget) return 'Vienojams';
     return new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget);
@@ -76,7 +82,18 @@ const formatBudget = (budget: number | null): string => {
                         </div>
 
                         <div class="flex-1 min-w-0">
-                            <h1 class="text-2xl font-bold text-navy mb-1">{{ displayName }}</h1>
+                            <div class="flex items-center gap-2 flex-wrap mb-1">
+                                <h1 class="text-2xl font-bold text-navy">{{ displayName }}</h1>
+                                <button
+                                    v-if="authUserId !== seeker.id"
+                                    @click="complaintOpen = true"
+                                    class="ml-auto inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
+                                    title="Ziņot par pārkāpumu"
+                                >
+                                    <FlagIcon class="w-3.5 h-3.5" />
+                                    Ziņot
+                                </button>
+                            </div>
 
                             <div class="flex items-center gap-3 text-sm text-gray-500 flex-wrap mb-3">
                                 <span v-if="profile?.city" class="flex items-center gap-1">
@@ -187,5 +204,10 @@ const formatBudget = (budget: number | null): string => {
 
             </div>
         </div>
+        <ComplaintModal
+            :show="complaintOpen"
+            :reported-user-id="seeker.id"
+            @close="complaintOpen = false"
+        />
     </AuthenticatedLayout>
 </template>
