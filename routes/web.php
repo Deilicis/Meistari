@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Complaint\ComplaintController;
+use App\Http\Controllers\Chat\ChatController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -109,6 +110,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/browse-categories', [JobRequestCategoryBrowsePageController::class,  'index'])->name('job-requests.categories');
         Route::get('/browse-jobs',       [JobRequestBrowsePageController::class,          'index'])->name('job-requests.index');
         Route::get('/my-applications',   [ApplicationPageController::class,               'index'])->name('applications.index');
+    });
+
+    // Čats (pieejams abām lomām)
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::post('/start', [ChatController::class, 'startConversation'])->name('start');
+        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
+        Route::post('/{conversation}/messages', [ChatController::class, 'store'])->name('store');
     });
 
     // Publiskie profili (pieejami abām lomām)

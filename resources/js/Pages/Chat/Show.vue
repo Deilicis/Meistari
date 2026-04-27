@@ -1,0 +1,229 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
+import axios from 'axios';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
+
+interface MessageSender {
+    id: number;
+    name: string;
+}
+
+interface Message {
+    id: number;
+    conversation_id: number;
+    sender_id: number;
+    body: string;
+    read_at: string | null;
+    created_at: string;
+    sender: MessageSender;
+}
+
+interface OtherUser {
+    id: number;
+    name: string;
+}
+
+interface Conversation {
+    id: number;
+    other_user: OtherUser;
+    last_message: Message | null;
+    created_at: string;
+}
+
+const props = defineProps<{
+    conversation: Conversation;
+    messages: Message[];
+    conversations: Conversation[];
+    auth_user_id: number;
+}>();
+
+const messageList = ref<Message[]>([...props.messages]);
+const newMessage = ref('');
+const sending = ref(false);
+const messagesEnd = ref<HTMLElement | null>(null);
+const textarea = ref<HTMLTextAreaElement | null>(null);
+
+const scrollToBottom = (smooth = true) => {
+    nextTick(() => {
+        messagesEnd.value?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
+    });
+};
+
+const sendMessage = async () => {
+    const body = newMessage.value.trim();
+    if (!body || sending.value) return;
+    sending.value = true;
+    newMessage.value = '';
+    try {
+        const res = await axios.post(route('chat.store', props.conversation.id), { body });
+        const msg: Message = res.data;
+        if (!messageList.value.find(m => m.id === msg.id)) {
+            messageList.value.push(msg);
+            scrollToBottom();
+        }
+    } catch {
+        newMessage.value = body;
+    } finally {
+        sending.value = false;
+        textarea.value?.focus();
+    }
+};
+
+const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+};
+
+const formatTime = (iso: string) => {
+    const d = new Date(iso);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    if (isToday) {
+        return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+    }
+    return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' }) + ' ' +
+        d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+};
+
+const initials = (name: string) => name.slice(0, 2).toUpperCase();
+
+onMounted(() => {
+    scrollToBottom(false);
+    (window as any).Echo
+        .private(`conversation.${props.conversation.id}`)
+        .listen('MessageSent', (e: Message) => {
+            if (!messageList.value.find(m => m.id === e.id)) {
+                messageList.value.push(e);
+                scrollToBottom();
+            }
+        });
+});
+
+onUnmounted(() => {
+    (window as any).Echo.leave(`conversation.${props.conversation.id}`);
+});
+</script>
+
+<template>
+    <Head :title="`Saruna - ${conversation.other_user.name}`" />
+
+    <AuthenticatedLayout>
+        <div class="flex h-[calc(100vh-64px)]">
+
+            <!-- Left sidebar: conversation list -->
+            <aside class="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 flex-shrink-0">
+                <div class="bg-navy px-4 py-3 flex-shrink-0">
+                    <div class="h-0.5 bg-blue-400 -mx-4 -mt-3 mb-3" />
+                    <Link :href="route('chat.index')" class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+                        <ChatBubbleLeftRightIcon class="w-4 h-4 text-blue-400" />
+                        <span class="text-sm font-semibold">Ziņojumi</span>
+                    </Link>
+                </div>
+
+                <div class="overflow-y-auto flex-grow divide-y divide-gray-50">
+                    <Link
+                        v-for="conv in conversations"
+                        :key="conv.id"
+                        :href="route('chat.show', conv.id)"
+                        class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                        :class="conv.id === conversation.id ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''"
+                    >
+                        <div class="w-9 h-9 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                            {{ initials(conv.other_user.name) }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ conv.other_user.name }}</p>
+                            <p v-if="conv.last_message" class="text-xs text-gray-400 truncate">
+                                {{ conv.last_message.body }}
+                            </p>
+                        </div>
+                    </Link>
+                    <div v-if="conversations.length === 0" class="p-4 text-xs text-gray-400 text-center">
+                        Nav sarunu
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right: message thread -->
+            <div class="flex flex-col flex-1 min-w-0">
+
+                <!-- Chat header -->
+                <div class="bg-white border-b border-gray-100 px-5 py-3 flex items-center gap-3 flex-shrink-0">
+                    <Link :href="route('chat.index')" class="md:hidden text-gray-400 hover:text-navy transition-colors mr-1">
+                        ←
+                    </Link>
+                    <div class="w-9 h-9 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                        {{ initials(conversation.other_user.name) }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900">{{ conversation.other_user.name }}</p>
+                        <p class="text-xs text-gray-400">Aktīvs</p>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/40">
+                    <div v-if="messageList.length === 0" class="flex items-center justify-center h-full">
+                        <p class="text-sm text-gray-400">Sāc sarunu!</p>
+                    </div>
+
+                    <div
+                        v-for="msg in messageList"
+                        :key="msg.id"
+                        class="flex"
+                        :class="msg.sender_id === auth_user_id ? 'justify-end' : 'justify-start'"
+                    >
+                        <!-- Other user avatar -->
+                        <div v-if="msg.sender_id !== auth_user_id" class="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0 mr-2 mt-1">
+                            {{ initials(msg.sender.name) }}
+                        </div>
+
+                        <div class="max-w-xs lg:max-w-md">
+                            <div
+                                class="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
+                                :class="msg.sender_id === auth_user_id
+                                    ? 'bg-navy text-white rounded-tr-sm'
+                                    : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm'"
+                            >
+                                {{ msg.body }}
+                            </div>
+                            <p
+                                class="text-xs text-gray-400 mt-1 px-1"
+                                :class="msg.sender_id === auth_user_id ? 'text-right' : 'text-left'"
+                            >
+                                {{ formatTime(msg.created_at) }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div ref="messagesEnd" />
+                </div>
+
+                <!-- Input area -->
+                <div class="bg-white border-t border-gray-100 px-4 py-3 flex items-end gap-3 flex-shrink-0">
+                    <textarea
+                        ref="textarea"
+                        v-model="newMessage"
+                        @keydown="handleKeydown"
+                        rows="1"
+                        placeholder="Rakstīt ziņojumu... (Enter - sūtīt, Shift+Enter - jauna rinda)"
+                        class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-none transition max-h-32"
+                        style="field-sizing: content;"
+                    />
+                    <button
+                        @click="sendMessage"
+                        :disabled="!newMessage.trim() || sending"
+                        class="p-2.5 bg-navy text-white rounded-xl hover:bg-navy/90 transition-colors disabled:opacity-40 flex-shrink-0"
+                    >
+                        <PaperAirplaneIcon class="w-5 h-5" />
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>

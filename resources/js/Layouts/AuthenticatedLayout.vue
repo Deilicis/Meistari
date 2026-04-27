@@ -15,6 +15,7 @@ import {
     ChevronDownIcon,
     Bars3Icon,
     XMarkIcon,
+    ChatBubbleLeftRightIcon,
 } from '@heroicons/vue/24/outline';
 
 type LayoutUser = AuthUser & { profile?: Profile };
@@ -129,6 +130,14 @@ const navLinkClass = (active: boolean) =>
                             >
                                 <ClipboardDocumentListIcon class="w-3.5 h-3.5" />
                                 Mani Sludinājumi
+                            </Link>
+
+                            <Link
+                                :href="route('chat.index')"
+                                :class="navLinkClass(route().current('chat.*'))"
+                            >
+                                <ChatBubbleLeftRightIcon class="w-3.5 h-3.5" />
+                                Ziņojumi
                             </Link>
                         </div>
                     </div>
@@ -247,6 +256,14 @@ const navLinkClass = (active: boolean) =>
                         @click="showingNavigationDropdown = false">
                         <ClipboardDocumentListIcon class="w-4 h-4" />
                         Mani Sludinājumi
+                    </Link>
+
+                    <Link :href="route('chat.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('chat.*') }"
+                        @click="showingNavigationDropdown = false">
+                        <ChatBubbleLeftRightIcon class="w-4 h-4" />
+                        Ziņojumi
                     </Link>
                 </div>
 

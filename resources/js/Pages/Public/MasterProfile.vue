@@ -11,6 +11,7 @@ import {
     PhotoIcon,
     StarIcon,
     FlagIcon,
+    ChatBubbleLeftEllipsisIcon,
 } from '@heroicons/vue/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/vue/24/solid';
 import type { MasterPublicReview, ServiceMasterProfile } from '@/types/models';
@@ -51,6 +52,19 @@ const formatDate = (iso: string) =>
 const lightboxIndex = ref<number | null>(null);
 const complaintOpen = ref(false);
 const authUserId = usePage().props.auth?.user?.id as number | undefined;
+const startingChat = ref(false);
+
+const startChat = async () => {
+    startingChat.value = true;
+    try {
+        const res = await (await import('axios')).default.post(route('chat.start'), {
+            receiver_id: props.master.id,
+        });
+        window.location.href = route('chat.show', res.data.conversation_id);
+    } finally {
+        startingChat.value = false;
+    }
+};
 </script>
 
 <template>
@@ -113,6 +127,17 @@ const authUserId = usePage().props.auth?.user?.id as number | undefined;
                             </div>
 
                             <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed mt-3">{{ profile.bio }}</p>
+
+                            <div v-if="authUserId !== master.id" class="mt-4">
+                                <button
+                                    @click="startChat"
+                                    :disabled="startingChat"
+                                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-navy rounded-xl hover:bg-navy/90 transition-colors disabled:opacity-50"
+                                >
+                                    <ChatBubbleLeftEllipsisIcon class="w-4 h-4" />
+                                    {{ startingChat ? 'Atver...' : 'Sūtīt ziņu' }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

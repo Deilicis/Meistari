@@ -19,6 +19,11 @@ class MessageSent implements ShouldBroadcastNow
         public readonly Message $message
     ) {}
 
+    public function broadcastAs(): string
+    {
+        return 'MessageSent';
+    }
+
     public function broadcastOn(): Channel
     {
         return new PrivateChannel('conversation.' . $this->message->getConversationId());
