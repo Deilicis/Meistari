@@ -38,6 +38,10 @@ use App\Http\Controllers\Chat\ChatController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
+Route::get('/noteikumi', fn() => Inertia::render('Static/Noteikumi'))->name('noteikumi');
+Route::get('/privatuma-politika', fn() => Inertia::render('Static/PrivatumaPolitika'))->name('privatuma-politika');
+Route::get('/kontakti', fn() => Inertia::render('Static/Kontakti'))->name('kontakti');
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Informācijas panelis un profils

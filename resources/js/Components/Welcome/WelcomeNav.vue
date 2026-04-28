@@ -13,10 +13,10 @@ defineProps<{
     <nav class="bg-navy relative z-20">
         <div class="h-0.5 w-full bg-gold" />
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2.5">
+            <Link :href="route('home')" class="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
                 <ApplicationLogo class="w-8 h-8 object-contain brightness-0 invert" />
                 <span class="text-lg font-extrabold tracking-widest uppercase text-white">Meistari</span>
-            </div>
+            </Link>
             <div v-if="canLogin" class="flex items-center gap-3">
                 <Link v-if="isAuth" :href="route('dashboard')"
                     class="text-sm font-semibold text-white/80 hover:text-white transition-colors">

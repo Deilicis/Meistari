@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
 </script>
 
@@ -10,9 +11,9 @@ import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
                 <p class="text-sm text-white/30">&copy; 2026 Meistari</p>
             </div>
             <div class="flex gap-6 text-sm text-white/30">
-                <span class="hover:text-white/60 cursor-pointer transition-colors">Noteikumi</span>
-                <span class="hover:text-white/60 cursor-pointer transition-colors">Privātuma politika</span>
-                <span class="hover:text-white/60 cursor-pointer transition-colors">Kontakti</span>
+                <Link :href="route('noteikumi')" class="hover:text-white/60 transition-colors">Noteikumi</Link>
+                <Link :href="route('privatuma-politika')" class="hover:text-white/60 transition-colors">Privātuma politika</Link>
+                <Link :href="route('kontakti')" class="hover:text-white/60 transition-colors">Kontakti</Link>
             </div>
         </div>
     </footer>
