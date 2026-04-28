@@ -47,6 +47,32 @@ export interface WelcomeJobRequestCard {
 export interface PopularCategory {
     id: number;
     name: string;
+    services_count: number;
+}
+
+export interface FeaturedMasterProfile {
+    first_name: string | null;
+    last_name: string | null;
+    company_name: string | null;
+    type: string | null;
+    avatar: string | null;
+    city: string | null;
+    bio: string | null;
+    is_verified: boolean;
+}
+
+export interface FeaturedMaster {
+    id: number;
+    name: string;
+    reviews_received_count: number;
+    reviews_received_avg_rating: number | null;
+    profile: FeaturedMasterProfile | null;
+}
+
+export interface WelcomeStats {
+    masters: number;
+    completed_jobs: number;
+    categories: number;
 }
 
 export type WelcomeFilters = {
