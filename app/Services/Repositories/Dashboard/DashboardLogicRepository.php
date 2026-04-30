@@ -89,7 +89,7 @@ class DashboardLogicRepository
             ->count();
 
         return [
-            'active_job_requests'           => $user->jobRequests()->where('status', JobStatusEnum::ACTIVE->value)->count(),
+            'active_job_requests'           => $user->jobRequests()->where('status', JobStatusEnum::OPEN->value)->count(),
             'total_job_requests'            => $user->jobRequests()->count(),
             'pending_applications_received' => $pendingReceived,
         ];

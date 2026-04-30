@@ -88,7 +88,7 @@ class SaveJobRequest extends FormRequest
         $dto->categoryId = (int) $this->validated(self::CATEGORY_ID);
         $dto->title = $this->validated(self::TITLE);
         $dto->description = $this->validated(self::DESCRIPTION);
-        $dto->status = JobStatusEnum::ACTIVE;
+        $dto->status = JobStatusEnum::OPEN;
         
         $dto->budget = $this->validated(self::BUDGET) !== null ? (float) $this->validated(self::BUDGET) : null;
         $dto->deadline = $this->validated(self::DEADLINE);

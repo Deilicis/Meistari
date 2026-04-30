@@ -93,7 +93,7 @@ class ApplicationLogicRepository
             abort(403, ErrorMessages::JOB_NOT_YOURS);
         }
 
-        if ($jobRequest->getStatus() !== JobStatusEnum::ACTIVE) {
+        if ($jobRequest->getStatus() !== JobStatusEnum::OPEN) {
             abort(422, ErrorMessages::JOB_NOT_ACTIVE);
         }
 

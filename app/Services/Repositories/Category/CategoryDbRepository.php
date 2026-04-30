@@ -33,7 +33,7 @@ class CategoryDbRepository
 
     public function getAllFlatWithJobRequestCount(): Collection
     {
-        return Category::withCount(['jobRequests' => fn($q) => $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value)])
+        return Category::withCount(['jobRequests' => fn($q) => $q->where(JobRequest::STATUS, JobStatusEnum::OPEN->value)])
             ->orderBy(Category::NAME)
             ->get();
     }
@@ -42,7 +42,7 @@ class CategoryDbRepository
     {
         return Category::withCount('services')
             ->withCount(['jobRequests as job_requests_count' => fn ($q) =>
-                $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value)
+                $q->where(JobRequest::STATUS, JobStatusEnum::OPEN->value)
             ])
             ->orderByRaw('(services_count + job_requests_count) DESC')
             ->limit($limit)
@@ -60,11 +60,11 @@ class CategoryDbRepository
 
     public function getNestedWithJobRequestCount(): Collection
     {
-        $activeOnly = fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value);
+        $activeOnly = fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::OPEN->value);
 
         return Category::withCount(['jobRequests' => $activeOnly])
             ->whereNull(Category::PARENT_ID)
-            ->with(['children' => fn ($q) => $q->withCount(['jobRequests' => fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value)])])
+            ->with(['children' => fn ($q) => $q->withCount(['jobRequests' => fn ($q) => $q->where(JobRequest::STATUS, JobStatusEnum::OPEN->value)])])
             ->orderBy(Category::NAME)
             ->get();
     }

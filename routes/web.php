@@ -36,6 +36,8 @@ use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Complaint\ComplaintController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\JobLifecycleController;
+use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -44,6 +46,16 @@ Route::get('/privatuma-politika', fn() => Inertia::render('Static/PrivatumaPolit
 Route::get('/kontakti', fn() => Inertia::render('Static/Kontakti'))->name('kontakti');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Darba lifecycle API
+    Route::prefix('jobs/{jobId}')->name('jobs.lifecycle.')->group(function () {
+        Route::post('/accept-application', [JobLifecycleController::class, 'acceptApplication'])->name('accept');
+        Route::post('/pay',               [JobLifecycleController::class, 'pay'])->name('pay');
+        Route::post('/mark-complete',     [JobLifecycleController::class, 'markComplete'])->name('mark-complete');
+        Route::post('/confirm',           [JobLifecycleController::class, 'confirm'])->name('confirm');
+        Route::post('/dispute',           [JobLifecycleController::class, 'dispute'])->name('dispute');
+        Route::post('/cancel',            [JobLifecycleController::class, 'cancel'])->name('cancel');
+    });
 
     // Paziņojumi
     Route::prefix('notifications')->name('notifications.')->group(function () {
@@ -140,6 +152,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Meklētāja panelis
     Route::middleware(['role:seeker'])->prefix('seeker')->name('seeker.')->group(function () {
         Route::get('/my-requests', [JobRequestPageController::class, 'index'])->name('job-requests.index');
+        Route::get('/my-requests/{id}', [JobRequestShowPageController::class, 'show'])->name('job-requests.show');
         Route::get('/categories', [CategoryBrowsePageController::class, 'index'])->name('categories.index');
         Route::get('/services', [ServiceBrowsePageController::class, 'index'])->name('services.index');
         Route::get('/my-applications', [MyServiceApplicationsPageController::class, 'index'])->name('service-applications.index');

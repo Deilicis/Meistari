@@ -132,7 +132,7 @@ class JobRequestLogicRepository
             abort(403, ErrorMessages::JOB_NOT_YOURS);
         }
 
-        if ($jobRequest->getStatus() !== JobStatusEnum::ASSIGNED) {
+        if ($jobRequest->getStatus() !== JobStatusEnum::ACCEPTED) {
             abort(422, ErrorMessages::JOB_NOT_ASSIGNED);
         }
 

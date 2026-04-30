@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Jobs;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class AcceptApplicationRequest extends FormRequest
+{
+    public function authorize(): bool { return true; }
+
+    public function rules(): array
+    {
+        return [
+            'application_id' => ['required', 'integer', 'exists:applications,id'],
+        ];
+    }
+}

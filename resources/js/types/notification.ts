@@ -4,7 +4,13 @@ export type NotificationType =
     | 'application_rejected'
     | 'new_message'
     | 'job_completed'
-    | 'new_review';
+    | 'new_review'
+    | 'job_paid'
+    | 'job_marked_complete'
+    | 'job_confirmed'
+    | 'job_disputed'
+    | 'job_cancelled'
+    | 'job_auto_released';
 
 export interface Notification {
     id: number;

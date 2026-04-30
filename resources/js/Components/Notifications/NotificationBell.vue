@@ -12,6 +12,9 @@ import {
     CheckBadgeIcon,
     StarIcon,
     TrashIcon,
+    CurrencyEuroIcon,
+    ShieldExclamationIcon,
+    ArrowPathIcon,
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{ userId: number }>();
@@ -38,6 +41,12 @@ const iconMap: Record<NotificationType, any> = {
     new_message:          ChatBubbleLeftIcon,
     job_completed:        CheckBadgeIcon,
     new_review:           StarIcon,
+    job_paid:             CurrencyEuroIcon,
+    job_marked_complete:  CheckBadgeIcon,
+    job_confirmed:        CheckCircleIcon,
+    job_disputed:         ShieldExclamationIcon,
+    job_cancelled:        XCircleIcon,
+    job_auto_released:    ArrowPathIcon,
 };
 
 function formatTime(iso: string): string {

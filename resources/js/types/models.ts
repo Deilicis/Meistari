@@ -1,4 +1,4 @@
-export type JobStatus = 'active' | 'assigned' | 'completed' | 'cancelled';
+export type JobStatus = 'open' | 'accepted' | 'in_progress' | 'awaiting_confirmation' | 'completed' | 'disputed' | 'cancelled';
 
 export interface Category {
     id: number;
