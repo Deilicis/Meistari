@@ -33,7 +33,7 @@ class JobRequestDbRepository
     {
         $query = JobRequest::with(['category', 'user.profile'])
             ->withCount('applications')
-            ->where(JobRequest::STATUS, JobStatusEnum::ACTIVE->value);
+            ->where(JobRequest::STATUS, JobStatusEnum::OPEN->value);
 
         if (!empty($filters[self::FILTER_SEARCH])) {
             $query->where(JobRequest::TITLE, self::LIKE, '%' . $filters[self::FILTER_SEARCH] . '%');
@@ -102,7 +102,7 @@ class JobRequestDbRepository
 
     public function setAssigned(JobRequest $jobRequest): JobRequest
     {
-        $jobRequest->update([JobRequest::STATUS => JobStatusEnum::ASSIGNED->value]);
+        $jobRequest->update([JobRequest::STATUS => JobStatusEnum::ACCEPTED->value]);
         return $jobRequest;
     }
 
