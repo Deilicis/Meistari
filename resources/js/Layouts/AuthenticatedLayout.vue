@@ -17,6 +17,7 @@ import {
     XMarkIcon,
     ChatBubbleLeftRightIcon,
 } from '@heroicons/vue/24/outline';
+import NotificationBell from '@/Components/Notifications/NotificationBell.vue';
 
 type LayoutUser = AuthUser & { profile?: Profile };
 
@@ -143,6 +144,8 @@ const navLinkClass = (active: boolean) =>
                     </div>
 
                     <div class="hidden sm:flex items-center gap-3">
+                        <NotificationBell :userId="user.id" />
+
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg">
                             {{ roleLabel }}
                         </span>

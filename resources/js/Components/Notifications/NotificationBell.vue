@@ -1,0 +1,172 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from '@inertiajs/vue3';
+import { useNotifications } from '@/composables/useNotifications';
+import type { Notification, NotificationType } from '@/types/notification';
+import {
+    BellIcon,
+    BriefcaseIcon,
+    CheckCircleIcon,
+    XCircleIcon,
+    ChatBubbleLeftIcon,
+    CheckBadgeIcon,
+    StarIcon,
+    TrashIcon,
+} from '@heroicons/vue/24/outline';
+
+const props = defineProps<{ userId: number }>();
+
+const {
+    notifications,
+    unreadCount,
+    loading,
+    fetchNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    subscribeToRealtime,
+    unsubscribe,
+} = useNotifications();
+
+const open = ref(false);
+const container = ref<HTMLElement | null>(null);
+
+const iconMap: Record<NotificationType, any> = {
+    new_application:      BriefcaseIcon,
+    application_accepted: CheckCircleIcon,
+    application_rejected: XCircleIcon,
+    new_message:          ChatBubbleLeftIcon,
+    job_completed:        CheckBadgeIcon,
+    new_review:           StarIcon,
+};
+
+function formatTime(iso: string): string {
+    const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (diff < 60) return 'tikko';
+    if (diff < 3600) return `pirms ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `pirms ${Math.floor(diff / 3600)} h`;
+    if (diff < 172800) return 'vakar';
+    return `pirms ${Math.floor(diff / 86400)} d`;
+}
+
+async function handleClick(n: Notification) {
+    if (!n.is_read) await markAsRead(n.id);
+    if (n.action_url) window.location.href = n.action_url;
+    open.value = false;
+}
+
+async function handleDelete(e: Event, id: number) {
+    e.stopPropagation();
+    await deleteNotification(id);
+}
+
+function handleOutsideClick(e: MouseEvent) {
+    if (container.value && !container.value.contains(e.target as Node)) {
+        open.value = false;
+    }
+}
+
+onMounted(() => {
+    fetchNotifications();
+    subscribeToRealtime(props.userId);
+    document.addEventListener('click', handleOutsideClick);
+});
+
+onUnmounted(() => {
+    unsubscribe(props.userId);
+    document.removeEventListener('click', handleOutsideClick);
+});
+</script>
+
+<template>
+    <div ref="container" class="relative">
+        <!-- Bell button -->
+        <button
+            @click="open = !open"
+            class="relative inline-flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+        >
+            <BellIcon class="w-5 h-5" />
+            <span
+                v-if="unreadCount > 0"
+                class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full leading-none"
+            >
+                {{ unreadCount > 9 ? '9+' : unreadCount }}
+            </span>
+        </button>
+
+        <!-- Dropdown -->
+        <div
+            v-if="open"
+            class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
+        >
+            <!-- Header -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                <span class="text-sm font-bold text-navy">Paziņojumi</span>
+                <button
+                    v-if="unreadCount > 0"
+                    @click="markAllAsRead"
+                    class="text-xs text-navy/60 hover:text-navy transition-colors"
+                >
+                    Atzīmēt visus kā lasītus
+                </button>
+            </div>
+
+            <!-- List -->
+            <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-50">
+                <div
+                    v-if="loading && notifications.length === 0"
+                    class="py-8 text-center text-sm text-gray-400"
+                >
+                    Ielādē...
+                </div>
+
+                <div
+                    v-else-if="notifications.length === 0"
+                    class="py-10 text-center"
+                >
+                    <BellIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                    <p class="text-sm text-gray-400">Nav jaunu paziņojumu</p>
+                </div>
+
+                <div
+                    v-for="n in notifications"
+                    :key="n.id"
+                    @click="handleClick(n)"
+                    class="group relative flex gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
+                    :class="!n.is_read ? 'border-l-2 border-navy bg-navy/[0.02]' : 'border-l-2 border-transparent'"
+                >
+                    <!-- Icon -->
+                    <div
+                        class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                        :class="!n.is_read ? 'bg-navy/10' : 'bg-gray-100'"
+                    >
+                        <component
+                            :is="iconMap[n.type]"
+                            class="w-4 h-4"
+                            :class="!n.is_read ? 'text-navy' : 'text-gray-400'"
+                        />
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-900 leading-tight" :class="!n.is_read ? 'text-navy' : ''">
+                            {{ n.title }}
+                        </p>
+                        <p v-if="n.body" class="text-xs text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
+                            {{ n.body }}
+                        </p>
+                        <p class="text-[10px] text-gray-400 mt-1">{{ formatTime(n.created_at) }}</p>
+                    </div>
+
+                    <!-- Delete -->
+                    <button
+                        @click="handleDelete($event, n.id)"
+                        class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all"
+                    >
+                        <TrashIcon class="w-3.5 h-3.5" />
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

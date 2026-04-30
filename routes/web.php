@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\ComplaintController as AdminComplaintController;
 use App\Http\Controllers\Complaint\ComplaintController;
 use App\Http\Controllers\Chat\ChatController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -43,6 +44,14 @@ Route::get('/privatuma-politika', fn() => Inertia::render('Static/PrivatumaPolit
 Route::get('/kontakti', fn() => Inertia::render('Static/Kontakti'))->name('kontakti');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Paziņojumi
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead'])->name('read-all');
+        Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('destroy');
+    });
 
     // Informācijas panelis un profils
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

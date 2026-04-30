@@ -6,14 +6,17 @@ namespace App\Services\Repositories\Application;
 
 use App\Constants\ErrorMessages;
 use App\DataTransferObjects\Application\SaveApplicationData;
+use App\DTOs\Notifications\CreateNotificationDTO;
 use App\Enums\Job\ApplicationStatusEnum;
 use App\Enums\Job\JobStatusEnum;
+use App\Enums\NotificationTypeEnum;
 use App\Models\Application;
 use App\Models\JobRequest;
 use App\Models\User;
 use App\Notifications\Application\ApplicationAcceptedNotification;
 use App\Notifications\Application\ApplicationRejectedNotification;
 use App\Notifications\Application\NewJobApplicationNotification;
+use App\Services\NotificationService;
 use App\Services\Repositories\JobRequest\JobRequestDbRepository;
 use Illuminate\Support\Collection;
 
@@ -22,6 +25,7 @@ class ApplicationLogicRepository
     public function __construct(
         private readonly ApplicationDbRepository    $dbRepository,
         private readonly JobRequestDbRepository     $jobRequestDbRepository,
+        private readonly NotificationService        $notificationService,
     ) {}
 
     public function createApplication(SaveApplicationData $dto): Application
@@ -46,6 +50,15 @@ class ApplicationLogicRepository
         $applicant = User::find($dto->userId);
         $jobRequest->load('user');
         $jobRequest->user->notify(new NewJobApplicationNotification($application, $applicant));
+
+        $this->notificationService->create(new CreateNotificationDTO(
+            userId: $jobRequest->getUserId(),
+            type: NotificationTypeEnum::NEW_APPLICATION,
+            title: 'Jauns pieteikums tavam sludinājumam',
+            body: $applicant->getName() . ' pieteicās uz "' . $jobRequest->getTitle() . '"',
+            actionUrl: route('seeker.job-requests.show', $jobRequest->getId()),
+            metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $application->getId()],
+        ));
 
         return $application;
     }
@@ -95,6 +108,15 @@ class ApplicationLogicRepository
         $accepted->load('user');
         $accepted->user->notify(new ApplicationAcceptedNotification($accepted));
 
+        $this->notificationService->create(new CreateNotificationDTO(
+            userId: $accepted->getUserId(),
+            type: NotificationTypeEnum::APPLICATION_ACCEPTED,
+            title: 'Tavs pieteikums tika pieņemts!',
+            body: 'Tavs pieteikums uz "' . $jobRequest->getTitle() . '" tika pieņemts.',
+            actionUrl: route('master.applications.index'),
+            metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $applicationId],
+        ));
+
         return $accepted;
     }
 
@@ -115,6 +137,15 @@ class ApplicationLogicRepository
 
         $rejected->load('user');
         $rejected->user->notify(new ApplicationRejectedNotification($rejected));
+
+        $this->notificationService->create(new CreateNotificationDTO(
+            userId: $rejected->getUserId(),
+            type: NotificationTypeEnum::APPLICATION_REJECTED,
+            title: 'Tavs pieteikums netika pieņemts',
+            body: 'Tavs pieteikums uz "' . $jobRequest->getTitle() . '" netika pieņemts.',
+            actionUrl: route('master.applications.index'),
+            metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $applicationId],
+        ));
 
         return $rejected;
     }

@@ -6,9 +6,12 @@ namespace App\Services\Repositories\JobRequest;
 
 use App\Constants\ErrorMessages;
 use App\DataTransferObjects\JobRequest\SaveJobRequestData;
+use App\DTOs\Notifications\CreateNotificationDTO;
 use App\Enums\Job\JobStatusEnum;
+use App\Enums\NotificationTypeEnum;
 use App\Models\JobRequest;
 use App\Notifications\Job\JobCompletedNotification;
+use App\Services\NotificationService;
 use App\Services\Repositories\Application\ApplicationDbRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -19,8 +22,9 @@ use Illuminate\Support\Str;
 class JobRequestLogicRepository
 {
     public function __construct(
-        private readonly JobRequestDbRepository $dbRepository,
+        private readonly JobRequestDbRepository  $dbRepository,
         private readonly ApplicationDbRepository $applicationDbRepository,
+        private readonly NotificationService     $notificationService,
     ) {
     }
 
@@ -140,7 +144,25 @@ class JobRequestLogicRepository
 
             $acceptedApplication->load('user');
             $acceptedApplication->user->notify(new JobCompletedNotification($completed));
+
+            $this->notificationService->create(new CreateNotificationDTO(
+                userId: $acceptedApplication->getUserId(),
+                type: NotificationTypeEnum::JOB_COMPLETED,
+                title: 'Darbs atzīmēts kā pabeigts',
+                body: '"' . $completed->getTitle() . '" ir atzīmēts kā pabeigts.',
+                actionUrl: route('master.applications.index'),
+                metadata: ['job_request_id' => $jobRequestId],
+            ));
         }
+
+        $this->notificationService->create(new CreateNotificationDTO(
+            userId: $seekerId,
+            type: NotificationTypeEnum::JOB_COMPLETED,
+            title: 'Darbs pabeigts',
+            body: '"' . $completed->getTitle() . '" ir pabeigts. Vari atstāt atsauksmi.',
+            actionUrl: route('seeker.job-requests.index'),
+            metadata: ['job_request_id' => $jobRequestId],
+        ));
 
         return $completed;
     }
