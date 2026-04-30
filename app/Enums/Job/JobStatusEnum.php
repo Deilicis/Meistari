@@ -6,14 +6,14 @@ namespace App\Enums\Job;
 
 enum JobStatusEnum: string
 {
-    case ACTIVE = 'active';
-    case ASSIGNED = 'assigned';
-    case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
+    case OPEN                  = 'open';
+    case ACCEPTED              = 'accepted';
+    case IN_PROGRESS           = 'in_progress';
+    case AWAITING_CONFIRMATION = 'awaiting_confirmation';
+    case COMPLETED             = 'completed';
+    case DISPUTED              = 'disputed';
+    case CANCELLED             = 'cancelled';
 
-    /**
-     * @return array<string>
-     */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -22,10 +22,26 @@ enum JobStatusEnum: string
     public function label(): string
     {
         return match($this) {
-            self::ACTIVE => 'Aktīvs',
-            self::ASSIGNED => 'Piešķirts',
-            self::COMPLETED => 'Pabeigts',
-            self::CANCELLED => 'Atcelts',
+            self::OPEN                  => 'Atvērts',
+            self::ACCEPTED              => 'Pieņemts',
+            self::IN_PROGRESS           => 'Darbā',
+            self::AWAITING_CONFIRMATION => 'Gaida apstiprinājumu',
+            self::COMPLETED             => 'Pabeigts',
+            self::DISPUTED              => 'Strīdā',
+            self::CANCELLED             => 'Atcelts',
+        };
+    }
+
+    public function color(): string
+    {
+        return match($this) {
+            self::OPEN                  => 'slate',
+            self::ACCEPTED              => 'blue',
+            self::IN_PROGRESS           => 'yellow',
+            self::AWAITING_CONFIRMATION => 'orange',
+            self::COMPLETED             => 'green',
+            self::DISPUTED              => 'red',
+            self::CANCELLED             => 'gray',
         };
     }
 }
