@@ -7,6 +7,7 @@ import TextInput from '@/Components/Form/TextInput.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
+import { lv } from 'date-fns/locale';
 import { toast } from 'vue-sonner';
 import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category } from '@/types/models';
@@ -183,7 +184,7 @@ const closeModal = () => {
                                 model-type="iso"
                                 :enable-time-picker="true"
                                 format="dd.MM.yyyy HH:mm"
-                                locale="lv"
+                                :locale="lv"
                                 placeholder="Izvēlies datumu un laiku"
                                 auto-apply
                                 :clearable="true"

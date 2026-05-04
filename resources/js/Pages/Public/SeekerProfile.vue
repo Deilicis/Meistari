@@ -52,6 +52,9 @@ const reviewerName = (review: MasterPublicReview): string => {
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
+const formatDateTime = (iso: string) =>
+    new Date(iso).toLocaleString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
 const complaintOpen = ref(false);
 const authUserId = usePage().props.auth?.user?.id as number | undefined;
 
@@ -141,7 +144,7 @@ const formatBudget = (budget: number | null): string => {
                             </div>
                             <div class="text-right shrink-0">
                                 <p class="text-sm font-bold text-navy">{{ formatBudget(jr.budget) }}</p>
-                                <p v-if="jr.deadline" class="text-xs text-gray-400">{{ formatDate(jr.deadline) }}</p>
+                                <p v-if="jr.deadline" class="text-xs text-gray-400">{{ formatDateTime(jr.deadline) }}</p>
                             </div>
                         </li>
                     </ul>

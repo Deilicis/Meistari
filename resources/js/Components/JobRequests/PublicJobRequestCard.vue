@@ -30,6 +30,9 @@ const iconComponent = computed(() => {
     return (HeroIcons as Record<string, unknown>)[icon] ?? null;
 });
 
+const formatDeadline = (d: string) =>
+    new Date(d).toLocaleString('lv-LV', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
 const formatBudget = (): string => {
     if (!props.job.budget) return 'Vienojams';
     return new Intl.NumberFormat('lv-LV', {
@@ -93,7 +96,7 @@ const formatBudget = (): string => {
                     class="inline-flex items-center gap-1 text-xs text-gray-500 bg-gray-50 rounded px-1.5 py-0.5 border border-gray-100"
                 >
                     <CalendarDaysIcon class="w-2.5 h-2.5 text-gray-400" />
-                    {{ job.deadline }}
+                    {{ formatDeadline(job.deadline) }}
                 </span>
             </div>
         </div>

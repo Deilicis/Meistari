@@ -102,6 +102,9 @@ const truncate = (text: string | null, len = 100) => {
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+const formatDateTime = (d: string) =>
+    new Date(d).toLocaleString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 </script>
 
 <template>
@@ -166,7 +169,7 @@ const formatDate = (d: string) =>
                         <div>
                             <p class="text-xs text-gray-400">Termiņš</p>
                             <p class="text-sm font-medium text-gray-900 mt-0.5">
-                                <span v-if="jobRequest.deadline">{{ jobRequest.deadline }}</span>
+                                <span v-if="jobRequest.deadline">{{ formatDateTime(jobRequest.deadline) }}</span>
                                 <span v-else class="text-gray-400">—</span>
                             </p>
                         </div>

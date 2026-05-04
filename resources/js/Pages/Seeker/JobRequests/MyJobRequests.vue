@@ -134,8 +134,8 @@ const categoryIcon = (job: JobRequest) => {
 
 const formatDate = (dateString: string | null): string => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('lv-LV', {
-        year: 'numeric', month: 'short', day: 'numeric',
+    return new Date(dateString).toLocaleString('lv-LV', {
+        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
     });
 };
 

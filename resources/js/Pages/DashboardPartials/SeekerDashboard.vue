@@ -46,6 +46,9 @@ const jobStatusConfig: Record<JobStatus, { label: string; classes: string }> = {
 const formatDate = (d: string | null) =>
     d ? new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' }) : null;
 
+const formatDateTime = (d: string | null) =>
+    d ? new Date(d).toLocaleString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+
 const formatBudget = (budget: number | null) =>
     budget
         ? new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget)
@@ -187,7 +190,7 @@ const formatBudget = (budget: number | null) =>
                                     </span>
                                     <span v-if="job.deadline" class="inline-flex items-center gap-1 text-xs text-gray-400">
                                         <CalendarIcon class="w-3 h-3" />
-                                        {{ formatDate(job.deadline) }}
+                                        {{ formatDateTime(job.deadline) }}
                                     </span>
                                 </div>
                             </div>

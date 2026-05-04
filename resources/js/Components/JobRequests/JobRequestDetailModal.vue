@@ -37,6 +37,9 @@ const seekerName = computed(() => {
 
 const avatarInitials = computed(() => seekerName.value.slice(0, 2).toUpperCase());
 
+const formatDeadline = (d: string) =>
+    new Date(d).toLocaleString('lv-LV', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
 const lightboxIndex = ref<number | null>(null);
 const complaintOpen = ref(false);
 const authUserId = usePage().props.auth?.user?.id as number | undefined;
@@ -89,7 +92,7 @@ const formatBudget = (): string => {
                             </div>
                             <div v-if="job.deadline" class="flex items-center gap-2 text-sm text-gray-600">
                                 <CalendarDaysIcon class="w-4 h-4 text-gray-400" />
-                                <span>{{ job.deadline }}</span>
+                                <span>{{ formatDeadline(job.deadline) }}</span>
                             </div>
                         </div>
 

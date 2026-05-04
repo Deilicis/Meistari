@@ -23,7 +23,7 @@ const formattedBudget = computed(() => {
 
 const formattedDate = computed(() => {
     if (!props.job.deadline) return '';
-    return new Date(props.job.deadline).toLocaleDateString('lv-LV', { month: 'short', day: 'numeric' });
+    return new Date(props.job.deadline).toLocaleString('lv-LV', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 });
 </script>
 
