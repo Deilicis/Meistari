@@ -107,6 +107,15 @@ const navLinkClass = (active: boolean) =>
                             </Link>
 
                             <Link
+                                v-if="isMaster"
+                                :href="route('master.service-applications.index')"
+                                :class="navLinkClass(route().current('master.service-applications.*'))"
+                            >
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                Pieteikumi pakalpojumiem
+                            </Link>
+
+                            <Link
                                 v-if="isSeeker"
                                 :href="route('seeker.categories.index')"
                                 :class="navLinkClass(route().current('seeker.categories.index') || route().current('seeker.services.index'))"
@@ -235,6 +244,14 @@ const navLinkClass = (active: boolean) =>
                         @click="showingNavigationDropdown = false">
                         <InboxArrowDownIcon class="w-4 h-4" />
                         Mani Pieteikumi
+                    </Link>
+
+                    <Link v-if="isMaster" :href="route('master.service-applications.index')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        :class="{ 'bg-white/10 text-white': route().current('master.service-applications.*') }"
+                        @click="showingNavigationDropdown = false">
+                        <InboxArrowDownIcon class="w-4 h-4" />
+                        Pieteikumi pakalpojumiem
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.categories.index')"

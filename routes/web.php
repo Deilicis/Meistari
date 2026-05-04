@@ -38,6 +38,7 @@ use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\JobLifecycleController;
 use App\Http\Controllers\JobRequest\JobRequestShowPageController;
+use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
@@ -131,10 +132,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Meistara panelis
     Route::middleware(['role:master'])->prefix('master')->name('master.')->group(function () {
-        Route::get('/my-services',       [ServicePageController::class,                   'index'])->name('services.index');
-        Route::get('/browse-categories', [JobRequestCategoryBrowsePageController::class,  'index'])->name('job-requests.categories');
-        Route::get('/browse-jobs',       [JobRequestBrowsePageController::class,          'index'])->name('job-requests.index');
-        Route::get('/my-applications',   [ApplicationPageController::class,               'index'])->name('applications.index');
+        Route::get('/my-services',             [ServicePageController::class,                  'index'])->name('services.index');
+        Route::get('/browse-categories',       [JobRequestCategoryBrowsePageController::class, 'index'])->name('job-requests.categories');
+        Route::get('/browse-jobs',             [JobRequestBrowsePageController::class,         'index'])->name('job-requests.index');
+        Route::get('/my-applications',         [ApplicationPageController::class,              'index'])->name('applications.index');
+        Route::get('/service-applications',          [MasterServiceApplicationController::class, 'index'])->name('service-applications.index');
+        Route::get('/service-applications/{serviceId}', [MasterServiceApplicationController::class, 'forService'])->name('service-applications.for-service');
     });
 
     // Čats (pieejams abām lomām)
@@ -191,6 +194,12 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
     Route::middleware(['role:seeker'])->prefix('service-applications')->name('service-applications.')->group(function () {
         Route::post('/', [ServiceApplicationController::class, 'store'])->name('store');
         Route::delete('/{application}', [ServiceApplicationController::class, 'destroy'])->name('destroy');
+    });
+
+    // API: Pakalpojumu pieteikumu pārvaldība (meistari pieņem/noraida)
+    Route::middleware(['role:master'])->prefix('service-applications')->name('master.service-applications.')->group(function () {
+        Route::patch('/{id}/accept', [MasterServiceApplicationController::class, 'accept'])->name('accept');
+        Route::patch('/{id}/reject', [MasterServiceApplicationController::class, 'reject'])->name('reject');
     });
 
     // API: Meistaru pieteikumi uz darba sludinājumiem

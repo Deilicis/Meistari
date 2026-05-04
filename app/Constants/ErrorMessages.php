@@ -19,6 +19,7 @@ class ErrorMessages
     public const APPLICATION_NOT_CANCELLABLE   = 'Šo pieteikumu nevar atcelt, jo tas jau ir pieņemts vai pabeigts.';
     public const APPLICATION_NOT_PENDING       = 'Šis pieteikums vairs nav aktīvs.';
     public const JOB_NOT_YOURS                 = 'Šis sludinājums jums nepieder.';
+    public const SERVICE_APPLICATION_NOT_YOURS = 'Šis pieteikums nepieder jūsu pakalpojumam.';
     public const JOB_NOT_ACTIVE                = 'Šis sludinājums vairs nav aktīvs.';
     public const JOB_NOT_ASSIGNED              = 'Darbs nav piešķirts — nevar atzīmēt kā pabeigtu.';
     public const JOB_NOT_COMPLETED             = 'Atsauksmes var atstāt tikai pēc darba pabeigšanas.';

@@ -57,6 +57,7 @@ class ServiceDbRepository
     {
         $query = Service::query()
             ->where(Service::USER_ID, $userId)
+            ->withCount('applications')
             ->with('category');
 
         if (!empty($filters[self::FILTER_SEARCH])) {

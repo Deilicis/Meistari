@@ -10,7 +10,7 @@ import ConfirmationModal from '@/Components/Common/ConfirmationModal.vue';
 import ServiceCard from '@/Components/Services/ServiceCard.vue';
 import MyServicesSearchBar from '@/Components/Search/MyServicesSearchBar.vue';
 
-import { BriefcaseIcon, PlusIcon } from '@heroicons/vue/24/outline';
+import { BriefcaseIcon, PlusIcon, InboxArrowDownIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 
 const props = defineProps<{
@@ -149,13 +149,26 @@ const clearFilters = () => {
                 </div>
 
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <ServiceCard 
-                        v-for="service in props.services.data" 
-                        :key="service.id" 
-                        :service="service"
-                        @edit="openEditModal"
-                        @delete="confirmDelete"
-                    />
+                    <div v-for="service in props.services.data" :key="service.id" class="flex flex-col gap-0">
+                        <ServiceCard
+                            :service="service"
+                            @edit="openEditModal"
+                            @delete="confirmDelete"
+                        />
+                        <div class="flex items-center justify-between bg-navy/[0.03] border border-t-0 border-gray-100 rounded-b-xl px-4 py-2">
+                            <span class="inline-flex items-center gap-1.5 text-xs text-gray-500">
+                                <InboxArrowDownIcon class="w-3.5 h-3.5 text-gray-400" />
+                                <span class="font-semibold text-navy">{{ service.applications_count ?? 0 }}</span>
+                                pieteikum{{ (service.applications_count ?? 0) === 1 ? 's' : 'i' }}
+                            </span>
+                            <a
+                                :href="route('master.service-applications.for-service', service.id)"
+                                class="text-xs font-semibold text-gold hover:text-yellow-500 transition-colors"
+                            >
+                                Skatīt pieteikumus →
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
@@ -130,5 +131,10 @@ class Service extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, self::CATEGORY_ID, Category::ID);
+    }
+
+    public function applications(): HasMany
+    {
+        return $this->hasMany(ServiceApplication::class, ServiceApplication::SERVICE_ID, self::ID);
     }
 }
