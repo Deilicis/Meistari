@@ -6,7 +6,7 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { toast } from 'vue-sonner';
 import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category } from '@/types/models';

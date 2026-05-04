@@ -7,6 +7,7 @@ import TextInput from '@/Components/Form/TextInput.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
 import CategorySelect from '@/Components/Form/CategorySelect.vue';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { toast } from 'vue-sonner';
 import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category } from '@/types/models';
@@ -27,7 +28,7 @@ const form = useForm({
     description: '',
     category_id: '',
     budget: '',
-    deadline: '',
+    deadline: null as string | null,
     location: [''],
     images: [] as File[],
     images_to_delete: [] as string[],
@@ -45,7 +46,7 @@ watch(() => props.show, (isOpen) => {
             form.description = props.jobRequest.description;
             form.category_id = props.jobRequest.category_id.toString();
             form.budget = props.jobRequest.budget ? props.jobRequest.budget.toString() : '';
-            form.deadline = props.jobRequest.deadline ? props.jobRequest.deadline.split('T')[0] : '';
+            form.deadline = props.jobRequest.deadline ?? null;
             form.location = props.jobRequest.location?.length > 0 ? [...props.jobRequest.location] : [''];
             existingImages.value = props.jobRequest.images ? [...props.jobRequest.images] : [];
         } else {
@@ -176,11 +177,18 @@ const closeModal = () => {
                         </div>
                         <div>
                             <InputLabel for="deadline" value="Termiņš" class="text-gray-700 font-medium" />
-                            <TextInput
-                                id="deadline"
-                                type="date"
-                                class="mt-1 block w-full focus:border-navy focus:ring-navy"
+                            <VueDatePicker
                                 v-model="form.deadline"
+                                model-type="iso"
+                                :enable-time-picker="true"
+                                format="dd.MM.yyyy HH:mm"
+                                locale="lv"
+                                placeholder="Izvēlies datumu un laiku"
+                                auto-apply
+                                :clearable="true"
+                                :teleport="true"
+                                input-class-name="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-navy focus:ring-1 focus:ring-navy outline-none"
+                                class="mt-1"
                             />
                             <InputError class="mt-1.5" :message="getError('deadline')" />
                         </div>
