@@ -67,12 +67,13 @@ class JobRequest extends Model
     ];
 
     protected $casts = [
-        self::STATUS           => JobStatusEnum::class,
-        self::AGREED_PRICE     => 'decimal:2',
-        self::COMPLETED_AT     => 'datetime',
+        self::STATUS              => JobStatusEnum::class,
+        self::AGREED_PRICE        => 'decimal:2',
+        self::DEADLINE            => 'datetime',
+        self::COMPLETED_AT        => 'datetime',
         self::MASTER_COMPLETED_AT => 'datetime',
-        self::LOCATION         => self::ARRAY_CAST,
-        self::IMAGES           => self::ARRAY_CAST,
+        self::LOCATION            => self::ARRAY_CAST,
+        self::IMAGES              => self::ARRAY_CAST,
     ];
 
     public function getId(): int
@@ -118,7 +119,7 @@ class JobRequest extends Model
 
     public function getDeadline(): ?string
     {
-        return $this->getAttribute(self::DEADLINE);
+        return $this->deadline?->toISOString();
     }
 
     public function getStatus(): JobStatusEnum

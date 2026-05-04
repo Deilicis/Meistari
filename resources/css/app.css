@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Vue Datepicker — meistari theme */
+:root {
+    --dp-font-family: 'Figtree', sans-serif;
+    --dp-border-radius: 12px;
+    --dp-cell-border-radius: 8px;
+    --dp-button-height: 35px;
+    --dp-primary-color: #0a192f;
+    --dp-primary-text-color: #FFD700;
+    --dp-secondary-color: #f1f5f9;
+    --dp-border-color: #e5e7eb;
+    --dp-border-color-hover: #0a192f;
+    --dp-icon-color: #6b7280;
+    --dp-danger-color: #ef4444;
+    --dp-highlight-color: rgba(10, 25, 47, 0.08);
+    --dp-success-color: #0a192f;
+    --dp-success-color-disabled: #233554;
+    --dp-menu-min-width: 320px;
+    --dp-font-size: 0.875rem;
+    --dp-preview-font-size: 0.75rem;
+    --dp-time-font-size: 0.875rem;
+}

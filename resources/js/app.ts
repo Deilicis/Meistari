@@ -1,6 +1,7 @@
 import '../css/app.css';
 import './bootstrap';
 import 'vue-sonner/style.css';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
