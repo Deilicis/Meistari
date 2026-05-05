@@ -56,15 +56,15 @@ const navLinkClass = (active: boolean) =>
 
 <template>
     <div class="min-h-screen bg-gray-100 font-sans">
-        <nav class="bg-navy relative z-20">
+        <nav class="bg-navy relative z-20" aria-label="Galvenā navigācija">
             <div class="h-0.5 w-full" :class="isMaster ? 'bg-gold' : 'bg-emerald-400'" />
 
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-15 py-2.5 justify-between items-center">
 
                     <div class="flex items-center gap-6">
-                        <Link href="/" class="flex items-center gap-2.5 shrink-0">
-                            <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
+                        <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
+                            <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
                             <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
                                 Meistari
                             </span>
@@ -74,8 +74,9 @@ const navLinkClass = (active: boolean) =>
                             <Link
                                 :href="route('dashboard')"
                                 :class="navLinkClass(route().current('dashboard'))"
+                                :aria-current="route().current('dashboard') ? 'page' : undefined"
                             >
-                                <HomeIcon class="w-3.5 h-3.5" />
+                                <HomeIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Mans Panelis
                             </Link>
 
@@ -83,8 +84,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isMaster"
                                 :href="route('master.services.index')"
                                 :class="navLinkClass(route().current('master.services.index'))"
+                                :aria-current="route().current('master.services.index') ? 'page' : undefined"
                             >
-                                <BriefcaseIcon class="w-3.5 h-3.5" />
+                                <BriefcaseIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Mani Pakalpojumi
                             </Link>
 
@@ -92,8 +94,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isMaster"
                                 :href="route('master.job-requests.categories')"
                                 :class="navLinkClass(route().current('master.job-requests.categories') || route().current('master.job-requests.index'))"
+                                :aria-current="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? 'page' : undefined"
                             >
-                                <MagnifyingGlassIcon class="w-3.5 h-3.5" />
+                                <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Darba Sludinājumi
                             </Link>
 
@@ -101,8 +104,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isMaster"
                                 :href="route('master.applications.index')"
                                 :class="navLinkClass(route().current('master.applications.index'))"
+                                :aria-current="route().current('master.applications.index') ? 'page' : undefined"
                             >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Mani Pieteikumi
                             </Link>
 
@@ -110,8 +114,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isMaster"
                                 :href="route('master.service-applications.index')"
                                 :class="navLinkClass(route().current('master.service-applications.*'))"
+                                :aria-current="route().current('master.service-applications.*') ? 'page' : undefined"
                             >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Pieteikumi pakalpojumiem
                             </Link>
 
@@ -119,8 +124,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isSeeker"
                                 :href="route('seeker.categories.index')"
                                 :class="navLinkClass(route().current('seeker.categories.index') || route().current('seeker.services.index'))"
+                                :aria-current="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? 'page' : undefined"
                             >
-                                <MagnifyingGlassIcon class="w-3.5 h-3.5" />
+                                <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Pakalpojumi
                             </Link>
 
@@ -128,8 +134,9 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isSeeker"
                                 :href="route('seeker.service-applications.index')"
                                 :class="navLinkClass(route().current('seeker.service-applications.index'))"
+                                :aria-current="route().current('seeker.service-applications.index') ? 'page' : undefined"
                             >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" />
+                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Mani Pieteikumi
                             </Link>
 
@@ -137,16 +144,18 @@ const navLinkClass = (active: boolean) =>
                                 v-if="isSeeker"
                                 :href="route('seeker.job-requests.index')"
                                 :class="navLinkClass(route().current('seeker.job-requests.index'))"
+                                :aria-current="route().current('seeker.job-requests.index') ? 'page' : undefined"
                             >
-                                <ClipboardDocumentListIcon class="w-3.5 h-3.5" />
+                                <ClipboardDocumentListIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Mani Sludinājumi
                             </Link>
 
                             <Link
                                 :href="route('chat.index')"
                                 :class="navLinkClass(route().current('chat.*'))"
+                                :aria-current="route().current('chat.*') ? 'page' : undefined"
                             >
-                                <ChatBubbleLeftRightIcon class="w-3.5 h-3.5" />
+                                <ChatBubbleLeftRightIcon class="w-3.5 h-3.5" aria-hidden="true" />
                                 Ziņojumi
                             </Link>
                         </div>
@@ -155,31 +164,36 @@ const navLinkClass = (active: boolean) =>
                     <div class="hidden sm:flex items-center gap-3">
                         <NotificationBell :userId="user.id" />
 
-                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg">
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg" aria-label="Loma: {{ roleLabel }}">
                             {{ roleLabel }}
                         </span>
 
                         <Dropdown align="right" width="48">
-                            <template #trigger>
+                            <template #trigger="{ open }">
                                 <button
                                     type="button"
-                                    class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                                    :aria-expanded="open"
+                                    aria-haspopup="menu"
+                                    :aria-label="`Profila izvēlne — ${user.name}`"
+                                    class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
                                 >
-                                    <img 
-                                        v-if="user.profile?.avatar" 
-                                        :src="`/storage/${user.profile.avatar}`" 
-                                        alt="Avatar" 
-                                        class="w-7 h-7 rounded-full object-cover border border-white/20 shrink-0" 
+                                    <img
+                                        v-if="user.profile?.avatar"
+                                        :src="`/storage/${user.profile.avatar}`"
+                                        :alt="`${user.name} avatārs`"
+                                        class="w-7 h-7 rounded-full object-cover border border-white/20 shrink-0"
                                     />
-                                    <span 
+                                    <span
                                         v-else
                                         class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                                        :class="accentBg">
+                                        :class="accentBg"
+                                        aria-hidden="true"
+                                    >
                                         {{ user.name.charAt(0).toUpperCase() }}
                                     </span>
-                                    
+
                                     {{ user.name }}
-                                    <ChevronDownIcon class="h-3.5 w-3.5 text-white/50" />
+                                    <ChevronDownIcon class="h-3.5 w-3.5 text-white/50" aria-hidden="true" />
                                 </button>
                             </template>
 
@@ -200,16 +214,20 @@ const navLinkClass = (active: boolean) =>
                     <div class="-me-2 flex items-center sm:hidden">
                         <button
                             @click="showingNavigationDropdown = !showingNavigationDropdown"
-                            class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                            :aria-expanded="showingNavigationDropdown"
+                            aria-controls="mobile-nav"
+                            :aria-label="showingNavigationDropdown ? 'Aizvērt navigāciju' : 'Atvērt navigāciju'"
+                            class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
                         >
-                            <XMarkIcon v-if="showingNavigationDropdown" class="h-6 w-6" />
-                            <Bars3Icon v-else class="h-6 w-6" />
+                            <XMarkIcon v-if="showingNavigationDropdown" class="h-6 w-6" aria-hidden="true" />
+                            <Bars3Icon v-else class="h-6 w-6" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
             </div>
 
             <div
+                id="mobile-nav"
                 :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                 class="sm:hidden border-t border-white/10"
             >
@@ -217,88 +235,99 @@ const navLinkClass = (active: boolean) =>
                     <Link :href="route('dashboard')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('dashboard') }"
+                        :aria-current="route().current('dashboard') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <HomeIcon class="w-4 h-4" />
+                        <HomeIcon class="w-4 h-4" aria-hidden="true" />
                         Mans Panelis
                     </Link>
 
                     <Link v-if="isMaster" :href="route('master.services.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('master.services.index') }"
+                        :aria-current="route().current('master.services.index') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <BriefcaseIcon class="w-4 h-4" />
+                        <BriefcaseIcon class="w-4 h-4" aria-hidden="true" />
                         Mani Pakalpojumi
                     </Link>
 
                     <Link v-if="isMaster" :href="route('master.job-requests.categories')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('master.job-requests.categories') || route().current('master.job-requests.index') }"
+                        :aria-current="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <MagnifyingGlassIcon class="w-4 h-4" />
+                        <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" />
                         Darba Sludinājumi
                     </Link>
 
                     <Link v-if="isMaster" :href="route('master.applications.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('master.applications.index') }"
+                        :aria-current="route().current('master.applications.index') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" />
+                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
                         Mani Pieteikumi
                     </Link>
 
                     <Link v-if="isMaster" :href="route('master.service-applications.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('master.service-applications.*') }"
+                        :aria-current="route().current('master.service-applications.*') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" />
+                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
                         Pieteikumi pakalpojumiem
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.categories.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('seeker.categories.index') || route().current('seeker.services.index') }"
+                        :aria-current="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <MagnifyingGlassIcon class="w-4 h-4" />
+                        <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" />
                         Pakalpojumi
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.service-applications.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('seeker.service-applications.index') }"
+                        :aria-current="route().current('seeker.service-applications.index') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" />
+                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
                         Mani Pieteikumi
                     </Link>
 
                     <Link v-if="isSeeker" :href="route('seeker.job-requests.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('seeker.job-requests.index') }"
+                        :aria-current="route().current('seeker.job-requests.index') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <ClipboardDocumentListIcon class="w-4 h-4" />
+                        <ClipboardDocumentListIcon class="w-4 h-4" aria-hidden="true" />
                         Mani Sludinājumi
                     </Link>
 
                     <Link :href="route('chat.index')"
                         class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                         :class="{ 'bg-white/10 text-white': route().current('chat.*') }"
+                        :aria-current="route().current('chat.*') ? 'page' : undefined"
                         @click="showingNavigationDropdown = false">
-                        <ChatBubbleLeftRightIcon class="w-4 h-4" />
+                        <ChatBubbleLeftRightIcon class="w-4 h-4" aria-hidden="true" />
                         Ziņojumi
                     </Link>
                 </div>
 
                 <div class="border-t border-white/10 px-4 py-3">
                     <div class="flex items-center gap-3 mb-3">
-                        <img 
-                            v-if="user.profile?.avatar" 
-                            :src="`/storage/${user.profile.avatar}`" 
-                            alt="Avatar" 
-                            class="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0" 
+                        <img
+                            v-if="user.profile?.avatar"
+                            :src="`/storage/${user.profile.avatar}`"
+                            :alt="`${user.name} avatārs`"
+                            class="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0"
                         />
-                        <span 
+                        <span
                             v-else
                             class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
-                            :class="accentBg">
+                            :class="accentBg"
+                            aria-hidden="true"
+                        >
                             {{ user.name.charAt(0).toUpperCase() }}
                         </span>
                         <div>
@@ -330,7 +359,7 @@ const navLinkClass = (active: boolean) =>
             </div>
         </header>
 
-        <main>
+        <main id="main-content" tabindex="-1">
             <slot />
         </main>
 

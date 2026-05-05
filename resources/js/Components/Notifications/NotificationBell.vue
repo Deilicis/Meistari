@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from '@inertiajs/vue3';
 import { useNotifications } from '@/composables/useNotifications';
+import { useEscapeKey } from '@/composables/useEscapeKey';
 import type { Notification, NotificationType } from '@/types/notification';
 import {
     BellIcon,
@@ -33,6 +34,9 @@ const {
 
 const open = ref(false);
 const container = ref<HTMLElement | null>(null);
+const menuRef = ref<HTMLElement | null>(null);
+
+useEscapeKey(() => { open.value = false; }, () => open.value);
 
 const iconMap: Record<NotificationType, any> = {
     new_application:      BriefcaseIcon,
@@ -75,6 +79,18 @@ function handleOutsideClick(e: MouseEvent) {
     }
 }
 
+function handleMenuKeydown(e: KeyboardEvent) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const items = Array.from(
+        menuRef.value?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []
+    );
+    if (items.length === 0) return;
+    const idx = items.indexOf(document.activeElement as HTMLElement);
+    if (e.key === 'ArrowDown') items[(idx + 1) % items.length]?.focus();
+    if (e.key === 'ArrowUp') items[(idx - 1 + items.length) % items.length]?.focus();
+}
+
 onMounted(() => {
     fetchNotifications();
     subscribeToRealtime(props.userId);
@@ -92,11 +108,16 @@ onUnmounted(() => {
         <!-- Bell button -->
         <button
             @click="open = !open"
-            class="relative inline-flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+            :aria-expanded="open"
+            aria-haspopup="menu"
+            aria-controls="notification-dropdown"
+            :aria-label="unreadCount > 0 ? `Paziņojumi (${unreadCount} nelasīti)` : 'Paziņojumi'"
+            class="relative inline-flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
         >
-            <BellIcon class="w-5 h-5" />
+            <BellIcon class="w-5 h-5" aria-hidden="true" />
             <span
                 v-if="unreadCount > 0"
+                aria-hidden="true"
                 class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full leading-none"
             >
                 {{ unreadCount > 9 ? '9+' : unreadCount }}
@@ -106,6 +127,11 @@ onUnmounted(() => {
         <!-- Dropdown -->
         <div
             v-if="open"
+            id="notification-dropdown"
+            ref="menuRef"
+            role="menu"
+            aria-label="Paziņojumi"
+            @keydown="handleMenuKeydown"
             class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
         >
             <!-- Header -->
@@ -114,7 +140,7 @@ onUnmounted(() => {
                 <button
                     v-if="unreadCount > 0"
                     @click="markAllAsRead"
-                    class="text-xs text-navy/60 hover:text-navy transition-colors"
+                    class="text-xs text-navy/60 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy rounded"
                 >
                     Atzīmēt visus kā lasītus
                 </button>
@@ -125,6 +151,7 @@ onUnmounted(() => {
                 <div
                     v-if="loading && notifications.length === 0"
                     class="py-8 text-center text-sm text-gray-400"
+                    role="status"
                 >
                     Ielādē...
                 </div>
@@ -133,21 +160,26 @@ onUnmounted(() => {
                     v-else-if="notifications.length === 0"
                     class="py-10 text-center"
                 >
-                    <BellIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                    <BellIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" aria-hidden="true" />
                     <p class="text-sm text-gray-400">Nav jaunu paziņojumu</p>
                 </div>
 
                 <div
                     v-for="n in notifications"
                     :key="n.id"
+                    role="menuitem"
+                    tabindex="0"
                     @click="handleClick(n)"
-                    class="group relative flex gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
+                    @keydown.enter="handleClick(n)"
+                    @keydown.space.prevent="handleClick(n)"
+                    class="group relative flex gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors focus:outline-none focus-visible:bg-slate-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-navy"
                     :class="!n.is_read ? 'border-l-2 border-navy bg-navy/[0.02]' : 'border-l-2 border-transparent'"
                 >
                     <!-- Icon -->
                     <div
                         class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                         :class="!n.is_read ? 'bg-navy/10' : 'bg-gray-100'"
+                        aria-hidden="true"
                     >
                         <component
                             :is="iconMap[n.type]"
@@ -170,9 +202,11 @@ onUnmounted(() => {
                     <!-- Delete -->
                     <button
                         @click="handleDelete($event, n.id)"
-                        class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all"
+                        aria-label="Dzēst paziņojumu"
+                        tabindex="0"
+                        class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all focus:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400"
                     >
-                        <TrashIcon class="w-3.5 h-3.5" />
+                        <TrashIcon class="w-3.5 h-3.5" aria-hidden="true" />
                     </button>
                 </div>
             </div>

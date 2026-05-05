@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRef, watch } from 'vue';
+import { useFocusTrap } from '@/composables/useFocusTrap';
 
 const props = defineProps({
     show: {
@@ -18,6 +19,10 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 const showSlot = ref(props.show);
+const modalRef = ref<HTMLElement | null>(null);
+const isOpen = toRef(props, 'show');
+
+useFocusTrap(modalRef, isOpen);
 
 watch(
     () => props.show,
@@ -87,11 +92,10 @@ const maxWidthClass = computed(() => {
                 <div
                     v-show="show"
                     class="fixed inset-0 transform transition-all"
+                    aria-hidden="true"
                     @click="close"
                 >
-                    <div
-                        class="absolute inset-0 bg-gray-500 opacity-75"
-                    />
+                    <div class="absolute inset-0 bg-gray-500 opacity-75" />
                 </div>
             </Transition>
 
@@ -105,6 +109,10 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
+                    ref="modalRef"
+                    role="dialog"
+                    aria-modal="true"
+                    tabindex="-1"
                     class="mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full"
                     :class="maxWidthClass"
                 >
