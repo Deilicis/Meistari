@@ -1,23 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
-import Dropdown from '@/Components/Form/Dropdown.vue';
-import DropdownLink from '@/Components/Link/DropdownLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { Toaster, toast } from 'vue-sonner';
-import type { AuthUser, Profile } from '@/types/models';
-import {
-    HomeIcon,
-    BriefcaseIcon,
-    ClipboardDocumentListIcon,
-    MagnifyingGlassIcon,
-    InboxArrowDownIcon,
-    ChevronDownIcon,
-    Bars3Icon,
-    XMarkIcon,
-    ChatBubbleLeftRightIcon,
-} from '@heroicons/vue/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline';
 import NotificationBell from '@/Components/Notifications/NotificationBell.vue';
+import UserDropdown from '@/Components/Navbar/UserDropdown.vue';
+import MainNavLinks from '@/Components/Navbar/MainNavLinks.vue';
+import MobileDrawer from '@/Components/Navbar/MobileDrawer.vue';
+import { useActiveRole } from '@/composables/useActiveRole';
+import type { AuthUser, Profile } from '@/types/models';
 
 type LayoutUser = AuthUser & { profile?: Profile };
 
@@ -32,7 +24,8 @@ defineSlots<{
     default: (props: {}) => any;
 }>();
 
-const showingNavigationDropdown = ref(false);
+const mobileOpen = ref(false);
+const { accentDotClass } = useActiveRole();
 
 const displayToast = () => {
     if (page.props.flash?.success) toast.success(page.props.flash.success);
@@ -42,314 +35,61 @@ const displayToast = () => {
 
 onMounted(() => displayToast());
 watch(() => page.props.flash, () => displayToast(), { deep: true });
-
-const isMaster = computed(() => user.value?.roles.includes('master') ?? false);
-const isSeeker = computed(() => user.value?.roles.includes('seeker') ?? false);
-const accentBg = computed(() => isMaster.value ? 'bg-gold text-navy' : 'bg-emerald-400 text-white');
-const roleLabel = computed(() => isMaster.value ? 'Meistars' : 'Meklētājs');
-
-const navLinkClass = (active: boolean) =>
-    active
-        ? `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-white/10 transition-colors`
-        : `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors`;
 </script>
 
 <template>
     <div class="min-h-screen bg-gray-100 font-sans">
         <nav class="bg-navy relative z-20" aria-label="Galvenā navigācija">
-            <div class="h-0.5 w-full" :class="isMaster ? 'bg-gold' : 'bg-emerald-400'" />
+            <!-- Accent line -->
+            <div class="h-0.5 w-full" :class="accentDotClass" />
 
+            <!-- Top row: logo + right controls -->
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-15 py-2.5 justify-between items-center">
-
-                    <div class="flex items-center gap-6">
-                        <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
-                            <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
-                            <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
-                                Meistari
-                            </span>
-                        </Link>
-
-                        <div class="hidden sm:flex items-center gap-1">
-                            <Link
-                                :href="route('dashboard')"
-                                :class="navLinkClass(route().current('dashboard'))"
-                                :aria-current="route().current('dashboard') ? 'page' : undefined"
-                            >
-                                <HomeIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Mans Panelis
-                            </Link>
-
-                            <Link
-                                v-if="isMaster"
-                                :href="route('master.services.index')"
-                                :class="navLinkClass(route().current('master.services.index'))"
-                                :aria-current="route().current('master.services.index') ? 'page' : undefined"
-                            >
-                                <BriefcaseIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Mani Pakalpojumi
-                            </Link>
-
-                            <Link
-                                v-if="isMaster"
-                                :href="route('master.job-requests.categories')"
-                                :class="navLinkClass(route().current('master.job-requests.categories') || route().current('master.job-requests.index'))"
-                                :aria-current="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? 'page' : undefined"
-                            >
-                                <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Darba Sludinājumi
-                            </Link>
-
-                            <Link
-                                v-if="isMaster"
-                                :href="route('master.applications.index')"
-                                :class="navLinkClass(route().current('master.applications.index'))"
-                                :aria-current="route().current('master.applications.index') ? 'page' : undefined"
-                            >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Mani Pieteikumi
-                            </Link>
-
-                            <Link
-                                v-if="isMaster"
-                                :href="route('master.service-applications.index')"
-                                :class="navLinkClass(route().current('master.service-applications.*'))"
-                                :aria-current="route().current('master.service-applications.*') ? 'page' : undefined"
-                            >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Pieteikumi pakalpojumiem
-                            </Link>
-
-                            <Link
-                                v-if="isSeeker"
-                                :href="route('seeker.categories.index')"
-                                :class="navLinkClass(route().current('seeker.categories.index') || route().current('seeker.services.index'))"
-                                :aria-current="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? 'page' : undefined"
-                            >
-                                <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Pakalpojumi
-                            </Link>
-
-                            <Link
-                                v-if="isSeeker"
-                                :href="route('seeker.service-applications.index')"
-                                :class="navLinkClass(route().current('seeker.service-applications.index'))"
-                                :aria-current="route().current('seeker.service-applications.index') ? 'page' : undefined"
-                            >
-                                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Mani Pieteikumi
-                            </Link>
-
-                            <Link
-                                v-if="isSeeker"
-                                :href="route('seeker.job-requests.index')"
-                                :class="navLinkClass(route().current('seeker.job-requests.index'))"
-                                :aria-current="route().current('seeker.job-requests.index') ? 'page' : undefined"
-                            >
-                                <ClipboardDocumentListIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Mani Sludinājumi
-                            </Link>
-
-                            <Link
-                                :href="route('chat.index')"
-                                :class="navLinkClass(route().current('chat.*'))"
-                                :aria-current="route().current('chat.*') ? 'page' : undefined"
-                            >
-                                <ChatBubbleLeftRightIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                                Ziņojumi
-                            </Link>
-                        </div>
-                    </div>
-
-                    <div class="hidden sm:flex items-center gap-3">
-                        <NotificationBell :userId="user.id" />
-
-                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="accentBg" aria-label="Loma: {{ roleLabel }}">
-                            {{ roleLabel }}
+                <div class="flex h-14 items-center justify-between">
+                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
+                        <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
+                        <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
+                            Meistari
                         </span>
+                    </Link>
 
-                        <Dropdown align="right" width="48">
-                            <template #trigger="{ open }">
-                                <button
-                                    type="button"
-                                    :aria-expanded="open"
-                                    aria-haspopup="menu"
-                                    :aria-label="`Profila izvēlne — ${user.name}`"
-                                    class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
-                                >
-                                    <img
-                                        v-if="user.profile?.avatar"
-                                        :src="`/storage/${user.profile.avatar}`"
-                                        :alt="`${user.name} avatārs`"
-                                        class="w-7 h-7 rounded-full object-cover border border-white/20 shrink-0"
-                                    />
-                                    <span
-                                        v-else
-                                        class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                                        :class="accentBg"
-                                        aria-hidden="true"
-                                    >
-                                        {{ user.name.charAt(0).toUpperCase() }}
-                                    </span>
-
-                                    {{ user.name }}
-                                    <ChevronDownIcon class="h-3.5 w-3.5 text-white/50" aria-hidden="true" />
-                                </button>
-                            </template>
-
-                            <template #content>
-                                <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                                    <p class="text-xs text-gray-500">Pieslēdzies kā</p>
-                                    <p class="text-sm font-bold text-gray-800 truncate">{{ user.name }}</p>
-                                    <p class="text-xs text-gray-400 truncate">{{ user.email }}</p>
-                                </div>
-                                <DropdownLink :href="route('profile.edit')">Mans Profils</DropdownLink>
-                                <DropdownLink :href="route('logout')" method="post" as="button">
-                                    Iziet no sistēmas
-                                </DropdownLink>
-                            </template>
-                        </Dropdown>
+                    <!-- Desktop right controls -->
+                    <div class="hidden sm:flex items-center gap-2">
+                        <NotificationBell :userId="user.id" />
+                        <UserDropdown :user="user" />
                     </div>
 
-                    <div class="-me-2 flex items-center sm:hidden">
+                    <!-- Mobile right controls -->
+                    <div class="flex items-center gap-1 sm:hidden">
+                        <NotificationBell :userId="user.id" />
                         <button
-                            @click="showingNavigationDropdown = !showingNavigationDropdown"
-                            :aria-expanded="showingNavigationDropdown"
+                            @click="mobileOpen = !mobileOpen"
+                            :aria-expanded="mobileOpen"
                             aria-controls="mobile-nav"
-                            :aria-label="showingNavigationDropdown ? 'Aizvērt navigāciju' : 'Atvērt navigāciju'"
-                            class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
+                            :aria-label="mobileOpen ? 'Aizvērt navigāciju' : 'Atvērt navigāciju'"
+                            class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
                         >
-                            <XMarkIcon v-if="showingNavigationDropdown" class="h-6 w-6" aria-hidden="true" />
+                            <XMarkIcon v-if="mobileOpen" class="h-6 w-6" aria-hidden="true" />
                             <Bars3Icon v-else class="h-6 w-6" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- Bottom row: nav links (desktop only) -->
+            <div class="hidden sm:block border-t border-white/10">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1">
+                    <MainNavLinks />
+                </div>
+            </div>
+
+            <!-- Mobile drawer -->
             <div
+                v-if="mobileOpen"
                 id="mobile-nav"
-                :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                 class="sm:hidden border-t border-white/10"
             >
-                <div class="px-3 py-2 space-y-1">
-                    <Link :href="route('dashboard')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('dashboard') }"
-                        :aria-current="route().current('dashboard') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <HomeIcon class="w-4 h-4" aria-hidden="true" />
-                        Mans Panelis
-                    </Link>
-
-                    <Link v-if="isMaster" :href="route('master.services.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('master.services.index') }"
-                        :aria-current="route().current('master.services.index') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <BriefcaseIcon class="w-4 h-4" aria-hidden="true" />
-                        Mani Pakalpojumi
-                    </Link>
-
-                    <Link v-if="isMaster" :href="route('master.job-requests.categories')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('master.job-requests.categories') || route().current('master.job-requests.index') }"
-                        :aria-current="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" />
-                        Darba Sludinājumi
-                    </Link>
-
-                    <Link v-if="isMaster" :href="route('master.applications.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('master.applications.index') }"
-                        :aria-current="route().current('master.applications.index') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
-                        Mani Pieteikumi
-                    </Link>
-
-                    <Link v-if="isMaster" :href="route('master.service-applications.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('master.service-applications.*') }"
-                        :aria-current="route().current('master.service-applications.*') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
-                        Pieteikumi pakalpojumiem
-                    </Link>
-
-                    <Link v-if="isSeeker" :href="route('seeker.categories.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('seeker.categories.index') || route().current('seeker.services.index') }"
-                        :aria-current="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" />
-                        Pakalpojumi
-                    </Link>
-
-                    <Link v-if="isSeeker" :href="route('seeker.service-applications.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('seeker.service-applications.index') }"
-                        :aria-current="route().current('seeker.service-applications.index') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" />
-                        Mani Pieteikumi
-                    </Link>
-
-                    <Link v-if="isSeeker" :href="route('seeker.job-requests.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('seeker.job-requests.index') }"
-                        :aria-current="route().current('seeker.job-requests.index') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <ClipboardDocumentListIcon class="w-4 h-4" aria-hidden="true" />
-                        Mani Sludinājumi
-                    </Link>
-
-                    <Link :href="route('chat.index')"
-                        class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                        :class="{ 'bg-white/10 text-white': route().current('chat.*') }"
-                        :aria-current="route().current('chat.*') ? 'page' : undefined"
-                        @click="showingNavigationDropdown = false">
-                        <ChatBubbleLeftRightIcon class="w-4 h-4" aria-hidden="true" />
-                        Ziņojumi
-                    </Link>
-                </div>
-
-                <div class="border-t border-white/10 px-4 py-3">
-                    <div class="flex items-center gap-3 mb-3">
-                        <img
-                            v-if="user.profile?.avatar"
-                            :src="`/storage/${user.profile.avatar}`"
-                            :alt="`${user.name} avatārs`"
-                            class="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0"
-                        />
-                        <span
-                            v-else
-                            class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
-                            :class="accentBg"
-                            aria-hidden="true"
-                        >
-                            {{ user.name.charAt(0).toUpperCase() }}
-                        </span>
-                        <div>
-                            <p class="text-sm font-bold text-white">{{ user.name }}</p>
-                            <p class="text-xs text-white/50">{{ user.email }}</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-1">
-                        <Link :href="route('profile.edit')"
-                            class="block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                            @click="showingNavigationDropdown = false">
-                            Mans Profils
-                        </Link>
-
-                        <Link :href="route('logout')" method="post" as="button"
-                            class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                            @click="showingNavigationDropdown = false">
-                            Iziet no sistēmas
-                        </Link>
-                    </div>
-                </div>
+                <MobileDrawer :user="user" @close="mobileOpen = false" />
             </div>
         </nav>
 
@@ -362,7 +102,6 @@ const navLinkClass = (active: boolean) =>
         <main id="main-content" tabindex="-1">
             <slot />
         </main>
-
     </div>
 
     <Toaster richColors position="bottom-right" />
