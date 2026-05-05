@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\User;
 
+use App\Enums\Role\RoleNameEnum;
 use App\Models\Profile;
 use App\Models\Role;
 use App\Models\User;
@@ -34,6 +35,12 @@ class UserDbRepository
     public function delete(User $user): bool
     {
         return $user->delete();
+    }
+
+    public function setActiveRole(User $user, RoleNameEnum $role): User
+    {
+        $user->update([User::ACTIVE_ROLE => $role->value]);
+        return $user->refresh();
     }
 
     public function createProfile(array $data): Profile

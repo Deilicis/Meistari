@@ -26,6 +26,9 @@ class ErrorMessages
     public const REVIEW_ALREADY_SUBMITTED      = 'Jūs jau esat atstājuši atsauksmi par šo darbu.';
     public const REVIEW_NOT_PARTICIPANT        = 'Jūs neesat šī darba dalībnieks.';
 
+    public const ROLE_NOT_AVAILABLE  = 'Jums nav šīs lomas.';
+    public const ROLE_ALREADY_EXISTS = 'Jums jau ir šī loma.';
+
     public const CATEGORY_SELF_PARENT = 'Kategorija nevar būt pakārtota sev.';
     public const CATEGORY_HAS_CHILDREN = 'Nevar izdzēst kategoriju, kurai ir apakškategorijas.';
     public const CATEGORY_HAS_JOB_REQUESTS = 'Nevar izdzēst kategoriju, jo tai ir piesaistīti darba sludinājumi.';
