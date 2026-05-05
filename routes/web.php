@@ -39,12 +39,19 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\JobLifecycleController;
 use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
 
 Route::get('/noteikumi', fn() => Inertia::render('Static/Noteikumi'))->name('noteikumi');
 Route::get('/privatuma-politika', fn() => Inertia::render('Static/PrivatumaPolitika'))->name('privatuma-politika');
 Route::get('/kontakti', fn() => Inertia::render('Static/Kontakti'))->name('kontakti');
+
+Route::middleware(['auth', 'verified'])->prefix('role')->name('role.')->group(function () {
+    Route::post('/switch',     [RoleController::class, 'switch'])->name('switch');
+    Route::post('/add-master', [RoleController::class, 'addMaster'])->name('add-master');
+    Route::post('/add-seeker', [RoleController::class, 'addSeeker'])->name('add-seeker');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
