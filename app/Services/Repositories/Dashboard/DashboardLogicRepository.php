@@ -15,9 +15,7 @@ class DashboardLogicRepository
 {
     public function getDashboardData(User $user): array
     {
-        $roles = $user->roles->pluck('name')
-            ->map(fn ($r) => $r instanceof RoleNameEnum ? $r->value : (string) $r)
-            ->toArray();
+        $activeRole = $user->getActiveRole();
 
         $stats = [];
         $recentServices = [];
@@ -25,20 +23,17 @@ class DashboardLogicRepository
         $recentApplications = [];
         $recentApplicationsReceived = [];
 
-        if (in_array(RoleNameEnum::MASTER->value, $roles)) {
+        if ($activeRole === RoleNameEnum::MASTER) {
             $stats = $this->getMasterStats($user);
             $recentServices = $this->getMasterRecentServices($user);
             $recentApplications = $this->getMasterRecentApplications($user);
-        } elseif (in_array(RoleNameEnum::SEEKER->value, $roles)) {
+        } elseif ($activeRole === RoleNameEnum::SEEKER) {
             $stats = $this->getSeekerStats($user);
             $recentJobRequests = $this->getSeekerRecentJobRequests($user);
             $recentApplicationsReceived = $this->getSeekerRecentApplicationsReceived($user);
-        } elseif (in_array(RoleNameEnum::ADMIN->value, $roles) || in_array(RoleNameEnum::MODERATOR->value, $roles)) {
-            $stats = $this->getAdminStats($user);
         }
 
         return [
-            'roles'                      => $roles,
             'stats'                      => $stats,
             'recentServices'             => $recentServices,
             'recentJobRequests'          => $recentJobRequests,

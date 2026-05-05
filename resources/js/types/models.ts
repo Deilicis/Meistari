@@ -62,6 +62,10 @@ export interface AuthUser {
     name: string;
     email: string;
     roles: string[];
+    active_role: 'master' | 'seeker' | null;
+    is_master: boolean;
+    is_seeker: boolean;
+    has_both_roles: boolean;
 }
 
 export type ServiceApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
