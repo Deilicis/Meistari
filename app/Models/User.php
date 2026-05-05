@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Enums\Role\RoleNameEnum;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,16 +20,17 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Auditable, HasFactory, Notifiable, SoftDeletes;
 
-    public const TABLE = 'users';
-    public const ID = 'id';
-    public const NAME = 'name';
-    public const EMAIL = 'email';
+    public const TABLE            = 'users';
+    public const ID               = 'id';
+    public const NAME             = 'name';
+    public const EMAIL            = 'email';
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
-    public const PASSWORD = 'password';
-    public const REMEMBER_TOKEN = 'remember_token';
-    public const CREATED_AT = 'created_at';
-    public const UPDATED_AT = 'updated_at';
-    public const DELETED_AT = 'deleted_at';
+    public const PASSWORD         = 'password';
+    public const REMEMBER_TOKEN   = 'remember_token';
+    public const ACTIVE_ROLE      = 'active_role';
+    public const CREATED_AT       = 'created_at';
+    public const UPDATED_AT       = 'updated_at';
+    public const DELETED_AT       = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -36,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
         self::NAME,
         self::EMAIL,
         self::PASSWORD,
+        self::ACTIVE_ROLE,
     ];
 
     protected $hidden = [
@@ -45,7 +48,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         self::EMAIL_VERIFIED_AT => 'datetime',
-        self::PASSWORD => 'hashed',
+        self::PASSWORD          => 'hashed',
+        self::ACTIVE_ROLE       => RoleNameEnum::class,
     ];
 
     public function getId(): int
@@ -78,6 +82,35 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->getAttribute(self::REMEMBER_TOKEN);
     }
 
+    public function getActiveRole(): ?RoleNameEnum
+    {
+        return $this->getAttribute(self::ACTIVE_ROLE);
+    }
+
+    public function isMaster(): bool
+    {
+        return $this->roles->contains(
+            fn (Role $role) => $role->getName() === RoleNameEnum::MASTER
+        );
+    }
+
+    public function isSeeker(): bool
+    {
+        return $this->roles->contains(
+            fn (Role $role) => $role->getName() === RoleNameEnum::SEEKER
+        );
+    }
+
+    public function hasBothRoles(): bool
+    {
+        return $this->isMaster() && $this->isSeeker();
+    }
+
+    public function canSwitchRoles(): bool
+    {
+        return $this->hasBothRoles();
+    }
+
     public function getCreatedAt(): ?Carbon
     {
         return $this->getAttribute(self::CREATED_AT);
@@ -96,9 +129,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(
-            Role::class, 
-            RoleUserPivot::TABLE, 
-            RoleUserPivot::USER_ID, 
+            Role::class,
+            RoleUserPivot::TABLE,
+            RoleUserPivot::USER_ID,
             RoleUserPivot::ROLE_ID
         );
     }
