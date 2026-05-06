@@ -41,8 +41,12 @@ use App\Http\Controllers\JobLifecycleController;
 use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Stripe\CheckoutSuccessController;
+use App\Http\Controllers\Stripe\WebhookController as StripeWebhookController;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('home');
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])->name('stripe.webhook');
 
 Route::get('/noteikumi', fn() => Inertia::render('Static/Noteikumi'))->name('noteikumi');
 Route::get('/privatuma-politika', fn() => Inertia::render('Static/PrivatumaPolitika'))->name('privatuma-politika');
