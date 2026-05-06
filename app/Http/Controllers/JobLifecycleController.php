@@ -39,12 +39,12 @@ class JobLifecycleController extends Controller
 
     public function pay(PayJobRequest $request, int $jobId): JsonResponse
     {
-        $job = $this->service->payAndStartJob(new PayJobDTO(
+        $url = $this->service->initiatePayment(new PayJobDTO(
             jobRequestId: $jobId,
             clientId: $request->user()->getId(),
         ));
 
-        return response()->json(new JobLifecycleResource($job));
+        return response()->json(['url' => $url]);
     }
 
     public function markComplete(MarkJobCompleteRequest $request, int $jobId): JsonResponse

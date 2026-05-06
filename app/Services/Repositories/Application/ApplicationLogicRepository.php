@@ -150,6 +150,11 @@ class ApplicationLogicRepository
         return $rejected;
     }
 
+    public function getSeekerReceivedApplications(int $seekerId): Collection
+    {
+        return $this->dbRepository->getAllBySeekerId($seekerId);
+    }
+
     public function cancelApplication(int $id, int $userId): Application
     {
         $application = $this->dbRepository->findByIdForUser($id, $userId);

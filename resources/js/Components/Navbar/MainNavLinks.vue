@@ -104,6 +104,15 @@ function linkClass(active: boolean) {
                 <ClipboardDocumentListIcon class="w-3.5 h-3.5" aria-hidden="true" />
                 Mani Sludinājumi
             </Link>
+
+            <Link
+                :href="route('seeker.job-applications.index')"
+                :class="linkClass(route().current('seeker.job-applications.index'))"
+                :aria-current="route().current('seeker.job-applications.index') ? 'page' : undefined"
+            >
+                <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
+                Pieteikumi maniem darbiem
+            </Link>
         </template>
 
         <!-- Always visible -->

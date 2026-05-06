@@ -11,29 +11,33 @@ use App\DTOs\Jobs\DisputeJobDTO;
 use App\DTOs\Jobs\MarkJobCompleteDTO;
 use App\DTOs\Jobs\PayJobDTO;
 use App\DTOs\Notifications\CreateNotificationDTO;
+use App\DTOs\Stripe\CreateCheckoutSessionDTO;
+use App\Enums\EscrowStatusEnum;
 use App\Enums\Job\JobStatusEnum;
 use App\Enums\NotificationTypeEnum;
 use App\Models\Application;
+use App\Models\EscrowHold;
 use App\Models\JobRequest;
 use App\Repositories\EscrowHoldRepository;
 use App\Repositories\JobDisputeRepository;
 use App\Repositories\JobRequestRepository;
 use App\Services\NotificationService;
 use App\Services\Repositories\Application\ApplicationDbRepository;
+use App\Services\Stripe\StripeCheckoutService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class JobLifecycleService
 {
     public function __construct(
-        private readonly JobStateMachine       $stateMachine,
-        private readonly JobRequestRepository  $jobRequestRepo,
+        private readonly JobStateMachine         $stateMachine,
+        private readonly JobRequestRepository    $jobRequestRepo,
         private readonly ApplicationDbRepository $applicationRepo,
-        private readonly EscrowHoldRepository  $escrowRepo,
-        private readonly JobDisputeRepository  $disputeRepo,
-        private readonly EscrowService         $escrowService,
-        private readonly NotificationService   $notificationService,
+        private readonly EscrowHoldRepository    $escrowRepo,
+        private readonly JobDisputeRepository    $disputeRepo,
+        private readonly EscrowService           $escrowService,
+        private readonly NotificationService     $notificationService,
+        private readonly StripeCheckoutService   $stripeCheckout,
     ) {}
 
     public function acceptApplication(AcceptApplicationDTO $dto): JobRequest
@@ -75,7 +79,7 @@ class JobLifecycleService
         });
     }
 
-    public function payAndStartJob(PayJobDTO $dto): JobRequest
+    public function initiatePayment(PayJobDTO $dto): string
     {
         $job = $this->jobRequestRepo->findById($dto->jobRequestId);
         abort_if(!$job, 404);
@@ -86,29 +90,51 @@ class JobLifecycleService
 
         $this->stateMachine->assertCanTransition($job->getStatus(), JobStatusEnum::IN_PROGRESS);
 
-        $escrow = $this->escrowService->createHold(
+        $session = $this->stripeCheckout->createSession(new CreateCheckoutSessionDTO(
             jobRequestId: $job->getId(),
-            clientId: $job->getUserId(),
-            masterId: $job->getMasterId(),
-            amount: (float) ($job->getAgreedPrice() ?? 0),
-        );
-
-        // Future: attach real payment_reference here (e.g. Stripe payment_intent_id)
-        \App\Models\EscrowHold::where(\App\Models\EscrowHold::ID, $escrow->getId())
-            ->update([\App\Models\EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid()]);
-
-        $this->jobRequestRepo->updateStatus($job->getId(), JobStatusEnum::IN_PROGRESS);
-
-        $this->notificationService->create(new CreateNotificationDTO(
-            userId: $job->getMasterId(),
-            type: NotificationTypeEnum::JOB_PAID,
-            title: 'Klients samaksāja — vari sākt darbu!',
-            body: '"' . $job->getTitle() . '" ir gatavs sākšanai.',
-            actionUrl: route('master.applications.index'),
-            metadata: ['job_request_id' => $job->getId()],
+            clientId:     $job->getUserId(),
+            masterId:     $job->getMasterId(),
+            amount:       (float) ($job->getAgreedPrice() ?? 0),
+            jobTitle:     $job->getTitle(),
+            successUrl:   route('jobs.payment.success', $job->getId()),
+            cancelUrl:    route('seeker.job-requests.show', $job->getId()),
         ));
 
-        return $job->fresh(['user', 'master', 'escrowHold']);
+        return $session->url;
+    }
+
+    public function confirmPaymentReceived(int $jobRequestId, string $stripeSessionId, float $amountReceived): void
+    {
+        DB::transaction(function () use ($jobRequestId, $stripeSessionId, $amountReceived): void {
+            $job = JobRequest::lockForUpdate()->findOrFail($jobRequestId);
+
+            if ($job->getStatus() === JobStatusEnum::IN_PROGRESS) {
+                return;
+            }
+
+            $this->stateMachine->assertCanTransition($job->getStatus(), JobStatusEnum::IN_PROGRESS);
+
+            $this->escrowRepo->create([
+                EscrowHold::JOB_REQUEST_ID    => $job->getId(),
+                EscrowHold::CLIENT_ID         => $job->getUserId(),
+                EscrowHold::MASTER_ID         => $job->getMasterId(),
+                EscrowHold::AMOUNT            => $amountReceived,
+                EscrowHold::STATUS            => EscrowStatusEnum::HELD->value,
+                EscrowHold::PAYMENT_REFERENCE => $stripeSessionId,
+                EscrowHold::HELD_AT           => Carbon::now(),
+            ]);
+
+            $this->jobRequestRepo->updateStatus($job->getId(), JobStatusEnum::IN_PROGRESS);
+
+            $this->notificationService->create(new CreateNotificationDTO(
+                userId: $job->getMasterId(),
+                type: NotificationTypeEnum::JOB_PAID,
+                title: 'Klients samaksāja — vari sākt darbu!',
+                body: '"' . $job->getTitle() . '" ir gatavs sākšanai.',
+                actionUrl: route('master.applications.index'),
+                metadata: ['job_request_id' => $job->getId()],
+            ));
+        });
     }
 
     public function markComplete(MarkJobCompleteDTO $dto): JobRequest

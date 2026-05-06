@@ -108,4 +108,15 @@ class ApplicationDbRepository
             ->where(Application::STATUS, ApplicationStatusEnum::ACCEPTED->value)
             ->first();
     }
+
+    public function getAllBySeekerId(int $seekerId): Collection
+    {
+        return Application::whereHas(
+            'jobRequest',
+            fn ($q) => $q->where('user_id', $seekerId)
+        )
+            ->with(['jobRequest', 'user.profile'])
+            ->orderByDesc(Application::CREATED_AT)
+            ->get();
+    }
 }

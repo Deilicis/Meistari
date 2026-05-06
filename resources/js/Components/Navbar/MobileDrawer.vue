@@ -74,6 +74,9 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
                 <Link :href="route('seeker.job-requests.index')" :class="route().current('seeker.job-requests.index') ? activeLinkClass : linkClass" @click="close">
                     <ClipboardDocumentListIcon class="w-4 h-4" aria-hidden="true" /> Mani Sludinājumi
                 </Link>
+                <Link :href="route('seeker.job-applications.index')" :class="route().current('seeker.job-applications.index') ? activeLinkClass : linkClass" @click="close">
+                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> Pieteikumi maniem darbiem
+                </Link>
             </template>
 
             <Link :href="route('chat.index')" :class="route().current('chat.*') ? activeLinkClass : linkClass" @click="close">

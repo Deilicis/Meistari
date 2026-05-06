@@ -21,6 +21,7 @@ use App\Http\Controllers\JobRequest\JobRequestCategoryBrowsePageController;
 use App\Http\Controllers\JobRequest\JobRequestBrowsePageController;
 use App\Http\Controllers\Application\ApplicationController;
 use App\Http\Controllers\Application\ApplicationPageController;
+use App\Http\Controllers\Application\SeekerJobApplicationsPageController;
 use App\Http\Controllers\Review\ReviewController;
 use App\Http\Controllers\Profile\MasterPublicProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -165,7 +166,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/my-requests/{id}', [JobRequestShowPageController::class, 'show'])->name('job-requests.show');
         Route::get('/categories', [CategoryBrowsePageController::class, 'index'])->name('categories.index');
         Route::get('/services', [ServiceBrowsePageController::class, 'index'])->name('services.index');
-        Route::get('/my-applications', [MyServiceApplicationsPageController::class, 'index'])->name('service-applications.index');
+        Route::get('/my-applications',   [MyServiceApplicationsPageController::class,    'index'])->name('service-applications.index');
+        Route::get('/job-applications',  [SeekerJobApplicationsPageController::class,    'index'])->name('job-applications.index');
     });
 
 });
