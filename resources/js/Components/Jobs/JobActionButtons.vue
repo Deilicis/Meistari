@@ -36,6 +36,10 @@ async function post(action: JobAllowedAction, body: Record<string, unknown> = {}
     loading.value = action;
     try {
         const { data } = await axios.post(url, body);
+        if (action === 'pay' && data.url) {
+            window.location.href = data.url;
+            return;
+        }
         emit('updated', data);
         toast.success('Veiksmīgi!');
     } catch (e: any) {

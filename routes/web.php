@@ -70,6 +70,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/cancel',            [JobLifecycleController::class, 'cancel'])->name('cancel');
     });
 
+    Route::get('/jobs/{jobId}/payment-success', CheckoutSuccessController::class)->name('jobs.payment.success');
+
     // Paziņojumi
     Route::prefix('notifications')->name('notifications.')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
