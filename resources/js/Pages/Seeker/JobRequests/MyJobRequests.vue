@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -12,7 +12,7 @@ import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
 import MyJobRequestsSearchBar from '@/Components/Search/MyJobRequestsSearchBar.vue';
 import { useDebouncedFilter } from '@/composables/useDebouncedFilter';
 import { useConfirmDelete } from '@/composables/useConfirmDelete';
-import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon, UsersIcon, ClipboardDocumentListIcon } from '@heroicons/vue/24/outline';
+import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon, UsersIcon, ClipboardDocumentListIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
 import type { JobRequest, Category, JobStatus, JobApplication } from '@/types/models';
 
@@ -56,11 +56,6 @@ const jobToEdit = ref<JobRequest | null>(null);
 const refreshJobs = () => {
     toast.success('Sludinājums veiksmīgi saglabāts!');
     router.reload({ only: ['jobRequests'] });
-};
-
-const openCreateModal = () => {
-    jobToEdit.value = null;
-    isJobModalOpen.value = true;
 };
 
 const openEditModal = (job: JobRequest) => {
@@ -166,13 +161,13 @@ const formatBudget = (budget: number | null): string => {
                             </p>
                         </div>
                     </div>
-                    <button
-                        @click="openCreateModal"
+                    <Link
+                        :href="route('jobs.create')"
                         class="inline-flex items-center gap-2 bg-emerald-400 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-emerald-500 transition-colors shrink-0"
                     >
                         <PlusIcon class="w-4 h-4" stroke-width="2.5" />
                         Jauns sludinājums
-                    </button>
+                    </Link>
                 </div>
             </div>
         </div>
@@ -201,13 +196,13 @@ const formatBudget = (budget: number | null): string => {
                         >
                             Notīrīt filtrus
                         </button>
-                        <button
+                        <Link
                             v-else
-                            @click="openCreateModal"
+                            :href="route('jobs.create')"
                             class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
                         >
                             Izveidot pirmo sludinājumu
-                        </button>
+                        </Link>
                     </template>
                 </EmptyState>
 
@@ -284,6 +279,13 @@ const formatBudget = (budget: number | null): string => {
                                 </span>
                             </div>
                             <div class="flex items-center gap-1">
+                                <Link
+                                    :href="route('jobs.show', job.id)"
+                                    class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
+                                    title="Skatīt darbu"
+                                >
+                                    <ArrowTopRightOnSquareIcon class="w-4 h-4" />
+                                </Link>
                                 <button
                                     v-if="job.status === 'open'"
                                     @click="openEditModal(job)"

@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('/jobs/{jobId}/payment-success', CheckoutSuccessController::class)->name('jobs.payment.success');
+    Route::middleware(['role:seeker'])->get('/jobs/create', [JobRequestPageController::class, 'create'])->name('jobs.create');
     Route::get('/jobs/{jobId}', [JobPageController::class, 'show'])->name('jobs.show');
 
     // Paziņojumi

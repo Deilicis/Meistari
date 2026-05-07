@@ -181,14 +181,16 @@ class JobLifecycleService
         $this->jobRequestRepo->setCompletedAt($job->getId());
         $this->escrowService->release($job->getId());
 
-        $this->notificationService->create(new CreateNotificationDTO(
-            userId: $job->getMasterId(),
-            type: NotificationTypeEnum::JOB_CONFIRMED,
-            title: 'Klients apstiprināja darbu!',
-            body: '"' . $job->getTitle() . '" ir pabeigts. Maksājums ir atbrīvots.',
-            actionUrl: route('jobs.show', $job->getId()),
-            metadata: ['job_request_id' => $job->getId()],
-        ));
+        if ($masterId = $job->getMasterId()) {
+            $this->notificationService->create(new CreateNotificationDTO(
+                userId: $masterId,
+                type: NotificationTypeEnum::JOB_CONFIRMED,
+                title: 'Klients apstiprināja darbu!',
+                body: '"' . $job->getTitle() . '" ir pabeigts. Maksājums ir atbrīvots.',
+                actionUrl: route('jobs.show', $job->getId()),
+                metadata: ['job_request_id' => $job->getId()],
+            ));
+        }
 
         return $job->fresh(['user', 'master', 'escrowHold']);
     }
@@ -276,14 +278,16 @@ class JobLifecycleService
             $this->jobRequestRepo->setCompletedAt($job->getId());
             $this->escrowRepo->markReleased($hold->getId());
 
-            $this->notificationService->create(new CreateNotificationDTO(
-                userId: $job->getMasterId(),
-                type: NotificationTypeEnum::JOB_AUTO_RELEASED,
-                title: 'Maksājums automātiski atbrīvots',
-                body: '"' . $job->getTitle() . '" — 7 dienu periods beidzās, nauda atbrīvota.',
-                actionUrl: route('jobs.show', $job->getId()),
-                metadata: ['job_request_id' => $job->getId()],
-            ));
+            if ($masterId = $job->getMasterId()) {
+                $this->notificationService->create(new CreateNotificationDTO(
+                    userId: $masterId,
+                    type: NotificationTypeEnum::JOB_AUTO_RELEASED,
+                    title: 'Maksājums automātiski atbrīvots',
+                    body: '"' . $job->getTitle() . '" — 7 dienu periods beidzās, nauda atbrīvota.',
+                    actionUrl: route('jobs.show', $job->getId()),
+                    metadata: ['job_request_id' => $job->getId()],
+                ));
+            }
 
             $this->notificationService->create(new CreateNotificationDTO(
                 userId: $job->getUserId(),

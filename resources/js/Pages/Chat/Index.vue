@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
+import { ChatBubbleLeftRightIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
 interface LastMessage {
     id: number;
@@ -20,19 +21,37 @@ interface Conversation {
     other_user: OtherUser;
     last_message: LastMessage | null;
     created_at: string;
+    unread_count: number;
 }
 
 const props = defineProps<{
     conversations: Conversation[];
 }>();
 
-const formatTime = (iso: string) => {
+const search = ref('');
+
+const filtered = computed(() => {
+    const q = search.value.trim().toLowerCase();
+    if (!q) return props.conversations;
+    return props.conversations.filter(c => c.other_user.name.toLowerCase().includes(q));
+});
+
+const formatTime = (iso: string): string => {
     const d = new Date(iso);
     const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Tikko';
+    if (diffMins < 60) return `pirms ${diffMins} min`;
+
     const isToday = d.toDateString() === now.toDateString();
-    if (isToday) {
-        return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
-    }
+    if (isToday) return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (d.toDateString() === yesterday.toDateString()) return 'Vakar';
+
     return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' });
 };
 
@@ -67,31 +86,65 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                 <p class="text-gray-300 text-xs mt-1">Sāc sarunas, apmeklējot meistara profilu.</p>
             </div>
 
-            <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
-                <Link
-                    v-for="conv in conversations"
-                    :key="conv.id"
-                    :href="route('chat.show', conv.id)"
-                    class="flex items-center gap-4 px-5 py-4 hover:bg-gray-50/60 transition-colors"
-                >
-                    <div class="w-11 h-11 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                        {{ initials(conv.other_user.name) }}
-                    </div>
+            <template v-else>
+                <!-- Search -->
+                <div class="relative mb-4">
+                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                        v-model="search"
+                        type="text"
+                        placeholder="Meklēt sarunas..."
+                        class="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-white shadow-sm"
+                    />
+                </div>
 
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-baseline justify-between gap-2">
-                            <p class="text-sm font-semibold text-gray-900 truncate">{{ conv.other_user.name }}</p>
-                            <span v-if="conv.last_message" class="text-xs text-gray-400 flex-shrink-0">
-                                {{ formatTime(conv.last_message.created_at) }}
+                <div v-if="filtered.length === 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
+                    <p class="text-gray-400 text-sm">Nav atrasta neviena saruna.</p>
+                </div>
+
+                <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
+                    <Link
+                        v-for="conv in filtered"
+                        :key="conv.id"
+                        :href="route('chat.show', conv.id)"
+                        class="flex items-center gap-4 px-5 py-4 hover:bg-gray-50/60 transition-colors"
+                    >
+                        <div class="relative flex-shrink-0">
+                            <div class="w-11 h-11 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm">
+                                {{ initials(conv.other_user.name) }}
+                            </div>
+                            <span
+                                v-if="conv.unread_count > 0"
+                                class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white"
+                            >
+                                {{ conv.unread_count > 9 ? '9+' : conv.unread_count }}
                             </span>
                         </div>
-                        <p v-if="conv.last_message" class="text-xs text-gray-500 truncate mt-0.5">
-                            {{ conv.last_message.body }}
-                        </p>
-                        <p v-else class="text-xs text-gray-400 italic mt-0.5">Nav ziņojumu</p>
-                    </div>
-                </Link>
-            </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-baseline justify-between gap-2">
+                                <p
+                                    class="text-sm truncate"
+                                    :class="conv.unread_count > 0 ? 'font-bold text-gray-900' : 'font-semibold text-gray-900'"
+                                >
+                                    {{ conv.other_user.name }}
+                                </p>
+                                <span v-if="conv.last_message" class="text-xs text-gray-400 flex-shrink-0">
+                                    {{ formatTime(conv.last_message.created_at) }}
+                                </span>
+                            </div>
+                            <p
+                                v-if="conv.last_message"
+                                class="text-xs truncate mt-0.5"
+                                :class="conv.unread_count > 0 ? 'font-semibold text-gray-700' : 'text-gray-500'"
+                            >
+                                {{ conv.last_message.body }}
+                            </p>
+                            <p v-else class="text-xs text-gray-400 italic mt-0.5">Nav ziņojumu</p>
+                        </div>
+                    </Link>
+                </div>
+            </template>
 
         </div>
     </AuthenticatedLayout>

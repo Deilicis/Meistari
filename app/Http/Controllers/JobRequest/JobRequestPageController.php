@@ -38,6 +38,13 @@ class JobRequestPageController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        return Inertia::render('Jobs/Create', [
+            'categories' => $this->categoryRepository->getNestedCategories(),
+        ]);
+    }
+
     public function show(JobRequest $jobRequest): Response
     {
         $jobRequest->load(['category', 'applications.user.profile']);

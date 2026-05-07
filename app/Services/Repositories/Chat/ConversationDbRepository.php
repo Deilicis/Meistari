@@ -40,7 +40,8 @@ class ConversationDbRepository
                 'receiver',
                 'messages' => fn ($q) => $q->latest()->limit(1),
             ])
-            ->latest()
+            ->withCount(['messages as unread_count' => fn ($q) => $q->where('sender_id', '!=', $userId)->whereNull('read_at')])
+            ->orderByRaw('(SELECT MAX(m.created_at) FROM messages m WHERE m.conversation_id = conversations.id AND m.deleted_at IS NULL) DESC')
             ->get();
     }
 }

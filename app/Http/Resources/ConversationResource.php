@@ -27,6 +27,7 @@ class ConversationResource extends JsonResource
                 'name' => $otherUser->getName(),
             ],
             'last_message'           => $last ? (new MessageResource($last))->toArray($request) : null,
+            'unread_count'           => (int) ($this->unread_count ?? 0),
         ];
     }
 }

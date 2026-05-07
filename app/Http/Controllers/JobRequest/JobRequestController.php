@@ -28,9 +28,9 @@ class JobRequestController extends Controller
 
     public function store(SaveJobRequest $request): RedirectResponse
     {
-        $this->logicRepository->createJobRequest($request->toDTO());
+        $job = $this->logicRepository->createJobRequest($request->toDTO());
 
-        return redirect()->route('seeker.job-requests.index')->with(self::FLASH_SUCCESS, self::MSG_CREATED);
+        return redirect()->route('jobs.show', $job->getId())->with(self::FLASH_SUCCESS, self::MSG_CREATED);
     }
 
     public function update(SaveJobRequest $request, JobRequest $jobRequest): RedirectResponse
