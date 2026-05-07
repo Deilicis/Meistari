@@ -153,11 +153,7 @@ async function reject(app: SeekerJobApplication) {
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-start justify-between gap-2 flex-wrap">
                                     <div>
-                                        <Link
-                                            v-if="app.job_request"
-                                            :href="route('jobs.show', app.job_request.id)"
-                                            class="text-[10px] text-navy/60 font-semibold uppercase tracking-wide mb-0.5 hover:text-navy hover:underline transition-colors block"
-                                        >{{ app.job_request.title }}</Link>
+                                        <p v-if="app.job_request" class="text-[10px] text-navy/60 font-semibold uppercase tracking-wide mb-0.5">{{ app.job_request.title }}</p>
                                         <p v-else class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">—</p>
                                         <p class="text-sm font-bold text-navy">{{ app.applicant?.name ?? '—' }}</p>
                                     </div>
@@ -182,6 +178,14 @@ async function reject(app: SeekerJobApplication) {
                                     </div>
 
                                     <div class="flex items-center gap-2">
+                                        <Link
+                                            v-if="app.job_request"
+                                            :href="route('jobs.show', app.job_request.id)"
+                                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:underline transition-colors"
+                                        >
+                                            <ArrowTopRightOnSquareIcon class="w-3.5 h-3.5" />
+                                            Skatīt darbu
+                                        </Link>
                                         <Link
                                             v-if="app.applicant"
                                             :href="route('master.public-profile', app.applicant.id)"
