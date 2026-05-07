@@ -90,6 +90,8 @@ class JobLifecycleService
 
         $this->stateMachine->assertCanTransition($job->getStatus(), JobStatusEnum::IN_PROGRESS);
 
+        abort_if(!$job->getMasterId(), 422, 'Šim darbam nav norādīts meistars.');
+
         $session = $this->stripeCheckout->createSession(new CreateCheckoutSessionDTO(
             jobRequestId: $job->getId(),
             clientId:     $job->getUserId(),

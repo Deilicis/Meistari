@@ -11,7 +11,7 @@ const mainSteps: Step[] = [
     { key: 'open',                  label: 'Atvērts' },
     { key: 'accepted',              label: 'Pieņemts' },
     { key: 'in_progress',           label: 'Darbā' },
-    { key: 'awaiting_confirmation', label: 'Gaida apstiprinājumu' },
+    { key: 'awaiting_confirmation', label: 'Gaida' },
     { key: 'completed',             label: 'Pabeigts' },
 ];
 

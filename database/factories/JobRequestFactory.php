@@ -28,7 +28,7 @@ class JobRequestFactory extends Factory
             JobRequest::BUDGET => fake()->randomFloat(2, 50, 1500),
             JobRequest::LOCATION => [fake()->city()],
             JobRequest::DEADLINE => fake()->dateTimeBetween('now', '+2 months')->format('Y-m-d'),
-            JobRequest::STATUS => fake()->randomElement(JobStatusEnum::cases()),
+            JobRequest::STATUS => JobStatusEnum::OPEN,
         ];
     }
 }
