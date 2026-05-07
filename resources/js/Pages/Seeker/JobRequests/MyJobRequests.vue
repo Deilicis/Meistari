@@ -41,10 +41,13 @@ const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
 );
 
 const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    active: { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
-    assigned: { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-800 ring-1 ring-blue-200' },
-    completed: { label: 'Pabeigts',  classes: 'bg-navy-light text-white' },
-    cancelled: { label: 'Atcelts',   classes: 'bg-red-100 text-red-800 ring-1 ring-red-200' },
+    open:                  { label: 'Atvērts',              classes: 'bg-slate-100 text-slate-700 ring-1 ring-slate-200' },
+    accepted:              { label: 'Pieņemts',             classes: 'bg-blue-100 text-blue-800 ring-1 ring-blue-200' },
+    in_progress:           { label: 'Darbā',                classes: 'bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200' },
+    awaiting_confirmation: { label: 'Gaida apstiprinājumu', classes: 'bg-orange-100 text-orange-800 ring-1 ring-orange-200' },
+    completed:             { label: 'Pabeigts',             classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
+    disputed:              { label: 'Strīdā',               classes: 'bg-red-100 text-red-800 ring-1 ring-red-200' },
+    cancelled:             { label: 'Atcelts',              classes: 'bg-gray-100 text-gray-500 ring-1 ring-gray-200' },
 };
 
 const isJobModalOpen = ref(false);
@@ -262,7 +265,7 @@ const formatBudget = (budget: number | null): string => {
                             <div class="text-right">
                                 <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatBudget(job.budget) }}</span>
                                 <button
-                                    v-if="job.status === 'active' || job.status === 'assigned' || job.status === 'completed'"
+                                    v-if="job.status !== 'cancelled'"
                                     @click="openApplications(job)"
                                     class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 transition-colors mt-0.5"
                                     :class="(job.applications_count ?? 0) > 0
@@ -272,14 +275,14 @@ const formatBudget = (budget: number | null): string => {
                                     <UsersIcon class="w-3.5 h-3.5" />
                                     {{ job.applications_count ?? 0 }} pieteikumi
                                 </button>
-                                <span v-else class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 mt-0.5">
+                                <span v-else-if="job.status === 'cancelled'" class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 mt-0.5">
                                     <UsersIcon class="w-3.5 h-3.5" />
                                     {{ job.applications_count ?? 0 }} pieteikumi
                                 </span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <button
-                                    v-if="job.status === 'active'"
+                                    v-if="job.status === 'open'"
                                     @click="openEditModal(job)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
                                     title="Rediģēt"
@@ -287,7 +290,7 @@ const formatBudget = (budget: number | null): string => {
                                     <PencilIcon class="w-4 h-4" />
                                 </button>
                                 <button
-                                    v-if="job.status === 'active'"
+                                    v-if="job.status === 'open'"
                                     @click="confirmDelete(job.id)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                                     title="Dzēst"

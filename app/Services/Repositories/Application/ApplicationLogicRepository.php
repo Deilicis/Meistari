@@ -103,7 +103,14 @@ class ApplicationLogicRepository
 
         $accepted = $this->dbRepository->accept($application);
         $this->dbRepository->rejectAllPendingForJob($jobRequest->getId(), $applicationId);
-        $this->jobRequestDbRepository->setAssigned($jobRequest);
+
+        $jobRequest->update([
+            JobRequest::STATUS                  => JobStatusEnum::ACCEPTED->value,
+            JobRequest::MASTER_ID               => $application->getUserId(),
+            JobRequest::ACCEPTED_APPLICATION_ID => $applicationId,
+            JobRequest::AGREED_PRICE            => $application->getPriceOffer() ?? $jobRequest->getBudget() ?? 0,
+            JobRequest::PRICE_TYPE              => 'fixed',
+        ]);
 
         $accepted->load('user');
         $accepted->user->notify(new ApplicationAcceptedNotification($accepted));

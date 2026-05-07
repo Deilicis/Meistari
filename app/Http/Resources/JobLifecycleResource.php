@@ -55,23 +55,13 @@ class JobLifecycleResource extends JsonResource
 
     private function computeAllowedActions(JobStatusEnum $status, bool $isClient, bool $isMaster): array
     {
-        $actions = [];
-
-        match ($status) {
-            JobStatusEnum::OPEN => $isClient ? $actions[] = 'accept_application' : null,
-            JobStatusEnum::ACCEPTED => $isClient
-                ? ($actions[] = 'pay') || ($actions[] = 'cancel')
-                : ($isMaster ? $actions[] = 'cancel' : null),
-            JobStatusEnum::IN_PROGRESS => $isMaster ? $actions[] = 'mark_complete' : null,
-            JobStatusEnum::AWAITING_CONFIRMATION => $isClient
-                ? ($actions[] = 'confirm') || ($actions[] = 'dispute')
-                : ($isMaster ? $actions[] = 'dispute' : null),
-            JobStatusEnum::DISPUTED => $isClient
-                ? $actions[] = 'cancel'
-                : ($isMaster ? $actions[] = 'cancel' : null),
-            default => null,
+        return match ($status) {
+            JobStatusEnum::OPEN                  => $isClient ? ['accept_application'] : [],
+            JobStatusEnum::ACCEPTED              => $isClient ? ['pay', 'cancel'] : ($isMaster ? ['cancel'] : []),
+            JobStatusEnum::IN_PROGRESS           => $isMaster ? ['mark_complete'] : [],
+            JobStatusEnum::AWAITING_CONFIRMATION => $isClient ? ['confirm', 'dispute'] : ($isMaster ? ['dispute'] : []),
+            JobStatusEnum::DISPUTED              => ($isClient || $isMaster) ? ['cancel'] : [],
+            default                              => [],
         };
-
-        return array_values(array_unique($actions));
     }
 }

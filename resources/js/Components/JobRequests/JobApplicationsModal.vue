@@ -27,7 +27,6 @@ const emit = defineEmits<{
 }>();
 
 const processing = ref<number | null>(null);
-const completing = ref(false);
 
 const statusConfig: Record<string, { label: string; badgeClass: string }> = {
     pending:   { label: 'Gaida',      badgeClass: 'bg-amber-100 text-amber-700' },
@@ -75,19 +74,7 @@ const reject = async (app: JobApplication) => {
     }
 };
 
-const completeJob = async () => {
-    if (!props.job) return;
-    completing.value = true;
-    try {
-        await axios.patch(route('api.job-requests.complete', props.job.id));
-        toast.success('Darbs atzīmēts kā pabeigts!');
-        emit('updated');
-    } catch (e: any) {
-        toast.error(e.response?.data?.message ?? 'Kļūda pabeidzot darbu.');
-    } finally {
-        completing.value = false;
-    }
-};
+
 </script>
 
 <template>
@@ -180,8 +167,8 @@ const completeJob = async () => {
                             <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
                         </div>
 
-                        <!-- Actions (only for pending when job is active) -->
-                        <div v-if="job.status === 'active' && app.status === 'pending'" class="flex flex-col gap-2 flex-shrink-0">
+                        <!-- Actions (only for pending when job is open) -->
+                        <div v-if="job.status === 'open' && app.status === 'pending'" class="flex flex-col gap-2 flex-shrink-0">
                             <button
                                 @click="accept(app)"
                                 :disabled="processing !== null"
@@ -222,21 +209,8 @@ const completeJob = async () => {
                     Aizvērt
                 </button>
 
-                <button
-                    v-if="job.status === 'assigned'"
-                    @click="completeJob"
-                    :disabled="completing"
-                    class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors disabled:opacity-50 flex items-center gap-2"
-                >
-                    <svg v-if="completing" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    {{ completing ? 'Apstiprina...' : 'Pabeigt darbu' }}
-                </button>
-
                 <div
-                    v-else-if="job.status === 'completed'"
+                    v-if="job.status === 'completed'"
                     class="text-sm font-semibold text-emerald-700 flex items-center gap-2"
                 >
                     <CheckBadgeIcon class="w-4 h-4" />

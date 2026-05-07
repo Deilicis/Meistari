@@ -24,7 +24,7 @@ class JobRequestShowPageController extends Controller
         abort_if($job->getUserId() !== $request->user()->getId(), 403);
 
         return Inertia::render('Seeker/JobRequests/Show', [
-            'job' => new JobLifecycleResource($job),
+            'job' => (new JobLifecycleResource($job))->toArray($request),
         ]);
     }
 }
