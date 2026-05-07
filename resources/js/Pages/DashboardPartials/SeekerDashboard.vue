@@ -37,10 +37,13 @@ defineProps<{
 }>();
 
 const jobStatusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    active:    { label: 'Aktīvs',    classes: 'bg-emerald-100 text-emerald-700' },
-    assigned:  { label: 'Piešķirts', classes: 'bg-blue-100 text-blue-700' },
-    completed: { label: 'Pabeigts',  classes: 'bg-navy/10 text-navy' },
-    cancelled: { label: 'Atcelts',   classes: 'bg-red-100 text-red-700' },
+    open:                  { label: 'Atvērts',              classes: 'bg-emerald-100 text-emerald-700' },
+    accepted:              { label: 'Pieņemts',             classes: 'bg-blue-100 text-blue-700' },
+    in_progress:           { label: 'Darbā',                classes: 'bg-yellow-100 text-yellow-800' },
+    awaiting_confirmation: { label: 'Gaida apstiprinājumu', classes: 'bg-orange-100 text-orange-800' },
+    completed:             { label: 'Pabeigts',             classes: 'bg-navy/10 text-navy' },
+    disputed:              { label: 'Strīdā',               classes: 'bg-red-100 text-red-700' },
+    cancelled:             { label: 'Atcelts',              classes: 'bg-gray-100 text-gray-500' },
 };
 
 const formatDate = (d: string | null) =>
@@ -174,10 +177,13 @@ const formatBudget = (budget: number | null) =>
                         <div class="flex items-start gap-3">
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <p class="text-sm font-semibold text-gray-900 truncate">{{ job.title }}</p>
+                                    <Link
+                                        :href="route('seeker.job-requests.show', job.id)"
+                                        class="text-sm font-semibold text-gray-900 truncate hover:text-navy hover:underline transition-colors"
+                                    >{{ job.title }}</Link>
                                     <span
                                         class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                                        :class="jobStatusConfig[job.status]?.classes ?? jobStatusConfig.active.classes"
+                                        :class="jobStatusConfig[job.status]?.classes ?? jobStatusConfig.open.classes"
                                     >
                                         {{ jobStatusConfig[job.status]?.label ?? job.status }}
                                     </span>
@@ -244,7 +250,12 @@ const formatBudget = (budget: number | null) =>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 truncate">{{ app.user?.name ?? '—' }}</p>
-                            <p class="text-xs text-gray-400 mt-0.5 truncate">{{ app.job_request?.title ?? '—' }}</p>
+                            <Link
+                                v-if="app.job_request"
+                                :href="route('seeker.job-requests.show', app.job_request.id)"
+                                class="text-xs text-navy/70 hover:text-navy hover:underline mt-0.5 truncate block transition-colors"
+                            >{{ app.job_request.title }}</Link>
+                            <p v-else class="text-xs text-gray-400 mt-0.5">—</p>
                         </div>
                         <div class="shrink-0 text-right">
                             <p v-if="app.price_offer" class="text-sm font-bold text-navy">

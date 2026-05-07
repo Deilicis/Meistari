@@ -151,9 +151,12 @@ async function reject(app: SeekerJobApplication) {
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-start justify-between gap-2 flex-wrap">
                                     <div>
-                                        <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">
-                                            Sludinājums: {{ app.job_request?.title ?? '—' }}
-                                        </p>
+                                        <Link
+                                            v-if="app.job_request"
+                                            :href="route('seeker.job-requests.show', app.job_request.id)"
+                                            class="text-[10px] text-navy/60 font-semibold uppercase tracking-wide mb-0.5 hover:text-navy hover:underline transition-colors block"
+                                        >{{ app.job_request.title }}</Link>
+                                        <p v-else class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">—</p>
                                         <p class="text-sm font-bold text-navy">{{ app.applicant?.name ?? '—' }}</p>
                                     </div>
                                     <span

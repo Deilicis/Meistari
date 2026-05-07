@@ -21,7 +21,7 @@ class MasterPublicProfileController extends Controller
             ->orderByDesc(Review::CREATED_AT)
             ->get();
 
-        $avgRating = $reviews->isNotEmpty() ? round($reviews->avg(Review::RATING), 1) : null;
+        $displayable = $reviews->filter(fn(Review $r) => $r->reviewer !== null)->values();
 
         return Inertia::render('Public/MasterProfile', [
             'master' => [
@@ -29,7 +29,7 @@ class MasterPublicProfileController extends Controller
                 'name'    => $user->name,
                 'profile' => $user->profile,
             ],
-            'reviews' => $reviews->map(fn(Review $r) => [
+            'reviews' => $displayable->map(fn(Review $r) => [
                 'id'         => $r->getId(),
                 'rating'     => $r->getRating(),
                 'comment'    => $r->getComment(),
@@ -40,8 +40,8 @@ class MasterPublicProfileController extends Controller
                     'profile' => $r->reviewer->profile,
                 ],
             ]),
-            'avg_rating'   => $avgRating,
-            'review_count' => $reviews->count(),
+            'avg_rating'   => $displayable->isNotEmpty() ? round($displayable->avg(Review::RATING), 1) : null,
+            'review_count' => $displayable->count(),
         ]);
     }
 }

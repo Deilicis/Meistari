@@ -240,7 +240,10 @@ const formatBudget = (budget: number | null): string => {
                                     {{ statusConfig[job.status]?.label ?? job.status }}
                                 </span>
                             </div>
-                            <h3 class="text-sm font-bold text-navy mb-1 line-clamp-1">{{ job.title }}</h3>
+                            <Link
+                                :href="route('seeker.job-requests.show', job.id)"
+                                class="text-sm font-bold text-navy mb-1 line-clamp-1 hover:underline block"
+                            >{{ job.title }}</Link>
                             <p class="text-xs text-gray-500 line-clamp-2 mb-2">{{ job.description }}</p>
                             <div class="flex flex-wrap gap-1">
                                 <span

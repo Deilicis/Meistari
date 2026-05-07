@@ -85,7 +85,10 @@ const reject = async (app: JobApplication) => {
             <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div class="min-w-0">
                     <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">Pieteikumi</p>
-                    <h2 class="text-base font-bold text-white leading-snug truncate">{{ job.title }}</h2>
+                    <a
+                        :href="route('seeker.job-requests.show', job.id)"
+                        class="text-base font-bold text-white leading-snug truncate hover:text-gold transition-colors block"
+                    >{{ job.title }}</a>
                 </div>
                 <div class="flex items-center gap-3 flex-shrink-0">
                     <span class="text-xs font-bold text-white/60 bg-white/10 px-2.5 py-1 rounded-full">
