@@ -1,4 +1,4 @@
-export type ServiceApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+export type ServiceApplicationStatus = 'pending' | 'shortlisted' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
 export type JobApplicationStatus = ServiceApplicationStatus;
 
 export interface SeekerJobApplication {

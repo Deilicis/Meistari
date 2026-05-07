@@ -47,9 +47,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $master = User::factory()->create([
-            User::NAME     => 'Meistars Tests',
-            User::EMAIL    => 'meistars@meistari.lv',
-            User::PASSWORD => bcrypt('password'),
+            User::NAME        => 'Meistars Tests',
+            User::EMAIL       => 'meistars@meistari.lv',
+            User::PASSWORD    => bcrypt('password'),
+            User::ACTIVE_ROLE => 'master',
         ]);
         $master->roles()->attach($masterRole);
         Profile::factory()->forMaster()->create([
@@ -57,23 +58,24 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $seeker = User::factory()->create([
-            User::NAME     => 'Meklētājs Tests',
-            User::EMAIL    => 'mekletajs@meistari.lv',
-            User::PASSWORD => bcrypt('password'),
+            User::NAME        => 'Meklētājs Tests',
+            User::EMAIL       => 'mekletajs@meistari.lv',
+            User::PASSWORD    => bcrypt('password'),
+            User::ACTIVE_ROLE => 'seeker',
         ]);
         $seeker->roles()->attach($seekerRole);
         Profile::factory()->create([
             Profile::USER_ID => $seeker->getId(),
         ]);
 
-        User::factory(10)->create()->each(function (User $user) use ($masterRole) {
+        User::factory(10)->create([User::ACTIVE_ROLE => 'master'])->each(function (User $user) use ($masterRole) {
             $user->roles()->attach($masterRole);
             Profile::factory()->forMaster()->create([
                 Profile::USER_ID => $user->getId()
             ]);
         });
 
-        User::factory(10)->create()->each(function (User $user) use ($seekerRole) {
+        User::factory(10)->create([User::ACTIVE_ROLE => 'seeker'])->each(function (User $user) use ($seekerRole) {
             $user->roles()->attach($seekerRole);
             Profile::factory()->create([
                 Profile::USER_ID => $user->getId()

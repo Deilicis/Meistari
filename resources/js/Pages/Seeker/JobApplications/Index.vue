@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import type { SeekerJobApplication, JobApplicationStatus } from '@/types/serviceApplication';
-import { InboxArrowDownIcon, CheckCircleIcon, XCircleIcon, ChatBubbleLeftIcon } from '@heroicons/vue/24/outline';
+import { InboxArrowDownIcon, CheckCircleIcon, XCircleIcon, ChatBubbleLeftIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{
     applications: { data: SeekerJobApplication[] };
@@ -16,18 +16,20 @@ const activeFilter = ref<JobApplicationStatus | 'all'>('all');
 const loading = ref<number | null>(null);
 
 const statusConfig: Record<JobApplicationStatus, { label: string; badgeClass: string; borderClass: string }> = {
-    pending:   { label: 'Gaida atbildi',  badgeClass: 'bg-amber-100 text-amber-700',     borderClass: 'border-l-amber-400' },
-    accepted:  { label: 'Pieņemts',       badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
-    rejected:  { label: 'Noraidīts',      badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
-    completed: { label: 'Pabeigts',       badgeClass: 'bg-blue-100 text-blue-700',       borderClass: 'border-l-blue-400' },
-    cancelled: { label: 'Atcelts',        badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
+    pending:     { label: 'Gaida atbildi',  badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
+    shortlisted: { label: 'Apsvēršanā',     badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
+    accepted:    { label: 'Pieņemts',       badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
+    rejected:    { label: 'Noraidīts',      badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
+    completed:   { label: 'Pabeigts',       badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
+    cancelled:   { label: 'Atcelts',        badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
 const tabs: { key: JobApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',      label: 'Visi' },
-    { key: 'pending',  label: 'Gaida atbildi' },
-    { key: 'accepted', label: 'Pieņemti' },
-    { key: 'rejected', label: 'Noraidīti' },
+    { key: 'all',         label: 'Visi' },
+    { key: 'pending',     label: 'Gaida atbildi' },
+    { key: 'shortlisted', label: 'Apsvērs' },
+    { key: 'accepted',    label: 'Pieņemti' },
+    { key: 'rejected',    label: 'Noraidīti' },
 ];
 
 const filtered = computed(() => {
