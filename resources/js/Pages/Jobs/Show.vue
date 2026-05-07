@@ -1,0 +1,731 @@
+<script setup lang="ts">
+import { ref, watch, computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import axios from 'axios';
+import { toast } from 'vue-sonner';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import JobStatusBadge from '@/Components/Jobs/JobStatusBadge.vue';
+import JobLifecycleTimeline from '@/Components/Jobs/JobLifecycleTimeline.vue';
+import ConfirmDisputeModal from '@/Components/Jobs/ConfirmDisputeModal.vue';
+import ConfirmCancelModal from '@/Components/Jobs/ConfirmCancelModal.vue';
+import {
+    ArrowLeftIcon,
+    UserIcon,
+    CurrencyEuroIcon,
+    ClockIcon,
+    MapPinIcon,
+    CalendarIcon,
+    ShieldExclamationIcon,
+    ClipboardDocumentListIcon,
+    ChatBubbleLeftRightIcon,
+    CheckIcon,
+    XMarkIcon,
+    StarIcon,
+    BanknotesIcon,
+    XCircleIcon,
+} from '@heroicons/vue/24/outline';
+import { CheckCircleIcon } from '@heroicons/vue/24/solid';
+import type { JobStatus } from '@/types/jobLifecycle';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type ViewerRole = 'owner' | 'applicant' | 'accepted_master' | 'admin';
+type AppStatus = 'pending' | 'shortlisted' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+type PageAction =
+    | 'shortlist_application' | 'accept_application' | 'reject_application'
+    | 'edit_job' | 'delete_job' | 'cancel' | 'pay'
+    | 'confirm_complete' | 'dispute' | 'chat_with_master'
+    | 'mark_complete' | 'chat_with_seeker'
+    | 'withdraw_application'
+    | 'resolve_dispute_release' | 'resolve_dispute_refund';
+
+interface AppProfile {
+    first_name: string | null;
+    last_name: string | null;
+    company_name: string | null;
+    type: 'individual' | 'company' | null;
+    city: string | null;
+    avatar: string | null;
+}
+
+interface PageApplication {
+    id: number;
+    cover_letter: string | null;
+    price_offer: string | null;
+    status: AppStatus;
+    created_at: string;
+    user: { id: number; name: string; profile: AppProfile | null };
+}
+
+interface JobData {
+    id: number;
+    title: string;
+    description: string;
+    status: JobStatus;
+    status_label: string;
+    budget: string | null;
+    agreed_price: string | null;
+    price_type: 'fixed' | 'hourly' | null;
+    deadline: string | null;
+    location: string[];
+    images: string[];
+    created_at: string | null;
+    master_completed_at: string | null;
+    completed_at: string | null;
+    client: { id: number; name: string };
+    master: { id: number; name: string } | null;
+    escrow: { status: string; amount: string; held_at: string | null; auto_release_at: string | null } | null;
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
+
+const props = defineProps<{
+    job: JobData;
+    viewer_role: ViewerRole;
+    applications: PageApplication[] | null;
+    own_application: PageApplication | null;
+    allowed_actions: PageAction[];
+    chat: { other_user_id: number; conversation_id: number | null } | null;
+}>();
+
+// ─── Reactive state ───────────────────────────────────────────────────────────
+
+const job     = ref<JobData>(props.job);
+const apps    = ref<PageApplication[]>(props.applications ?? []);
+const ownApp  = ref<PageApplication | null>(props.own_application);
+const actions = ref<PageAction[]>(props.allowed_actions);
+
+watch(() => props.job,              v => { job.value     = v; });
+watch(() => props.applications,     v => { apps.value    = v ?? []; });
+watch(() => props.own_application,  v => { ownApp.value  = v; });
+watch(() => props.allowed_actions,  v => { actions.value = v; });
+
+const loading         = ref<string | null>(null);
+const showDisputeModal = ref(false);
+const showCancelModal  = ref(false);
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const has = (action: PageAction) => actions.value.includes(action);
+
+const showAppsSection = computed(
+    () => props.applications !== null && (props.viewer_role === 'owner' || props.viewer_role === 'admin'),
+);
+
+const showActionPanel = computed(() => {
+    const panelActions: PageAction[] = [
+        'pay', 'mark_complete', 'confirm_complete', 'dispute', 'cancel',
+        'withdraw_application', 'delete_job', 'resolve_dispute_release', 'resolve_dispute_refund',
+    ];
+    return actions.value.some(a => panelActions.includes(a));
+});
+
+const showChat = computed(() => has('chat_with_master') || has('chat_with_seeker'));
+
+const backHref = computed(() => {
+    switch (props.viewer_role) {
+        case 'owner':           return route('seeker.job-requests.index');
+        case 'accepted_master':
+        case 'applicant':       return route('master.applications.index');
+        case 'admin':           return route('admin.job-requests.index');
+    }
+});
+
+const backLabel = computed(() => {
+    switch (props.viewer_role) {
+        case 'owner':           return 'Mani darbi';
+        case 'accepted_master':
+        case 'applicant':       return 'Mani pieteikumi';
+        case 'admin':           return 'Darba pieprasījumi';
+    }
+});
+
+function applicantName(app: PageApplication): string {
+    const p = app.user.profile;
+    if (!p) return app.user.name;
+    if (p.type === 'company') return p.company_name ?? app.user.name;
+    const parts = [p.first_name, p.last_name].filter(Boolean);
+    return parts.length ? parts.join(' ') : app.user.name;
+}
+
+function formatDate(iso: string | null | undefined): string {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatMoney(amount: string | number | null | undefined, type?: string | null): string {
+    if (amount === null || amount === undefined || amount === '') return '—';
+    const n = typeof amount === 'string' ? parseFloat(amount) : amount;
+    if (isNaN(n)) return '—';
+    const fmt = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    return type === 'hourly' ? fmt.format(n) + '/h' : fmt.format(n);
+}
+
+const appStatusBadge: Record<AppStatus, { label: string; cls: string }> = {
+    pending:     { label: 'Gaida',      cls: 'bg-amber-100 text-amber-700' },
+    shortlisted: { label: 'Apsvērs',   cls: 'bg-blue-100 text-blue-700' },
+    accepted:    { label: 'Pieņemts',  cls: 'bg-emerald-100 text-emerald-700' },
+    rejected:    { label: 'Noraidīts', cls: 'bg-gray-100 text-gray-500' },
+    completed:   { label: 'Pabeigts',  cls: 'bg-green-100 text-green-700' },
+    cancelled:   { label: 'Atcelts',   cls: 'bg-red-100 text-red-600' },
+};
+
+// ─── Lifecycle actions ────────────────────────────────────────────────────────
+
+async function postLifecycle(action: string, body: Record<string, unknown> = {}) {
+    if (loading.value) return;
+    loading.value = action;
+    try {
+        const urlMap: Record<string, string> = {
+            pay:             route('jobs.lifecycle.pay',          job.value.id),
+            mark_complete:   route('jobs.lifecycle.mark-complete', job.value.id),
+            confirm_complete:route('jobs.lifecycle.confirm',      job.value.id),
+            dispute:         route('jobs.lifecycle.dispute',      job.value.id),
+            cancel:          route('jobs.lifecycle.cancel',       job.value.id),
+        };
+        const url = urlMap[action];
+        if (!url) { loading.value = null; return; }
+        const { data } = await axios.post(url, body);
+        if (action === 'pay' && data.url) {
+            window.location.href = data.url;
+            return;
+        }
+        toast.success('Veiksmīgi!');
+        router.reload({ only: ['job', 'allowed_actions', 'chat'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+    } finally {
+        if (loading.value === action) loading.value = null;
+    }
+}
+
+function handleDisputeSubmit(reason: string) {
+    showDisputeModal.value = false;
+    postLifecycle('dispute', { reason });
+}
+
+function handleCancelSubmit(reason: string | null) {
+    showCancelModal.value = false;
+    postLifecycle('cancel', { reason: reason ?? undefined });
+}
+
+async function handleDelete() {
+    if (!confirm('Vai tiešām dzēst šo darbu? Šo darbību nevar atsaukt.')) return;
+    loading.value = 'delete_job';
+    try {
+        await axios.delete(route('api.job-requests.destroy', job.value.id));
+        toast.success('Darbs dzēsts.');
+        router.visit(route('seeker.job-requests.index'));
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        loading.value = null;
+    }
+}
+
+// ─── Application actions (owner / admin) ─────────────────────────────────────
+
+async function handleShortlist(app: PageApplication) {
+    loading.value = `shortlist-${app.id}`;
+    try {
+        await axios.patch(route('api.applications.shortlist', app.id));
+        toast.success('Pieteikums iekļauts apsvēršanā!');
+        router.reload({ only: ['applications', 'job', 'allowed_actions'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+async function handleAccept(app: PageApplication) {
+    loading.value = `accept-${app.id}`;
+    try {
+        await axios.patch(route('api.applications.accept', app.id));
+        toast.success('Pieteikums pieņemts!');
+        router.reload({ only: ['job', 'applications', 'allowed_actions', 'chat'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Kļūda pieņemot pieteikumu.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+async function handleReject(app: PageApplication) {
+    loading.value = `reject-${app.id}`;
+    try {
+        await axios.patch(route('api.applications.reject', app.id));
+        toast.success('Pieteikums noraidīts.');
+        router.reload({ only: ['applications', 'job', 'allowed_actions'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Kļūda noraidot pieteikumu.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+// ─── Own application (applicant / master) ────────────────────────────────────
+
+async function handleWithdraw() {
+    if (!ownApp.value) return;
+    loading.value = 'withdraw';
+    try {
+        await axios.delete(route('api.applications.destroy', ownApp.value.id));
+        toast.success('Pieteikums atsaukts.');
+        router.reload({ only: ['job', 'own_application', 'allowed_actions'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+// ─── Chat ─────────────────────────────────────────────────────────────────────
+
+async function handleChat() {
+    if (!props.chat) return;
+    if (props.chat.conversation_id) {
+        router.visit(route('chat.show', props.chat.conversation_id));
+        return;
+    }
+    loading.value = 'chat';
+    try {
+        const { data } = await axios.post(route('chat.start'), { receiver_id: props.chat.other_user_id });
+        router.visit(route('chat.show', data.conversation_id));
+    } catch (e: any) {
+        toast.error('Neizdevās atvērt čatu.');
+        loading.value = null;
+    }
+}
+</script>
+
+<template>
+    <Head :title="job.title" />
+
+    <AuthenticatedLayout>
+        <div class="max-w-3xl mx-auto px-4 py-8 space-y-5">
+
+            <!-- Header -->
+            <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
+                    <Link
+                        :href="backHref"
+                        class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-navy transition-colors mb-2"
+                    >
+                        <ArrowLeftIcon class="w-4 h-4 shrink-0" />
+                        {{ backLabel }}
+                    </Link>
+                    <h1 class="text-xl font-bold text-navy leading-tight">{{ job.title }}</h1>
+                    <p class="text-xs text-gray-400 mt-0.5">
+                        <span v-if="viewer_role === 'owner'">Tavs darba sludinājums</span>
+                        <span v-else-if="viewer_role === 'accepted_master'">Tu esi pieņemts meistars</span>
+                        <span v-else-if="viewer_role === 'applicant'">Tu pieteicies uz šo darbu</span>
+                        <span v-else-if="viewer_role === 'admin'">Admin skats</span>
+                    </p>
+                </div>
+                <JobStatusBadge :status="job.status" :label="job.status_label" class="shrink-0 mt-1" />
+            </div>
+
+            <!-- Disputed banner -->
+            <div v-if="job.status === 'disputed'" class="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl">
+                <ShieldExclamationIcon class="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <div>
+                    <p class="text-sm font-bold text-red-700">Strīds izskatīšanā</p>
+                    <p class="text-xs text-red-600 mt-0.5">
+                        Mūsu komanda izskata situāciju un sazināsimies ar abām pusēm tuvākajā laikā.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cancelled banner -->
+            <div v-else-if="job.status === 'cancelled'" class="flex gap-3 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
+                <XCircleIcon class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
+                <p class="text-sm text-gray-500">Šis darbs ir atcelts.</p>
+            </div>
+
+            <!-- Timeline -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <JobLifecycleTimeline
+                    :job="job"
+                    :is-client="viewer_role === 'owner' || viewer_role === 'admin'"
+                />
+            </div>
+
+            <!-- Actions panel -->
+            <div v-if="showActionPanel" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h2 class="text-sm font-bold text-navy mb-3">Pieejamās darbības</h2>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        v-if="has('pay')"
+                        @click="postLifecycle('pay')"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold bg-navy text-white rounded-lg hover:bg-navy/90 disabled:opacity-50 transition-colors"
+                    >
+                        {{ loading === 'pay' ? 'Lūdzu, uzgaidiet...' : 'Apmaksāt darbu' }}
+                    </button>
+                    <button
+                        v-if="has('mark_complete')"
+                        @click="postLifecycle('mark_complete')"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold bg-navy text-white rounded-lg hover:bg-navy/90 disabled:opacity-50 transition-colors"
+                    >
+                        {{ loading === 'mark_complete' ? 'Lūdzu, uzgaidiet...' : 'Atzīmēt kā pabeigtu' }}
+                    </button>
+                    <button
+                        v-if="has('confirm_complete')"
+                        @click="postLifecycle('confirm_complete')"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
+                    >
+                        {{ loading === 'confirm_complete' ? 'Lūdzu, uzgaidiet...' : 'Apstiprināt pabeigšanu' }}
+                    </button>
+                    <button
+                        v-if="has('withdraw_application')"
+                        @click="handleWithdraw"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
+                    >
+                        {{ loading === 'withdraw' ? 'Lūdzu, uzgaidiet...' : 'Atsaukt pieteikumu' }}
+                    </button>
+                    <button
+                        v-if="has('resolve_dispute_release')"
+                        @click="() => toast.info('Drīzumā...')"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
+                    >
+                        Atbrīvot maksājumu meistaram
+                    </button>
+                    <button
+                        v-if="has('resolve_dispute_refund')"
+                        @click="() => toast.info('Drīzumā...')"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 transition-colors"
+                    >
+                        Atmaksāt klientam
+                    </button>
+                    <button
+                        v-if="has('dispute')"
+                        @click="showDisputeModal = true"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
+                    >
+                        Atvērt strīdu
+                    </button>
+                    <button
+                        v-if="has('cancel')"
+                        @click="showCancelModal = true"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                    >
+                        Atcelt darbu
+                    </button>
+                    <button
+                        v-if="has('delete_job')"
+                        @click="handleDelete"
+                        :disabled="!!loading"
+                        class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
+                    >
+                        {{ loading === 'delete_job' ? 'Dzēš...' : 'Dzēst darbu' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div v-if="showChat" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-bold text-navy">
+                            {{ has('chat_with_master') ? 'Čatot ar meistaru' : 'Čatot ar klientu' }}
+                        </p>
+                        <p class="text-xs text-gray-400 mt-0.5">Sazinieties par darba detaļām</p>
+                    </div>
+                    <button
+                        @click="handleChat"
+                        :disabled="loading === 'chat'"
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-navy text-white rounded-xl hover:bg-navy/90 disabled:opacity-50 transition-colors shrink-0"
+                    >
+                        <ChatBubbleLeftRightIcon class="w-4 h-4" />
+                        {{ loading === 'chat' ? 'Atver...' : 'Atvērt čatu' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Applications list (owner / admin) -->
+            <div v-if="showAppsSection" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-navy flex items-center gap-2">
+                        <ClipboardDocumentListIcon class="w-4 h-4 text-navy/60" />
+                        Iesniegtie pieteikumi
+                    </h2>
+                    <span class="text-xs font-bold text-white bg-navy px-2.5 py-1 rounded-full">
+                        {{ apps.length }}
+                    </span>
+                </div>
+
+                <div v-if="apps.length === 0" class="py-8 text-center">
+                    <ClipboardDocumentListIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                    <p class="text-sm text-gray-500">Vēl nav neviena pieteikuma.</p>
+                    <p class="text-xs text-gray-400 mt-1">Meistari drīzumā iesniegs savus piedāvājumus.</p>
+                </div>
+
+                <div v-else class="space-y-3">
+                    <div
+                        v-for="app in apps"
+                        :key="app.id"
+                        class="rounded-xl border p-4 transition-all"
+                        :class="{
+                            'border-emerald-200 bg-emerald-50/40': app.status === 'accepted',
+                            'border-blue-200 bg-blue-50/30':       app.status === 'shortlisted',
+                            'border-gray-100 bg-gray-50/50 opacity-60': app.status === 'rejected' || app.status === 'cancelled',
+                            'border-gray-100 bg-white':            app.status === 'pending',
+                        }"
+                    >
+                        <div class="flex items-start gap-3">
+                            <!-- Avatar -->
+                            <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
+                                <img
+                                    v-if="app.user.profile?.avatar"
+                                    :src="`/storage/${app.user.profile.avatar}`"
+                                    :alt="applicantName(app)"
+                                    class="w-full h-full object-cover"
+                                />
+                                <span v-else>{{ applicantName(app).slice(0, 2).toUpperCase() }}</span>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap mb-1">
+                                    <a
+                                        :href="route('master.public-profile', app.user.id)"
+                                        class="text-sm font-bold text-gray-900 hover:text-navy hover:underline transition-colors"
+                                    >{{ applicantName(app) }}</a>
+                                    <span
+                                        class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                                        :class="appStatusBadge[app.status].cls"
+                                    >{{ appStatusBadge[app.status].label }}</span>
+                                </div>
+                                <p v-if="app.user.profile?.city" class="text-xs text-gray-400 mb-1.5">
+                                    {{ app.user.profile.city }}
+                                </p>
+                                <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-1.5">
+                                    <CurrencyEuroIcon class="w-4 h-4 text-gold" />
+                                    {{ formatMoney(app.price_offer) }}
+                                </div>
+                                <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                    {{ app.cover_letter }}
+                                </p>
+                                <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                            </div>
+
+                            <!-- Per-application buttons (pending / shortlisted, owner only) -->
+                            <div
+                                v-if="(app.status === 'pending' || app.status === 'shortlisted') && viewer_role === 'owner'"
+                                class="flex flex-col gap-1.5 shrink-0"
+                            >
+                                <button
+                                    v-if="app.status === 'pending' && has('shortlist_application')"
+                                    @click="handleShortlist(app)"
+                                    :disabled="loading === `shortlist-${app.id}`"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    <StarIcon class="w-3.5 h-3.5" />
+                                    Apsvērt
+                                </button>
+                                <button
+                                    v-if="has('accept_application')"
+                                    @click="handleAccept(app)"
+                                    :disabled="!!loading"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    <CheckIcon class="w-3.5 h-3.5" />
+                                    Pieņemt
+                                </button>
+                                <button
+                                    v-if="has('reject_application')"
+                                    @click="handleReject(app)"
+                                    :disabled="!!loading"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    <XMarkIcon class="w-3.5 h-3.5" />
+                                    Noraidīt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Own application (applicant) -->
+            <div v-if="ownApp && viewer_role === 'applicant'" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h2 class="text-sm font-bold text-navy mb-4">Tavs pieteikums</h2>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span
+                            class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            :class="appStatusBadge[ownApp.status].cls"
+                        >{{ appStatusBadge[ownApp.status].label }}</span>
+                        <span class="text-xs text-gray-400">{{ formatDate(ownApp.created_at) }}</span>
+                    </div>
+                    <div v-if="ownApp.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy">
+                        <CurrencyEuroIcon class="w-4 h-4 text-gold" />
+                        {{ formatMoney(ownApp.price_offer) }}
+                    </div>
+                    <p v-if="ownApp.cover_letter" class="text-sm text-gray-600 leading-relaxed">
+                        {{ ownApp.cover_letter }}
+                    </p>
+                    <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+
+                    <div v-if="ownApp.status === 'shortlisted'" class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <p class="text-xs font-semibold text-blue-700">Tavs pieteikums ir apsvēršanā!</p>
+                        <p class="text-xs text-blue-600 mt-0.5">
+                            Klients pārskata tavu kandidatūru. Vari sazināties ar viņu čatā.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assigned master card (owner) -->
+            <div v-if="job.master && (viewer_role === 'owner' || viewer_role === 'admin')" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h2 class="text-sm font-bold text-navy mb-3">Pieņemtais meistars</h2>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        {{ job.master.name.slice(0, 2).toUpperCase() }}
+                    </div>
+                    <div>
+                        <a
+                            :href="route('master.public-profile', job.master.id)"
+                            class="text-sm font-bold text-gray-900 hover:text-navy hover:underline transition-colors"
+                        >{{ job.master.name }}</a>
+                        <p class="text-xs text-gray-400">Pieņemtais meistars</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Escrow info -->
+            <div v-if="job.escrow" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                <h2 class="text-sm font-bold text-navy mb-4">Maksājuma informācija</h2>
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                    <div>
+                        <p class="text-xs text-gray-500 mb-0.5">Summa</p>
+                        <p class="text-sm font-semibold text-navy">{{ formatMoney(job.escrow.amount) }}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 mb-0.5">Statuss</p>
+                        <p
+                            class="text-sm font-semibold"
+                            :class="{
+                                'text-amber-600':   job.escrow.status === 'held',
+                                'text-emerald-600': job.escrow.status === 'released',
+                                'text-gray-500':    job.escrow.status === 'refunded',
+                            }"
+                        >
+                            {{ job.escrow.status === 'held' ? 'Rezervēts' : job.escrow.status === 'released' ? 'Izmaksāts' : 'Atgriezts' }}
+                        </p>
+                    </div>
+                    <div v-if="job.escrow.auto_release_at">
+                        <p class="text-xs text-gray-500 mb-0.5">Auto-atbrīvošana</p>
+                        <p class="text-sm text-gray-700">{{ formatDate(job.escrow.auto_release_at) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job details -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
+                <h2 class="text-sm font-bold text-navy">Darba informācija</h2>
+                <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ job.description }}</p>
+
+                <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                    <!-- Client (non-owner views) -->
+                    <div v-if="viewer_role !== 'owner'" class="flex items-start gap-2">
+                        <UserIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Klients</p>
+                            <a
+                                :href="route('seeker.public-profile', job.client.id)"
+                                class="text-sm font-medium text-gray-800 hover:underline hover:text-navy transition-colors"
+                            >{{ job.client.name }}</a>
+                        </div>
+                    </div>
+
+                    <!-- Budget -->
+                    <div v-if="job.budget" class="flex items-start gap-2">
+                        <CurrencyEuroIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Budžets</p>
+                            <p class="text-sm font-medium text-gray-800">{{ formatMoney(job.budget) }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Agreed price -->
+                    <div v-if="job.agreed_price" class="flex items-start gap-2">
+                        <BanknotesIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Vienotā cena</p>
+                            <p class="text-sm font-medium text-gray-800">{{ formatMoney(job.agreed_price, job.price_type) }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Deadline -->
+                    <div v-if="job.deadline" class="flex items-start gap-2">
+                        <CalendarIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Termiņš</p>
+                            <p class="text-sm text-gray-700">{{ formatDate(job.deadline) }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div v-if="job.location?.length" class="flex items-start gap-2">
+                        <MapPinIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Atrašanās vieta</p>
+                            <p class="text-sm text-gray-700">{{ job.location.join(', ') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Created -->
+                    <div class="flex items-start gap-2">
+                        <ClockIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Izveidots</p>
+                            <p class="text-sm text-gray-700">{{ formatDate(job.created_at) }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Completed -->
+                    <div v-if="job.completed_at" class="flex items-start gap-2">
+                        <CheckCircleIcon class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                        <div>
+                            <p class="text-xs text-gray-500">Pabeigts</p>
+                            <p class="text-sm text-gray-700">{{ formatDate(job.completed_at) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Images -->
+                <div v-if="job.images?.length" class="pt-2 border-t border-gray-100">
+                    <p class="text-xs text-gray-500 mb-2">Fotogrāfijas</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <img
+                            v-for="(img, i) in job.images"
+                            :key="i"
+                            :src="`/storage/${img}`"
+                            class="w-full aspect-square object-cover rounded-lg border border-gray-100"
+                        />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <ConfirmDisputeModal
+            :show="showDisputeModal"
+            :job-id="job.id"
+            @close="showDisputeModal = false"
+            @submitted="handleDisputeSubmit"
+        />
+        <ConfirmCancelModal
+            :show="showCancelModal"
+            @close="showCancelModal = false"
+            @submitted="handleCancelSubmit"
+        />
+    </AuthenticatedLayout>
+</template>

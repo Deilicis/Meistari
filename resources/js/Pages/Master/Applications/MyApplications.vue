@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
-import JobRequestDetailModal from '@/Components/JobRequests/JobRequestDetailModal.vue';
-import type { ApplicationWithJobRequest, ApplicationStatus, JobRequestWithSeeker } from '@/types/models';
+import type { ApplicationWithJobRequest, ApplicationStatus } from '@/types/models';
 import {
     ClipboardDocumentListIcon,
     ArrowTopRightOnSquareIcon,
@@ -24,19 +23,21 @@ const props = defineProps<{
 const activeFilter = ref<ApplicationStatus | 'all'>('all');
 
 const statusConfig: Record<ApplicationStatus, { label: string; badgeClass: string; borderClass: string }> = {
-    pending:   { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-700',   borderClass: 'border-l-amber-400' },
-    accepted:  { label: 'Pieņemts',             badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
-    rejected:  { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-700',        borderClass: 'border-l-red-400' },
-    completed: { label: 'Pabeigts',             badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
-    cancelled: { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-500',      borderClass: 'border-l-gray-300' },
+    pending:     { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
+    shortlisted: { label: 'Apsvēršanā',           badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
+    accepted:    { label: 'Pieņemts',             badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
+    rejected:    { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
+    completed:   { label: 'Pabeigts',             badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
+    cancelled:   { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
 const tabs: { key: ApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',       label: 'Visi' },
-    { key: 'pending',   label: 'Gaida' },
-    { key: 'accepted',  label: 'Pieņemti' },
-    { key: 'rejected',  label: 'Noraidīti' },
-    { key: 'cancelled', label: 'Atcelti' },
+    { key: 'all',         label: 'Visi' },
+    { key: 'pending',     label: 'Gaida' },
+    { key: 'shortlisted', label: 'Apsvērs' },
+    { key: 'accepted',    label: 'Pieņemti' },
+    { key: 'rejected',    label: 'Noraidīti' },
+    { key: 'cancelled',   label: 'Atcelti' },
 ];
 
 const filteredApplications = computed(() => {
@@ -59,12 +60,6 @@ const seekerName = (app: ApplicationWithJobRequest): string => {
     if (profile.type === 'company') return profile.company_name ?? user?.name ?? '—';
     const parts = [profile.first_name, profile.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : (user?.name ?? '—');
-};
-
-// Job detail modal
-const detailJob = ref<JobRequestWithSeeker | null>(null);
-const openJobDetail = (app: ApplicationWithJobRequest) => {
-    if (app.job_request) detailJob.value = app.job_request as JobRequestWithSeeker;
 };
 
 // Review modal
@@ -109,6 +104,9 @@ const confirmCancel = async () => {
         cancelling.value = false;
     }
 };
+
+const canAccessJobPage = (app: ApplicationWithJobRequest) =>
+    app.status !== 'cancelled' && app.job_request !== null;
 </script>
 
 <template>
@@ -236,19 +234,19 @@ const confirmCancel = async () => {
 
                     <!-- Action bar -->
                     <div class="bg-gray-50 border-t border-gray-100 px-5 py-3 flex items-center justify-between gap-3">
-                        <button
-                            v-if="app.job_request"
-                            @click="openJobDetail(app)"
+                        <Link
+                            v-if="canAccessJobPage(app)"
+                            :href="route('jobs.show', app.job_request!.id)"
                             class="inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline transition-colors"
                         >
                             <ArrowTopRightOnSquareIcon class="w-4 h-4" />
-                            Skatīt sludinājumu
-                        </button>
+                            Skatīt darbu
+                        </Link>
                         <span v-else />
 
                         <div class="flex items-center gap-2">
                             <button
-                                v-if="app.status === 'pending'"
+                                v-if="app.status === 'pending' || app.status === 'shortlisted'"
                                 @click="cancelTarget = app"
                                 class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 rounded-lg px-3 py-1.5 transition-colors"
                             >
@@ -292,14 +290,6 @@ const confirmCancel = async () => {
         :processing="cancelling"
         @confirm="confirmCancel"
         @cancel="cancelTarget = null"
-    />
-
-    <JobRequestDetailModal
-        :show="detailJob !== null"
-        :job="detailJob"
-        :applied="true"
-        @close="detailJob = null"
-        @apply="() => {}"
     />
 
     <LeaveReviewModal

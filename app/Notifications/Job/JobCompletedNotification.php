@@ -31,7 +31,7 @@ class JobCompletedNotification extends Notification
             ->greeting('Paldies par labi padarītu darbu!')
             ->line("Darba devējs ir atzīmējis darbu **{$jobTitle}** kā pabeigtu.")
             ->line('Atstājiet atsauksmi par sadarbību — tas palīdz citiem klientiem atrast uzticamus meistarus.')
-            ->action('Skatīt manus pieteikumus', route('master.applications.index'))
+            ->action('Skatīt darbu', route('jobs.show', $this->jobRequest->getId()))
             ->salutation('Ar cieņu, Meistari komanda');
     }
 }

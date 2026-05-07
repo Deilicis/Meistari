@@ -31,7 +31,7 @@ class ApplicationAcceptedNotification extends Notification
             ->greeting('Apsveicam!')
             ->line("Jūsu pieteikums darbam **{$jobTitle}** ir pieņemts.")
             ->line('Darba devējs izvēlējās tieši jūs. Sazināties ar darba devēju, izmantojot platformas ziņojumu sistēmu, lai vienotos par darba sākumu.')
-            ->action('Skatīt manus pieteikumus', route('master.applications.index'))
+            ->action('Skatīt darbu', route('jobs.show', $this->application->jobRequest->getId()))
             ->line('Paldies, ka izmantojat Meistari platformu!')
             ->salutation('Ar cieņu, Meistari komanda');
     }

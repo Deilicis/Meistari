@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { ShieldExclamationIcon } from '@heroicons/vue/24/outline';
 
@@ -63,9 +64,11 @@ const saveResolution = () => {
     saving.value = true;
     router.put(route('admin.complaints.update', props.complaint.id), {
         status: resolutionStatus.value,
-        resolution_note: resolutionNote.value,
+        resolution_note: resolutionNote.value.trim() || null,
     }, {
-        onFinish: () => { saving.value = false; },
+        onSuccess: () => { toast.success('Sūdzība atjaunināta.'); },
+        onError:   (errors) => { toast.error(Object.values(errors)[0] ?? 'Neizdevās saglabāt.'); },
+        onFinish:  () => { saving.value = false; },
     });
 };
 

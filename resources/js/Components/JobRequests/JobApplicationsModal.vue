@@ -86,7 +86,7 @@ const reject = async (app: JobApplication) => {
                 <div class="min-w-0">
                     <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">Pieteikumi</p>
                     <a
-                        :href="route('seeker.job-requests.show', job.id)"
+                        :href="route('jobs.show', job.id)"
                         class="text-base font-bold text-white leading-snug truncate hover:text-gold transition-colors block"
                     >{{ job.title }}</a>
                 </div>

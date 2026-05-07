@@ -153,7 +153,7 @@ async function reject(app: SeekerJobApplication) {
                                     <div>
                                         <Link
                                             v-if="app.job_request"
-                                            :href="route('seeker.job-requests.show', app.job_request.id)"
+                                            :href="route('jobs.show', app.job_request.id)"
                                             class="text-[10px] text-navy/60 font-semibold uppercase tracking-wide mb-0.5 hover:text-navy hover:underline transition-colors block"
                                         >{{ app.job_request.title }}</Link>
                                         <p v-else class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">—</p>

@@ -97,7 +97,7 @@ class JobLifecycleService
             amount:       (float) ($job->getAgreedPrice() ?? 0),
             jobTitle:     $job->getTitle(),
             successUrl:   route('jobs.payment.success', $job->getId()),
-            cancelUrl:    route('seeker.job-requests.show', $job->getId()),
+            cancelUrl:    route('jobs.show', $job->getId()),
         ));
 
         return $session->url;
@@ -160,7 +160,7 @@ class JobLifecycleService
             type: NotificationTypeEnum::JOB_MARKED_COMPLETE,
             title: 'Meistars atzīmēja darbu kā pabeigtu',
             body: '"' . $job->getTitle() . '" gaida tavu apstiprinājumu. Ja 7 dienās neapstiprini, nauda tiks automātiski atbrīvota.',
-            actionUrl: route('seeker.job-requests.index'),
+            actionUrl: route('jobs.show', $job->getId()),
             metadata: ['job_request_id' => $job->getId()],
         ));
 
@@ -186,7 +186,7 @@ class JobLifecycleService
             type: NotificationTypeEnum::JOB_CONFIRMED,
             title: 'Klients apstiprināja darbu!',
             body: '"' . $job->getTitle() . '" ir pabeigts. Maksājums ir atbrīvots.',
-            actionUrl: route('master.applications.index'),
+            actionUrl: route('jobs.show', $job->getId()),
             metadata: ['job_request_id' => $job->getId()],
         ));
 

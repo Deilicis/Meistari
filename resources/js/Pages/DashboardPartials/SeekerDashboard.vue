@@ -178,7 +178,7 @@ const formatBudget = (budget: number | null) =>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <Link
-                                        :href="route('seeker.job-requests.show', job.id)"
+                                        :href="route('jobs.show', job.id)"
                                         class="text-sm font-semibold text-gray-900 truncate hover:text-navy hover:underline transition-colors"
                                     >{{ job.title }}</Link>
                                     <span
@@ -252,7 +252,7 @@ const formatBudget = (budget: number | null) =>
                             <p class="text-sm font-semibold text-gray-900 truncate">{{ app.user?.name ?? '—' }}</p>
                             <Link
                                 v-if="app.job_request"
-                                :href="route('seeker.job-requests.show', app.job_request.id)"
+                                :href="route('jobs.show', app.job_request.id)"
                                 class="text-xs text-navy/70 hover:text-navy hover:underline mt-0.5 truncate block transition-colors"
                             >{{ app.job_request.title }}</Link>
                             <p v-else class="text-xs text-gray-400 mt-0.5">—</p>

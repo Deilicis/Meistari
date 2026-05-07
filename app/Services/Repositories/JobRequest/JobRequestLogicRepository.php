@@ -150,7 +150,7 @@ class JobRequestLogicRepository
                 type: NotificationTypeEnum::JOB_COMPLETED,
                 title: 'Darbs atzīmēts kā pabeigts',
                 body: '"' . $completed->getTitle() . '" ir atzīmēts kā pabeigts.',
-                actionUrl: route('master.applications.index'),
+                actionUrl: route('jobs.show', $jobRequestId),
                 metadata: ['job_request_id' => $jobRequestId],
             ));
         }
@@ -160,7 +160,7 @@ class JobRequestLogicRepository
             type: NotificationTypeEnum::JOB_COMPLETED,
             title: 'Darbs pabeigts',
             body: '"' . $completed->getTitle() . '" ir pabeigts. Vari atstāt atsauksmi.',
-            actionUrl: route('seeker.job-requests.index'),
+            actionUrl: route('jobs.show', $jobRequestId),
             metadata: ['job_request_id' => $jobRequestId],
         ));
 

@@ -41,7 +41,7 @@ class NewJobApplicationNotification extends Notification
         }
 
         return $message
-            ->action('Skatīt pieteikumu', route('seeker.job-requests.index'))
+            ->action('Skatīt darbu', route('jobs.show', $this->application->jobRequest->getId()))
             ->line('Piesakieties platformā, lai apskatītu un pieņemtu vai noraidītu pieteikumu.')
             ->salutation('Ar cieņu, Meistari komanda');
     }

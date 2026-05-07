@@ -43,7 +43,7 @@ return new class extends Migration
             $table->string(self::LOCATION);
             $table->date(self::DEADLINE)->nullable();
             $table->enum(self::STATUS, JobStatusEnum::values())
-                  ->default(JobStatusEnum::ACTIVE->value);
+                  ->default(JobStatusEnum::OPEN->value);
             $table->timestamp(self::CREATED_AT)->useCurrent();
             $table->timestamp(self::UPDATED_AT)->nullable()->useCurrentOnUpdate();
             $table->softDeletes(self::DELETED_AT);

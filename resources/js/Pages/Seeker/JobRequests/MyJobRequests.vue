@@ -241,7 +241,7 @@ const formatBudget = (budget: number | null): string => {
                                 </span>
                             </div>
                             <Link
-                                :href="route('seeker.job-requests.show', job.id)"
+                                :href="route('jobs.show', job.id)"
                                 class="text-sm font-bold text-navy mb-1 line-clamp-1 hover:underline block"
                             >{{ job.title }}</Link>
                             <p class="text-xs text-gray-500 line-clamp-2 mb-2">{{ job.description }}</p>
