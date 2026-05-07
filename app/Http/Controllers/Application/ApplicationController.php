@@ -46,6 +46,16 @@ class ApplicationController extends Controller
         ], 201);
     }
 
+    public function shortlist(int $application): JsonResponse
+    {
+        $shortlisted = $this->logicRepository->shortlistApplication($application, auth()->id());
+
+        return response()->json([
+            self::KEY_MESSAGE => 'Pieteikums iekļauts īsajā sarakstā!',
+            self::KEY_DATA    => new JobApplicationResource($shortlisted),
+        ]);
+    }
+
     public function accept(int $application): JsonResponse
     {
         $accepted = $this->logicRepository->acceptApplication($application, auth()->id());

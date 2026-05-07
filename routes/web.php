@@ -38,6 +38,7 @@ use App\Http\Controllers\Complaint\ComplaintController;
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\JobLifecycleController;
+use App\Http\Controllers\JobPageController;
 use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 use App\Http\Controllers\RoleController;
@@ -71,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('/jobs/{jobId}/payment-success', CheckoutSuccessController::class)->name('jobs.payment.success');
+    Route::get('/jobs/{jobId}', [JobPageController::class, 'show'])->name('jobs.show');
 
     // Paziņojumi
     Route::prefix('notifications')->name('notifications.')->group(function () {
@@ -169,7 +171,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Meklētāja panelis
     Route::middleware(['role:seeker'])->prefix('seeker')->name('seeker.')->group(function () {
         Route::get('/my-requests', [JobRequestPageController::class, 'index'])->name('job-requests.index');
-        Route::get('/my-requests/{id}', [JobRequestShowPageController::class, 'show'])->name('job-requests.show');
+        Route::get('/my-requests/{id}', fn (int $id) => redirect()->route('jobs.show', $id))->name('job-requests.show');
         Route::get('/categories', [CategoryBrowsePageController::class, 'index'])->name('categories.index');
         Route::get('/services', [ServiceBrowsePageController::class, 'index'])->name('services.index');
         Route::get('/my-applications',   [MyServiceApplicationsPageController::class,    'index'])->name('service-applications.index');
@@ -226,6 +228,7 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
     // API: Pieteikumu pārvaldība (meklētāji pieņem/noraida)
     Route::middleware(['role:seeker'])->prefix('applications')->name('applications.')->group(function () {
         Route::get('/', [ApplicationController::class, 'index'])->name('index');
+        Route::patch('/{application}/shortlist', [ApplicationController::class, 'shortlist'])->name('shortlist');
         Route::patch('/{application}/accept', [ApplicationController::class, 'accept'])->name('accept');
         Route::patch('/{application}/reject', [ApplicationController::class, 'reject'])->name('reject');
     });

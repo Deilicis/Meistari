@@ -56,7 +56,7 @@ class ApplicationLogicRepository
             type: NotificationTypeEnum::NEW_APPLICATION,
             title: 'Jauns pieteikums tavam sludinājumam',
             body: $applicant->getName() . ' pieteicās uz "' . $jobRequest->getTitle() . '"',
-            actionUrl: route('seeker.job-requests.show', $jobRequest->getId()),
+            actionUrl: route('jobs.show', $jobRequest->getId()),
             metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $application->getId()],
         ));
 
@@ -82,6 +82,38 @@ class ApplicationLogicRepository
         }
 
         return $this->dbRepository->getByJobRequestId($jobRequestId);
+    }
+
+    public function shortlistApplication(int $applicationId, int $seekerId): Application
+    {
+        $application = Application::with('jobRequest')->findOrFail($applicationId);
+        $jobRequest  = $application->jobRequest;
+
+        if ($jobRequest->getUserId() !== $seekerId) {
+            abort(403, ErrorMessages::JOB_NOT_YOURS);
+        }
+
+        if ($jobRequest->getStatus() !== JobStatusEnum::OPEN) {
+            abort(422, ErrorMessages::JOB_NOT_ACTIVE);
+        }
+
+        if ($application->getStatus() !== ApplicationStatusEnum::PENDING) {
+            abort(422, 'Pieteikums nav gaidīšanas stāvoklī.');
+        }
+
+        $shortlisted = $this->dbRepository->shortlist($application);
+
+        $shortlisted->load('user');
+        $this->notificationService->create(new CreateNotificationDTO(
+            userId: $shortlisted->getUserId(),
+            type: NotificationTypeEnum::APPLICATION_SHORTLISTED,
+            title: 'Tavs pieteikums iekļauts īsajā sarakstā!',
+            body: 'Tavs pieteikums uz "' . $jobRequest->getTitle() . '" ir apsvēršanā. Vari sazināties ar klientu.',
+            actionUrl: route('jobs.show', $jobRequest->getId()),
+            metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $applicationId],
+        ));
+
+        return $shortlisted;
     }
 
     public function acceptApplication(int $applicationId, int $seekerId): Application
@@ -120,7 +152,7 @@ class ApplicationLogicRepository
             type: NotificationTypeEnum::APPLICATION_ACCEPTED,
             title: 'Tavs pieteikums tika pieņemts!',
             body: 'Tavs pieteikums uz "' . $jobRequest->getTitle() . '" tika pieņemts.',
-            actionUrl: route('master.applications.index'),
+            actionUrl: route('jobs.show', $jobRequest->getId()),
             metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $applicationId],
         ));
 
@@ -150,7 +182,7 @@ class ApplicationLogicRepository
             type: NotificationTypeEnum::APPLICATION_REJECTED,
             title: 'Tavs pieteikums netika pieņemts',
             body: 'Tavs pieteikums uz "' . $jobRequest->getTitle() . '" netika pieņemts.',
-            actionUrl: route('master.applications.index'),
+            actionUrl: route('jobs.show', $jobRequest->getId()),
             metadata: ['job_request_id' => $jobRequest->getId(), 'application_id' => $applicationId],
         ));
 

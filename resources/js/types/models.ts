@@ -118,7 +118,7 @@ export interface ServiceMasterProfile {
     portfolio_images: string[];
 }
 
-export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+export type ApplicationStatus = 'pending' | 'shortlisted' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
 
 export interface SeekerProfile {
     type: 'individual' | 'company';

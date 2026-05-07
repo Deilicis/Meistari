@@ -26,7 +26,7 @@ const props = defineProps<{ job_id: number }>();
                 </p>
 
                 <Link
-                    :href="route('seeker.job-requests.show', props.job_id)"
+                    :href="route('jobs.show', props.job_id)"
                     class="inline-flex items-center gap-2 px-6 py-2.5 bg-navy text-white text-sm font-semibold rounded-xl hover:bg-navy/90 transition-colors"
                 >
                     Atgriezties uz darbu

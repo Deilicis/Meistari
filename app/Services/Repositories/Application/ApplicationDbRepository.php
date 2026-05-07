@@ -94,10 +94,19 @@ class ApplicationDbRepository
         return $application;
     }
 
+    public function shortlist(Application $application): Application
+    {
+        $application->update([Application::STATUS => ApplicationStatusEnum::SHORTLISTED->value]);
+        return $application;
+    }
+
     public function rejectAllPendingForJob(int $jobRequestId, int $exceptApplicationId): void
     {
         Application::where(Application::JOB_REQUEST_ID, $jobRequestId)
-            ->where(Application::STATUS, ApplicationStatusEnum::PENDING->value)
+            ->whereIn(Application::STATUS, [
+                ApplicationStatusEnum::PENDING->value,
+                ApplicationStatusEnum::SHORTLISTED->value,
+            ])
             ->where(Application::ID, '!=', $exceptApplicationId)
             ->update([Application::STATUS => ApplicationStatusEnum::REJECTED->value]);
     }

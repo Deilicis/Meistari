@@ -71,7 +71,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::APPLICATION_ACCEPTED,
                 title: 'Tavs pieteikums tika pieņemts!',
                 body: 'Tavs pieteikums uz "' . $job->getTitle() . '" tika pieņemts. Klients gaida maksājumu.',
-                actionUrl: route('master.applications.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId(), 'application_id' => $application->getId()],
             ));
 
@@ -131,7 +131,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::JOB_PAID,
                 title: 'Klients samaksāja — vari sākt darbu!',
                 body: '"' . $job->getTitle() . '" ir gatavs sākšanai.',
-                actionUrl: route('master.applications.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
         });
@@ -217,7 +217,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::JOB_DISPUTED,
                 title: 'Darbs ir strīdā',
                 body: '"' . $job->getTitle() . '" — otra puse atvēra strīdu. Mēs ar jums sazināsimies.',
-                actionUrl: $isClient ? route('master.applications.index') : route('seeker.job-requests.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
         }
@@ -254,7 +254,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::JOB_CANCELLED,
                 title: 'Darbs tika atcelts',
                 body: '"' . $job->getTitle() . '" ir atcelts.',
-                actionUrl: $isClient ? route('master.applications.index') : route('seeker.job-requests.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
         }
@@ -281,7 +281,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::JOB_AUTO_RELEASED,
                 title: 'Maksājums automātiski atbrīvots',
                 body: '"' . $job->getTitle() . '" — 7 dienu periods beidzās, nauda atbrīvota.',
-                actionUrl: route('master.applications.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
 
@@ -290,7 +290,7 @@ class JobLifecycleService
                 type: NotificationTypeEnum::JOB_AUTO_RELEASED,
                 title: 'Darbs automātiski apstiprināts',
                 body: '"' . $job->getTitle() . '" — apstiprinājuma termiņš beidzās, darbs atzīmēts kā pabeigts.',
-                actionUrl: route('seeker.job-requests.index'),
+                actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
 

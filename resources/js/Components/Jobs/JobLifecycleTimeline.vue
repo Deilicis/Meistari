@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { CheckIcon } from '@heroicons/vue/24/solid';
-import type { JobLifecycle, JobStatus } from '@/types/jobLifecycle';
+import type { JobStatus } from '@/types/jobLifecycle';
 
-const props = defineProps<{ job: JobLifecycle; isClient: boolean }>();
+const props = defineProps<{ job: { status: JobStatus }; isClient: boolean }>();
 
 type Step = { key: JobStatus; label: string };
 
