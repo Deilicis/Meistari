@@ -84,7 +84,10 @@ class PriceProposalService
                 metadata:  ['job_request_id' => $job->getId(), 'application_id' => $application->getId()],
             ));
 
-            return $proposal->fresh();
+            $fresh = $proposal->fresh(['application.jobRequest']);
+            $this->chatService->postEvent($fresh, 'accepted', $dto->respondedByUserId);
+
+            return $fresh;
         });
     }
 
@@ -118,6 +121,9 @@ class PriceProposalService
                 metadata:  ['job_request_id' => $job->getId(), 'application_id' => $application->getId()],
             ));
 
+            $newProposal->load('application.jobRequest');
+            $this->chatService->postEvent($newProposal, 'countered', $dto->counteredByUserId);
+
             return $newProposal;
         });
     }
@@ -144,7 +150,10 @@ class PriceProposalService
             metadata:  ['job_request_id' => $job->getId(), 'application_id' => $application->getId()],
         ));
 
-        return $proposal->fresh();
+        $fresh = $proposal->fresh(['application.jobRequest']);
+        $this->chatService->postEvent($fresh, 'rejected', $dto->respondedByUserId);
+
+        return $fresh;
     }
 
     public function withdraw(RespondToProposalDTO $dto): PriceProposal
@@ -175,7 +184,10 @@ class PriceProposalService
             ));
         }
 
-        return $proposal->fresh();
+        $fresh = $proposal->fresh(['application.jobRequest']);
+        $this->chatService->postEvent($fresh, 'withdrawn', $dto->respondedByUserId);
+
+        return $fresh;
     }
 
     public function submitFreshProposal(SubmitProposalDTO $dto): PriceProposal
@@ -210,6 +222,9 @@ class PriceProposalService
                 metadata:  ['job_request_id' => $job->getId(), 'application_id' => $application->getId()],
             ));
         }
+
+        $proposal->load('application.jobRequest');
+        $this->chatService->postEvent($proposal, 'submitted', $dto->proposedByUserId);
 
         return $proposal;
     }
