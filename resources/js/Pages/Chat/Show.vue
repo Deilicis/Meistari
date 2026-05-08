@@ -3,7 +3,13 @@ import { ref, onMounted, onUnmounted, nextTick } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ProposalChatCard from '@/Components/Chat/ProposalChatCard.vue';
 import { PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
+import type { PriceProposal } from '@/types/proposal';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type MessageType = 'text' | 'proposal';
 
 interface MessageSender {
     id: number;
@@ -15,9 +21,12 @@ interface Message {
     conversation_id: number;
     sender_id: number;
     body: string;
+    type: MessageType;
+    proposal_id: number | null;
     read_at: string | null;
     created_at: string;
     sender: MessageSender;
+    proposal?: PriceProposal | null;
 }
 
 interface OtherUser {
@@ -30,7 +39,10 @@ interface Conversation {
     other_user: OtherUser;
     last_message: Message | null;
     created_at: string;
+    unread_count?: number;
 }
+
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 const props = defineProps<{
     conversation: Conversation;
@@ -39,17 +51,36 @@ const props = defineProps<{
     auth_user_id: number;
 }>();
 
+// ─── State ────────────────────────────────────────────────────────────────────
+
 const messageList = ref<Message[]>([...props.messages]);
-const newMessage = ref('');
-const sending = ref(false);
+const newMessage  = ref('');
+const sending     = ref(false);
 const messagesEnd = ref<HTMLElement | null>(null);
-const textarea = ref<HTMLTextAreaElement | null>(null);
+const textarea    = ref<HTMLTextAreaElement | null>(null);
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const scrollToBottom = (smooth = true) => {
     nextTick(() => {
         messagesEnd.value?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
     });
 };
+
+const formatTime = (iso: string) => {
+    const d = new Date(iso);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    if (isToday) {
+        return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+    }
+    return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' }) + ' ' +
+        d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+};
+
+const initials = (name: string) => name.slice(0, 2).toUpperCase();
+
+// ─── Message handling ─────────────────────────────────────────────────────────
 
 const sendMessage = async () => {
     const body = newMessage.value.trim();
@@ -78,27 +109,35 @@ const handleKeydown = (e: KeyboardEvent) => {
     }
 };
 
-const formatTime = (iso: string) => {
-    const d = new Date(iso);
-    const now = new Date();
-    const isToday = d.toDateString() === now.toDateString();
-    if (isToday) {
-        return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
-    }
-    return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' }) + ' ' +
-        d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
-};
+// When an action is taken on a proposal card, update that proposal's status
+// across all cards in the thread that reference the same proposal_id,
+// then wait for real-time broadcast to append the new event card.
+function handleProposalActed(proposalId: number) {
+    messageList.value.forEach(msg => {
+        if (msg.proposal && msg.proposal.id === proposalId) {
+            msg.proposal = { ...msg.proposal, is_pending: false };
+        }
+    });
+}
 
-const initials = (name: string) => name.slice(0, 2).toUpperCase();
+// ─── Real-time ────────────────────────────────────────────────────────────────
 
 onMounted(() => {
     scrollToBottom(false);
     (window as any).Echo
         .private(`conversation.${props.conversation.id}`)
-        .listen('MessageSent', (e: Message) => {
+        .listen('.MessageSent', (e: Message) => {
             if (!messageList.value.find(m => m.id === e.id)) {
                 messageList.value.push(e);
                 scrollToBottom();
+            }
+            // If this is a proposal event, mark prior cards for that proposal as non-pending
+            if (e.type === 'proposal' && e.proposal_id) {
+                messageList.value.forEach(msg => {
+                    if (msg.proposal && msg.proposal.id === e.proposal_id && msg.id !== e.id) {
+                        msg.proposal = { ...msg.proposal, is_pending: false };
+                    }
+                });
             }
         });
 });
@@ -132,13 +171,23 @@ onUnmounted(() => {
                         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                         :class="conv.id === conversation.id ? 'bg-blue-50 border-l-2 border-l-blue-400' : ''"
                     >
-                        <div class="w-9 h-9 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
-                            {{ initials(conv.other_user.name) }}
+                        <div class="relative w-9 h-9 flex-shrink-0">
+                            <div class="w-9 h-9 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs">
+                                {{ initials(conv.other_user.name) }}
+                            </div>
+                            <span
+                                v-if="conv.unread_count && conv.unread_count > 0"
+                                class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                            >{{ conv.unread_count > 9 ? '9+' : conv.unread_count }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 truncate">{{ conv.other_user.name }}</p>
-                            <p v-if="conv.last_message" class="text-xs text-gray-400 truncate">
-                                {{ conv.last_message.body }}
+                            <p class="text-sm font-semibold text-gray-900 truncate"
+                               :class="conv.unread_count && conv.unread_count > 0 ? 'text-navy' : ''">
+                                {{ conv.other_user.name }}
+                            </p>
+                            <p v-if="conv.last_message" class="text-xs text-gray-400 truncate"
+                               :class="conv.unread_count && conv.unread_count > 0 ? 'font-semibold text-gray-600' : ''">
+                                {{ conv.last_message.body || 'Cenas piedāvājums' }}
                             </p>
                         </div>
                     </Link>
@@ -171,34 +220,45 @@ onUnmounted(() => {
                         <p class="text-sm text-gray-400">Sāc sarunu!</p>
                     </div>
 
-                    <div
-                        v-for="msg in messageList"
-                        :key="msg.id"
-                        class="flex"
-                        :class="msg.sender_id === auth_user_id ? 'justify-end' : 'justify-start'"
-                    >
-                        <!-- Other user avatar -->
-                        <div v-if="msg.sender_id !== auth_user_id" class="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0 mr-2 mt-1">
-                            {{ initials(msg.sender.name) }}
+                    <template v-for="msg in messageList" :key="msg.id">
+                        <!-- Proposal card: full-width, centered -->
+                        <div v-if="msg.type === 'proposal' && msg.proposal" class="flex justify-center px-2">
+                            <ProposalChatCard
+                                :proposal="msg.proposal"
+                                :current-user-id="auth_user_id"
+                                :conversation-id="conversation.id"
+                                @proposal-acted="handleProposalActed"
+                            />
                         </div>
 
-                        <div class="max-w-xs lg:max-w-md">
-                            <div
-                                class="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
-                                :class="msg.sender_id === auth_user_id
-                                    ? 'bg-navy text-white rounded-tr-sm'
-                                    : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm'"
-                            >
-                                {{ msg.body }}
+                        <!-- Regular text bubble -->
+                        <div
+                            v-else-if="msg.type === 'text'"
+                            class="flex"
+                            :class="msg.sender_id === auth_user_id ? 'justify-end' : 'justify-start'"
+                        >
+                            <div v-if="msg.sender_id !== auth_user_id" class="w-7 h-7 rounded-full bg-navy flex items-center justify-center text-white font-bold text-xs flex-shrink-0 mr-2 mt-1">
+                                {{ initials(msg.sender.name) }}
                             </div>
-                            <p
-                                class="text-xs text-gray-400 mt-1 px-1"
-                                :class="msg.sender_id === auth_user_id ? 'text-right' : 'text-left'"
-                            >
-                                {{ formatTime(msg.created_at) }}
-                            </p>
+
+                            <div class="max-w-xs lg:max-w-md">
+                                <div
+                                    class="px-4 py-2.5 rounded-2xl text-sm leading-relaxed"
+                                    :class="msg.sender_id === auth_user_id
+                                        ? 'bg-navy text-white rounded-tr-sm'
+                                        : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm shadow-sm'"
+                                >
+                                    {{ msg.body }}
+                                </div>
+                                <p
+                                    class="text-xs text-gray-400 mt-1 px-1"
+                                    :class="msg.sender_id === auth_user_id ? 'text-right' : 'text-left'"
+                                >
+                                    {{ formatTime(msg.created_at) }}
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </template>
 
                     <div ref="messagesEnd" />
                 </div>
