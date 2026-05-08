@@ -29,4 +29,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\App\Exceptions\Jobs\InvalidJobTransitionException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         });
+        $exceptions->render(function (\App\Exceptions\Proposals\InvalidProposalActionException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        });
+        $exceptions->render(function (\App\Exceptions\Proposals\ProposalAuthorizationException $e) {
+            return response()->json(['message' => $e->getMessage()], 403);
+        });
+        $exceptions->render(function (\App\Exceptions\Proposals\ApplicationNotNegotiableException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        });
     })->create();

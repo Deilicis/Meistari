@@ -17,6 +17,7 @@ use App\Notifications\Application\ApplicationAcceptedNotification;
 use App\Notifications\Application\ApplicationRejectedNotification;
 use App\Notifications\Application\NewJobApplicationNotification;
 use App\Services\NotificationService;
+use App\Services\Proposals\PriceProposalService;
 use App\Services\Repositories\JobRequest\JobRequestDbRepository;
 use Illuminate\Support\Collection;
 
@@ -26,6 +27,7 @@ class ApplicationLogicRepository
         private readonly ApplicationDbRepository    $dbRepository,
         private readonly JobRequestDbRepository     $jobRequestDbRepository,
         private readonly NotificationService        $notificationService,
+        private readonly PriceProposalService       $proposalService,
     ) {}
 
     public function createApplication(SaveApplicationData $dto): Application
@@ -45,6 +47,15 @@ class ApplicationLogicRepository
             $application = $this->dbRepository->reapply($cancelled, $dto->toArray());
         } else {
             $application = $this->dbRepository->create($dto->toArray());
+        }
+
+        if ($dto->priceOffer !== null) {
+            $this->proposalService->submitInitialProposal(
+                applicationId: $application->getId(),
+                masterId:      $dto->userId,
+                amount:        $dto->priceOffer,
+                note:          $dto->coverLetter,
+            );
         }
 
         $applicant = User::find($dto->userId);

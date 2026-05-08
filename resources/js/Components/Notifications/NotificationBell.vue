@@ -49,8 +49,13 @@ const iconMap: Record<NotificationType, any> = {
     job_marked_complete:  CheckBadgeIcon,
     job_confirmed:        CheckCircleIcon,
     job_disputed:         ShieldExclamationIcon,
-    job_cancelled:        XCircleIcon,
-    job_auto_released:    ArrowPathIcon,
+    job_cancelled:          XCircleIcon,
+    job_auto_released:      ArrowPathIcon,
+    application_shortlisted: StarIcon,
+    proposal_received:      CurrencyEuroIcon,
+    proposal_accepted:      CurrencyEuroIcon,
+    proposal_rejected:      CurrencyEuroIcon,
+    proposal_withdrawn:     CurrencyEuroIcon,
 };
 
 function formatTime(iso: string): string {

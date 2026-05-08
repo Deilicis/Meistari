@@ -42,6 +42,7 @@ use App\Http\Controllers\JobPageController;
 use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PriceProposalController;
 use App\Http\Controllers\Stripe\CheckoutSuccessController;
 use App\Http\Controllers\Stripe\WebhookController as StripeWebhookController;
 
@@ -72,6 +73,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('/jobs/{jobId}/payment-success', CheckoutSuccessController::class)->name('jobs.payment.success');
+
+    // Price Proposals
+    Route::prefix('proposals')->name('proposals.')->group(function () {
+        Route::post('/applications/{applicationId}', [PriceProposalController::class, 'store'])->name('store');
+        Route::post('/{proposalId}/counter',         [PriceProposalController::class, 'counter'])->name('counter');
+        Route::post('/{proposalId}/accept',          [PriceProposalController::class, 'accept'])->name('accept');
+        Route::post('/{proposalId}/reject',          [PriceProposalController::class, 'reject'])->name('reject');
+        Route::post('/{proposalId}/withdraw',        [PriceProposalController::class, 'withdraw'])->name('withdraw');
+    });
     Route::middleware(['role:seeker'])->get('/jobs/create', [JobRequestPageController::class, 'create'])->name('jobs.create');
     Route::get('/jobs/{jobId}', [JobPageController::class, 'show'])->name('jobs.show');
 

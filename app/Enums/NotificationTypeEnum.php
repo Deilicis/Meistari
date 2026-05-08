@@ -19,4 +19,8 @@ enum NotificationTypeEnum: string
     case JOB_DISPUTED         = 'job_disputed';
     case JOB_CANCELLED        = 'job_cancelled';
     case JOB_AUTO_RELEASED    = 'job_auto_released';
+    case PROPOSAL_RECEIVED    = 'proposal_received';
+    case PROPOSAL_ACCEPTED    = 'proposal_accepted';
+    case PROPOSAL_REJECTED    = 'proposal_rejected';
+    case PROPOSAL_WITHDRAWN   = 'proposal_withdrawn';
 }

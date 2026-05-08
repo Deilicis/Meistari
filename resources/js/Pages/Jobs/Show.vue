@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -8,6 +8,11 @@ import JobStatusBadge from '@/Components/Jobs/JobStatusBadge.vue';
 import JobLifecycleTimeline from '@/Components/Jobs/JobLifecycleTimeline.vue';
 import ConfirmDisputeModal from '@/Components/Jobs/ConfirmDisputeModal.vue';
 import ConfirmCancelModal from '@/Components/Jobs/ConfirmCancelModal.vue';
+import JobProposalSidebar from '@/Components/Jobs/JobProposalSidebar.vue';
+import CounterProposalModal from '@/Components/Jobs/Proposals/CounterProposalModal.vue';
+import SubmitFreshProposalModal from '@/Components/Jobs/Proposals/SubmitFreshProposalModal.vue';
+import ConfirmAcceptProposalModal from '@/Components/Jobs/Proposals/ConfirmAcceptProposalModal.vue';
+import ConfirmRejectProposalModal from '@/Components/Jobs/Proposals/ConfirmRejectProposalModal.vue';
 import {
     ArrowLeftIcon,
     UserIcon,
@@ -18,14 +23,13 @@ import {
     ShieldExclamationIcon,
     ClipboardDocumentListIcon,
     ChatBubbleLeftRightIcon,
-    CheckIcon,
-    XMarkIcon,
     StarIcon,
     BanknotesIcon,
     XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 import type { JobStatus } from '@/types/jobLifecycle';
+import type { ProposalState, PriceProposal } from '@/types/proposal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,6 +58,7 @@ interface PageApplication {
     price_offer: string | null;
     status: AppStatus;
     created_at: string;
+    pending_proposal: PriceProposal | null;
     user: { id: number; name: string; profile: AppProfile | null };
 }
 
@@ -86,7 +91,13 @@ const props = defineProps<{
     own_application: PageApplication | null;
     allowed_actions: PageAction[];
     chat: { other_user_id: number; conversation_id: number | null } | null;
+    proposals: ProposalState | null;
 }>();
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+const page = usePage<{ auth: { user: { id: number } } }>();
+const currentUserId = computed(() => page.props.auth.user.id);
 
 // ─── Reactive state ───────────────────────────────────────────────────────────
 
@@ -100,9 +111,15 @@ watch(() => props.applications,     v => { apps.value    = v ?? []; });
 watch(() => props.own_application,  v => { ownApp.value  = v; });
 watch(() => props.allowed_actions,  v => { actions.value = v; });
 
-const loading         = ref<string | null>(null);
+const loading          = ref<string | null>(null);
 const showDisputeModal = ref(false);
 const showCancelModal  = ref(false);
+
+// Per-application proposal modal state
+const counteringApp     = ref<PageApplication | null>(null);
+const freshProposalApp  = ref<PageApplication | null>(null);
+const acceptingProposal = ref<PriceProposal | null>(null);
+const rejectingProposal = ref<PriceProposal | null>(null);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -157,7 +174,7 @@ function formatMoney(amount: string | number | null | undefined, type?: string |
     if (amount === null || amount === undefined || amount === '') return '—';
     const n = typeof amount === 'string' ? parseFloat(amount) : amount;
     if (isNaN(n)) return '—';
-    const fmt = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const fmt = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return type === 'hourly' ? fmt.format(n) + '/h' : fmt.format(n);
 }
 
@@ -222,7 +239,7 @@ async function handleDelete() {
     }
 }
 
-// ─── Application actions (owner / admin) ─────────────────────────────────────
+// ─── Application actions (owner) ─────────────────────────────────────────────
 
 async function handleShortlist(app: PageApplication) {
     loading.value = `shortlist-${app.id}`;
@@ -237,27 +254,58 @@ async function handleShortlist(app: PageApplication) {
     }
 }
 
-async function handleAccept(app: PageApplication) {
-    loading.value = `accept-${app.id}`;
+// Accept proposal from the per-application card
+async function handleAcceptProposal(proposal: PriceProposal) {
+    loading.value = `accept-proposal-${proposal.id}`;
     try {
-        await axios.patch(route('api.applications.accept', app.id));
-        toast.success('Pieteikums pieņemts!');
-        router.reload({ only: ['job', 'applications', 'allowed_actions', 'chat'] });
+        await axios.post(route('proposals.accept', proposal.id));
+        toast.success('Piedāvājums pieņemts!');
+        acceptingProposal.value = null;
+        router.reload({ only: ['job', 'applications', 'allowed_actions', 'chat', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda pieņemot pieteikumu.');
+        toast.error(e?.response?.data?.message ?? 'Kļūda pieņemot piedāvājumu.');
     } finally {
         loading.value = null;
     }
 }
 
-async function handleReject(app: PageApplication) {
-    loading.value = `reject-${app.id}`;
+async function handleRejectProposal(proposal: PriceProposal) {
+    loading.value = `reject-proposal-${proposal.id}`;
     try {
-        await axios.patch(route('api.applications.reject', app.id));
-        toast.success('Pieteikums noraidīts.');
-        router.reload({ only: ['applications', 'job', 'allowed_actions'] });
+        await axios.post(route('proposals.reject', proposal.id));
+        toast.success('Piedāvājums noraidīts.');
+        rejectingProposal.value = null;
+        router.reload({ only: ['applications', 'allowed_actions', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda noraidot pieteikumu.');
+        toast.error(e?.response?.data?.message ?? 'Kļūda noraidot piedāvājumu.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+async function handleCounterProposal(proposal: PriceProposal, amount: number, note: string | null) {
+    loading.value = `counter-proposal-${proposal.id}`;
+    try {
+        await axios.post(route('proposals.counter', proposal.id), { amount, note });
+        toast.success('Pretpiedāvājums nosūtīts.');
+        counteringApp.value = null;
+        router.reload({ only: ['applications', 'proposals'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+async function handleFreshProposal(app: PageApplication, amount: number, note: string | null) {
+    loading.value = `fresh-proposal-${app.id}`;
+    try {
+        await axios.post(route('proposals.store', app.id), { amount, note });
+        toast.success('Piedāvājums nosūtīts.');
+        freshProposalApp.value = null;
+        router.reload({ only: ['applications', 'proposals'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
     } finally {
         loading.value = null;
     }
@@ -349,6 +397,14 @@ async function handleChat() {
                     :is-client="viewer_role === 'owner' || viewer_role === 'admin'"
                 />
             </div>
+
+            <!-- Proposal sidebar (applicant / accepted_master) -->
+            <JobProposalSidebar
+                v-if="proposals && (viewer_role === 'applicant' || viewer_role === 'accepted_master')"
+                :proposals="proposals"
+                :job-id="job.id"
+                :current-user-id="currentUserId"
+            />
 
             <!-- Actions panel -->
             <div v-if="showActionPanel" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
@@ -501,15 +557,19 @@ async function handleChat() {
                                         class="text-xs font-semibold px-2 py-0.5 rounded-full"
                                         :class="appStatusBadge[app.status].cls"
                                     >{{ appStatusBadge[app.status].label }}</span>
+                                    <!-- Pending proposal amount badge -->
+                                    <span
+                                        v-if="app.pending_proposal"
+                                        class="flex items-center gap-0.5 text-xs font-bold text-navy"
+                                    >
+                                        <CurrencyEuroIcon class="w-3.5 h-3.5 text-gold" />
+                                        {{ formatMoney(app.pending_proposal.amount) }}
+                                    </span>
                                 </div>
                                 <p v-if="app.user.profile?.city" class="text-xs text-gray-400 mb-1.5">
                                     {{ app.user.profile.city }}
                                 </p>
-                                <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-1.5">
-                                    <CurrencyEuroIcon class="w-4 h-4 text-gold" />
-                                    {{ formatMoney(app.price_offer) }}
-                                </div>
-                                <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-2">
                                     {{ app.cover_letter }}
                                 </p>
                                 <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
@@ -529,22 +589,40 @@ async function handleChat() {
                                     <StarIcon class="w-3.5 h-3.5" />
                                     Apsvērt
                                 </button>
+                                <!-- Proposal-based accept (shows price inline) -->
                                 <button
-                                    v-if="has('accept_application')"
-                                    @click="handleAccept(app)"
+                                    v-if="app.pending_proposal"
+                                    @click="acceptingProposal = app.pending_proposal"
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    <CheckIcon class="w-3.5 h-3.5" />
-                                    Pieņemt
+                                    Pieņemt {{ formatMoney(app.pending_proposal.amount) }}
                                 </button>
+                                <!-- Proposal-based counter -->
                                 <button
-                                    v-if="has('reject_application')"
-                                    @click="handleReject(app)"
+                                    v-if="app.pending_proposal"
+                                    @click="counteringApp = app"
+                                    :disabled="!!loading"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-navy bg-white border border-navy/20 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    Cita cena
+                                </button>
+                                <!-- No proposal yet: submit fresh -->
+                                <button
+                                    v-else-if="!app.pending_proposal"
+                                    @click="freshProposalApp = app"
+                                    :disabled="!!loading"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-navy bg-white border border-navy/20 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    Piedāvāt cenu
+                                </button>
+                                <!-- Reject proposal -->
+                                <button
+                                    v-if="app.pending_proposal"
+                                    @click="rejectingProposal = app.pending_proposal"
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    <XMarkIcon class="w-3.5 h-3.5" />
                                     Noraidīt
                                 </button>
                             </div>
@@ -563,10 +641,6 @@ async function handleChat() {
                             :class="appStatusBadge[ownApp.status].cls"
                         >{{ appStatusBadge[ownApp.status].label }}</span>
                         <span class="text-xs text-gray-400">{{ formatDate(ownApp.created_at) }}</span>
-                    </div>
-                    <div v-if="ownApp.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy">
-                        <CurrencyEuroIcon class="w-4 h-4 text-gold" />
-                        {{ formatMoney(ownApp.price_offer) }}
                     </div>
                     <p v-if="ownApp.cover_letter" class="text-sm text-gray-600 leading-relaxed">
                         {{ ownApp.cover_letter }}
@@ -726,6 +800,30 @@ async function handleChat() {
             :show="showCancelModal"
             @close="showCancelModal = false"
             @submitted="handleCancelSubmit"
+        />
+
+        <!-- Per-application proposal modals (owner) -->
+        <ConfirmAcceptProposalModal
+            :show="acceptingProposal !== null"
+            :proposal="acceptingProposal"
+            @close="acceptingProposal = null"
+            @confirm="acceptingProposal && handleAcceptProposal(acceptingProposal)"
+        />
+        <ConfirmRejectProposalModal
+            :show="rejectingProposal !== null"
+            @close="rejectingProposal = null"
+            @confirm="rejectingProposal && handleRejectProposal(rejectingProposal)"
+        />
+        <CounterProposalModal
+            :show="counteringApp !== null"
+            :current-proposal="counteringApp?.pending_proposal ?? null"
+            @close="counteringApp = null"
+            @submit="(amount, note) => counteringApp?.pending_proposal && handleCounterProposal(counteringApp.pending_proposal, amount, note)"
+        />
+        <SubmitFreshProposalModal
+            :show="freshProposalApp !== null"
+            @close="freshProposalApp = null"
+            @submit="(amount, note) => freshProposalApp && handleFreshProposal(freshProposalApp, amount, note)"
         />
     </AuthenticatedLayout>
 </template>

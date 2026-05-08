@@ -10,7 +10,12 @@ export type NotificationType =
     | 'job_confirmed'
     | 'job_disputed'
     | 'job_cancelled'
-    | 'job_auto_released';
+    | 'job_auto_released'
+    | 'application_shortlisted'
+    | 'proposal_received'
+    | 'proposal_accepted'
+    | 'proposal_rejected'
+    | 'proposal_withdrawn';
 
 export interface Notification {
     id: number;

@@ -11,16 +11,21 @@ use App\Models\Application;
 use App\Models\JobRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Enums\PriceProposalStatusEnum;
+use App\Http\Resources\PriceProposalResource;
+use App\Models\PriceProposal;
 use App\Repositories\JobRequestRepository;
+use App\Repositories\PriceProposalRepository;
 use App\Services\Repositories\Application\ApplicationDbRepository;
 use App\Services\Repositories\Chat\ConversationDbRepository;
 
 class JobPageService
 {
     public function __construct(
-        private readonly JobRequestRepository    $jobRequestRepo,
-        private readonly ApplicationDbRepository $applicationRepo,
+        private readonly JobRequestRepository     $jobRequestRepo,
+        private readonly ApplicationDbRepository  $applicationRepo,
         private readonly ConversationDbRepository $conversationRepo,
+        private readonly PriceProposalRepository  $proposalRepo,
     ) {}
 
     public function buildPayloadForUser(int $jobId, User $user): array
@@ -41,6 +46,7 @@ class JobPageService
             'own_application' => $this->getOwnApplication($job, $user, $viewerRole),
             'allowed_actions' => $this->computeAllowedActions($job, $user, $viewerRole),
             'chat'            => $this->getChatInfo($job, $user, $viewerRole),
+            'proposals'       => $this->getProposals($job, $user, $viewerRole),
         ];
     }
 
@@ -184,6 +190,41 @@ class JobPageService
         ];
     }
 
+    private function getProposals(JobRequest $job, User $user, string $viewerRole): ?array
+    {
+        $ownApp = match ($viewerRole) {
+            'applicant'       => $this->applicationRepo->findByJobRequestAndUser($job->getId(), $user->getId()),
+            'accepted_master' => $this->applicationRepo->findAcceptedForJob($job->getId()),
+            default           => null,
+        };
+
+        if ($ownApp === null) {
+            return null;
+        }
+
+        $pending = $this->proposalRepo->findPendingForApplication($ownApp->getId());
+        $history = $this->proposalRepo->getHistoryForApplication($ownApp->getId());
+
+        $hasNegotiableStatus = in_array($ownApp->getStatus(), [
+            \App\Enums\Job\ApplicationStatusEnum::PENDING,
+            \App\Enums\Job\ApplicationStatusEnum::SHORTLISTED,
+        ], true);
+
+        $canAct = $pending !== null
+            && $pending->getProposedByUserId() !== $user->getId();
+
+        return [
+            'application_id'  => $ownApp->getId(),
+            'pending'         => $pending ? PriceProposalResource::make($pending->loadMissing(['proposedBy', 'respondedBy']))->resolve() : null,
+            'history'         => PriceProposalResource::collection($history)->resolve(),
+            'can_submit_fresh'=> $hasNegotiableStatus && $pending === null,
+            'can_counter'     => $canAct,
+            'can_accept'      => $canAct,
+            'can_reject'      => $canAct,
+            'can_withdraw'    => $pending !== null && $pending->getProposedByUserId() === $user->getId(),
+        ];
+    }
+
     private function serializeJob(JobRequest $job): array
     {
         $status = $job->getStatus();
@@ -222,15 +263,19 @@ class JobPageService
 
     private function serializeApplication(Application $app): array
     {
-        $profile = $app->user?->profile;
+        $profile        = $app->user?->profile;
+        $pendingProposal = $this->proposalRepo->findPendingForApplication($app->getId());
 
         return [
-            'id'           => $app->getId(),
-            'cover_letter' => $app->getCoverLetter(),
-            'price_offer'  => $app->getPriceOffer(),
-            'status'       => $app->getStatus()->value,
-            'created_at'   => $app->getCreatedAt()?->toISOString(),
-            'user'         => $app->user ? [
+            'id'              => $app->getId(),
+            'cover_letter'    => $app->getCoverLetter(),
+            'price_offer'     => $app->getPriceOffer(),
+            'status'          => $app->getStatus()->value,
+            'created_at'      => $app->getCreatedAt()?->toISOString(),
+            'pending_proposal'=> $pendingProposal
+                ? PriceProposalResource::make($pendingProposal->loadMissing(['proposedBy', 'respondedBy']))->resolve()
+                : null,
+            'user'            => $app->user ? [
                 'id'   => $app->user->getId(),
                 'name' => $app->user->getName(),
                 'profile' => $profile ? [
