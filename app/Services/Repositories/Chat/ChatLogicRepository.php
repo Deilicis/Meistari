@@ -6,6 +6,7 @@ namespace App\Services\Repositories\Chat;
 
 use App\DataTransferObjects\Chat\SendMessageData;
 use App\DTOs\Notifications\CreateNotificationDTO;
+use App\Enums\MessageTypeEnum;
 use App\Enums\NotificationTypeEnum;
 use App\Events\MessageSent;
 use App\Models\Conversation;
@@ -50,20 +51,22 @@ class ChatLogicRepository
             // Broadcasting failure does not prevent message delivery
         }
 
-        $conversation = $this->conversationDb->findById($dto->conversationId);
-        if ($conversation) {
-            $receiverId = $conversation->getSenderId() === $dto->senderId
-                ? $conversation->getReceiverId()
-                : $conversation->getSenderId();
+        if ($dto->type === MessageTypeEnum::TEXT) {
+            $conversation = $this->conversationDb->findById($dto->conversationId);
+            if ($conversation) {
+                $receiverId = $conversation->getSenderId() === $dto->senderId
+                    ? $conversation->getReceiverId()
+                    : $conversation->getSenderId();
 
-            $this->notificationService->create(new CreateNotificationDTO(
-                userId: $receiverId,
-                type: NotificationTypeEnum::NEW_MESSAGE,
-                title: 'Jauna ziņa no ' . $message->sender->getName(),
-                body: mb_strimwidth($dto->body, 0, 80, '...'),
-                actionUrl: route('chat.show', $dto->conversationId),
-                metadata: ['conversation_id' => $dto->conversationId, 'sender_id' => $dto->senderId],
-            ));
+                $this->notificationService->create(new CreateNotificationDTO(
+                    userId: $receiverId,
+                    type: NotificationTypeEnum::NEW_MESSAGE,
+                    title: 'Jauna ziņa no ' . $message->sender->getName(),
+                    body: mb_strimwidth($dto->body, 0, 80, '...'),
+                    actionUrl: route('chat.show', $dto->conversationId),
+                    metadata: ['conversation_id' => $dto->conversationId, 'sender_id' => $dto->senderId],
+                ));
+            }
         }
 
         return $message;

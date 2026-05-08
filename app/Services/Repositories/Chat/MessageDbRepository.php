@@ -16,13 +16,15 @@ class MessageDbRepository
             Message::CONVERSATION_ID => $dto->conversationId,
             Message::SENDER_ID       => $dto->senderId,
             Message::BODY            => $dto->body,
+            Message::TYPE            => $dto->type->value,
+            Message::PROPOSAL_ID     => $dto->proposalId,
         ]);
     }
 
     public function getForConversation(int $conversationId): Collection
     {
         return Message::where(Message::CONVERSATION_ID, $conversationId)
-            ->with('sender')
+            ->with(['sender', 'proposal.proposedBy', 'proposal.respondedBy'])
             ->orderBy(Message::CREATED_AT)
             ->get();
     }
