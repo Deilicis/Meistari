@@ -35,6 +35,7 @@ class PriceProposalService
         private readonly ApplicationDbRepository $applicationRepo,
         private readonly JobRequestRepository    $jobRequestRepo,
         private readonly NotificationService     $notificationService,
+        private readonly ProposalChatService     $chatService,
     ) {}
 
     public function submitInitialProposal(int $applicationId, int $masterId, float $amount, ?string $note): PriceProposal
