@@ -212,12 +212,20 @@ const reject = async (app: JobApplication) => {
                     Aizvērt
                 </button>
 
-                <div
-                    v-if="job.status === 'completed'"
-                    class="text-sm font-semibold text-emerald-700 flex items-center gap-2"
-                >
-                    <CheckBadgeIcon class="w-4 h-4" />
-                    Darbs pabeigts
+                <div class="flex items-center gap-3">
+                    <div
+                        v-if="job.status === 'completed'"
+                        class="text-sm font-semibold text-emerald-700 flex items-center gap-2"
+                    >
+                        <CheckBadgeIcon class="w-4 h-4" />
+                        Darbs pabeigts
+                    </div>
+                    <a
+                        :href="route('jobs.show', job.id)"
+                        class="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy/90 rounded-lg transition-colors"
+                    >
+                        Skatīt darbu
+                    </a>
                 </div>
             </div>
         </div>
