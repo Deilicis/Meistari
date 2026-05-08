@@ -157,9 +157,19 @@ class JobPageService
     private function getChatInfo(JobRequest $job, User $user, string $viewerRole): ?array
     {
         $otherUserId = match ($viewerRole) {
-            'owner'          => $job->getMasterId(),
+            'owner' => $job->getMasterId()
+                ?? Application::where(Application::JOB_REQUEST_ID, $job->getId())
+                    ->whereIn(Application::STATUS, [
+                        ApplicationStatusEnum::SHORTLISTED->value,
+                        ApplicationStatusEnum::PENDING->value,
+                    ])
+                    ->orderByRaw('FIELD(status, ?, ?)', [
+                        ApplicationStatusEnum::SHORTLISTED->value,
+                        ApplicationStatusEnum::PENDING->value,
+                    ])
+                    ->value(Application::USER_ID),
             'accepted_master', 'applicant' => $job->getUserId(),
-            default          => null,
+            default => null,
         };
 
         if ($otherUserId === null) {

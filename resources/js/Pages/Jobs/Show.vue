@@ -271,7 +271,7 @@ async function handleWithdraw() {
     try {
         await axios.delete(route('api.applications.destroy', ownApp.value.id));
         toast.success('Pieteikums atsaukts.');
-        router.reload({ only: ['job', 'own_application', 'allowed_actions'] });
+        router.visit(route('master.applications.index'));
     } catch (e: any) {
         toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
     } finally {

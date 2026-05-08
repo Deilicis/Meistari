@@ -129,7 +129,7 @@ class ApplicationLogicRepository
             abort(422, ErrorMessages::JOB_NOT_ACTIVE);
         }
 
-        if ($application->getStatus() !== ApplicationStatusEnum::PENDING) {
+        if (!in_array($application->getStatus(), [ApplicationStatusEnum::PENDING, ApplicationStatusEnum::SHORTLISTED], true)) {
             abort(422, ErrorMessages::APPLICATION_NOT_PENDING);
         }
 
@@ -168,7 +168,7 @@ class ApplicationLogicRepository
             abort(403, ErrorMessages::JOB_NOT_YOURS);
         }
 
-        if ($application->getStatus() !== ApplicationStatusEnum::PENDING) {
+        if (!in_array($application->getStatus(), [ApplicationStatusEnum::PENDING, ApplicationStatusEnum::SHORTLISTED], true)) {
             abort(422, ErrorMessages::APPLICATION_NOT_PENDING);
         }
 
