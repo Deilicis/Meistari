@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Events;
 
+use App\Enums\MessageTypeEnum;
+use App\Http\Resources\MessageResource;
 use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 
 class MessageSent implements ShouldBroadcastNow
@@ -31,16 +34,6 @@ class MessageSent implements ShouldBroadcastNow
 
     public function broadcastWith(): array
     {
-        return [
-            'id' => $this->message->getId(),
-            'conversation_id' => $this->message->getConversationId(),
-            'sender_id' => $this->message->getSenderId(),
-            'body' => $this->message->getBody(),
-            'created_at' => $this->message->getCreatedAt(),
-            'sender' => [
-                'id' => $this->message->sender->getId(),
-                'name' => $this->message->sender->getName(),
-            ],
-        ];
+        return (new MessageResource($this->message))->toArray(request());
     }
 }
