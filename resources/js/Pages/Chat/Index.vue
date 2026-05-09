@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { ChatBubbleLeftRightIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
+import { ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 interface LastMessage {
     id: number;
@@ -89,17 +89,33 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
             <template v-else>
                 <!-- Search -->
                 <div class="relative mb-4">
-                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     <input
                         v-model="search"
                         type="text"
-                        placeholder="Meklēt sarunas..."
-                        class="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-white shadow-sm"
+                        placeholder="Meklēt sarunu pēc vārda..."
+                        aria-label="Meklēt sarunu"
+                        class="w-full pl-9 pr-9 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-white shadow-sm"
                     />
+                    <button
+                        v-if="search"
+                        @click="search = ''"
+                        aria-label="Notīrīt meklēšanu"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                        <XMarkIcon class="w-4 h-4" />
+                    </button>
                 </div>
 
+                <!-- No search results -->
                 <div v-if="filtered.length === 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-                    <p class="text-gray-400 text-sm">Nav atrasta neviena saruna.</p>
+                    <p class="text-gray-500 text-sm">Nav atrastu sarunu ar vārdu <span class="font-semibold">„{{ search.trim() }}"</span>.</p>
+                    <button
+                        @click="search = ''"
+                        class="mt-3 text-sm font-medium text-navy hover:underline"
+                    >
+                        Notīrīt meklēšanu
+                    </button>
                 </div>
 
                 <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden divide-y divide-gray-50">
@@ -138,7 +154,7 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                                 class="text-xs truncate mt-0.5"
                                 :class="conv.unread_count > 0 ? 'font-semibold text-gray-700' : 'text-gray-500'"
                             >
-                                {{ conv.last_message.body }}
+                                {{ conv.last_message.body || 'Cenas piedāvājums' }}
                             </p>
                             <p v-else class="text-xs text-gray-400 italic mt-0.5">Nav ziņojumu</p>
                         </div>

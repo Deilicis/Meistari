@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProposalChatCard from '@/Components/Chat/ProposalChatCard.vue';
-import { PaperAirplaneIcon, ChatBubbleLeftRightIcon } from '@heroicons/vue/24/outline';
+import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import type { PriceProposal } from '@/types/proposal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -53,11 +53,18 @@ const props = defineProps<{
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
-const messageList = ref<Message[]>([...props.messages]);
-const newMessage  = ref('');
-const sending     = ref(false);
-const messagesEnd = ref<HTMLElement | null>(null);
-const textarea    = ref<HTMLTextAreaElement | null>(null);
+const messageList   = ref<Message[]>([...props.messages]);
+const newMessage    = ref('');
+const sending       = ref(false);
+const messagesEnd   = ref<HTMLElement | null>(null);
+const textarea      = ref<HTMLTextAreaElement | null>(null);
+const sidebarSearch = ref('');
+
+const filteredConvs = computed(() => {
+    const q = sidebarSearch.value.trim().toLowerCase();
+    if (!q) return props.conversations;
+    return props.conversations.filter(c => c.other_user.name.toLowerCase().includes(q));
+});
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -163,9 +170,31 @@ onUnmounted(() => {
                     </Link>
                 </div>
 
+                <!-- Sidebar search -->
+                <div class="px-3 py-2 border-b border-gray-100 flex-shrink-0">
+                    <div class="relative">
+                        <MagnifyingGlassIcon class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                        <input
+                            v-model="sidebarSearch"
+                            type="text"
+                            placeholder="Meklēt sarunu pēc vārda..."
+                            aria-label="Meklēt sarunu"
+                            class="w-full pl-8 pr-7 py-1.5 text-xs rounded-lg border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-gray-50"
+                        />
+                        <button
+                            v-if="sidebarSearch"
+                            @click="sidebarSearch = ''"
+                            aria-label="Notīrīt meklēšanu"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                            <XMarkIcon class="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                </div>
+
                 <div class="overflow-y-auto flex-grow divide-y divide-gray-50">
                     <Link
-                        v-for="conv in conversations"
+                        v-for="conv in filteredConvs"
                         :key="conv.id"
                         :href="route('chat.show', conv.id)"
                         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
@@ -191,7 +220,11 @@ onUnmounted(() => {
                             </p>
                         </div>
                     </Link>
-                    <div v-if="conversations.length === 0" class="p-4 text-xs text-gray-400 text-center">
+                    <div v-if="filteredConvs.length === 0 && conversations.length > 0" class="p-4 text-xs text-gray-400 text-center">
+                        <p>Nav atrastu sarunu.</p>
+                        <button @click="sidebarSearch = ''" class="mt-1 text-navy hover:underline">Notīrīt</button>
+                    </div>
+                    <div v-else-if="conversations.length === 0" class="p-4 text-xs text-gray-400 text-center">
                         Nav sarunu
                     </div>
                 </div>

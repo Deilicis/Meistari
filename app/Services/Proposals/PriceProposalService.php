@@ -253,6 +253,12 @@ class PriceProposalService
 
     private function assertNegotiable(Application $application): void
     {
+        $job = $application->jobRequest ?? $this->jobRequestRepo->findById($application->getJobRequestId());
+
+        if ($job->getStatus() !== JobStatusEnum::OPEN) {
+            throw new ApplicationNotNegotiableException();
+        }
+
         if (!in_array($application->getStatus(), self::NEGOTIABLE_STATUSES, true)) {
             throw new ApplicationNotNegotiableException();
         }

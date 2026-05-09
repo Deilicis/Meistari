@@ -205,10 +205,11 @@ class JobPageService
         $pending = $this->proposalRepo->findPendingForApplication($ownApp->getId());
         $history = $this->proposalRepo->getHistoryForApplication($ownApp->getId());
 
-        $hasNegotiableStatus = in_array($ownApp->getStatus(), [
-            \App\Enums\Job\ApplicationStatusEnum::PENDING,
-            \App\Enums\Job\ApplicationStatusEnum::SHORTLISTED,
-        ], true);
+        $hasNegotiableStatus = $job->getStatus() === JobStatusEnum::OPEN
+            && in_array($ownApp->getStatus(), [
+                ApplicationStatusEnum::PENDING,
+                ApplicationStatusEnum::SHORTLISTED,
+            ], true);
 
         $canAct = $pending !== null
             && $pending->getProposedByUserId() !== $user->getId();

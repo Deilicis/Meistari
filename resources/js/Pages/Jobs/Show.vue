@@ -13,6 +13,7 @@ import CounterProposalModal from '@/Components/Jobs/Proposals/CounterProposalMod
 import SubmitFreshProposalModal from '@/Components/Jobs/Proposals/SubmitFreshProposalModal.vue';
 import ConfirmAcceptProposalModal from '@/Components/Jobs/Proposals/ConfirmAcceptProposalModal.vue';
 import ConfirmRejectProposalModal from '@/Components/Jobs/Proposals/ConfirmRejectProposalModal.vue';
+import ConfirmWithdrawProposalModal from '@/Components/Jobs/Proposals/ConfirmWithdrawProposalModal.vue';
 import {
     ArrowLeftIcon,
     UserIcon,
@@ -116,10 +117,11 @@ const showDisputeModal = ref(false);
 const showCancelModal  = ref(false);
 
 // Per-application proposal modal state
-const counteringApp     = ref<PageApplication | null>(null);
-const freshProposalApp  = ref<PageApplication | null>(null);
-const acceptingProposal = ref<PriceProposal | null>(null);
-const rejectingProposal = ref<PriceProposal | null>(null);
+const counteringApp      = ref<PageApplication | null>(null);
+const freshProposalApp   = ref<PageApplication | null>(null);
+const acceptingProposal  = ref<PriceProposal | null>(null);
+const rejectingProposal  = ref<PriceProposal | null>(null);
+const withdrawingProposal = ref<PriceProposal | null>(null);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -278,6 +280,20 @@ async function handleRejectProposal(proposal: PriceProposal) {
         router.reload({ only: ['applications', 'allowed_actions', 'proposals'] });
     } catch (e: any) {
         toast.error(e?.response?.data?.message ?? 'Kļūda noraidot piedāvājumu.');
+    } finally {
+        loading.value = null;
+    }
+}
+
+async function handleWithdrawProposal(proposal: PriceProposal) {
+    loading.value = `withdraw-proposal-${proposal.id}`;
+    try {
+        await axios.post(route('proposals.withdraw', proposal.id));
+        toast.success('Piedāvājums atsaukts.');
+        withdrawingProposal.value = null;
+        router.reload({ only: ['applications', 'proposals'] });
+    } catch (e: any) {
+        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
     } finally {
         loading.value = null;
     }
@@ -575,9 +591,9 @@ async function handleChat() {
                                 <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
                             </div>
 
-                            <!-- Per-application buttons (pending / shortlisted, owner only) -->
+                            <!-- Per-application buttons (pending / shortlisted, owner only, open jobs only) -->
                             <div
-                                v-if="(app.status === 'pending' || app.status === 'shortlisted') && viewer_role === 'owner'"
+                                v-if="(app.status === 'pending' || app.status === 'shortlisted') && viewer_role === 'owner' && job.status === 'open'"
                                 class="flex flex-col gap-1.5 shrink-0"
                             >
                                 <button
@@ -589,18 +605,18 @@ async function handleChat() {
                                     <StarIcon class="w-3.5 h-3.5" />
                                     Apsvērt
                                 </button>
-                                <!-- Proposal-based accept (shows price inline) -->
+                                <!-- Proposal-based accept (shows price inline) — only when master proposed -->
                                 <button
-                                    v-if="app.pending_proposal"
+                                    v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="acceptingProposal = app.pending_proposal"
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors"
                                 >
                                     Pieņemt {{ formatMoney(app.pending_proposal.amount) }}
                                 </button>
-                                <!-- Proposal-based counter -->
+                                <!-- Proposal-based counter — only when master proposed -->
                                 <button
-                                    v-if="app.pending_proposal"
+                                    v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="counteringApp = app"
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-navy bg-white border border-navy/20 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
@@ -616,14 +632,23 @@ async function handleChat() {
                                 >
                                     Piedāvāt cenu
                                 </button>
-                                <!-- Reject proposal -->
+                                <!-- Reject proposal — only when master proposed -->
                                 <button
-                                    v-if="app.pending_proposal"
+                                    v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="rejectingProposal = app.pending_proposal"
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
                                 >
                                     Noraidīt
+                                </button>
+                                <!-- Withdraw — only when owner proposed it themselves -->
+                                <button
+                                    v-if="app.pending_proposal && app.pending_proposal.proposed_by.id === currentUserId"
+                                    @click="withdrawingProposal = app.pending_proposal"
+                                    :disabled="!!loading"
+                                    class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                    Atsaukt
                                 </button>
                             </div>
                         </div>
@@ -813,6 +838,12 @@ async function handleChat() {
             :show="rejectingProposal !== null"
             @close="rejectingProposal = null"
             @confirm="rejectingProposal && handleRejectProposal(rejectingProposal)"
+        />
+        <ConfirmWithdrawProposalModal
+            :show="withdrawingProposal !== null"
+            :proposal="withdrawingProposal"
+            @close="withdrawingProposal = null"
+            @confirm="withdrawingProposal && handleWithdrawProposal(withdrawingProposal)"
         />
         <CounterProposalModal
             :show="counteringApp !== null"
