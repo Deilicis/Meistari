@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import { useNotifications } from '@/composables/useNotifications';
 import { useEscapeKey } from '@/composables/useEscapeKey';
 import type { Notification, NotificationType } from '@/types/notification';
@@ -65,11 +68,11 @@ const iconMap: Record<NotificationType, any> = {
 
 function formatTime(iso: string): string {
     const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-    if (diff < 60) return 'tikko';
-    if (diff < 3600) return `pirms ${Math.floor(diff / 60)} min`;
-    if (diff < 86400) return `pirms ${Math.floor(diff / 3600)} h`;
-    if (diff < 172800) return 'vakar';
-    return `pirms ${Math.floor(diff / 86400)} d`;
+    if (diff < 60) return t('notifications.ui.just_now');
+    if (diff < 3600) return t('notifications.ui.minutes_ago', { n: Math.floor(diff / 60) });
+    if (diff < 86400) return t('notifications.ui.hours_ago', { n: Math.floor(diff / 3600) });
+    if (diff < 172800) return t('notifications.ui.yesterday');
+    return t('notifications.ui.days_ago', { n: Math.floor(diff / 86400) });
 }
 
 async function handleClick(n: Notification) {
@@ -121,7 +124,7 @@ onUnmounted(() => {
             :aria-expanded="open"
             aria-haspopup="menu"
             aria-controls="notification-dropdown"
-            :aria-label="unreadCount > 0 ? `Paziņojumi (${unreadCount} nelasīti)` : 'Paziņojumi'"
+            :aria-label="unreadCount > 0 ? t('nav.notifications_unread', { count: unreadCount }) : t('nav.notifications')"
             class="relative inline-flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
         >
             <BellIcon class="w-5 h-5" aria-hidden="true" />
@@ -140,7 +143,7 @@ onUnmounted(() => {
             id="notification-dropdown"
             ref="menuRef"
             role="menu"
-            aria-label="Paziņojumi"
+            :aria-label="t('nav.notifications')"
             @keydown="handleMenuKeydown"
             class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
         >

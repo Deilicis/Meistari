@@ -22,18 +22,16 @@ const submit = () => {
 
 <template>
     <AuthLayout>
-        <Head title="Apstiprināt paroli" />
+        <Head :title="t('auth.confirm_password.title')" />
 
         <div class="mb-8 text-center md:text-left">
-            <h2 class="text-3xl font-bold text-gray-900">Drošības pārbaude</h2>
-            <p class="text-sm text-gray-500 mt-2">
-                Šī ir droša aplikācijas zona. Lūdzu, apstipriniet savu paroli, lai turpinātu darbību.
-            </p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ t('auth.confirm_password.title') }}</h2>
+            <p class="text-sm text-gray-500 mt-2">{{ t('auth.confirm_password.subtitle') }}</p>
         </div>
 
         <form @submit.prevent="submit" class="space-y-6">
             <div>
-                <InputLabel for="password" value="Parole" />
+                <InputLabel for="password" :value="t('auth.confirm_password.password_label')" />
                 <TextInput
                     id="password"
                     type="password"
@@ -51,7 +49,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Apstiprināt
+                    {{ t('auth.confirm_password.submit') }}
                 </PrimaryButton>
             </div>
         </form>
