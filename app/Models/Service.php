@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\CategorySuggestion;
 
 class Service extends Model
 {
@@ -28,6 +29,7 @@ class Service extends Model
     public const PRICE_TYPE = 'price_type';
     public const LOCATION = 'location';
     public const IS_ACTIVE = 'is_active';
+    public const PENDING_CATEGORY_SUGGESTION_ID = 'pending_category_suggestion_id';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';
@@ -40,6 +42,7 @@ class Service extends Model
     protected $fillable = [
         self::USER_ID,
         self::CATEGORY_ID,
+        self::PENDING_CATEGORY_SUGGESTION_ID,
         self::TITLE,
         self::SLUG,
         self::DESCRIPTION,
@@ -69,6 +72,11 @@ class Service extends Model
     public function getCategoryId(): int
     {
         return $this->getAttribute(self::CATEGORY_ID);
+    }
+
+    public function getPendingCategorySuggestionId(): ?int
+    {
+        return $this->getAttribute(self::PENDING_CATEGORY_SUGGESTION_ID);
     }
 
     public function getTitle(): string
@@ -131,6 +139,11 @@ class Service extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, self::CATEGORY_ID, Category::ID);
+    }
+
+    public function pendingCategorySuggestion(): BelongsTo
+    {
+        return $this->belongsTo(CategorySuggestion::class, self::PENDING_CATEGORY_SUGGESTION_ID, CategorySuggestion::ID);
     }
 
     public function applications(): HasMany
