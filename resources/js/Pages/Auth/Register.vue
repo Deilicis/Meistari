@@ -96,7 +96,7 @@ const submit = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        Meklētājs
+                        {{ t('auth.register.role_seeker') }}
                     </button>
                     <button
                         type="button"
@@ -110,24 +110,20 @@ const submit = () => {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        Meistars
+                        {{ t('auth.register.role_master') }}
                     </button>
                 </div>
 
                 <p class="text-xs text-gray-500 leading-snug bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
-                    <template v-if="isSeeker">
-                        Publicē darba sludinājumus, meklē meistarus un saņem piedāvājumus saviem projektiem.
-                    </template>
-                    <template v-else>
-                        Piedāvā savus pakalpojumus, piesakies darbiem un atrod jaunus klientus.
-                    </template>
+                    <template v-if="isSeeker">{{ t('auth.register.seeker_desc') }}</template>
+                    <template v-else>{{ t('auth.register.master_desc') }}</template>
                 </p>
                 <InputError class="mt-1" :message="form.errors.role" />
             </div>
 
             <!-- Profila veida izvēle -->
             <div>
-                <InputLabel value="Reģistrēties kā:" class="mb-2 text-xs text-gray-500 font-medium" />
+                <InputLabel :value="t('auth.register.register_as')" class="mb-2 text-xs text-gray-500 font-medium" />
                 <div class="flex items-center gap-6">
                     <label v-for="type in profileTypes" :key="getOptionValue(type)" class="flex items-center gap-2 cursor-pointer">
                         <input
@@ -147,7 +143,7 @@ const submit = () => {
                 <!-- Privātpersona: vārds un uzvārds -->
                 <div v-if="isIndividual" class="grid grid-cols-2 gap-3">
                     <div>
-                        <InputLabel for="first_name" value="Vārds" />
+                        <InputLabel for="first_name" :value="t('auth.register.first_name')" />
                         <input
                             id="first_name"
                             type="text"
@@ -157,7 +153,7 @@ const submit = () => {
                         />
                     </div>
                     <div>
-                        <InputLabel for="last_name" value="Uzvārds" />
+                        <InputLabel for="last_name" :value="t('auth.register.last_name')" />
                         <input
                             id="last_name"
                             type="text"
@@ -171,7 +167,7 @@ const submit = () => {
 
                 <!-- Uzņēmums: uzņēmuma nosaukums -->
                 <div v-else>
-                    <InputLabel for="company_name" value="Uzņēmuma nosaukums" />
+                    <InputLabel for="company_name" :value="t('auth.register.company_name')" />
                     <input
                         id="company_name"
                         type="text"
@@ -186,15 +182,15 @@ const submit = () => {
                 <FormField
                     id="email"
                     type="email"
-                    label="E-pasts"
+                    :label="t('auth.register.email_label')"
                     v-model="form.email"
                     :error="form.errors.email"
                 />
 
                 <!-- Paroles lauki -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <FormField id="password" type="password" label="Parole" v-model="form.password" :error="form.errors.password" />
-                    <FormField id="password_confirmation" type="password" label="Apstiprināt paroli" v-model="form.password_confirmation" :error="form.errors.password_confirmation" />
+                    <FormField id="password" type="password" :label="t('auth.register.password_label')" v-model="form.password" :error="form.errors.password" />
+                    <FormField id="password_confirmation" type="password" :label="t('auth.register.confirm_password')" v-model="form.password_confirmation" :error="form.errors.password_confirmation" />
                 </div>
             </div>
 
@@ -210,16 +206,16 @@ const submit = () => {
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
-                        Reģistrē...
+                        {{ t('auth.register.submitting') }}
                     </span>
-                    <span v-else>Reģistrēties</span>
+                    <span v-else>{{ t('auth.register.submit') }}</span>
                 </PrimaryButton>
 
                 <!-- Saite uz autorizācijas lapu -->
                 <p class="text-center text-sm text-gray-500">
-                    Jau ir konts?
+                    {{ t('auth.register.has_account') }}
                     <Link :href="route('login')" class="font-semibold text-navy hover:text-navy-hover underline underline-offset-4 transition-colors">
-                        Ienākt
+                        {{ t('auth.register.login_link') }}
                     </Link>
                 </p>
             </div>

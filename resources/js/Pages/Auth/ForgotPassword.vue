@@ -5,6 +5,9 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps<{
     status?: string;
@@ -21,13 +24,11 @@ const submit = () => {
 
 <template>
     <AuthLayout>
-        <Head title="Aizmirsāt paroli?" />
+        <Head :title="t('auth.forgot_password.title')" />
 
         <div class="mb-8 text-center md:text-left">
-            <h2 class="text-3xl font-bold text-gray-900">Aizmirsāt paroli?</h2>
-            <p class="text-sm text-gray-500 mt-2">
-                Nekādu problēmu. Ievadiet savu e-pasta adresi, un mēs nosūtīsim saiti paroles atjaunošanai.
-            </p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ t('auth.forgot_password.title') }}</h2>
+            <p class="text-sm text-gray-500 mt-2">{{ t('auth.forgot_password.subtitle') }}</p>
         </div>
 
         <div v-if="status" class="mb-6 text-sm font-medium text-green-600 bg-green-50 p-4 rounded-lg border border-green-200">
