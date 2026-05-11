@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
+
+const { t } = useI18n();
 import {
     MapPinIcon,
     StarIcon,

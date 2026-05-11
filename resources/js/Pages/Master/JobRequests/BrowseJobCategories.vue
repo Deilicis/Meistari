@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
 import { MagnifyingGlassIcon, Squares2X2Icon, ChevronDownIcon } from '@heroicons/vue/24/outline';
@@ -52,7 +55,7 @@ function iconComponent(icon: string | null) {
 </script>
 
 <template>
-    <Head title="Darba sludinājumi" />
+    <Head :title="t('browse.job_listings_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -61,10 +64,10 @@ function iconComponent(icon: string | null) {
                 <div class="flex items-center gap-3">
                     <Squares2X2Icon class="w-6 h-6 text-gold" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Darba sludinājumi</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('browse.job_listings_title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            Izvēlies kategoriju ·
-                            <span class="text-gold font-semibold">{{ totalJobRequests }}</span> aktīvi sludinājumi
+                            {{ t('browse.categories_subtitle') }} ·
+                            <span class="text-gold font-semibold">{{ t('browse.job_listings_active_count', { n: totalJobRequests }) }}</span>
                         </p>
                     </div>
                 </div>
@@ -81,15 +84,15 @@ function iconComponent(icon: string | null) {
                     <input
                         v-model="search"
                         type="text"
-                        placeholder="Meklēt kategoriju..."
+                        :placeholder="t('browse.categories_search')"
                         class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/40 transition"
                     />
                 </div>
 
                 <EmptyState
                     v-if="filtered.length === 0"
-                    title="Nav atrasta neviena kategorija"
-                    description="Mēģiniet mainīt meklēšanas vārdu."
+                    :title="t('browse.categories_empty_title')"
+                    :description="t('browse.categories_empty_desc')"
                 >
                     <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
@@ -107,8 +110,8 @@ function iconComponent(icon: string | null) {
                             <Squares2X2Icon class="w-7 h-7 text-white" />
                         </div>
                         <div>
-                            <p class="font-semibold text-white text-sm leading-snug">Visi sludinājumi</p>
-                            <p class="text-xs text-white/60 mt-0.5">{{ totalJobRequests }} sludinājumi</p>
+                            <p class="font-semibold text-white text-sm leading-snug">{{ t('browse.all_listings') }}</p>
+                            <p class="text-xs text-white/60 mt-0.5">{{ t('browse.listings_count', { n: totalJobRequests }) }}</p>
                         </div>
                     </Link>
 
@@ -136,7 +139,7 @@ function iconComponent(icon: string | null) {
                             </div>
                             <div>
                                 <p class="font-semibold text-navy text-sm leading-snug">{{ category.name }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ categoryTotal(category) }} sludinājumi</p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ t('browse.listings_count', { n: categoryTotal(category) }) }}</p>
                             </div>
                             <ChevronDownIcon
                                 v-if="category.children?.length"
@@ -154,7 +157,7 @@ function iconComponent(icon: string | null) {
                                 :href="route('master.job-requests.index', { category_id: category.id })"
                                 class="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-navy hover:bg-navy/5 transition-colors border-b border-gray-100"
                             >
-                                Visi — {{ category.name }}
+                                {{ t('browse.all_label_prefix') }} {{ category.name }}
                             </Link>
                             <Link
                                 v-for="child in category.children"

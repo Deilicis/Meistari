@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
 import { MagnifyingGlassIcon, Squares2X2Icon, ChevronDownIcon } from '@heroicons/vue/24/outline';
@@ -52,7 +55,7 @@ function iconComponent(icon: string | null) {
 </script>
 
 <template>
-    <Head title="Kategorijas" />
+    <Head :title="t('browse.categories_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -61,10 +64,10 @@ function iconComponent(icon: string | null) {
                 <div class="flex items-center gap-3">
                     <Squares2X2Icon class="w-6 h-6 text-emerald-400" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Kategorijas</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('browse.categories_title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            Izvēlies kategoriju ·
-                            <span class="text-emerald-400 font-semibold">{{ totalServices }}</span> pakalpojumi
+                            {{ t('browse.categories_subtitle') }} ·
+                            <span class="text-emerald-400 font-semibold">{{ t('browse.categories_services_count', { n: totalServices }) }}</span>
                         </p>
                     </div>
                 </div>
@@ -81,15 +84,15 @@ function iconComponent(icon: string | null) {
                     <input
                         v-model="search"
                         type="text"
-                        placeholder="Meklēt kategoriju..."
+                        :placeholder="t('browse.categories_search')"
                         class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy/40 transition"
                     />
                 </div>
 
                 <EmptyState
                     v-if="filtered.length === 0"
-                    title="Nav atrasta neviena kategorija"
-                    description="Mēģiniet mainīt meklēšanas vārdu."
+                    :title="t('browse.categories_empty_title')"
+                    :description="t('browse.categories_empty_desc')"
                 >
                     <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
@@ -107,8 +110,8 @@ function iconComponent(icon: string | null) {
                             <Squares2X2Icon class="w-7 h-7 text-white" />
                         </div>
                         <div>
-                            <p class="font-semibold text-white text-sm leading-snug">Visi pakalpojumi</p>
-                            <p class="text-xs text-white/60 mt-0.5">{{ totalServices }} pakalpojumi</p>
+                            <p class="font-semibold text-white text-sm leading-snug">{{ t('browse.all_services') }}</p>
+                            <p class="text-xs text-white/60 mt-0.5">{{ t('browse.categories_services_count', { n: totalServices }) }}</p>
                         </div>
                     </Link>
 
@@ -137,7 +140,7 @@ function iconComponent(icon: string | null) {
                             </div>
                             <div>
                                 <p class="font-semibold text-navy text-sm leading-snug">{{ category.name }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ categoryTotal(category) }} pakalpojumi</p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ t('browse.categories_services_count', { n: categoryTotal(category) }) }}</p>
                             </div>
                             <ChevronDownIcon
                                 v-if="category.children?.length"
@@ -155,7 +158,7 @@ function iconComponent(icon: string | null) {
                                 :href="route('seeker.services.index', { category_id: category.id })"
                                 class="flex items-center justify-between px-4 py-2.5 text-sm font-medium text-navy hover:bg-navy/5 transition-colors border-b border-gray-100"
                             >
-                                Visi - {{ category.name }}
+                                {{ t('browse.all_label_prefix_dash') }}{{ category.name }}
                             </Link>
                             <Link
                                 v-for="child in category.children"

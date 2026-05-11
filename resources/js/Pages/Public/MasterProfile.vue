@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { formatDate } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
+
+const { t } = useI18n();
 import {
     MapPinIcon,
     CheckBadgeIcon,
@@ -45,9 +49,6 @@ const reviewerName = (review: MasterPublicReview): string => {
     const parts = [p.first_name, p.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : review.reviewer.name;
 };
-
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 
 const lightboxIndex = ref<number | null>(null);
 const complaintOpen = ref(false);

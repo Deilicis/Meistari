@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BrowseJobRequestsSearchBar from '@/Components/Search/BrowseJobRequestsSearchBar.vue';
 import PublicJobRequestCard from '@/Components/JobRequests/PublicJobRequestCard.vue';
@@ -59,7 +62,7 @@ const onApplied = () => {
 </script>
 
 <template>
-    <Head title="Darba sludinājumi" />
+    <Head :title="t('browse.job_listings_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -68,9 +71,9 @@ const onApplied = () => {
                 <div class="flex items-center gap-3">
                     <MagnifyingGlassIcon class="w-6 h-6 text-gold" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Darba sludinājumi</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('browse.job_listings_title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            <span class="text-gold font-semibold">{{ jobRequests.total }}</span> aktīvi sludinājumi
+                            <span class="text-gold font-semibold">{{ t('browse.job_listings_active_count', { n: jobRequests.total }) }}</span>
                         </p>
                     </div>
                 </div>
@@ -84,8 +87,8 @@ const onApplied = () => {
 
                 <EmptyState
                     v-if="jobRequests.data.length === 0"
-                    :title="hasActiveFilters() ? 'Nav atrasts neviens sludinājums' : 'Pagaidām nav aktīvu sludinājumu'"
-                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meklētāji vēl nav publicējuši darba sludinājumus.'"
+                    :title="hasActiveFilters() ? t('browse.listings_empty_filter_title') : t('browse.listings_empty_title')"
+                    :description="hasActiveFilters() ? t('browse.listings_empty_filter_desc') : t('browse.listings_empty_desc')"
                 >
                     <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
@@ -96,7 +99,7 @@ const onApplied = () => {
                             @click="clearFilters"
                             class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
                         >
-                            Notīrīt filtrus
+                            {{ t('browse.clear_filters') }}
                         </button>
                     </template>
                 </EmptyState>
