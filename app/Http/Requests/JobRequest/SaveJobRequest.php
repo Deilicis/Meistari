@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Requests\JobRequest;
 
 use App\DataTransferObjects\JobRequest\SaveJobRequestData;
+use App\Enums\CategorySuggestionStatusEnum;
 use App\Enums\Job\JobStatusEnum;
 use App\Helpers\ValidationRuleHelper as Rules;
 use App\Models\Category;
+use App\Models\CategorySuggestion;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SaveJobRequest extends FormRequest
 {
@@ -29,8 +32,15 @@ class SaveJobRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'pending_category_suggestion_id' => [
+                Rules::NULLABLE,
+                Rules::INTEGER,
+                Rule::exists(CategorySuggestion::TABLE, CategorySuggestion::ID)
+                    ->where(fn ($q) => $q->where(CategorySuggestion::STATUS, CategorySuggestionStatusEnum::PENDING->value)),
+            ],
             self::CATEGORY_ID => [
-                Rules::REQUIRED,
+                'required_without:pending_category_suggestion_id',
+                Rules::NULLABLE,
                 Rules::INTEGER,
                 Rules::EXISTS . ':' . Category::TABLE . ',' . Category::ID,
             ],
@@ -85,7 +95,10 @@ class SaveJobRequest extends FormRequest
         $dto = new SaveJobRequestData();
         
         $dto->userId = $this->user()->id;
-        $dto->categoryId = (int) $this->validated(self::CATEGORY_ID);
+        $dto->categoryId = $this->validated(self::CATEGORY_ID) !== null ? (int) $this->validated(self::CATEGORY_ID) : 0;
+        $dto->pendingCategorySuggestionId = $this->validated('pending_category_suggestion_id') !== null
+            ? (int) $this->validated('pending_category_suggestion_id')
+            : null;
         $dto->title = $this->validated(self::TITLE);
         $dto->description = $this->validated(self::DESCRIPTION);
         $dto->status = JobStatusEnum::OPEN;

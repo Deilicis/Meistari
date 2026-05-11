@@ -7,13 +7,15 @@ namespace App\Services\Repositories\Service;
 use App\Constants\ErrorMessages;
 use App\DataTransferObjects\Service\SaveServiceRequestData;
 use App\Models\Service;
+use App\Repositories\CategoryRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ServiceLogicRepository
 {
     public function __construct(
-        private readonly ServiceDbRepository $dbRepository
+        private readonly ServiceDbRepository $dbRepository,
+        private readonly CategoryRepository  $categoryRepository,
     ) {
     }
 
@@ -39,6 +41,13 @@ class ServiceLogicRepository
 
     public function createService(SaveServiceRequestData $dto): Service
     {
+        if ($dto->pendingCategorySuggestionId !== null) {
+            $cits = $this->categoryRepository->findBySlug('cits');
+            if ($cits) {
+                $dto->categoryId = $cits->getId();
+            }
+        }
+
         return $this->dbRepository->create($dto->toArray());
     }
 
