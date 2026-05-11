@@ -3,10 +3,14 @@ import { computed, ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
 import type { ApplicationWithJobRequest, ApplicationStatus } from '@/types/models';
+
+const { t } = useI18n();
 import {
     ClipboardDocumentListIcon,
     ArrowTopRightOnSquareIcon,
@@ -22,23 +26,23 @@ const props = defineProps<{
 
 const activeFilter = ref<ApplicationStatus | 'all'>('all');
 
-const statusConfig: Record<ApplicationStatus, { label: string; badgeClass: string; borderClass: string }> = {
-    pending:     { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
-    shortlisted: { label: 'Apsvēršanā',           badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
-    accepted:    { label: 'Pieņemts',             badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
-    rejected:    { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
-    completed:   { label: 'Pabeigts',             badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
-    cancelled:   { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
+const statusClasses: Record<ApplicationStatus, { badgeClass: string; borderClass: string }> = {
+    pending:     { badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
+    shortlisted: { badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
+    accepted:    { badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
+    rejected:    { badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
+    completed:   { badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
+    cancelled:   { badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
-const tabs: { key: ApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',         label: 'Visi' },
-    { key: 'pending',     label: 'Gaida' },
-    { key: 'shortlisted', label: 'Apsvērs' },
-    { key: 'accepted',    label: 'Pieņemti' },
-    { key: 'rejected',    label: 'Noraidīti' },
-    { key: 'cancelled',   label: 'Atcelti' },
-];
+const tabs = computed(() => [
+    { key: 'all' as const,         label: t('applications.tab_all') },
+    { key: 'pending' as const,     label: t('applications.tab_pending') },
+    { key: 'shortlisted' as const, label: t('applications.tab_shortlisted') },
+    { key: 'accepted' as const,    label: t('applications.tab_accepted') },
+    { key: 'rejected' as const,    label: t('applications.tab_rejected') },
+    { key: 'cancelled' as const,   label: t('applications.tab_cancelled') },
+]);
 
 const filteredApplications = computed(() => {
     if (activeFilter.value === 'all') return props.applications;
@@ -49,9 +53,6 @@ const tabCount = (key: ApplicationStatus | 'all') => {
     if (key === 'all') return props.applications.length;
     return props.applications.filter(a => a.status === key).length;
 };
-
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 const seekerName = (app: ApplicationWithJobRequest): string => {
     const profile = app.job_request?.user?.profile;
@@ -95,11 +96,11 @@ const confirmCancel = async () => {
     cancelling.value = true;
     try {
         await axios.delete(route('api.applications.destroy', cancelTarget.value.id));
-        toast.success('Pieteikums atcelts.');
+        toast.success(t('applications.cancel_toast'));
         cancelTarget.value = null;
         router.reload({ only: ['applications'] });
     } catch {
-        toast.error('Neizdevās atcelt pieteikumu.');
+        toast.error(t('applications.cancel_failed'));
     } finally {
         cancelling.value = false;
     }

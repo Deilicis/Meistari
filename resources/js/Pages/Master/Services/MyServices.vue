@@ -95,7 +95,7 @@ const clearFilters = () => {
 </script>
 
 <template>
-    <Head title="Mani Pakalpojumi" />
+    <Head :title="t('services.my_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -105,10 +105,9 @@ const clearFilters = () => {
                     <div class="flex items-center gap-3">
                         <BriefcaseIcon class="w-6 h-6 text-gold" />
                         <div>
-                            <h1 class="text-2xl font-extrabold text-white tracking-tight">Mani pakalpojumi</h1>
+                            <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('services.my_title') }}</h1>
                             <p class="text-white/50 text-sm mt-0.5">
-                                <span class="text-gold font-semibold">{{ props.services.data.length }}</span>
-                                pakalpojum{{ props.services.data.length === 1 ? 's' : 'i' }}
+                                <span class="text-gold font-semibold">{{ t('services.my_count', props.services.data.length) }}</span>
                             </p>
                         </div>
                     </div>
@@ -117,7 +116,7 @@ const clearFilters = () => {
                         class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 transition-colors shrink-0"
                     >
                         <PlusIcon class="w-4 h-4" stroke-width="2.5" />
-                        Jauns pakalpojums
+                        {{ t('services.add_new_btn') }}
                     </button>
                 </div>
             </div>
@@ -125,10 +124,10 @@ const clearFilters = () => {
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                
-                <MyServicesSearchBar 
-                    v-model="filterForm" 
-                    :categories="categories" 
+
+                <MyServicesSearchBar
+                    v-model="filterForm"
+                    :categories="categories"
                 />
 
                 <div v-if="!props.services.data || props.services.data.length === 0"
@@ -139,15 +138,15 @@ const clearFilters = () => {
                                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <h3 class="text-base font-semibold text-gray-900 mb-1">Nav atrasts neviens pakalpojums</h3>
+                    <h3 class="text-base font-semibold text-gray-900 mb-1">{{ t('services.empty_filter_title') }}</h3>
                     <p class="text-sm text-gray-500 mb-6 max-w-xs mx-auto">
-                        {{ Object.values(filterForm).some(x => x !== '') ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Publicējiet savu pirmo pakalpojumu un piesaistiet klientus.' }}
+                        {{ Object.values(filterForm).some(x => x !== '') ? t('services.empty_filter_desc') : t('services.empty_first_desc') }}
                     </p>
                     <PrimaryButton v-if="Object.values(filterForm).some(x => x !== '')" @click="clearFilters">
-                        Notīrīt filtrus
+                        {{ t('services.clear_filters_btn') }}
                     </PrimaryButton>
                     <PrimaryButton v-else @click="openCreateModal">
-                        Izveidot pirmo pakalpojumu
+                        {{ t('services.create_first_btn') }}
                     </PrimaryButton>
                 </div>
 
@@ -161,14 +160,13 @@ const clearFilters = () => {
                         <div class="flex items-center justify-between bg-navy/[0.03] border border-t-0 border-gray-100 rounded-b-xl px-4 py-2">
                             <span class="inline-flex items-center gap-1.5 text-xs text-gray-500">
                                 <InboxArrowDownIcon class="w-3.5 h-3.5 text-gray-400" />
-                                <span class="font-semibold text-navy">{{ service.applications_count ?? 0 }}</span>
-                                pieteikum{{ (service.applications_count ?? 0) === 1 ? 's' : 'i' }}
+                                <span class="font-semibold text-navy">{{ t('services.applications_count', service.applications_count ?? 0) }}</span>
                             </span>
                             <a
                                 :href="route('master.service-applications.for-service', service.id)"
                                 class="text-xs font-semibold text-gold hover:text-yellow-500 transition-colors"
                             >
-                                Skatīt pieteikumus →
+                                {{ t('services.view_applications_link') }}
                             </a>
                         </div>
                     </div>
@@ -177,19 +175,19 @@ const clearFilters = () => {
             </div>
         </div>
 
-        <ServiceModal 
-            :show="isServiceModalOpen" 
-            :service="serviceToEdit" 
-            :categories="categories" 
-            @close="isServiceModalOpen = false" 
-            @saved="refreshServices" 
+        <ServiceModal
+            :show="isServiceModalOpen"
+            :service="serviceToEdit"
+            :categories="categories"
+            @close="isServiceModalOpen = false"
+            @saved="refreshServices"
         />
 
         <ConfirmationModal
             :show="isDeleteModalOpen"
-            title="Dzēst pakalpojumu"
-            message="Vai tiešām vēlaties neatgriezeniski dzēst šo pakalpojumu? Šo darbību nevarēs atsaukt."
-            confirmText="Jā, dzēst"
+            :title="t('services.delete_confirm_title')"
+            :message="t('services.delete_confirm_message')"
+            :confirmText="t('services.delete_confirm_btn')"
             confirmButtonClass="bg-red-600 hover:bg-red-700"
             @close="isDeleteModalOpen = false"
             @confirm="executeDelete"
