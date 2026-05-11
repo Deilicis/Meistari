@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { useActiveRole } from '@/composables/useActiveRole';
+
+const { t } = useI18n();
 import {
     HomeIcon,
     BriefcaseIcon,
@@ -29,7 +32,7 @@ function linkClass(active: boolean) {
             :aria-current="route().current('dashboard') ? 'page' : undefined"
         >
             <HomeIcon class="w-3.5 h-3.5" aria-hidden="true" />
-            Mans Panelis
+            {{ t('nav.dashboard') }}
             <span
                 v-if="route().current('dashboard')"
                 class="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
@@ -45,7 +48,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('master.services.index') ? 'page' : undefined"
             >
                 <BriefcaseIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Mani Pakalpojumi
+                {{ t('nav.my_services') }}
             </Link>
 
             <Link
@@ -54,7 +57,7 @@ function linkClass(active: boolean) {
                 :aria-current="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? 'page' : undefined"
             >
                 <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Darba Sludinājumi
+                {{ t('nav.job_listings') }}
             </Link>
 
             <Link
@@ -63,7 +66,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('master.applications.index') ? 'page' : undefined"
             >
                 <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Mani Pieteikumi
+                {{ t('nav.my_applications') }}
             </Link>
 
             <Link
@@ -72,7 +75,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('master.service-applications.*') ? 'page' : undefined"
             >
                 <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Pieteikumi pakalpojumiem
+                {{ t('nav.service_applications') }}
             </Link>
         </template>
 
@@ -84,7 +87,7 @@ function linkClass(active: boolean) {
                 :aria-current="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? 'page' : undefined"
             >
                 <MagnifyingGlassIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Pakalpojumi
+                {{ t('nav.services') }}
             </Link>
 
             <Link
@@ -93,7 +96,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('seeker.service-applications.index') ? 'page' : undefined"
             >
                 <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Mani Pieteikumi
+                {{ t('nav.my_applications') }}
             </Link>
 
             <Link
@@ -102,7 +105,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('seeker.job-requests.index') ? 'page' : undefined"
             >
                 <ClipboardDocumentListIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Mani Sludinājumi
+                {{ t('nav.my_listings') }}
             </Link>
 
             <Link
@@ -111,7 +114,7 @@ function linkClass(active: boolean) {
                 :aria-current="route().current('seeker.job-applications.index') ? 'page' : undefined"
             >
                 <InboxArrowDownIcon class="w-3.5 h-3.5" aria-hidden="true" />
-                Pieteikumi maniem darbiem
+                {{ t('nav.job_applications') }}
             </Link>
         </template>
 
@@ -122,7 +125,7 @@ function linkClass(active: boolean) {
             :aria-current="route().current('chat.*') ? 'page' : undefined"
         >
             <ChatBubbleLeftRightIcon class="w-3.5 h-3.5" aria-hidden="true" />
-            Ziņojumi
+            {{ t('nav.messages') }}
         </Link>
     </div>
 </template>

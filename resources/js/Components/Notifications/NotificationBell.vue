@@ -149,13 +149,13 @@ onUnmounted(() => {
         >
             <!-- Header -->
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                <span class="text-sm font-bold text-navy">Paziņojumi</span>
+                <span class="text-sm font-bold text-navy">{{ t('notifications.ui.title') }}</span>
                 <button
                     v-if="unreadCount > 0"
                     @click="markAllAsRead"
                     class="text-xs text-navy/60 hover:text-navy transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy rounded"
                 >
-                    Atzīmēt visus kā lasītus
+                    {{ t('notifications.ui.mark_all_read') }}
                 </button>
             </div>
 
@@ -166,7 +166,7 @@ onUnmounted(() => {
                     class="py-8 text-center text-sm text-gray-400"
                     role="status"
                 >
-                    Ielādē...
+                    {{ t('notifications.ui.loading') }}
                 </div>
 
                 <div
@@ -174,7 +174,7 @@ onUnmounted(() => {
                     class="py-10 text-center"
                 >
                     <BellIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" aria-hidden="true" />
-                    <p class="text-sm text-gray-400">Nav jaunu paziņojumu</p>
+                    <p class="text-sm text-gray-400">{{ t('notifications.ui.empty') }}</p>
                 </div>
 
                 <div
@@ -215,7 +215,7 @@ onUnmounted(() => {
                     <!-- Delete -->
                     <button
                         @click="handleDelete($event, n.id)"
-                        aria-label="Dzēst paziņojumu"
+                        :aria-label="t('notifications.ui.delete')"
                         tabindex="0"
                         class="absolute right-3 top-3 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all focus:opacity-100 focus-visible:ring-2 focus-visible:ring-red-400"
                     >
