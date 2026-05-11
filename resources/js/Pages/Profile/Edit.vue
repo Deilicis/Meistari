@@ -15,13 +15,13 @@ defineProps<{
 </script>
 
 <template>
-    <Head title="Profila iestatījumi" />
+    <Head :title="t('profile.title')" />
 
     <AuthenticatedLayout>
         <template #header>
             <div>
-                <h2 class="text-xl font-bold text-navy">Mans Profils</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Pārvaldiet savu kontu un personīgo informāciju</p>
+                <h2 class="text-xl font-bold text-navy">{{ t('profile.heading') }}</h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ t('profile.subtitle') }}</p>
             </div>
         </template>
 
@@ -37,8 +37,8 @@ defineProps<{
 
                 <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
                     <div class="bg-navy px-6 py-4 border-b border-navy-light">
-                        <h3 class="text-base font-semibold text-white">Mainīt paroli</h3>
-                        <p class="text-sm text-white/50 mt-0.5">Pārliecinies, ka parole ir garāka par 8 simboliem.</p>
+                        <h3 class="text-base font-semibold text-white">{{ t('profile.change_password_title') }}</h3>
+                        <p class="text-sm text-white/50 mt-0.5">{{ t('profile.change_password_desc') }}</p>
                     </div>
                     <div class="p-6">
                         <UpdatePasswordForm />
@@ -52,8 +52,8 @@ defineProps<{
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                         <div>
-                            <h3 class="text-base font-semibold text-red-700">Bīstamā zona</h3>
-                            <p class="text-sm text-red-500 mt-0.5">Šīs darbības ir neatgriezeniskas.</p>
+                            <h3 class="text-base font-semibold text-red-700">{{ t('profile.danger_zone_title') }}</h3>
+                            <p class="text-sm text-red-500 mt-0.5">{{ t('profile.danger_zone_desc') }}</p>
                         </div>
                     </div>
                     <div class="p-6">

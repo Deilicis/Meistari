@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency, formatDate } from '@/utils/formatters';
 import type { AuthUser, Service, ApplicationStatus, JobStatus } from '@/types/models';
 import {
     BriefcaseIcon,
@@ -11,6 +13,8 @@ import {
     ClockIcon,
     ArrowRightIcon,
 } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 interface RecentApplication {
     id: number;
@@ -34,22 +38,20 @@ defineProps<{
 }>();
 
 const formatPrice = (service: Service): string => {
-    if (service.price_type === 'negotiable') return 'Vienojoties';
+    if (service.price_type === 'negotiable') return t('services.price_negotiable');
     if (!service.price) return '—';
-    const formatted = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(service.price);
+    const formatted = formatCurrency(service.price);
     return service.price_type === 'hourly' ? `${formatted}/h` : formatted;
 };
 
-const appStatusConfig: Record<ApplicationStatus, { label: string; classes: string }> = {
-    pending:   { label: 'Gaida',     classes: 'bg-amber-100 text-amber-700' },
-    accepted:  { label: 'Pieņemts',  classes: 'bg-emerald-100 text-emerald-700' },
-    rejected:  { label: 'Noraidīts', classes: 'bg-red-100 text-red-700' },
-    completed: { label: 'Pabeigts',  classes: 'bg-blue-100 text-blue-700' },
-    cancelled: { label: 'Atcelts',   classes: 'bg-gray-100 text-gray-500' },
+const appStatusClasses: Record<ApplicationStatus, string> = {
+    pending:     'bg-amber-100 text-amber-700',
+    shortlisted: 'bg-indigo-100 text-indigo-700',
+    accepted:    'bg-emerald-100 text-emerald-700',
+    rejected:    'bg-red-100 text-red-700',
+    completed:   'bg-blue-100 text-blue-700',
+    cancelled:   'bg-gray-100 text-gray-500',
 };
-
-const formatDate = (d: string) =>
-    new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
 </script>
 
 <template>

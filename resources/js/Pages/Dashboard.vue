@@ -25,13 +25,13 @@ const { isMasterActive } = useActiveRole();
 </script>
 
 <template>
-    <Head title="Mans Panelis" />
+    <Head :title="t('dashboard.title')" />
 
     <AuthenticatedLayout>
         <template #header>
             <div>
-                <h2 class="text-xl font-bold text-navy">Mans Panelis</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Laipni lūdzam atpakaļ, {{ user.name }}!</p>
+                <h2 class="text-xl font-bold text-navy">{{ t('dashboard.title') }}</h2>
+                <p class="text-sm text-gray-500 mt-0.5">{{ t('dashboard.welcome_back', { name: user.name }) }}</p>
             </div>
         </template>
 
