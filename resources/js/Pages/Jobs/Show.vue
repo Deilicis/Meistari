@@ -100,6 +100,8 @@ const props = defineProps<{
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
+const { t } = useI18n();
+
 const page = usePage<{ auth: { user: { id: number } } }>();
 const currentUserId = computed(() => page.props.auth.user.id);
 
@@ -155,10 +157,10 @@ const backHref = computed(() => {
 
 const backLabel = computed(() => {
     switch (props.viewer_role) {
-        case 'owner':           return 'Mani darbi';
+        case 'owner':           return t('jobs.back_my_jobs');
         case 'accepted_master':
-        case 'applicant':       return 'Mani pieteikumi';
-        case 'admin':           return 'Darba pieprasījumi';
+        case 'applicant':       return t('jobs.back_my_applications');
+        case 'admin':           return t('jobs.back_admin_jobs');
     }
 });
 
@@ -170,26 +172,21 @@ function applicantName(app: PageApplication): string {
     return parts.length ? parts.join(' ') : app.user.name;
 }
 
-function formatDate(iso: string | null | undefined): string {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
 function formatMoney(amount: string | number | null | undefined, type?: string | null): string {
     if (amount === null || amount === undefined || amount === '') return '—';
     const n = typeof amount === 'string' ? parseFloat(amount) : amount;
     if (isNaN(n)) return '—';
-    const fmt = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return type === 'hourly' ? fmt.format(n) + '/h' : fmt.format(n);
+    const formatted = formatCurrency(n);
+    return type === 'hourly' ? `${formatted}/h` : formatted;
 }
 
-const appStatusBadge: Record<AppStatus, { label: string; cls: string }> = {
-    pending:     { label: 'Gaida',      cls: 'bg-amber-100 text-amber-700' },
-    shortlisted: { label: 'Apsvērs',   cls: 'bg-blue-100 text-blue-700' },
-    accepted:    { label: 'Pieņemts',  cls: 'bg-emerald-100 text-emerald-700' },
-    rejected:    { label: 'Noraidīts', cls: 'bg-gray-100 text-gray-500' },
-    completed:   { label: 'Pabeigts',  cls: 'bg-green-100 text-green-700' },
-    cancelled:   { label: 'Atcelts',   cls: 'bg-red-100 text-red-600' },
+const appStatusBadgeClass: Record<AppStatus, string> = {
+    pending:     'bg-amber-100 text-amber-700',
+    shortlisted: 'bg-blue-100 text-blue-700',
+    accepted:    'bg-emerald-100 text-emerald-700',
+    rejected:    'bg-gray-100 text-gray-500',
+    completed:   'bg-green-100 text-green-700',
+    cancelled:   'bg-red-100 text-red-600',
 };
 
 // ─── Lifecycle actions ────────────────────────────────────────────────────────
@@ -212,10 +209,10 @@ async function postLifecycle(action: string, body: Record<string, unknown> = {})
             window.location.href = data.url;
             return;
         }
-        toast.success('Veiksmīgi!');
+        toast.success(t('jobs.shortlist_success'));
         router.reload({ only: ['job', 'allowed_actions', 'chat'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         if (loading.value === action) loading.value = null;
     }
@@ -232,14 +229,14 @@ function handleCancelSubmit(reason: string | null) {
 }
 
 async function handleDelete() {
-    if (!confirm('Vai tiešām dzēst šo darbu? Šo darbību nevar atsaukt.')) return;
+    if (!confirm(t('jobs.delete_confirm_dialog'))) return;
     loading.value = 'delete_job';
     try {
         await axios.delete(route('api.job-requests.destroy', job.value.id));
-        toast.success('Darbs dzēsts.');
+        toast.success(t('jobs.delete_success_toast'));
         router.visit(route('seeker.job-requests.index'));
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
         loading.value = null;
     }
 }
@@ -250,25 +247,24 @@ async function handleShortlist(app: PageApplication) {
     loading.value = `shortlist-${app.id}`;
     try {
         await axios.patch(route('api.applications.shortlist', app.id));
-        toast.success('Pieteikums iekļauts apsvēršanā!');
+        toast.success(t('jobs.shortlist_success'));
         router.reload({ only: ['applications', 'job', 'allowed_actions'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
 }
 
-// Accept proposal from the per-application card
 async function handleAcceptProposal(proposal: PriceProposal) {
     loading.value = `accept-proposal-${proposal.id}`;
     try {
         await axios.post(route('proposals.accept', proposal.id));
-        toast.success('Piedāvājums pieņemts!');
+        toast.success(t('jobs.accept_proposal_success'));
         acceptingProposal.value = null;
         router.reload({ only: ['job', 'applications', 'allowed_actions', 'chat', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda pieņemot piedāvājumu.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -278,11 +274,11 @@ async function handleRejectProposal(proposal: PriceProposal) {
     loading.value = `reject-proposal-${proposal.id}`;
     try {
         await axios.post(route('proposals.reject', proposal.id));
-        toast.success('Piedāvājums noraidīts.');
+        toast.success(t('jobs.reject_proposal_success'));
         rejectingProposal.value = null;
         router.reload({ only: ['applications', 'allowed_actions', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda noraidot piedāvājumu.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -292,11 +288,11 @@ async function handleWithdrawProposal(proposal: PriceProposal) {
     loading.value = `withdraw-proposal-${proposal.id}`;
     try {
         await axios.post(route('proposals.withdraw', proposal.id));
-        toast.success('Piedāvājums atsaukts.');
+        toast.success(t('jobs.withdraw_proposal_success'));
         withdrawingProposal.value = null;
         router.reload({ only: ['applications', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -306,11 +302,11 @@ async function handleCounterProposal(proposal: PriceProposal, amount: number, no
     loading.value = `counter-proposal-${proposal.id}`;
     try {
         await axios.post(route('proposals.counter', proposal.id), { amount, note });
-        toast.success('Pretpiedāvājums nosūtīts.');
+        toast.success(t('jobs.counter_proposal_success'));
         counteringApp.value = null;
         router.reload({ only: ['applications', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -320,11 +316,11 @@ async function handleFreshProposal(app: PageApplication, amount: number, note: s
     loading.value = `fresh-proposal-${app.id}`;
     try {
         await axios.post(route('proposals.store', app.id), { amount, note });
-        toast.success('Piedāvājums nosūtīts.');
+        toast.success(t('jobs.fresh_proposal_success'));
         freshProposalApp.value = null;
         router.reload({ only: ['applications', 'proposals'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -337,10 +333,10 @@ async function handleWithdraw() {
     loading.value = 'withdraw';
     try {
         await axios.delete(route('api.applications.destroy', ownApp.value.id));
-        toast.success('Pieteikums atsaukts.');
+        toast.success(t('jobs.withdraw_app_success'));
         router.visit(route('master.applications.index'));
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('jobs.delete_failed'));
     } finally {
         loading.value = null;
     }
@@ -359,7 +355,7 @@ async function handleChat() {
         const { data } = await axios.post(route('chat.start'), { receiver_id: props.chat.other_user_id });
         router.visit(route('chat.show', data.conversation_id));
     } catch (e: any) {
-        toast.error('Neizdevās atvērt čatu.');
+        toast.error(t('jobs.chat_failed'));
         loading.value = null;
     }
 }
@@ -383,10 +379,10 @@ async function handleChat() {
                     </Link>
                     <h1 class="text-xl font-bold text-navy leading-tight">{{ job.title }}</h1>
                     <p class="text-xs text-gray-400 mt-0.5">
-                        <span v-if="viewer_role === 'owner'">Tavs darba sludinājums</span>
-                        <span v-else-if="viewer_role === 'accepted_master'">Tu esi pieņemts meistars</span>
-                        <span v-else-if="viewer_role === 'applicant'">Tu pieteicies uz šo darbu</span>
-                        <span v-else-if="viewer_role === 'admin'">Admin skats</span>
+                        <span v-if="viewer_role === 'owner'">{{ t('jobs.role_owner') }}</span>
+                        <span v-else-if="viewer_role === 'accepted_master'">{{ t('jobs.role_accepted_master') }}</span>
+                        <span v-else-if="viewer_role === 'applicant'">{{ t('jobs.role_applicant') }}</span>
+                        <span v-else-if="viewer_role === 'admin'">{{ t('jobs.role_admin') }}</span>
                     </p>
                 </div>
                 <JobStatusBadge :status="job.status" :label="job.status_label" class="shrink-0 mt-1" />
@@ -396,17 +392,15 @@ async function handleChat() {
             <div v-if="job.status === 'disputed'" class="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl">
                 <ShieldExclamationIcon class="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                 <div>
-                    <p class="text-sm font-bold text-red-700">Strīds izskatīšanā</p>
-                    <p class="text-xs text-red-600 mt-0.5">
-                        Mūsu komanda izskata situāciju un sazināsimies ar abām pusēm tuvākajā laikā.
-                    </p>
+                    <p class="text-sm font-bold text-red-700">{{ t('jobs.disputed_title') }}</p>
+                    <p class="text-xs text-red-600 mt-0.5">{{ t('jobs.disputed_desc') }}</p>
                 </div>
             </div>
 
             <!-- Cancelled banner -->
             <div v-else-if="job.status === 'cancelled'" class="flex gap-3 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
                 <XCircleIcon class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
-                <p class="text-sm text-gray-500">Šis darbs ir atcelts.</p>
+                <p class="text-sm text-gray-500">{{ t('jobs.cancelled_msg') }}</p>
             </div>
 
             <!-- Category suggestion banner (owner only) -->
@@ -417,9 +411,7 @@ async function handleChat() {
                 >
                     <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-navy/60" />
                     <p class="text-sm text-navy/80">
-                        Šis sludinājums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
-                        <span class="font-semibold">"{{ job.pending_category_suggestion.name }}"</span>
-                        tiek pārskatīts.
+                        {{ t('jobs.suggestion_pending_msg', { name: job.pending_category_suggestion.name }) }}
                     </p>
                 </div>
                 <div
@@ -429,7 +421,7 @@ async function handleChat() {
                     <XCircleIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
                     <div class="text-sm">
                         <p class="font-semibold text-red-700">
-                            Kategorijas priekšlikums "<span>{{ job.pending_category_suggestion.name }}</span>" tika noraidīts.
+                            {{ t('jobs.suggestion_rejected_title', { name: job.pending_category_suggestion.name }) }}
                         </p>
                         <p v-if="job.pending_category_suggestion.review_note" class="text-red-600 mt-0.5">
                             {{ job.pending_category_suggestion.review_note }}
