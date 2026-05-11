@@ -30,9 +30,10 @@ class ServiceResource extends JsonResource
             'category'                    => new CategoryResource($this->whenLoaded('category')),
             'pending_category_suggestion' => $this->whenLoaded('pendingCategorySuggestion', fn () =>
                 $this->pendingCategorySuggestion ? [
-                    'id'     => $this->pendingCategorySuggestion->getId(),
-                    'name'   => $this->pendingCategorySuggestion->getName(),
-                    'status' => $this->pendingCategorySuggestion->getStatus()->value,
+                    'id'          => $this->pendingCategorySuggestion->getId(),
+                    'name'        => $this->pendingCategorySuggestion->getName(),
+                    'status'      => $this->pendingCategorySuggestion->getStatus()->value,
+                    'review_note' => $this->pendingCategorySuggestion->getReviewNote(),
                 ] : null
             ),
         ];

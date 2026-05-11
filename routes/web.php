@@ -151,6 +151,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::get('/audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');
+
+        Route::prefix('category-suggestions')->name('category-suggestions.')->group(function () {
+            Route::get('/',            [AdminCategorySuggestionController::class, 'index'])->name('index');
+            Route::post('/{id}/approve', [AdminCategorySuggestionController::class, 'approve'])->name('approve');
+            Route::post('/{id}/reject',  [AdminCategorySuggestionController::class, 'reject'])->name('reject');
+            Route::post('/{id}/merge',   [AdminCategorySuggestionController::class, 'merge'])->name('merge');
+        });
     });
 
     // Admin + Moderator (kopīgas routes)

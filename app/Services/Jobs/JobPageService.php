@@ -260,9 +260,10 @@ class JobPageService
                 'auto_release_at' => $job->escrowHold->getAutoReleaseAt()?->toISOString(),
             ] : null,
             'pending_category_suggestion' => $job->pendingCategorySuggestion ? [
-                'id'     => $job->pendingCategorySuggestion->getId(),
-                'name'   => $job->pendingCategorySuggestion->getName(),
-                'status' => $job->pendingCategorySuggestion->getStatus()->value,
+                'id'          => $job->pendingCategorySuggestion->getId(),
+                'name'        => $job->pendingCategorySuggestion->getName(),
+                'status'      => $job->pendingCategorySuggestion->getStatus()->value,
+                'review_note' => $job->pendingCategorySuggestion->getReviewNote(),
             ] : null,
         ];
     }
