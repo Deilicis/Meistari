@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency, formatDate } from '@/utils/formatters';
 import type { AuthUser, JobRequest, JobStatus, ApplicationStatus } from '@/types/models';
 import {
     ClipboardDocumentListIcon,
@@ -11,6 +13,8 @@ import {
     ArrowRightIcon,
     UserIcon,
 } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 interface RecentApplicationReceived {
     id: number;
@@ -36,26 +40,15 @@ defineProps<{
     recentApplicationsReceived: RecentApplicationReceived[];
 }>();
 
-const jobStatusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    open:                  { label: 'Atvērts',              classes: 'bg-emerald-100 text-emerald-700' },
-    accepted:              { label: 'Pieņemts',             classes: 'bg-blue-100 text-blue-700' },
-    in_progress:           { label: 'Darbā',                classes: 'bg-yellow-100 text-yellow-800' },
-    awaiting_confirmation: { label: 'Gaida apstiprinājumu', classes: 'bg-orange-100 text-orange-800' },
-    completed:             { label: 'Pabeigts',             classes: 'bg-navy/10 text-navy' },
-    disputed:              { label: 'Strīdā',               classes: 'bg-red-100 text-red-700' },
-    cancelled:             { label: 'Atcelts',              classes: 'bg-gray-100 text-gray-500' },
+const jobStatusClasses: Record<JobStatus, string> = {
+    open:                  'bg-emerald-100 text-emerald-700',
+    accepted:              'bg-blue-100 text-blue-700',
+    in_progress:           'bg-yellow-100 text-yellow-800',
+    awaiting_confirmation: 'bg-orange-100 text-orange-800',
+    completed:             'bg-navy/10 text-navy',
+    disputed:              'bg-red-100 text-red-700',
+    cancelled:             'bg-gray-100 text-gray-500',
 };
-
-const formatDate = (d: string | null) =>
-    d ? new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' }) : null;
-
-const formatDateTime = (d: string | null) =>
-    d ? new Date(d).toLocaleString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
-
-const formatBudget = (budget: number | null) =>
-    budget
-        ? new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget)
-        : null;
 </script>
 
 <template>
