@@ -16,6 +16,7 @@ import {
     CurrencyEuroIcon,
     ShieldExclamationIcon,
     ArrowPathIcon,
+    TagIcon,
 } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{ userId: number }>();
@@ -52,10 +53,14 @@ const iconMap: Record<NotificationType, any> = {
     job_cancelled:          XCircleIcon,
     job_auto_released:      ArrowPathIcon,
     application_shortlisted: StarIcon,
-    proposal_received:      CurrencyEuroIcon,
-    proposal_accepted:      CurrencyEuroIcon,
-    proposal_rejected:      CurrencyEuroIcon,
-    proposal_withdrawn:     CurrencyEuroIcon,
+    proposal_received:              CurrencyEuroIcon,
+    proposal_accepted:              CurrencyEuroIcon,
+    proposal_rejected:              CurrencyEuroIcon,
+    proposal_withdrawn:             CurrencyEuroIcon,
+    new_category_suggestion:        TagIcon,
+    category_suggestion_approved:   TagIcon,
+    category_suggestion_rejected:   TagIcon,
+    category_suggestion_merged:     TagIcon,
 };
 
 function formatTime(iso: string): string {

@@ -15,7 +15,11 @@ export type NotificationType =
     | 'proposal_received'
     | 'proposal_accepted'
     | 'proposal_rejected'
-    | 'proposal_withdrawn';
+    | 'proposal_withdrawn'
+    | 'new_category_suggestion'
+    | 'category_suggestion_approved'
+    | 'category_suggestion_rejected'
+    | 'category_suggestion_merged';
 
 export interface Notification {
     id: number;
