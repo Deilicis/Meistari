@@ -1,35 +1,22 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import WelcomeNav from '@/Components/Welcome/WelcomeNav.vue';
 import WelcomeFooter from '@/Components/Welcome/WelcomeFooter.vue';
 import { computed, ref } from 'vue';
 import { EnvelopeIcon, WrenchScrewdriverIcon, BuildingOfficeIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 
+const { t } = useI18n();
 const page = usePage();
 const isAuth = computed(() => !!(page.props as any).auth?.user);
 
-const faqs = [
-    {
-        q: 'Kā reģistrēties kā meistars?',
-        a: 'Nospied "Reģistrēties", izvēlies lomu "Meistars", aizpildi profila informāciju un sāc pieņemt pieprasījumus.',
-    },
-    {
-        q: 'Vai platforma ir bezmaksas?',
-        a: 'Reģistrācija un profila izveide ir bezmaksas. Komisijas maksa no veiksmīgiem darījumiem var tikt piemērota nākotnē.',
-    },
-    {
-        q: 'Kā ziņot par problēmu ar meistaru?',
-        a: 'Atver attiecīgā meistara profilu un nospied "Ziņot par problēmu", vai raksti uz info@meistari.lv.',
-    },
-    {
-        q: 'Vai varu dzēst savu kontu?',
-        a: 'Jā — Profila iestatījumos sadaļā "Konta pārvaldība" ir pieejama konta dzēšanas opcija.',
-    },
-    {
-        q: 'Cik ilgi profils paliek aktīvs?',
-        a: 'Profils paliek aktīvs, kamēr konts nav dzēsts vai deaktivizēts.',
-    },
-];
+const faqs = computed(() => [
+    { q: t('static.contacts.faq_1_q'), a: t('static.contacts.faq_1_a') },
+    { q: t('static.contacts.faq_2_q'), a: t('static.contacts.faq_2_a') },
+    { q: t('static.contacts.faq_3_q'), a: t('static.contacts.faq_3_a') },
+    { q: t('static.contacts.faq_4_q'), a: t('static.contacts.faq_4_a') },
+    { q: t('static.contacts.faq_5_q'), a: t('static.contacts.faq_5_a') },
+]);
 
 const openIndex = ref<number | null>(null);
 const toggle = (i: number) => {
@@ -38,7 +25,7 @@ const toggle = (i: number) => {
 </script>
 
 <template>
-    <Head title="Kontakti — Meistari" />
+    <Head :title="t('static.contacts.meta_title')" />
 
     <div class="min-h-screen flex flex-col font-sans bg-white">
         <WelcomeNav :isAuth="isAuth" />
@@ -46,8 +33,8 @@ const toggle = (i: number) => {
         <!-- Hero -->
         <div class="bg-navy text-white py-14">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Sazinieties ar mums</h1>
-                <p class="mt-3 text-white/50 text-sm">Esam šeit, lai palīdzētu</p>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{{ t('static.contacts.hero_title') }}</h1>
+                <p class="mt-3 text-white/50 text-sm">{{ t('static.contacts.hero_subtitle') }}</p>
             </div>
         </div>
 
@@ -58,41 +45,38 @@ const toggle = (i: number) => {
                 <!-- Contact cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-12">
 
-                    <!-- Vispārīgi jautājumi -->
                     <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                         <div class="w-10 h-10 rounded-lg bg-navy/5 flex items-center justify-center mb-4">
                             <EnvelopeIcon class="w-5 h-5 text-navy" />
                         </div>
-                        <h3 class="text-sm font-bold text-navy mb-1">E-pasts</h3>
+                        <h3 class="text-sm font-bold text-navy mb-1">{{ t('static.contacts.email_card_title') }}</h3>
                         <a href="mailto:info@meistari.lv" class="text-slate-700 font-medium text-sm hover:underline">info@meistari.lv</a>
-                        <p class="text-xs text-slate-400 mt-2">Atbildam darba dienās 24h laikā</p>
+                        <p class="text-xs text-slate-400 mt-2">{{ t('static.contacts.email_card_note') }}</p>
                     </div>
 
-                    <!-- Tehniskais atbalsts -->
                     <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                         <div class="w-10 h-10 rounded-lg bg-navy/5 flex items-center justify-center mb-4">
                             <WrenchScrewdriverIcon class="w-5 h-5 text-navy" />
                         </div>
-                        <h3 class="text-sm font-bold text-navy mb-1">Tehniskā palīdzība</h3>
+                        <h3 class="text-sm font-bold text-navy mb-1">{{ t('static.contacts.support_card_title') }}</h3>
                         <a href="mailto:support@meistari.lv" class="text-slate-700 font-medium text-sm hover:underline">support@meistari.lv</a>
-                        <p class="text-xs text-slate-400 mt-2">Kļūdas un tehniski jautājumi</p>
+                        <p class="text-xs text-slate-400 mt-2">{{ t('static.contacts.support_card_note') }}</p>
                     </div>
 
-                    <!-- Uzņēmums -->
                     <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                         <div class="w-10 h-10 rounded-lg bg-navy/5 flex items-center justify-center mb-4">
                             <BuildingOfficeIcon class="w-5 h-5 text-navy" />
                         </div>
-                        <h3 class="text-sm font-bold text-navy mb-1">Juridiskā adrese</h3>
+                        <h3 class="text-sm font-bold text-navy mb-1">{{ t('static.contacts.office_card_title') }}</h3>
                         <p class="text-slate-700 font-medium text-sm">SIA "Meistari"<br>Rīga, Latvija</p>
-                        <p class="text-xs text-slate-400 mt-2">Reģ. nr. 40000000000</p>
+                        <p class="text-xs text-slate-400 mt-2">{{ t('static.contacts.office_card_note') }}</p>
                     </div>
 
                 </div>
 
                 <!-- FAQ -->
                 <div class="bg-navy rounded-2xl p-8">
-                    <h2 class="text-xl font-bold text-white text-center mb-6">Bieži uzdotie jautājumi</h2>
+                    <h2 class="text-xl font-bold text-white text-center mb-6">{{ t('static.contacts.faq_title') }}</h2>
 
                     <div class="space-y-2">
                         <div
