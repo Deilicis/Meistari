@@ -19,22 +19,22 @@ const applications = ref<SeekerJobApplication[]>(props.applications.data ?? []);
 const activeFilter = ref<JobApplicationStatus | 'all'>('all');
 const loading = ref<number | null>(null);
 
-const statusConfig: Record<JobApplicationStatus, { label: string; badgeClass: string; borderClass: string }> = {
-    pending:     { label: 'Gaida atbildi',  badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
-    shortlisted: { label: 'Apsvēršanā',     badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
-    accepted:    { label: 'Pieņemts',       badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
-    rejected:    { label: 'Noraidīts',      badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
-    completed:   { label: 'Pabeigts',       badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
-    cancelled:   { label: 'Atcelts',        badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
+const statusClasses: Record<JobApplicationStatus, { badgeClass: string; borderClass: string }> = {
+    pending:     { badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
+    shortlisted: { badgeClass: 'bg-blue-100 text-blue-700',      borderClass: 'border-l-blue-400' },
+    accepted:    { badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
+    rejected:    { badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
+    completed:   { badgeClass: 'bg-green-100 text-green-700',     borderClass: 'border-l-green-400' },
+    cancelled:   { badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
-const tabs: { key: JobApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',         label: 'Visi' },
-    { key: 'pending',     label: 'Gaida atbildi' },
-    { key: 'shortlisted', label: 'Apsvērs' },
-    { key: 'accepted',    label: 'Pieņemti' },
-    { key: 'rejected',    label: 'Noraidīti' },
-];
+const tabs = computed(() => [
+    { key: 'all' as const,         label: t('applications.tab_all') },
+    { key: 'pending' as const,     label: t('applications.tab_pending_response') },
+    { key: 'shortlisted' as const, label: t('applications.tab_shortlisted') },
+    { key: 'accepted' as const,    label: t('applications.tab_accepted') },
+    { key: 'rejected' as const,    label: t('applications.tab_rejected') },
+]);
 
 const filtered = computed(() => {
     if (activeFilter.value === 'all') return applications.value;
@@ -46,9 +46,6 @@ const tabCount = (key: JobApplicationStatus | 'all') => {
     return applications.value.filter(a => a.status === key).length;
 };
 
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
 async function accept(app: SeekerJobApplication) {
     if (loading.value) return;
     loading.value = app.id;
@@ -56,9 +53,9 @@ async function accept(app: SeekerJobApplication) {
         await axios.patch(route('api.applications.accept', app.id));
         const idx = applications.value.findIndex(a => a.id === app.id);
         if (idx !== -1) applications.value[idx] = { ...applications.value[idx], status: 'accepted' };
-        toast.success('Pieteikums pieņemts!');
+        toast.success(t('applications.accepted_toast'));
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('applications.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -71,9 +68,9 @@ async function reject(app: SeekerJobApplication) {
         await axios.patch(route('api.applications.reject', app.id));
         const idx = applications.value.findIndex(a => a.id === app.id);
         if (idx !== -1) applications.value[idx] = { ...applications.value[idx], status: 'rejected' };
-        toast.success('Pieteikums noraidīts.');
+        toast.success(t('applications.rejected_toast'));
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('applications.error_toast'));
     } finally {
         loading.value = null;
     }
