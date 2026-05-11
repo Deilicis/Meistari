@@ -185,14 +185,14 @@ async function reject(app: SeekerJobApplication) {
                                             class="inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:underline transition-colors"
                                         >
                                             <ArrowTopRightOnSquareIcon class="w-3.5 h-3.5" />
-                                            Skatīt darbu
+                                            {{ t('applications.view_job') }}
                                         </Link>
                                         <Link
                                             v-if="app.applicant"
                                             :href="route('master.public-profile', app.applicant.id)"
                                             class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-navy border border-gray-200 hover:border-navy/30 rounded-lg px-3 py-1.5 transition-colors"
                                         >
-                                            Skatīt profilu
+                                            {{ t('applications.view_profile') }}
                                         </Link>
 
                                         <template v-if="app.status === 'pending'">
@@ -202,7 +202,7 @@ async function reject(app: SeekerJobApplication) {
                                                 class="inline-flex items-center gap-1 text-xs font-semibold text-red-600 border border-red-200 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-colors disabled:opacity-50"
                                             >
                                                 <XCircleIcon class="w-3.5 h-3.5" />
-                                                Noraidīt
+                                                {{ t('applications.reject_btn') }}
                                             </button>
                                             <button
                                                 @click="accept(app)"
@@ -210,7 +210,7 @@ async function reject(app: SeekerJobApplication) {
                                                 class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg px-3 py-1.5 transition-colors disabled:opacity-50"
                                             >
                                                 <CheckCircleIcon class="w-3.5 h-3.5" />
-                                                Pieņemt
+                                                {{ t('applications.accept_btn') }}
                                             </button>
                                         </template>
 
@@ -220,7 +220,7 @@ async function reject(app: SeekerJobApplication) {
                                             class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-navy hover:bg-navy/90 rounded-lg px-3 py-1.5 transition-colors"
                                         >
                                             <ChatBubbleLeftIcon class="w-3.5 h-3.5" />
-                                            Sazināties
+                                            {{ t('applications.contact_btn') }}
                                         </Link>
                                     </div>
                                 </div>

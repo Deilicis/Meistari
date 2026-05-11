@@ -76,7 +76,7 @@ async function reject(app: MasterServiceApplication) {
 </script>
 
 <template>
-    <Head title="Pieteikumi pakalpojumiem" />
+    <Head :title="t('applications.service_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -85,8 +85,8 @@ async function reject(app: MasterServiceApplication) {
                 <div class="flex items-center gap-3">
                     <InboxArrowDownIcon class="w-6 h-6 text-gold" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Pieteikumi pakalpojumiem</h1>
-                        <p class="text-white/50 text-sm mt-0.5">Apskati un pārvaldi pieteikumus, ko esi saņēmis</p>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('applications.service_title') }}</h1>
+                        <p class="text-white/50 text-sm mt-0.5">{{ t('applications.service_subtitle') }}</p>
                     </div>
                 </div>
             </div>
@@ -119,8 +119,8 @@ async function reject(app: MasterServiceApplication) {
                 <!-- Empty state -->
                 <div v-if="filtered.length === 0" class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
                     <InboxArrowDownIcon class="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                    <h3 class="text-base font-semibold text-gray-900 mb-1">Vēl nav saņemti pieteikumi</h3>
-                    <p class="text-sm text-gray-400">Kad kāds pieteicās tavam pakalpojumam, tas parādīsies šeit.</p>
+                    <h3 class="text-base font-semibold text-gray-900 mb-1">{{ t('applications.empty_service_title') }}</h3>
+                    <p class="text-sm text-gray-400">{{ t('applications.empty_service_desc') }}</p>
                 </div>
 
                 <!-- Application cards -->
@@ -129,7 +129,7 @@ async function reject(app: MasterServiceApplication) {
                         v-for="app in filtered"
                         :key="app.id"
                         class="bg-white rounded-xl border border-gray-100 shadow-sm border-l-4 px-5 py-4"
-                        :class="statusConfig[app.status].borderClass"
+                        :class="statusClasses[app.status].borderClass"
                     >
                         <div class="flex items-start gap-4">
                             <!-- Avatar -->
@@ -153,15 +153,15 @@ async function reject(app: MasterServiceApplication) {
                                 <div class="flex items-start justify-between gap-2 flex-wrap">
                                     <div>
                                         <p class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">
-                                            Pakalpojums: {{ app.service.title }}
+                                            {{ t('applications.service_label_prefix') }} {{ app.service.title }}
                                         </p>
                                         <p class="text-sm font-bold text-navy">{{ app.applicant.name }}</p>
                                     </div>
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"
-                                        :class="statusConfig[app.status].badgeClass"
+                                        :class="statusClasses[app.status].badgeClass"
                                     >
-                                        {{ statusConfig[app.status].label }}
+                                        {{ t('statuses.service_application.' + app.status) }}
                                     </span>
                                 </div>
 
@@ -172,7 +172,7 @@ async function reject(app: MasterServiceApplication) {
                                 <div class="flex items-center justify-between flex-wrap gap-3 mt-3">
                                     <div class="flex items-center gap-3">
                                         <span v-if="app.budget_offer" class="text-xs font-semibold text-navy bg-navy/5 px-2 py-0.5 rounded">
-                                            €{{ parseFloat(app.budget_offer).toFixed(2) }}
+                                            {{ formatCurrency(parseFloat(app.budget_offer)) }}
                                         </span>
                                         <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
                                     </div>
@@ -182,7 +182,7 @@ async function reject(app: MasterServiceApplication) {
                                             :href="route('seeker.public-profile', app.applicant.id)"
                                             class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-navy border border-gray-200 hover:border-navy/30 rounded-lg px-3 py-1.5 transition-colors"
                                         >
-                                            Skatīt profilu
+                                            {{ t('applications.view_profile') }}
                                         </Link>
 
                                         <template v-if="app.status === 'pending'">
@@ -192,7 +192,7 @@ async function reject(app: MasterServiceApplication) {
                                                 class="inline-flex items-center gap-1 text-xs font-semibold text-red-600 border border-red-200 hover:bg-red-50 rounded-lg px-3 py-1.5 transition-colors disabled:opacity-50"
                                             >
                                                 <XCircleIcon class="w-3.5 h-3.5" />
-                                                Noraidīt
+                                                {{ t('applications.reject_btn') }}
                                             </button>
                                             <button
                                                 @click="accept(app)"
@@ -200,7 +200,7 @@ async function reject(app: MasterServiceApplication) {
                                                 class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-gold hover:bg-yellow-400 rounded-lg px-3 py-1.5 transition-colors disabled:opacity-50"
                                             >
                                                 <CheckCircleIcon class="w-3.5 h-3.5" />
-                                                Pieņemt
+                                                {{ t('applications.accept_btn') }}
                                             </button>
                                         </template>
 
@@ -210,7 +210,7 @@ async function reject(app: MasterServiceApplication) {
                                             class="inline-flex items-center gap-1 text-xs font-semibold text-white bg-navy hover:bg-navy/90 rounded-lg px-3 py-1.5 transition-colors"
                                         >
                                             <ChatBubbleLeftIcon class="w-3.5 h-3.5" />
-                                            Sazināties
+                                            {{ t('applications.contact_btn') }}
                                         </Link>
                                     </div>
                                 </div>

@@ -432,7 +432,10 @@
     "master_label": "Master",
     "price_label": "Price",
     "not_assigned": "Not assigned",
-    "price_not_set": "Not set"
+    "price_not_set": "Not set",
+    "edit_btn": "Edit",
+    "delete_btn": "Delete",
+    "clear_filters_btn": "Clear filters"
   },
   "services": {
     "my_title": "My Services",
@@ -450,7 +453,10 @@
     "deleted_toast": "Service deleted successfully!",
     "delete_failed": "Failed to delete service.",
     "price_negotiable": "Negotiable",
-    "clear_filters_btn": "Clear filters"
+    "clear_filters_btn": "Clear filters",
+    "price_type_hourly_suffix": "/ hour",
+    "price_type_fixed": "fixed",
+    "price_type_negotiable": "by agreement"
   },
   "applications": {
     "job_title": "Applications to my jobs",
@@ -500,7 +506,9 @@
     "my_empty_all_desc_seeker": "Find services and apply!",
     "my_empty_filter_title": "No applications in this category",
     "my_empty_filter_desc": "Try a different filter.",
-    "leave_review": "Leave a review"
+    "leave_review": "Leave a review",
+    "for_service_title": "Service applications",
+    "for_service_page_title": "Applications — {title}"
   },
   "public_profile": {
     "report": "Report",
@@ -541,7 +549,8 @@
     "price_proposal_fallback": "Price proposal",
     "just_now": "just now",
     "minutes_ago": "{n} min ago",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "conversation_title": "Chat - {name}"
   },
   "static": {
     "terms": {

@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ServiceDetailModal from '@/Components/Services/ServiceDetailModal.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
@@ -15,34 +17,36 @@ import {
     UserIcon,
 } from '@heroicons/vue/24/outline';
 
+const { t } = useI18n();
+
 const props = defineProps<{
     applications: ServiceApplicationWithService[];
 }>();
 
 const activeFilter = ref<ServiceApplicationStatus | 'all'>('all');
 
-const statusConfig: Record<ServiceApplicationStatus, { label: string; badgeClass: string; borderClass: string }> = {
-    pending:   { label: 'Gaida apstiprinājumu', badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
-    accepted:  { label: 'Pieņemts',             badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
-    rejected:  { label: 'Noraidīts',            badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
-    completed: { label: 'Pabeigts',             badgeClass: 'bg-blue-100 text-blue-700',       borderClass: 'border-l-blue-400' },
-    cancelled: { label: 'Atcelts',              badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
+const statusClasses: Record<ServiceApplicationStatus, { badgeClass: string; borderClass: string }> = {
+    pending:   { badgeClass: 'bg-amber-100 text-amber-700',    borderClass: 'border-l-amber-400' },
+    accepted:  { badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-l-emerald-500' },
+    rejected:  { badgeClass: 'bg-red-100 text-red-700',         borderClass: 'border-l-red-400' },
+    completed: { badgeClass: 'bg-blue-100 text-blue-700',       borderClass: 'border-l-blue-400' },
+    cancelled: { badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
-const priceTypeLabel: Record<string, string> = {
-    hourly:     '/ stundā',
-    fixed:      'fiksēta',
-    negotiable: 'pēc vienošanās',
-};
+const priceTypeLabel = computed(() => ({
+    hourly:     t('services.price_type_hourly_suffix'),
+    fixed:      t('services.price_type_fixed'),
+    negotiable: t('services.price_type_negotiable'),
+}));
 
-const tabs: { key: ServiceApplicationStatus | 'all'; label: string }[] = [
-    { key: 'all',       label: 'Visi' },
-    { key: 'pending',   label: 'Gaida' },
-    { key: 'accepted',  label: 'Pieņemti' },
-    { key: 'rejected',  label: 'Noraidīti' },
-    { key: 'completed', label: 'Pabeigti' },
-    { key: 'cancelled', label: 'Atcelti' },
-];
+const tabs = computed(() => [
+    { key: 'all' as const,       label: t('applications.tab_all') },
+    { key: 'pending' as const,   label: t('applications.tab_pending') },
+    { key: 'accepted' as const,  label: t('applications.tab_accepted') },
+    { key: 'rejected' as const,  label: t('applications.tab_rejected') },
+    { key: 'completed' as const, label: t('applications.tab_completed') },
+    { key: 'cancelled' as const, label: t('applications.tab_cancelled') },
+]);
 
 const filteredApplications = computed(() => {
     if (activeFilter.value === 'all') return props.applications;
@@ -53,9 +57,6 @@ const tabCount = (key: ServiceApplicationStatus | 'all') => {
     if (key === 'all') return props.applications.length;
     return props.applications.filter(a => a.status === key).length;
 };
-
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
 // Service detail modal
 const detailService = ref<ServiceWithMaster | null>(null);
@@ -79,11 +80,11 @@ const confirmCancel = async () => {
     cancelling.value = true;
     try {
         await axios.delete(route('api.service-applications.destroy', cancelTarget.value.id));
-        toast.success('Pieteikums atcelts.');
+        toast.success(t('applications.cancel_toast'));
         cancelTarget.value = null;
         router.reload({ only: ['applications'] });
     } catch {
-        toast.error('Neizdevās atcelt pieteikumu.');
+        toast.error(t('applications.cancel_failed'));
     } finally {
         cancelling.value = false;
     }
@@ -91,7 +92,7 @@ const confirmCancel = async () => {
 </script>
 
 <template>
-    <Head title="Mani Pieteikumi" />
+    <Head :title="t('applications.seeker_my_title')" />
 
     <AuthenticatedLayout>
 
@@ -102,11 +103,8 @@ const confirmCancel = async () => {
                 <div class="flex items-center gap-3">
                     <InboxArrowDownIcon class="w-6 h-6 text-emerald-400" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Mani pieteikumi</h1>
-                        <p class="text-white/50 text-sm mt-0.5">
-                            Pieteikumi uz pakalpojumiem ·
-                            <span class="text-emerald-400 font-semibold">{{ applications.length }}</span> kopā
-                        </p>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('applications.seeker_my_title') }}</h1>
+                        <p class="text-white/50 text-sm mt-0.5">{{ t('applications.seeker_my_subtitle', { count: applications.length }) }}</p>
                     </div>
                 </div>
             </div>
@@ -146,7 +144,7 @@ const confirmCancel = async () => {
                     <!-- Top bar: title, category, status, date -->
                     <div
                         class="px-5 pt-5 pb-4 border-l-4"
-                        :class="statusConfig[app.status].borderClass"
+                        :class="statusClasses[app.status].borderClass"
                     >
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0 flex-1">
@@ -175,9 +173,9 @@ const confirmCancel = async () => {
                             <div class="shrink-0 flex flex-col items-end gap-1.5">
                                 <span
                                     class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                                    :class="statusConfig[app.status].badgeClass"
+                                    :class="statusClasses[app.status].badgeClass"
                                 >
-                                    {{ statusConfig[app.status].label }}
+                                    {{ t('statuses.service_application.' + app.status) }}
                                 </span>
                                 <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
                             </div>
@@ -189,13 +187,13 @@ const confirmCancel = async () => {
                         <p v-if="app.message" class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {{ app.message }}
                         </p>
-                        <p v-else class="text-sm text-gray-400 italic">Nav pievienota ziņa.</p>
+                        <p v-else class="text-sm text-gray-400 italic">{{ t('applications.no_message') }}</p>
 
                         <div class="flex items-center gap-5 flex-wrap text-sm">
                             <span class="flex items-center gap-1.5 text-gray-500">
                                 <BanknotesIcon class="w-3.5 h-3.5 text-gray-400" />
                                 <span v-if="app.service.price != null">
-                                    <span class="font-semibold text-gray-800">€{{ app.service.price }}</span>
+                                    <span class="font-semibold text-gray-800">{{ formatCurrency(app.service.price) }}</span>
                                     {{ priceTypeLabel[app.service.price_type] }}
                                 </span>
                                 <span v-else class="italic text-gray-400">{{ priceTypeLabel[app.service.price_type] }}</span>
@@ -205,8 +203,8 @@ const confirmCancel = async () => {
                                 class="flex items-center gap-1.5 text-gray-500"
                             >
                                 <BanknotesIcon class="w-3.5 h-3.5 text-emerald-500" />
-                                Mans piedāvājums:
-                                <span class="font-semibold text-emerald-700">€{{ app.budget_offer }}</span>
+                                {{ t('applications.my_offer_label') }}
+                                <span class="font-semibold text-emerald-700">{{ formatCurrency(app.budget_offer) }}</span>
                             </span>
                         </div>
                     </div>
@@ -218,7 +216,7 @@ const confirmCancel = async () => {
                             class="inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline transition-colors"
                         >
                             <ArrowTopRightOnSquareIcon class="w-4 h-4" />
-                            Skatīt pakalpojumu
+                            {{ t('applications.view_service') }}
                         </button>
 
                         <button
@@ -227,7 +225,7 @@ const confirmCancel = async () => {
                             class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 rounded-lg px-3 py-1.5 transition-colors"
                         >
                             <XCircleIcon class="w-3.5 h-3.5" />
-                            Atcelt pieteikumu
+                            {{ t('applications.cancel_btn') }}
                         </button>
                     </div>
                 </div>
@@ -239,10 +237,10 @@ const confirmCancel = async () => {
                     <InboxArrowDownIcon class="w-6 h-6 text-emerald-300" />
                 </div>
                 <p class="text-base font-semibold text-gray-700 mb-1">
-                    {{ activeFilter === 'all' ? 'Vēl nav neviena pieteikuma' : 'Nav pieteikumu šajā kategorijā' }}
+                    {{ activeFilter === 'all' ? t('applications.my_empty_all_title') : t('applications.my_empty_filter_title') }}
                 </p>
                 <p class="text-sm text-gray-400">
-                    {{ activeFilter === 'all' ? 'Atrodiet pakalpojumus un pieteicieties!' : 'Izmēģiniet citu filtru.' }}
+                    {{ activeFilter === 'all' ? t('applications.my_empty_all_desc_seeker') : t('applications.my_empty_filter_desc') }}
                 </p>
             </div>
 
@@ -259,9 +257,9 @@ const confirmCancel = async () => {
 
     <ConfirmDialog
         :show="cancelTarget !== null"
-        title="Atcelt pieteikumu?"
+        :title="t('applications.cancel_confirm_title')"
         :message="cancelTarget ? `Vai tiešām vēlaties atcelt pieteikumu pakalpojumam &quot;${cancelTarget.service.title}&quot;?` : ''"
-        confirmLabel="Atcelt pieteikumu"
+        :confirmLabel="t('applications.cancel_btn')"
         :processing="cancelling"
         @confirm="confirmCancel"
         @cancel="cancelTarget = null"

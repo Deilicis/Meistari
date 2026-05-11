@@ -3,6 +3,8 @@ import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import EmptyState from '@/Components/Common/EmptyState.vue';
@@ -15,6 +17,8 @@ import { useConfirmDelete } from '@/composables/useConfirmDelete';
 import { PlusIcon, MapPinIcon, CalendarIcon, PencilIcon, TrashIcon, UsersIcon, ClipboardDocumentListIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
 import type { JobRequest, Category, JobStatus, JobApplication } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     jobRequests: JobRequest[];
@@ -40,21 +44,21 @@ const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
     { search: '', category_id: '', status: '', budget_min: '', budget_max: '' }
 );
 
-const statusConfig: Record<JobStatus, { label: string; classes: string }> = {
-    open:                  { label: 'Atvērts',              classes: 'bg-slate-100 text-slate-700 ring-1 ring-slate-200' },
-    accepted:              { label: 'Pieņemts',             classes: 'bg-blue-100 text-blue-800 ring-1 ring-blue-200' },
-    in_progress:           { label: 'Darbā',                classes: 'bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200' },
-    awaiting_confirmation: { label: 'Gaida apstiprinājumu', classes: 'bg-orange-100 text-orange-800 ring-1 ring-orange-200' },
-    completed:             { label: 'Pabeigts',             classes: 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200' },
-    disputed:              { label: 'Strīdā',               classes: 'bg-red-100 text-red-800 ring-1 ring-red-200' },
-    cancelled:             { label: 'Atcelts',              classes: 'bg-gray-100 text-gray-500 ring-1 ring-gray-200' },
+const statusClasses: Record<JobStatus, string> = {
+    open:                  'bg-slate-100 text-slate-700 ring-1 ring-slate-200',
+    accepted:              'bg-blue-100 text-blue-800 ring-1 ring-blue-200',
+    in_progress:           'bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200',
+    awaiting_confirmation: 'bg-orange-100 text-orange-800 ring-1 ring-orange-200',
+    completed:             'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200',
+    disputed:              'bg-red-100 text-red-800 ring-1 ring-red-200',
+    cancelled:             'bg-gray-100 text-gray-500 ring-1 ring-gray-200',
 };
 
 const isJobModalOpen = ref(false);
 const jobToEdit = ref<JobRequest | null>(null);
 
 const refreshJobs = () => {
-    toast.success('Sludinājums veiksmīgi saglabāts!');
+    toast.success(t('jobs.saved_toast'));
     router.reload({ only: ['jobRequests'] });
 };
 
@@ -72,8 +76,8 @@ const {
 } = useConfirmDelete<number>({
     routeName: 'api.job-requests.destroy',
     getRouteId: (id) => id,
-    successMessage: 'Sludinājums veiksmīgi izdzēsts!',
-    errorMessage: 'Neizdevās izdzēst sludinājumu.',
+    successMessage: t('jobs.deleted_toast'),
+    errorMessage: t('jobs.delete_failed'),
 });
 
 // Applications modal
@@ -88,7 +92,7 @@ const openApplications = async (job: JobRequest) => {
         const { data } = await axios.get(route('api.applications.index', { job_request_id: job.id }));
         applicationsData.value = data.data ?? [];
     } catch {
-        toast.error('Neizdevās ielādēt pieteikumus.');
+        toast.error(t('jobs.failed_load_apps'));
         applicationsJob.value = null;
     } finally {
         loadingApplications.value = false;
@@ -130,21 +134,10 @@ const categoryIcon = (job: JobRequest) => {
     return (HeroIcons as Record<string, unknown>)[icon] ?? null;
 };
 
-const formatDate = (dateString: string | null): string => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleString('lv-LV', {
-        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
-    });
-};
-
-const formatBudget = (budget: number | null): string => {
-    if (!budget) return '';
-    return new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget);
-};
 </script>
 
 <template>
-    <Head title="Mani Sludinājumi" />
+    <Head :title="t('jobs.my_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -154,10 +147,9 @@ const formatBudget = (budget: number | null): string => {
                     <div class="flex items-center gap-3">
                         <ClipboardDocumentListIcon class="w-6 h-6 text-emerald-400" />
                         <div>
-                            <h1 class="text-2xl font-extrabold text-white tracking-tight">Mani sludinājumi</h1>
+                            <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('jobs.my_title') }}</h1>
                             <p class="text-white/50 text-sm mt-0.5">
-                                <span class="text-emerald-400 font-semibold">{{ jobRequests.length }}</span>
-                                sludinājum{{ jobRequests.length === 1 ? 's' : 'i' }}
+                                <span class="text-emerald-400 font-semibold">{{ t('jobs.my_count', jobRequests.length) }}</span>
                             </p>
                         </div>
                     </div>
@@ -166,7 +158,7 @@ const formatBudget = (budget: number | null): string => {
                         class="inline-flex items-center gap-2 bg-emerald-400 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-emerald-500 transition-colors shrink-0"
                     >
                         <PlusIcon class="w-4 h-4" stroke-width="2.5" />
-                        Jauns sludinājums
+                        {{ t('jobs.new_listing_btn') }}
                     </Link>
                 </div>
             </div>
@@ -179,8 +171,8 @@ const formatBudget = (budget: number | null): string => {
 
                 <EmptyState
                     v-if="!jobRequests || jobRequests.length === 0"
-                    :title="hasActiveFilters() ? 'Nav atrasts neviens sludinājums' : 'Nav neviena sludinājuma'"
-                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Publicējiet savu pirmo darba sludinājumu un saņemiet piedāvājumus no meistariem.'"
+                    :title="hasActiveFilters() ? t('jobs.empty_filter_title') : t('jobs.empty_title')"
+                    :description="hasActiveFilters() ? t('jobs.empty_filter_desc') : t('jobs.empty_desc')"
                 >
                     <template #icon>
                         <svg class="w-8 h-8 text-navy/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -194,14 +186,14 @@ const formatBudget = (budget: number | null): string => {
                             @click="clearFilters"
                             class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
                         >
-                            Notīrīt filtrus
+                            {{ t('jobs.clear_filters_btn') }}
                         </button>
                         <Link
                             v-else
                             :href="route('jobs.create')"
                             class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
                         >
-                            Izveidot pirmo sludinājumu
+                            {{ t('jobs.create_first_btn') }}
                         </Link>
                     </template>
                 </EmptyState>
@@ -230,9 +222,9 @@ const formatBudget = (budget: number | null): string => {
                                 </span>
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
-                                    :class="statusConfig[job.status]?.classes ?? statusConfig.active.classes"
+                                    :class="statusClasses[job.status] ?? statusClasses.open"
                                 >
-                                    {{ statusConfig[job.status]?.label ?? job.status }}
+                                    {{ t('statuses.job.' + job.status) }}
                                 </span>
                             </div>
                             <Link
@@ -261,7 +253,7 @@ const formatBudget = (budget: number | null): string => {
                         <!-- Right: budget + app count + actions -->
                         <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[110px]">
                             <div class="text-right">
-                                <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatBudget(job.budget) }}</span>
+                                <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatCurrency(job.budget) }}</span>
                                 <button
                                     v-if="job.status !== 'cancelled'"
                                     @click="openApplications(job)"
@@ -271,18 +263,18 @@ const formatBudget = (budget: number | null): string => {
                                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
                                 >
                                     <UsersIcon class="w-3.5 h-3.5" />
-                                    {{ job.applications_count ?? 0 }} pieteikumi
+                                    {{ t('jobs.applications_count_label', { count: job.applications_count ?? 0 }) }}
                                 </button>
                                 <span v-else-if="job.status === 'cancelled'" class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 mt-0.5">
                                     <UsersIcon class="w-3.5 h-3.5" />
-                                    {{ job.applications_count ?? 0 }} pieteikumi
+                                    {{ t('jobs.applications_count_label', { count: job.applications_count ?? 0 }) }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <Link
                                     :href="route('jobs.show', job.id)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
-                                    title="Skatīt darbu"
+                                    :title="t('jobs.view_job')"
                                 >
                                     <ArrowTopRightOnSquareIcon class="w-4 h-4" />
                                 </Link>
@@ -290,7 +282,7 @@ const formatBudget = (budget: number | null): string => {
                                     v-if="job.status === 'open'"
                                     @click="openEditModal(job)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
-                                    title="Rediģēt"
+                                    :title="t('jobs.edit_btn')"
                                 >
                                     <PencilIcon class="w-4 h-4" />
                                 </button>
@@ -298,7 +290,7 @@ const formatBudget = (budget: number | null): string => {
                                     v-if="job.status === 'open'"
                                     @click="confirmDelete(job.id)"
                                     class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                                    title="Dzēst"
+                                    :title="t('jobs.delete_btn')"
                                 >
                                     <TrashIcon class="w-4 h-4" />
                                 </button>
@@ -320,9 +312,9 @@ const formatBudget = (budget: number | null): string => {
 
         <ConfirmDialog
             :show="jobToDelete !== null"
-            title="Dzēst sludinājumu?"
-            message="Vai tiešām vēlaties neatgriezeniski dzēst šo sludinājumu? Visi saistītie pieteikumi un faili tiks dzēsti."
-            confirmLabel="Jā, dzēst"
+            :title="t('jobs.delete_confirm_title')"
+            :message="t('jobs.delete_confirm_message')"
+            :confirmLabel="t('jobs.confirm_delete_btn')"
             :processing="isDeleteProcessing"
             @confirm="executeDelete"
             @cancel="cancelDelete"
