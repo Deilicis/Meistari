@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 interface LastMessage {
     id: number;
@@ -42,24 +45,24 @@ const formatTime = (iso: string): string => {
     const diffMs = now.getTime() - d.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    if (diffMins < 1) return 'Tikko';
-    if (diffMins < 60) return `pirms ${diffMins} min`;
+    if (diffMins < 1) return t('chat.just_now');
+    if (diffMins < 60) return t('chat.minutes_ago', { n: diffMins });
 
     const isToday = d.toDateString() === now.toDateString();
-    if (isToday) return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+    if (isToday) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     const yesterday = new Date(now);
     yesterday.setDate(yesterday.getDate() - 1);
-    if (d.toDateString() === yesterday.toDateString()) return 'Vakar';
+    if (d.toDateString() === yesterday.toDateString()) return t('chat.yesterday');
 
-    return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' });
+    return d.toLocaleDateString([], { day: '2-digit', month: '2-digit' });
 };
 
 const initials = (name: string) => name.slice(0, 2).toUpperCase();
 </script>
 
 <template>
-    <Head title="Ziņojumi" />
+    <Head :title="t('chat.title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -68,10 +71,9 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                 <div class="flex items-center gap-3">
                     <ChatBubbleLeftRightIcon class="w-6 h-6 text-blue-400" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Ziņojumi</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('chat.title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            <span class="text-blue-400 font-semibold">{{ conversations.length }}</span>
-                            sarunā{{ conversations.length === 1 ? '' : 's' }}
+                            <span class="text-blue-400 font-semibold">{{ t('chat.conversations_count', conversations.length) }}</span>
                         </p>
                     </div>
                 </div>
@@ -82,8 +84,8 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
 
             <div v-if="conversations.length === 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-12 text-center">
                 <ChatBubbleLeftRightIcon class="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                <p class="text-gray-400 text-sm">Nav nevienas sarunas.</p>
-                <p class="text-gray-300 text-xs mt-1">Sāc sarunas, apmeklējot meistara profilu.</p>
+                <p class="text-gray-400 text-sm">{{ t('chat.no_conversations') }}</p>
+                <p class="text-gray-300 text-xs mt-1">{{ t('chat.no_conversations_desc') }}</p>
             </div>
 
             <template v-else>
@@ -93,14 +95,14 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                     <input
                         v-model="search"
                         type="text"
-                        placeholder="Meklēt sarunu pēc vārda..."
-                        aria-label="Meklēt sarunu"
+                        :placeholder="t('chat.search_placeholder')"
+                        :aria-label="t('chat.search_aria')"
                         class="w-full pl-9 pr-9 py-2.5 text-sm rounded-xl border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-white shadow-sm"
                     />
                     <button
                         v-if="search"
                         @click="search = ''"
-                        aria-label="Notīrīt meklēšanu"
+                        :aria-label="t('chat.clear_search_aria')"
                         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                         <XMarkIcon class="w-4 h-4" />
@@ -109,12 +111,12 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
 
                 <!-- No search results -->
                 <div v-if="filtered.length === 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-                    <p class="text-gray-500 text-sm">Nav atrastu sarunu ar vārdu <span class="font-semibold">„{{ search.trim() }}"</span>.</p>
+                    <p class="text-gray-500 text-sm" v-html="t('chat.no_search_results', { query: search.trim() })" />
                     <button
                         @click="search = ''"
                         class="mt-3 text-sm font-medium text-navy hover:underline"
                     >
-                        Notīrīt meklēšanu
+                        {{ t('chat.clear_search') }}
                     </button>
                 </div>
 
@@ -154,9 +156,9 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                                 class="text-xs truncate mt-0.5"
                                 :class="conv.unread_count > 0 ? 'font-semibold text-gray-700' : 'text-gray-500'"
                             >
-                                {{ conv.last_message.body || 'Cenas piedāvājums' }}
+                                {{ conv.last_message.body || t('chat.price_proposal_fallback') }}
                             </p>
-                            <p v-else class="text-xs text-gray-400 italic mt-0.5">Nav ziņojumu</p>
+                            <p v-else class="text-xs text-gray-400 italic mt-0.5">{{ t('chat.no_messages') }}</p>
                         </div>
                     </Link>
                 </div>

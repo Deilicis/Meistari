@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { lv } from 'date-fns/locale';
 import '@vuepic/vue-datepicker/dist/main.css';
@@ -13,6 +14,8 @@ import InputError from '@/Components/Form/InputError.vue';
 import { ClipboardDocumentListIcon, PlusIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import type { Category } from '@/types/models';
 import type { PickerSelection } from '@/types/categorysuggestion';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     categories: Category[];
@@ -62,21 +65,21 @@ const isDirty = computed(() =>
     form.images.length > 0
 );
 
-const stepLabels = ['Pamatinformācija', 'Detaļas', 'Fotoattēli'];
+const stepLabels = computed(() => [t('jobs.step_basic'), t('jobs.step_details'), t('jobs.step_photos')]);
 
 const validateStep1 = (): boolean => {
     stepErrors.value = {};
-    if (!form.title.trim()) stepErrors.value.title = 'Lūdzu, ievadiet nosaukumu.';
+    if (!form.title.trim()) stepErrors.value.title = t('jobs.validate_title_msg');
     const finalSel = childSelection.value ?? parentSelection.value;
-    if (!finalSel) stepErrors.value.category_id = 'Lūdzu, izvēlieties kategoriju.';
-    if (!form.description.trim()) stepErrors.value.description = 'Lūdzu, ievadiet aprakstu.';
+    if (!finalSel) stepErrors.value.category_id = t('jobs.validate_category_msg');
+    if (!form.description.trim()) stepErrors.value.description = t('jobs.validate_description_msg');
     return Object.keys(stepErrors.value).length === 0;
 };
 
 const validateStep2 = (): boolean => {
     stepErrors.value = {};
     const filled = form.location.filter(l => l.trim());
-    if (filled.length === 0) stepErrors.value.location = 'Lūdzu, ievadiet vismaz vienu atrašanās vietu.';
+    if (filled.length === 0) stepErrors.value.location = t('jobs.validate_location_msg');
     return Object.keys(stepErrors.value).length === 0;
 };
 
@@ -135,7 +138,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 </script>
 
 <template>
-    <Head title="Jauns sludinājums" />
+    <Head :title="t('jobs.create_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -144,8 +147,8 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                 <div class="flex items-center gap-3">
                     <ClipboardDocumentListIcon class="w-6 h-6 text-emerald-400" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Jauns sludinājums</h1>
-                        <p class="text-white/50 text-sm mt-0.5">Publicē darbu un saņem piedāvājumus no meistariem</p>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('jobs.create_title') }}</h1>
+                        <p class="text-white/50 text-sm mt-0.5">{{ t('jobs.create_subtitle') }}</p>
                     </div>
                 </div>
             </div>

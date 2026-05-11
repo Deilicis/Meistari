@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
+import { useI18n } from 'vue-i18n';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProposalChatCard from '@/Components/Chat/ProposalChatCard.vue';
 import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon, BriefcaseIcon } from '@heroicons/vue/24/outline';
@@ -58,6 +59,8 @@ const props = defineProps<{
     related_job: RelatedJob | null;
 }>();
 
+const { t } = useI18n();
+
 // ─── State ────────────────────────────────────────────────────────────────────
 
 const messageList   = ref<Message[]>([...props.messages]);
@@ -86,10 +89,10 @@ const formatTime = (iso: string) => {
     const now = new Date();
     const isToday = d.toDateString() === now.toDateString();
     if (isToday) {
-        return d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-    return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit' }) + ' ' +
-        d.toLocaleTimeString('lv-LV', { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' +
+        d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 const initials = (name: string) => name.slice(0, 2).toUpperCase();
@@ -162,7 +165,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <Head :title="`Saruna - ${conversation.other_user.name}`" />
+    <Head :title="t('chat.conversation_title', { name: conversation.other_user.name })" />
 
     <AuthenticatedLayout>
         <div class="flex h-[calc(100vh-64px)]">
@@ -173,7 +176,7 @@ onUnmounted(() => {
                     <div class="h-0.5 bg-blue-400 -mx-4 -mt-3 mb-3" />
                     <Link :href="route('chat.index')" class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
                         <ChatBubbleLeftRightIcon class="w-4 h-4 text-blue-400" />
-                        <span class="text-sm font-semibold">Ziņojumi</span>
+                        <span class="text-sm font-semibold">{{ t('chat.title') }}</span>
                     </Link>
                 </div>
 
@@ -184,14 +187,14 @@ onUnmounted(() => {
                         <input
                             v-model="sidebarSearch"
                             type="text"
-                            placeholder="Meklēt sarunu pēc vārda..."
-                            aria-label="Meklēt sarunu"
+                            :placeholder="t('chat.search_placeholder')"
+                            :aria-label="t('chat.search_aria')"
                             class="w-full pl-8 pr-7 py-1.5 text-xs rounded-lg border border-gray-200 focus:border-navy focus:ring-1 focus:ring-navy outline-none bg-gray-50"
                         />
                         <button
                             v-if="sidebarSearch"
                             @click="sidebarSearch = ''"
-                            aria-label="Notīrīt meklēšanu"
+                            :aria-label="t('chat.clear_search_aria')"
                             class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                         >
                             <XMarkIcon class="w-3.5 h-3.5" />
@@ -223,16 +226,16 @@ onUnmounted(() => {
                             </p>
                             <p v-if="conv.last_message" class="text-xs text-gray-400 truncate"
                                :class="conv.unread_count && conv.unread_count > 0 ? 'font-semibold text-gray-600' : ''">
-                                {{ conv.last_message.body || 'Cenas piedāvājums' }}
+                                {{ conv.last_message.body || t('chat.price_proposal_fallback') }}
                             </p>
                         </div>
                     </Link>
                     <div v-if="filteredConvs.length === 0 && conversations.length > 0" class="p-4 text-xs text-gray-400 text-center">
-                        <p>Nav atrastu sarunu.</p>
-                        <button @click="sidebarSearch = ''" class="mt-1 text-navy hover:underline">Notīrīt</button>
+                        <p>{{ t('chat.no_search_sidebar') }}</p>
+                        <button @click="sidebarSearch = ''" class="mt-1 text-navy hover:underline">{{ t('chat.clear_sidebar') }}</button>
                     </div>
                     <div v-else-if="conversations.length === 0" class="p-4 text-xs text-gray-400 text-center">
-                        Nav sarunu
+                        {{ t('chat.no_conversations_sidebar') }}
                     </div>
                 </div>
             </aside>
@@ -250,7 +253,7 @@ onUnmounted(() => {
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-gray-900">{{ conversation.other_user.name }}</p>
-                        <p class="text-xs text-gray-400">Aktīvs</p>
+                        <p class="text-xs text-gray-400">{{ t('chat.active_status') }}</p>
                     </div>
                 </div>
 
@@ -258,20 +261,20 @@ onUnmounted(() => {
                 <div v-if="related_job" class="flex items-center gap-2 px-5 py-2 bg-navy/5 border-b border-navy/10 flex-shrink-0">
                     <BriefcaseIcon class="w-3.5 h-3.5 text-navy/50 flex-shrink-0" />
                     <span class="text-xs text-navy/70 truncate min-w-0">
-                        Saruna par darbu: <span class="font-semibold">„{{ related_job.title }}"</span>
+                        {{ t('chat.related_job_banner') }} <span class="font-semibold">„{{ related_job.title }}"</span>
                     </span>
                     <a
                         :href="`/jobs/${related_job.id}`"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="ml-auto text-xs font-semibold text-navy hover:underline flex-shrink-0"
-                    >Skatīt →</a>
+                    >{{ t('chat.view_job') }}</a>
                 </div>
 
                 <!-- Messages -->
                 <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/40">
                     <div v-if="messageList.length === 0" class="flex items-center justify-center h-full">
-                        <p class="text-sm text-gray-400">Sāc sarunu!</p>
+                        <p class="text-sm text-gray-400">{{ t('chat.start_conversation') }}</p>
                     </div>
 
                     <template v-for="msg in messageList" :key="msg.id">
@@ -324,7 +327,7 @@ onUnmounted(() => {
                         v-model="newMessage"
                         @keydown="handleKeydown"
                         rows="1"
-                        placeholder="Rakstīt ziņojumu... (Enter - sūtīt, Shift+Enter - jauna rinda)"
+                        :placeholder="t('chat.message_placeholder')"
                         class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy resize-none transition max-h-32"
                         style="field-sizing: content;"
                     />
