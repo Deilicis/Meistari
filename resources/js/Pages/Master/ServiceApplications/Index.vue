@@ -3,8 +3,12 @@ import { computed, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import type { MasterServiceApplication, ServiceApplicationStatus } from '@/types/serviceApplication';
+
+const { t } = useI18n();
 import { InboxArrowDownIcon, CheckCircleIcon, XCircleIcon, ChatBubbleLeftIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps<{

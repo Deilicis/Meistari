@@ -96,10 +96,10 @@ const startChat = async () => {
                                     v-if="authUserId !== master.id"
                                     @click="complaintOpen = true"
                                     class="ml-auto inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
-                                    title="Ziņot par pārkāpumu"
+                                    :title="t('public_profile.report_violation')"
                                 >
                                     <FlagIcon class="w-3.5 h-3.5" />
-                                    Ziņot
+                                    {{ t('public_profile.report') }}
                                 </button>
                             </div>
 
@@ -109,7 +109,7 @@ const startChat = async () => {
                                     {{ profile.city }}
                                 </span>
                                 <span v-if="profile?.type" class="text-gray-400">
-                                    {{ profile.type === 'company' ? 'Uzņēmums' : 'Privātpersona' }}
+                                    {{ profile.type === 'company' ? t('public_profile.company_type') : t('public_profile.individual_type') }}
                                 </span>
                             </div>
 
@@ -124,7 +124,7 @@ const startChat = async () => {
                                     />
                                 </div>
                                 <span class="text-sm font-bold text-navy">{{ avg_rating }}</span>
-                                <span class="text-sm text-gray-400">({{ review_count }} atsauksm{{ review_count === 1 ? 'e' : 'es' }})</span>
+                                <span class="text-sm text-gray-400">({{ t('public_profile.reviews_count', review_count) }})</span>
                             </div>
 
                             <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed mt-3">{{ profile.bio }}</p>
@@ -136,7 +136,7 @@ const startChat = async () => {
                                     class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-navy rounded-xl hover:bg-navy/90 transition-colors disabled:opacity-50"
                                 >
                                     <ChatBubbleLeftEllipsisIcon class="w-4 h-4" />
-                                    {{ startingChat ? 'Atver...' : 'Sūtīt ziņu' }}
+                                    {{ startingChat ? t('public_profile.opening') : t('public_profile.send_message_btn') }}
                                 </button>
                             </div>
                         </div>
@@ -147,14 +147,14 @@ const startChat = async () => {
                 <div v-if="profile?.experiences?.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <BriefcaseIcon class="w-4 h-4" />
-                        Pieredze
+                        {{ t('public_profile.experience') }}
                     </h2>
                     <ul class="space-y-4">
                         <li v-for="(exp, i) in profile.experiences" :key="i" class="border-l-2 border-navy/20 pl-4">
                             <div class="flex items-center gap-2 flex-wrap mb-0.5">
                                 <p class="text-sm font-semibold text-gray-800">{{ (exp as any).title }}</p>
                                 <span v-if="(exp as any).years" class="text-xs bg-navy/10 text-navy px-2 py-0.5 rounded-full font-medium">
-                                    {{ (exp as any).years }} {{ Number((exp as any).years) === 1 ? 'gads' : 'gadi' }} pieredze
+                                    {{ (exp as any).years }} {{ Number((exp as any).years) === 1 ? t('public_profile.years_singular') : t('public_profile.years_plural') }} {{ t('public_profile.experience').toLowerCase() }}
                                 </span>
                             </div>
                             <p v-if="(exp as any).description" class="text-xs text-gray-500 leading-relaxed">{{ (exp as any).description }}</p>
@@ -166,7 +166,7 @@ const startChat = async () => {
                 <div v-if="profile?.portfolio_images?.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <PhotoIcon class="w-4 h-4" />
-                        Portfolio
+                        {{ t('public_profile.portfolio') }}
                     </h2>
                     <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
                         <div
@@ -185,7 +185,7 @@ const startChat = async () => {
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                             <StarIcon class="w-4 h-4" />
-                            Atsauksmes
+                            {{ t('public_profile.reviews') }}
                         </h2>
                         <span v-if="review_count > 0" class="text-sm font-semibold bg-navy/10 text-navy px-2.5 py-0.5 rounded-full">
                             {{ review_count }}
@@ -193,7 +193,7 @@ const startChat = async () => {
                     </div>
 
                     <div v-if="reviews.length === 0" class="py-8 text-center text-sm text-gray-400">
-                        Vēl nav nevienas atsauksmes.
+                        {{ t('public_profile.no_reviews') }}
                     </div>
 
                     <div v-else class="space-y-4">

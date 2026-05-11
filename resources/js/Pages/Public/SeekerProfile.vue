@@ -53,19 +53,8 @@ const reviewerName = (review: MasterPublicReview): string => {
     return parts.length ? parts.join(' ') : review.reviewer.name;
 };
 
-const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
-
-const formatDateTime = (iso: string) =>
-    new Date(iso).toLocaleString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
 const complaintOpen = ref(false);
 const authUserId = usePage().props.auth?.user?.id as number | undefined;
-
-const formatBudget = (budget: number | null): string => {
-    if (!budget) return 'Vienojams';
-    return new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(budget);
-};
 </script>
 
 <template>
@@ -95,10 +84,10 @@ const formatBudget = (budget: number | null): string => {
                                     v-if="authUserId !== seeker.id"
                                     @click="complaintOpen = true"
                                     class="ml-auto inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
-                                    title="Ziņot par pārkāpumu"
+                                    :title="t('public_profile.report_violation')"
                                 >
                                     <FlagIcon class="w-3.5 h-3.5" />
-                                    Ziņot
+                                    {{ t('public_profile.report') }}
                                 </button>
                             </div>
 
@@ -108,7 +97,7 @@ const formatBudget = (budget: number | null): string => {
                                     {{ profile.city }}
                                 </span>
                                 <span v-if="profile?.type" class="text-gray-400">
-                                    {{ profile.type === 'company' ? 'Uzņēmums' : 'Privātpersona' }}
+                                    {{ profile.type === 'company' ? t('public_profile.company_type') : t('public_profile.individual_type') }}
                                 </span>
                             </div>
 
@@ -122,7 +111,7 @@ const formatBudget = (budget: number | null): string => {
                                     />
                                 </div>
                                 <span class="text-sm font-bold text-navy">{{ avg_rating }}</span>
-                                <span class="text-sm text-gray-400">({{ review_count }} atsauksm{{ review_count === 1 ? 'e' : 'es' }})</span>
+                                <span class="text-sm text-gray-400">({{ t('public_profile.reviews_count', review_count) }})</span>
                             </div>
 
                             <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed">{{ profile.bio }}</p>
@@ -134,7 +123,7 @@ const formatBudget = (budget: number | null): string => {
                 <div v-if="job_requests.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <BriefcaseIcon class="w-4 h-4" />
-                        Aktīvie sludinājumi
+                        {{ t('public_profile.active_listings') }}
                     </h2>
                     <ul class="space-y-2">
                         <li
@@ -147,8 +136,8 @@ const formatBudget = (budget: number | null): string => {
                                 <p v-if="jr.category" class="text-xs text-gray-400">{{ jr.category.name }}</p>
                             </div>
                             <div class="text-right shrink-0">
-                                <p class="text-sm font-bold text-navy">{{ formatBudget(jr.budget) }}</p>
-                                <p v-if="jr.deadline" class="text-xs text-gray-400">{{ formatDateTime(jr.deadline) }}</p>
+                                <p class="text-sm font-bold text-navy">{{ jr.budget ? formatCurrency(jr.budget) : t('public_profile.negotiable_budget') }}</p>
+                                <p v-if="jr.deadline" class="text-xs text-gray-400">{{ formatDate(jr.deadline) }}</p>
                             </div>
                         </li>
                     </ul>
@@ -159,7 +148,7 @@ const formatBudget = (budget: number | null): string => {
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">
                             <StarIcon class="w-4 h-4" />
-                            Atsauksmes
+                            {{ t('public_profile.reviews') }}
                         </h2>
                         <span v-if="review_count > 0" class="text-sm font-semibold bg-navy/10 text-navy px-2.5 py-0.5 rounded-full">
                             {{ review_count }}
@@ -167,7 +156,7 @@ const formatBudget = (budget: number | null): string => {
                     </div>
 
                     <div v-if="reviews.length === 0" class="py-8 text-center text-sm text-gray-400">
-                        Vēl nav nevienas atsauksmes.
+                        {{ t('public_profile.no_reviews') }}
                     </div>
 
                     <div v-else class="space-y-4">
