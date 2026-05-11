@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { CheckBadgeIcon, MapPinIcon } from '@heroicons/vue/24/outline';
 import { StarIcon } from '@heroicons/vue/24/solid';
 import type { FeaturedMaster } from '@/types/welcome';
+
+const { t } = useI18n();
 
 defineProps<{
     masters: FeaturedMaster[];
@@ -29,8 +32,8 @@ const formatRating = (r: number | null): string =>
     <section v-if="masters.length > 0" class="py-16 bg-white border-t border-gray-100">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10">
-                <h2 class="text-2xl font-bold text-navy">Top novērtētie meistari</h2>
-                <p class="text-sm text-gray-500 mt-1">Iepazīsti meistarus ar augstāko klientu vērtējumu</p>
+                <h2 class="text-2xl font-bold text-navy">{{ t('welcome.featured_masters.title') }}</h2>
+                <p class="text-sm text-gray-500 mt-1">{{ t('welcome.featured_masters.subtitle') }}</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -93,14 +96,14 @@ const formatRating = (r: number | null): string =>
                             :href="route('master.public-profile', master.id)"
                             class="inline-flex items-center justify-center w-full py-2 text-xs font-bold text-navy bg-gold/10 hover:bg-gold/20 border border-gold/20 rounded-lg transition-colors"
                         >
-                            Skatīt profilu
+                            {{ t('welcome.featured_masters.view_profile') }}
                         </Link>
                         <Link
                             v-else-if="canRegister"
                             :href="route('register')"
                             class="inline-flex items-center justify-center w-full py-2 text-xs font-bold text-navy bg-gold/10 hover:bg-gold/20 border border-gold/20 rounded-lg transition-colors"
                         >
-                            Skatīt profilu
+                            {{ t('welcome.featured_masters.view_profile') }}
                         </Link>
                     </div>
                 </div>

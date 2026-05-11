@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import type { WelcomeStats } from '@/types/welcome';
 
+const { t } = useI18n();
 defineProps<{ stats: WelcomeStats }>();
 </script>
 
@@ -10,15 +12,15 @@ defineProps<{ stats: WelcomeStats }>();
             <div class="grid grid-cols-3">
                 <div class="text-center px-4">
                     <div class="text-3xl sm:text-4xl font-extrabold text-gold">{{ stats.masters }}</div>
-                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">Aktīvi meistari</div>
+                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">{{ t('welcome.stats.active_masters') }}</div>
                 </div>
                 <div class="text-center px-4 border-x border-white/10">
                     <div class="text-3xl sm:text-4xl font-extrabold text-gold">{{ stats.completed_jobs }}</div>
-                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">Paveiktie darbi</div>
+                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">{{ t('welcome.stats.completed_jobs') }}</div>
                 </div>
                 <div class="text-center px-4">
                     <div class="text-3xl sm:text-4xl font-extrabold text-gold">{{ stats.categories }}</div>
-                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">Kategorijas</div>
+                    <div class="text-xs sm:text-sm text-white/50 mt-1.5 font-medium">{{ t('welcome.stats.categories') }}</div>
                 </div>
             </div>
         </div>

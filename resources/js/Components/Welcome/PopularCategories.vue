@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { WrenchScrewdriverIcon } from '@heroicons/vue/24/outline';
 import type { PopularCategory } from '@/types/welcome';
+
+const { t } = useI18n();
 
 defineProps<{
     categories: PopularCategory[];
@@ -14,8 +17,8 @@ defineProps<{
     <section class="py-16 bg-slate-50 border-t border-slate-200">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10">
-                <h2 class="text-2xl font-bold text-navy">Populārākās kategorijas</h2>
-                <p class="text-sm text-gray-500 mt-1">Atrodi meistaru tieši savai vajadzībai</p>
+                <h2 class="text-2xl font-bold text-navy">{{ t('welcome.categories.title') }}</h2>
+                <p class="text-sm text-gray-500 mt-1">{{ t('welcome.categories.subtitle') }}</p>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -34,14 +37,14 @@ defineProps<{
                     </div>
                     <div class="min-w-0">
                         <p class="text-sm font-semibold text-gray-900 truncate">{{ cat.name }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ cat.services_count }} pakalpojum{{ cat.services_count === 1 ? 's' : 'i' }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ cat.services_count }} {{ t('welcome.categories.services_label', cat.services_count) }}</p>
                     </div>
                 </component>
             </div>
 
             <div v-if="!isAuth && canRegister" class="text-center mt-8">
                 <Link :href="route('register')" class="text-sm font-semibold text-navy hover:underline">
-                    Reģistrējies, lai pārlūkotu visas kategorijas →
+                    {{ t('welcome.categories.register_to_browse') }}
                 </Link>
             </div>
         </div>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps<{
     canRegister?: boolean;
@@ -15,16 +18,16 @@ defineProps<{
 
         <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="inline-block text-gold text-xs font-bold tracking-widest uppercase mb-6 px-4 py-1.5 rounded-full border border-gold/30 bg-gold/5">
-                Latvijas meistaru platforma
+                {{ t('welcome.hero.tagline') }}
             </span>
 
             <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-                Atrodi uzticamu meistaru<br class="hidden sm:block" />
-                <span class="text-gold">tavam nākamajam projektam</span>
+                {{ t('welcome.hero.title') }}<br class="hidden sm:block" />
+                <span class="text-gold">{{ t('welcome.hero.title_accent') }}</span>
             </h1>
 
             <p class="text-lg text-white/60 max-w-2xl mx-auto mb-10">
-                Sertificēti un pārbaudīti meistari visā Latvijā. Publicē sludinājumu un saņem piedāvājumus, vai reģistrējies kā meistars un atrod darbu.
+                {{ t('welcome.hero.subtitle') }}
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -33,7 +36,7 @@ defineProps<{
                     :href="route('register')"
                     class="inline-flex items-center justify-center gap-2 bg-gold hover:bg-yellow-400 text-navy font-bold px-8 py-3.5 rounded-xl transition-colors text-sm"
                 >
-                    Atrast meistaru
+                    {{ t('welcome.hero.cta_find') }}
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
@@ -43,7 +46,7 @@ defineProps<{
                     :href="route('register')"
                     class="inline-flex items-center justify-center gap-2 border border-white/30 hover:border-white/60 hover:bg-white/10 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors text-sm"
                 >
-                    Publicēt darbu
+                    {{ t('welcome.hero.cta_post') }}
                 </Link>
             </div>
         </div>
