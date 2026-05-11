@@ -30,7 +30,9 @@
     "dependencies": {
         "@heroicons/vue": "^2.2.0",
         "@vuepic/vue-datepicker": "^12.1.0",
+        "dayjs": "^1.11.20",
         "lodash": "^4.17.23",
+        "vue-i18n": "^11.4.2",
         "vue-sonner": "^2.0.9"
     }
 }
