@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import Modal from '@/Components/Common/Modal.vue';
@@ -8,9 +8,10 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import Checkbox from '@/Components/Form/Checkbox.vue';
 import TagInput from '@/Components/Tag/TagInput.vue';
-import CategorySelect from '@/Components/Form/CategorySelect.vue';
-import { XMarkIcon, WrenchScrewdriverIcon } from '@heroicons/vue/24/outline';
+import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
+import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
+import type { PickerSelection } from '@/types/categorysuggestion';
 
 const props = defineProps<{
     show: boolean;
@@ -25,7 +26,6 @@ const validationErrors = ref<Record<string, string[]>>({});
 
 const form = ref({
     id: null as number | null,
-    category_id: '' as number | string,
     title: '',
     description: '',
     price: '' as number | string,
@@ -34,32 +34,60 @@ const form = ref({
     is_active: true,
 });
 
+const parentSelection = ref<PickerSelection | null>(null);
+const childSelection  = ref<PickerSelection | null>(null);
+
+const selectedParentCategory = computed(() =>
+    parentSelection.value?.type === 'category'
+        ? props.categories.find(c => c.id === parentSelection.value!.id) ?? null
+        : null
+);
+
+const parentHasChildren = computed(() =>
+    (selectedParentCategory.value?.children?.length ?? 0) > 0
+);
+
+const showChildPicker = computed(() =>
+    parentSelection.value?.type === 'category' && parentHasChildren.value
+);
+
+watch(parentSelection, () => {
+    childSelection.value = null;
+});
+
 watch(() => props.show, (isOpen) => {
-    if (isOpen) {
-        validationErrors.value = {};
-        if (props.service) {
-            form.value = {
-                id: props.service.id,
-                category_id: props.service.category?.id || '',
-                title: props.service.title,
-                description: props.service.description,
-                price: props.service.price || '',
-                price_type: props.service.price_type,
-                location: Array.isArray(props.service.location) ? props.service.location : [],
-                is_active: props.service.is_active,
-            };
+    if (!isOpen) return;
+    validationErrors.value = {};
+
+    if (props.service) {
+        form.value = {
+            id: props.service.id,
+            title: props.service.title,
+            description: props.service.description,
+            price: props.service.price || '',
+            price_type: props.service.price_type,
+            location: Array.isArray(props.service.location) ? props.service.location : [],
+            is_active: props.service.is_active,
+        };
+
+        const cat = props.service.category;
+        if (cat) {
+            if (cat.parent_id === null) {
+                parentSelection.value = { type: 'category', id: cat.id, name: cat.name };
+                childSelection.value  = null;
+            } else {
+                const parent = props.categories.find(c => c.id === cat.parent_id);
+                parentSelection.value = parent ? { type: 'category', id: parent.id, name: parent.name } : null;
+                childSelection.value  = { type: 'category', id: cat.id, name: cat.name };
+            }
         } else {
-            form.value = {
-                id: null,
-                category_id: '',
-                title: '',
-                description: '',
-                price: '',
-                price_type: 'fixed',
-                location: [],
-                is_active: true,
-            };
+            parentSelection.value = null;
+            childSelection.value  = null;
         }
+    } else {
+        form.value = { id: null, title: '', description: '', price: '', price_type: 'fixed', location: [], is_active: true };
+        parentSelection.value = null;
+        childSelection.value  = null;
     }
 });
 
@@ -67,13 +95,31 @@ const save = async () => {
     processing.value = true;
     validationErrors.value = {};
 
+    const finalSel = childSelection.value ?? parentSelection.value;
+    if (!finalSel) {
+        validationErrors.value = { category_id: ['Lūdzu, izvēlieties kategoriju.'] };
+        processing.value = false;
+        return;
+    }
+
+    const payload: Record<string, any> = { ...form.value };
+
+    if (finalSel.type === 'category') {
+        payload.category_id = finalSel.id;
+    } else {
+        payload.pending_category_suggestion_id = finalSel.id;
+    }
+
     try {
         if (form.value.id) {
-            await axios.put(`/api/services/${form.value.id}`, form.value);
+            await axios.put(`/api/services/${form.value.id}`, payload);
             toast.success('Pakalpojums atjaunināts!');
         } else {
-            await axios.post('/api/services', form.value);
-            toast.success('Jauns pakalpojums pievienots!');
+            await axios.post('/api/services', payload);
+            const successMsg = finalSel.type === 'suggestion'
+                ? 'Pakalpojums publicēts. Tavs kategorijas priekšlikums tiks pārskatīts.'
+                : 'Jauns pakalpojums pievienots!';
+            toast.success(successMsg);
         }
 
         emit('saved');
@@ -110,6 +156,19 @@ const save = async () => {
 
         <!-- Saturs -->
         <div class="p-6">
+            <!-- Pending suggestion banner (edit mode only) -->
+            <div
+                v-if="service?.pending_category_suggestion"
+                class="mb-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800"
+            >
+                <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+                <span>
+                    Šis pakalpojums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
+                    <span class="font-semibold">"{{ service.pending_category_suggestion.name }}"</span>
+                    tiek pārskatīts.
+                </span>
+            </div>
+
             <form @submit.prevent="save" class="space-y-5">
 
                 <!-- Nosaukums -->
@@ -127,16 +186,25 @@ const save = async () => {
 
                 <!-- Kategorija -->
                 <div>
-                    <InputLabel for="category_id" value="Kategorija" class="text-gray-700 font-medium" />
+                    <InputLabel value="Kategorija" class="text-gray-700 font-medium" />
                     <div class="mt-1">
-                        <CategorySelect
-                            v-model="form.category_id"
-                            :categories="categories"
-                            :show-all-option="false"
-                            :required="true"
+                        <SmartCategoryPicker
+                            v-model="parentSelection"
+                            :parent-category-id="null"
+                            placeholder="Sāc rakstīt, lai meklētu kategoriju..."
                         />
                     </div>
-                    <InputError class="mt-1.5" :message="validationErrors.category_id?.[0]" />
+                    <div v-if="showChildPicker" class="mt-2">
+                        <SmartCategoryPicker
+                            v-model="childSelection"
+                            :parent-category-id="selectedParentCategory!.id"
+                            placeholder="Meklēt apakškategoriju..."
+                        />
+                    </div>
+                    <InputError
+                        class="mt-1.5"
+                        :message="validationErrors.category_id?.[0] || validationErrors.pending_category_suggestion_id?.[0]"
+                    />
                 </div>
 
                 <!-- Apraksts -->

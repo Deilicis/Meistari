@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { lv } from 'date-fns/locale';
 import '@vuepic/vue-datepicker/dist/main.css';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import CategorySelect from '@/Components/Form/CategorySelect.vue';
+import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import { ClipboardDocumentListIcon, PlusIcon, TrashIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import type { Category } from '@/types/models';
+import type { PickerSelection } from '@/types/categorysuggestion';
 
 const props = defineProps<{
     categories: Category[];
