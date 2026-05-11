@@ -106,7 +106,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Administratora panelis (tikai admin)
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::prefix('categories')->name('categories.')->group(function () {
-            Route::get('/', [CategoryPageController::class, 'index'])->name('index');
+            Route::get('/',        [AdminCategoryController::class, 'index'])->name('index');
+            Route::post('/',       [AdminCategoryController::class, 'store'])->name('store');
+            Route::put('/{id}',    [AdminCategoryController::class, 'update'])->name('update');
+            Route::delete('/{id}', [AdminCategoryController::class, 'destroy'])->name('destroy');
+            Route::post('/merge',  [AdminCategoryController::class, 'merge'])->name('merge');
         });
 
         Route::prefix('seekers')->name('seekers.')->group(function () {

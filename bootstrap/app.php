@@ -38,4 +38,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\App\Exceptions\Proposals\ApplicationNotNegotiableException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         });
+        $exceptions->render(function (\App\Exceptions\Categories\CategoryNotDeletableException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        });
+        $exceptions->render(function (\App\Exceptions\Categories\CategoryMergeConflictException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        });
+        $exceptions->render(function (\App\Exceptions\Categories\SystemCategoryProtectedException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        });
     })->create();
