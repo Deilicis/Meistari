@@ -37,7 +37,7 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="space-y-6">
             <div>
-                <InputLabel for="email" value="E-pasts" />
+                <InputLabel for="email" :value="t('common.email')" />
                 <TextInput
                     id="email"
                     type="email"
@@ -56,7 +56,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Nosūtīt atjaunošanas saiti
+                    {{ t('auth.forgot_password.submit') }}
                 </PrimaryButton>
             </div>
         </form>

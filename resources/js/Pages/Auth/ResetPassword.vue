@@ -5,6 +5,9 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     email: string;
@@ -27,16 +30,16 @@ const submit = () => {
 
 <template>
     <AuthLayout>
-        <Head title="Izveidot jaunu paroli" />
+        <Head :title="t('auth.reset_password.title')" />
 
         <div class="mb-8 text-center md:text-left">
-            <h2 class="text-3xl font-bold text-gray-900">Izveidot jaunu paroli</h2>
-            <p class="text-sm text-gray-500 mt-2">Ievadiet savu jauno, drošo paroli.</p>
+            <h2 class="text-3xl font-bold text-gray-900">{{ t('auth.reset_password.title') }}</h2>
+            <p class="text-sm text-gray-500 mt-2">{{ t('auth.reset_password.subtitle') }}</p>
         </div>
 
         <form @submit.prevent="submit" class="space-y-6">
             <div>
-                <InputLabel for="email" value="E-pasts" />
+                <InputLabel for="email" :value="t('auth.reset_password.email_label')" />
                 <TextInput
                     id="email"
                     type="email"
@@ -49,7 +52,7 @@ const submit = () => {
             </div>
 
             <div>
-                <InputLabel for="password" value="Jaunā parole" />
+                <InputLabel for="password" :value="t('auth.reset_password.new_password')" />
                 <TextInput
                     id="password"
                     type="password"
@@ -62,7 +65,7 @@ const submit = () => {
             </div>
 
             <div>
-                <InputLabel for="password_confirmation" value="Apstiprināt jauno paroli" />
+                <InputLabel for="password_confirmation" :value="t('auth.reset_password.confirm_new_password')" />
                 <TextInput
                     id="password_confirmation"
                     type="password"
@@ -79,7 +82,7 @@ const submit = () => {
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
-                    Atiestatīt paroli
+                    {{ t('auth.reset_password.submit') }}
                 </PrimaryButton>
             </div>
         </form>
