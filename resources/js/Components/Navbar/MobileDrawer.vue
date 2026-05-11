@@ -54,42 +54,42 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
             <template v-if="isMasterActive">
                 <Link :href="route('master.services.index')" :class="route().current('master.services.index') ? activeLinkClass : linkClass"
                     :aria-current="route().current('master.services.index') ? 'page' : undefined" @click="close">
-                    <BriefcaseIcon class="w-4 h-4" aria-hidden="true" /> Mani Pakalpojumi
+                    <BriefcaseIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.my_services') }}
                 </Link>
                 <Link :href="route('master.job-requests.categories')" :class="(route().current('master.job-requests.categories') || route().current('master.job-requests.index')) ? activeLinkClass : linkClass" @click="close">
-                    <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" /> Darba Sludinājumi
+                    <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.job_listings') }}
                 </Link>
                 <Link :href="route('master.applications.index')" :class="route().current('master.applications.index') ? activeLinkClass : linkClass" @click="close">
-                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> Mani Pieteikumi
+                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.my_applications') }}
                 </Link>
                 <Link :href="route('master.service-applications.index')" :class="route().current('master.service-applications.*') ? activeLinkClass : linkClass" @click="close">
-                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> Pieteikumi pakalpojumiem
+                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.service_applications') }}
                 </Link>
             </template>
 
             <template v-if="isSeekerActive">
                 <Link :href="route('seeker.categories.index')" :class="(route().current('seeker.categories.index') || route().current('seeker.services.index')) ? activeLinkClass : linkClass" @click="close">
-                    <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" /> Pakalpojumi
+                    <MagnifyingGlassIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.services') }}
                 </Link>
                 <Link :href="route('seeker.service-applications.index')" :class="route().current('seeker.service-applications.index') ? activeLinkClass : linkClass" @click="close">
-                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> Mani Pieteikumi
+                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.my_applications') }}
                 </Link>
                 <Link :href="route('seeker.job-requests.index')" :class="route().current('seeker.job-requests.index') ? activeLinkClass : linkClass" @click="close">
-                    <ClipboardDocumentListIcon class="w-4 h-4" aria-hidden="true" /> Mani Sludinājumi
+                    <ClipboardDocumentListIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.my_listings') }}
                 </Link>
                 <Link :href="route('seeker.job-applications.index')" :class="route().current('seeker.job-applications.index') ? activeLinkClass : linkClass" @click="close">
-                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> Pieteikumi maniem darbiem
+                    <InboxArrowDownIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.job_applications') }}
                 </Link>
             </template>
 
             <Link :href="route('chat.index')" :class="route().current('chat.*') ? activeLinkClass : linkClass" @click="close">
-                <ChatBubbleLeftRightIcon class="w-4 h-4" aria-hidden="true" /> Ziņojumi
+                <ChatBubbleLeftRightIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.messages') }}
             </Link>
         </div>
 
         <!-- Role section -->
         <div class="border-t border-white/10 px-3 py-3">
-            <p class="text-[10px] font-semibold text-white/40 uppercase tracking-wider px-3 mb-2">Aktīvais skats</p>
+            <p class="text-[10px] font-semibold text-white/40 uppercase tracking-wider px-3 mb-2">{{ t('nav.role_section') }}</p>
 
             <template v-if="hasBothRoles">
                 <button
@@ -101,8 +101,8 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
                     :class="isMasterActive ? 'bg-yellow-400/20 text-yellow-300 font-semibold' : 'text-white/60 hover:bg-white/10 hover:text-white'"
                 >
                     <span class="w-3 h-3 rounded-full flex-shrink-0" :class="isMasterActive ? 'bg-yellow-400' : 'border-2 border-white/30'" />
-                    Meistars
-                    <span v-if="isMasterActive" class="ml-auto text-[10px] text-yellow-400 font-bold uppercase">Aktīvs</span>
+                    {{ t('auth.register.role_master') }}
+                    <span v-if="isMasterActive" class="ml-auto text-[10px] text-yellow-400 font-bold uppercase">{{ t('nav.active') }}</span>
                 </button>
                 <button
                     v-if="isSeeker"
@@ -113,8 +113,8 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
                     :class="isSeekerActive ? 'bg-emerald-400/20 text-emerald-300 font-semibold' : 'text-white/60 hover:bg-white/10 hover:text-white'"
                 >
                     <span class="w-3 h-3 rounded-full flex-shrink-0" :class="isSeekerActive ? 'bg-emerald-400' : 'border-2 border-white/30'" />
-                    Meklētājs
-                    <span v-if="isSeekerActive" class="ml-auto text-[10px] text-emerald-400 font-bold uppercase">Aktīvs</span>
+                    {{ t('auth.register.role_seeker') }}
+                    <span v-if="isSeekerActive" class="ml-auto text-[10px] text-emerald-400 font-bold uppercase">{{ t('nav.active') }}</span>
                 </button>
             </template>
             <template v-else>
@@ -126,12 +126,12 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
                 <button v-if="!isMaster" @click="addRoleModal = 'master'; close()" type="button"
                     class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/60 hover:text-white hover:bg-white/10 transition-colors text-left">
                     <span class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0" />
-                    Pievienot meistara lomu →
+                    {{ t('nav.add_master_role') }}
                 </button>
                 <button v-if="!isSeeker" @click="addRoleModal = 'seeker'; close()" type="button"
                     class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/60 hover:text-white hover:bg-white/10 transition-colors text-left">
                     <span class="w-3 h-3 rounded-full bg-emerald-400 flex-shrink-0" />
-                    Pievienot meklētāja lomu →
+                    {{ t('nav.add_seeker_role') }}
                 </button>
             </template>
         </div>
