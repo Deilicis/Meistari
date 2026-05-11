@@ -3,6 +3,8 @@ import { ref, onMounted, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import JobStatusBadge from '@/Components/Jobs/JobStatusBadge.vue';
 import JobLifecycleTimeline from '@/Components/Jobs/JobLifecycleTimeline.vue';
@@ -21,6 +23,8 @@ import {
     CheckBadgeIcon,
 } from '@heroicons/vue/24/outline';
 import { CheckCircleIcon } from '@heroicons/vue/24/solid';
+
+const { t } = useI18n();
 
 const props = defineProps<{ job: JobLifecycle }>();
 
@@ -44,7 +48,7 @@ async function fetchApplications() {
         const { data } = await axios.get(route('api.applications.index', { job_request_id: job.value.id }));
         applications.value = data.data ?? [];
     } catch {
-        toast.error('Neizdevās ielādēt pieteikumus.');
+        toast.error(t('jobs.failed_load_apps'));
     } finally {
         loadingApps.value = false;
     }
@@ -54,10 +58,10 @@ async function acceptApp(app: JobApplication) {
     processingApp.value = app.id;
     try {
         await axios.patch(route('api.applications.accept', app.id));
-        toast.success('Pieteikums pieņemts!');
+        toast.success(t('jobs.accept_app_success'));
         router.reload({ only: ['job'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda pieņemot pieteikumu.');
+        toast.error(e?.response?.data?.message ?? t('jobs.accept_app_error'));
     } finally {
         processingApp.value = null;
     }
@@ -67,10 +71,10 @@ async function rejectApp(app: JobApplication) {
     processingApp.value = app.id;
     try {
         await axios.patch(route('api.applications.reject', app.id));
-        toast.success('Pieteikums noraidīts.');
+        toast.success(t('jobs.reject_app_success'));
         await fetchApplications();
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Kļūda noraidot pieteikumu.');
+        toast.error(e?.response?.data?.message ?? t('jobs.reject_app_error'));
     } finally {
         processingApp.value = null;
     }
@@ -84,19 +88,12 @@ function applicantName(app: JobApplication): string {
     return parts.length ? parts.join(' ') : app.user.name;
 }
 
-function formatDate(iso: string | null): string {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleString('lv-LV', {
-        year: 'numeric', month: 'long', day: 'numeric',
-        hour: '2-digit', minute: '2-digit',
-    });
-}
-
-function formatPrice(amount: string | null, type: string | null): string {
+function formatMoney(amount: string | null, type: string | null): string {
     if (!amount) return '—';
-    const num = parseFloat(amount).toFixed(2);
-    if (type === 'hourly') return `€${num}/h`;
-    return `€${num}`;
+    const n = parseFloat(amount);
+    if (isNaN(n)) return '—';
+    const formatted = formatCurrency(n);
+    return type === 'hourly' ? `${formatted}/h` : formatted;
 }
 </script>
 
@@ -114,7 +111,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                         class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-navy transition-colors mb-2"
                     >
                         <ArrowLeftIcon class="w-4 h-4" />
-                        Mani darbi
+                        {{ t('jobs.back_my_jobs') }}
                     </Link>
                     <h1 class="text-xl font-bold text-navy leading-tight">{{ job.title }}</h1>
                 </div>
@@ -131,7 +128,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-sm font-bold text-navy flex items-center gap-2">
                         <ClipboardDocumentListIcon class="w-4 h-4 text-navy/60" />
-                        Iesniegtie pieteikumi
+                        {{ t('jobs.submitted_applications') }}
                     </h2>
                     <span class="text-xs font-bold text-white bg-navy px-2.5 py-1 rounded-full">
                         {{ applications.length }}
@@ -146,8 +143,8 @@ function formatPrice(amount: string | null, type: string | null): string {
                 <!-- Empty -->
                 <div v-else-if="applications.length === 0" class="py-8 text-center">
                     <ClipboardDocumentListIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    <p class="text-sm text-gray-500">Vēl nav neviena pieteikuma.</p>
-                    <p class="text-xs text-gray-400 mt-1">Meistari drīzumā iesniegs savus piedāvājumus.</p>
+                    <p class="text-sm text-gray-500">{{ t('jobs.no_applications_msg') }}</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ t('jobs.applications_coming_msg') }}</p>
                 </div>
 
                 <!-- Cards -->
@@ -182,21 +179,25 @@ function formatPrice(amount: string | null, type: string | null): string {
                                     >{{ applicantName(app) }}</a>
                                     <span v-if="app.status === 'accepted'" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700">
                                         <CheckBadgeIcon class="w-3.5 h-3.5" />
-                                        Pieņemts
+                                        {{ t('statuses.application.accepted') }}
                                     </span>
-                                    <span v-else-if="app.status === 'rejected'" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">Noraidīts</span>
-                                    <span v-else class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Gaida</span>
+                                    <span v-else-if="app.status === 'rejected'" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
+                                        {{ t('statuses.application.rejected') }}
+                                    </span>
+                                    <span v-else class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                                        {{ t('statuses.application.pending') }}
+                                    </span>
                                 </div>
 
                                 <p v-if="app.user.profile?.city" class="text-xs text-gray-400 mb-2">{{ app.user.profile.city }}</p>
 
                                 <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-2">
                                     <CurrencyEuroIcon class="w-4 h-4 text-gold" />
-                                    {{ new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(app.price_offer) }}
+                                    {{ formatCurrency(Number(app.price_offer)) }}
                                 </div>
 
                                 <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">{{ app.cover_letter }}</p>
-                                <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                                <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                             </div>
 
                             <!-- Accept / Reject -->
@@ -207,7 +208,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                                     class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
                                 >
                                     <CheckIcon class="w-3.5 h-3.5" />
-                                    Pieņemt
+                                    {{ t('jobs.accept_app_btn') }}
                                 </button>
                                 <button
                                     @click="rejectApp(app)"
@@ -215,7 +216,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                                     class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
                                 >
                                     <XCircleIcon class="w-3.5 h-3.5" />
-                                    Noraidīt
+                                    {{ t('jobs.reject_proposal_btn') }}
                                 </button>
                             </div>
                         </div>
@@ -228,30 +229,30 @@ function formatPrice(amount: string | null, type: string | null): string {
                 v-if="job.allowed_actions.filter(a => a !== 'accept_application').length > 0"
                 class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
             >
-                <h2 class="text-sm font-bold text-navy mb-3">Pieejamās darbības</h2>
+                <h2 class="text-sm font-bold text-navy mb-3">{{ t('jobs.available_actions') }}</h2>
                 <JobActionButtons :job="job" @updated="job = $event" />
             </div>
 
             <!-- Escrow info -->
             <div v-if="job.escrow" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 class="text-sm font-bold text-navy mb-4">Maksājuma informācija</h2>
+                <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.escrow_title') }}</h2>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
                     <div>
-                        <p class="text-xs text-gray-500 mb-0.5">Summa</p>
-                        <p class="text-sm font-semibold text-navy">€{{ parseFloat(job.escrow.amount).toFixed(2) }}</p>
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_amount_label') }}</p>
+                        <p class="text-sm font-semibold text-navy">{{ formatCurrency(parseFloat(job.escrow.amount)) }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 mb-0.5">Statuss</p>
-                        <p class="text-sm font-semibold capitalize" :class="{
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_status_label') }}</p>
+                        <p class="text-sm font-semibold" :class="{
                             'text-amber-600': job.escrow.status === 'held',
                             'text-emerald-600': job.escrow.status === 'released',
                             'text-gray-500': job.escrow.status === 'refunded',
                         }">
-                            {{ job.escrow.status === 'held' ? 'Rezervēts' : job.escrow.status === 'released' ? 'Izmaksāts' : 'Atgriezts' }}
+                            {{ t('statuses.escrow.' + job.escrow.status) }}
                         </p>
                     </div>
                     <div v-if="job.escrow.auto_release_at">
-                        <p class="text-xs text-gray-500 mb-0.5">Auto-atbrīvošana</p>
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_auto_release_label') }}</p>
                         <p class="text-sm text-gray-700">{{ formatDate(job.escrow.auto_release_at) }}</p>
                     </div>
                 </div>
@@ -259,7 +260,7 @@ function formatPrice(amount: string | null, type: string | null): string {
 
             <!-- Details card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
-                <h2 class="text-sm font-bold text-navy">Darba informācija</h2>
+                <h2 class="text-sm font-bold text-navy">{{ t('jobs.info_title') }}</h2>
 
                 <p class="text-sm text-gray-700 leading-relaxed">{{ job.description }}</p>
 
@@ -268,13 +269,13 @@ function formatPrice(amount: string | null, type: string | null): string {
                     <div class="flex items-start gap-2">
                         <UserIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Meistars</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.master_label') }}</p>
                             <p v-if="job.master" class="text-sm font-medium text-gray-800">
                                 <a :href="route('master.public-profile', job.master.id)" class="hover:underline hover:text-navy transition-colors">
                                     {{ job.master.name }}
                                 </a>
                             </p>
-                            <p v-else class="text-sm text-gray-400 italic">Nav piešķirts</p>
+                            <p v-else class="text-sm text-gray-400 italic">{{ t('jobs.not_assigned') }}</p>
                         </div>
                     </div>
 
@@ -282,9 +283,9 @@ function formatPrice(amount: string | null, type: string | null): string {
                     <div class="flex items-start gap-2">
                         <CurrencyEuroIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Cena</p>
-                            <p v-if="job.agreed_price" class="text-sm font-medium text-gray-800">{{ formatPrice(job.agreed_price, job.price_type) }}</p>
-                            <p v-else class="text-sm text-gray-400 italic">Nav noteikta</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.price_label') }}</p>
+                            <p v-if="job.agreed_price" class="text-sm font-medium text-gray-800">{{ formatMoney(job.agreed_price, job.price_type) }}</p>
+                            <p v-else class="text-sm text-gray-400 italic">{{ t('jobs.price_not_set') }}</p>
                         </div>
                     </div>
 
@@ -292,7 +293,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                     <div class="flex items-start gap-2">
                         <ClockIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Izveidots</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.created_label') }}</p>
                             <p class="text-sm text-gray-700">{{ formatDate(job.created_at) }}</p>
                         </div>
                     </div>
@@ -301,7 +302,7 @@ function formatPrice(amount: string | null, type: string | null): string {
                     <div v-if="job.completed_at" class="flex items-start gap-2">
                         <CheckCircleIcon class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Pabeigts</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.completed_label') }}</p>
                             <p class="text-sm text-gray-700">{{ formatDate(job.completed_at) }}</p>
                         </div>
                     </div>
@@ -315,10 +316,8 @@ function formatPrice(amount: string | null, type: string | null): string {
             >
                 <ShieldExclamationIcon class="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                 <div>
-                    <p class="text-sm font-bold text-red-700">Strīds izskatīšanā</p>
-                    <p class="text-xs text-red-600 mt-0.5">
-                        Mūsu komanda izskata situāciju. Mēs sazināsimies ar abām pusēm tuvākajā laikā.
-                    </p>
+                    <p class="text-sm font-bold text-red-700">{{ t('jobs.disputed_title') }}</p>
+                    <p class="text-xs text-red-600 mt-0.5">{{ t('jobs.disputed_desc_seeker') }}</p>
                 </div>
             </div>
 

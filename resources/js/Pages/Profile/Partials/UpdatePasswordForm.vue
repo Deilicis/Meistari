@@ -4,7 +4,10 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+
+const { t } = useI18n();
 
 const passwordInput = ref<InstanceType<typeof TextInput> | null>(null);
 const currentPasswordInput = ref<InstanceType<typeof TextInput> | null>(null);
@@ -36,7 +39,7 @@ const updatePassword = () => {
 <template>
     <form @submit.prevent="updatePassword" class="space-y-5">
         <div>
-            <InputLabel for="current_password" value="Pašreizējā parole" />
+            <InputLabel for="current_password" :value="t('profile.current_password_label')" />
             <TextInput
                 id="current_password"
                 ref="currentPasswordInput"
@@ -49,7 +52,7 @@ const updatePassword = () => {
         </div>
 
         <div>
-            <InputLabel for="password" value="Jaunā parole" />
+            <InputLabel for="password" :value="t('profile.new_password_label')" />
             <TextInput
                 id="password"
                 ref="passwordInput"
@@ -62,7 +65,7 @@ const updatePassword = () => {
         </div>
 
         <div>
-            <InputLabel for="password_confirmation" value="Apstiprināt jauno paroli" />
+            <InputLabel for="password_confirmation" :value="t('profile.confirm_password_label')" />
             <TextInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
@@ -74,7 +77,7 @@ const updatePassword = () => {
         </div>
 
         <div class="flex items-center gap-4 pt-1">
-            <PrimaryButton :disabled="form.processing">Saglabāt paroli</PrimaryButton>
+            <PrimaryButton :disabled="form.processing">{{ t('profile.save_password_btn') }}</PrimaryButton>
             <Transition
                 enter-active-class="transition ease-in-out"
                 enter-from-class="opacity-0"
@@ -82,7 +85,7 @@ const updatePassword = () => {
                 leave-to-class="opacity-0"
             >
                 <p v-if="form.recentlySuccessful" class="text-sm text-emerald-600 font-medium">
-                    Parole veiksmīgi nomainīta.
+                    {{ t('profile.password_saved_msg') }}
                 </p>
             </Transition>
         </div>

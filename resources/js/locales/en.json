@@ -281,7 +281,20 @@
     "change_password_title": "Change password",
     "change_password_desc": "Make sure your password is longer than 8 characters.",
     "danger_zone_title": "Danger zone",
-    "danger_zone_desc": "These actions are irreversible."
+    "danger_zone_desc": "These actions are irreversible.",
+    "delete_account_desc": "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.",
+    "delete_account_btn": "Delete account",
+    "delete_confirm_title": "Are you sure you want to permanently delete your account?",
+    "delete_confirm_desc": "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm.",
+    "delete_password_label": "Password",
+    "delete_password_placeholder": "Enter password",
+    "cancel_btn": "Cancel",
+    "current_password_label": "Current password",
+    "new_password_label": "New password",
+    "confirm_password_label": "Confirm new password",
+    "save_password_btn": "Save password",
+    "password_saved_msg": "Password changed successfully.",
+    "back_btn": "Back"
   },
   "browse": {
     "services_title": "Services",

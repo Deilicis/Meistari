@@ -281,7 +281,20 @@
     "change_password_title": "Mainīt paroli",
     "change_password_desc": "Pārliecinies, ka parole ir garāka par 8 simboliem.",
     "danger_zone_title": "Bīstamā zona",
-    "danger_zone_desc": "Šīs darbības ir neatgriezeniskas."
+    "danger_zone_desc": "Šīs darbības ir neatgriezeniskas.",
+    "delete_account_desc": "Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet jebkuru datu vai informāciju, kuru vēlaties saglabāt.",
+    "delete_account_btn": "Dzēst kontu",
+    "delete_confirm_title": "Vai esat pārliecināts, ka vēlaties neatgriezeniski dzēst savu kontu?",
+    "delete_confirm_desc": "Kad jūsu konts tiek dzēsts, visi tā resursi un dati tiks neatgriezeniski dzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu.",
+    "delete_password_label": "Parole",
+    "delete_password_placeholder": "Ievadiet paroli",
+    "cancel_btn": "Atcelt",
+    "current_password_label": "Pašreizējā parole",
+    "new_password_label": "Jaunā parole",
+    "confirm_password_label": "Apstiprināt jauno paroli",
+    "save_password_btn": "Saglabāt paroli",
+    "password_saved_msg": "Parole veiksmīgi nomainīta.",
+    "back_btn": "Atpakaļ"
   },
   "browse": {
     "services_title": "Pakalpojumi",
