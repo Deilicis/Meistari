@@ -31,7 +31,7 @@ defineSlots<{
     default: (props: {}) => any;
 }>();
 
-const showingNavigationDropdown = ref(false);
+const mobileOpen = ref(false);
 
 const displayToast = () => {
     if (page.props.flash?.success) toast.success(page.props.flash.success);
@@ -51,8 +51,8 @@ const roleLabel = computed(() => isAdmin.value ? 'Admins' : 'Moderators');
 
 const navLinkClass = (active: boolean) =>
     active
-        ? 'inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold text-white bg-white/10 transition-colors'
-        : 'inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors';
+        ? 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-white/10 transition-colors'
+        : 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors';
 
 const mobileNavLinkClass = (active: boolean) =>
     'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ' +
@@ -61,101 +61,23 @@ const mobileNavLinkClass = (active: boolean) =>
 
 <template>
     <div class="min-h-screen bg-gray-100 font-sans">
-        <nav class="bg-navy relative z-20">
+        <nav class="bg-navy relative z-20" aria-label="Admin navigācija">
+            <!-- Accent line -->
             <div class="h-0.5 w-full bg-red-500" />
 
+            <!-- Top row: logo + user controls -->
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-15 py-2.5 justify-between items-center gap-4">
+                <div class="flex h-14 items-center justify-between">
 
-                    <!-- Left side -->
-                    <div class="flex items-center gap-4 min-w-0 flex-1">
-                        <Link href="/" class="flex items-center gap-2.5 shrink-0">
-                            <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" />
-                            <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden lg:block">
-                                Meistari
-                            </span>
-                        </Link>
+                    <!-- Logo -->
+                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
+                        <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
+                        <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
+                            Meistari
+                        </span>
+                    </Link>
 
-                        <!-- Navigation -->
-                        <div class="hidden sm:flex items-center gap-0.5 overflow-x-auto">
-                            <Link
-                                :href="route('admin.dashboard')"
-                                :class="navLinkClass(route().current('admin.dashboard'))"
-                            >
-                                <HomeIcon class="w-3 h-3" />
-                                Panelis
-                            </Link>
-
-                            <Link
-                                :href="route('admin.complaints.index')"
-                                :class="navLinkClass(route().current('admin.complaints.*'))"
-                            >
-                                <ExclamationTriangleIcon class="w-3 h-3" />
-                                Sūdzības
-                            </Link>
-
-                            <template v-if="isAdmin">
-                                <Link
-                                    :href="route('admin.seekers.index')"
-                                    :class="navLinkClass(route().current('admin.seekers.*'))"
-                                >
-                                    <MagnifyingGlassIcon class="w-3 h-3" />
-                                    Meklētāji
-                                </Link>
-
-                                <Link
-                                    :href="route('admin.masters.index')"
-                                    :class="navLinkClass(route().current('admin.masters.*'))"
-                                >
-                                    <WrenchScrewdriverIcon class="w-3 h-3" />
-                                    Meistari
-                                </Link>
-
-                                <Link
-                                    :href="route('admin.services.index')"
-                                    :class="navLinkClass(route().current('admin.services.*'))"
-                                >
-                                    <BriefcaseIcon class="w-3 h-3" />
-                                    Pakalpojumi
-                                </Link>
-
-                                <Link
-                                    :href="route('admin.job-requests.index')"
-                                    :class="navLinkClass(route().current('admin.job-requests.*'))"
-                                >
-                                    <ClipboardDocumentListIcon class="w-3 h-3" />
-                                    Sludinājumi
-                                </Link>
-
-                                <Link
-                                    v-if="isAdmin"
-                                    :href="route('admin.categories.index')"
-                                    :class="navLinkClass(route().current('admin.categories.*'))"
-                                >
-                                    <TagIcon class="w-3 h-3" />
-                                    Kategorijas
-                                </Link>
-
-                                <Link
-                                    :href="route('admin.staff.index')"
-                                    :class="navLinkClass(route().current('admin.staff.*'))"
-                                >
-                                    <UsersIcon class="w-3 h-3" />
-                                    Darbinieki
-                                </Link>
-
-                                <Link
-                                    :href="route('admin.audit-logs.index')"
-                                    :class="navLinkClass(route().current('admin.audit-logs.*'))"
-                                >
-                                    <ClockIcon class="w-3 h-3" />
-                                    Audits
-                                </Link>
-                            </template>
-                        </div>
-                    </div>
-
-                    <!-- Right side -->
+                    <!-- Desktop right controls -->
                     <div class="hidden sm:flex items-center gap-3 shrink-0">
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="roleBadgeClass">
                             {{ roleLabel }}
@@ -189,112 +111,150 @@ const mobileNavLinkClass = (active: boolean) =>
                         </Dropdown>
                     </div>
 
-                    <!-- Hamburger -->
-                    <div class="-me-2 flex items-center sm:hidden">
+                    <!-- Mobile hamburger -->
+                    <div class="flex items-center sm:hidden">
                         <button
-                            @click="showingNavigationDropdown = !showingNavigationDropdown"
+                            @click="mobileOpen = !mobileOpen"
+                            :aria-expanded="mobileOpen"
+                            :aria-label="mobileOpen ? 'Aizvērt navigāciju' : 'Atvērt navigāciju'"
                             class="inline-flex items-center justify-center rounded-md p-2 text-white/60 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
                         >
-                            <XMarkIcon v-if="showingNavigationDropdown" class="h-6 w-6" />
+                            <XMarkIcon v-if="mobileOpen" class="h-6 w-6" />
                             <Bars3Icon v-else class="h-6 w-6" />
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Mobile nav -->
-            <div
-                :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                class="sm:hidden border-t border-white/10"
-            >
+            <!-- Bottom row: nav links (desktop) -->
+            <div class="hidden sm:block border-t border-white/10">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1">
+                    <div class="flex items-center gap-0.5 overflow-x-auto">
+                        <Link :href="route('admin.dashboard')" :class="navLinkClass(route().current('admin.dashboard'))">
+                            <HomeIcon class="w-3.5 h-3.5" />
+                            Panelis
+                        </Link>
+
+                        <Link :href="route('admin.complaints.index')" :class="navLinkClass(route().current('admin.complaints.*'))">
+                            <ExclamationTriangleIcon class="w-3.5 h-3.5" />
+                            Sūdzības
+                        </Link>
+
+                        <template v-if="isAdmin">
+                            <Link :href="route('admin.seekers.index')" :class="navLinkClass(route().current('admin.seekers.*'))">
+                                <MagnifyingGlassIcon class="w-3.5 h-3.5" />
+                                Meklētāji
+                            </Link>
+
+                            <Link :href="route('admin.masters.index')" :class="navLinkClass(route().current('admin.masters.*'))">
+                                <WrenchScrewdriverIcon class="w-3.5 h-3.5" />
+                                Meistari
+                            </Link>
+
+                            <Link :href="route('admin.services.index')" :class="navLinkClass(route().current('admin.services.*'))">
+                                <BriefcaseIcon class="w-3.5 h-3.5" />
+                                Pakalpojumi
+                            </Link>
+
+                            <Link :href="route('admin.job-requests.index')" :class="navLinkClass(route().current('admin.job-requests.*'))">
+                                <ClipboardDocumentListIcon class="w-3.5 h-3.5" />
+                                Sludinājumi
+                            </Link>
+
+                            <Link :href="route('admin.categories.index')" :class="navLinkClass(route().current('admin.categories.*'))">
+                                <TagIcon class="w-3.5 h-3.5" />
+                                Kategorijas
+                            </Link>
+
+                            <Link :href="route('admin.staff.index')" :class="navLinkClass(route().current('admin.staff.*'))">
+                                <UsersIcon class="w-3.5 h-3.5" />
+                                Darbinieki
+                            </Link>
+
+                            <Link :href="route('admin.audit-logs.index')" :class="navLinkClass(route().current('admin.audit-logs.*'))">
+                                <ClockIcon class="w-3.5 h-3.5" />
+                                Audits
+                            </Link>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile drawer -->
+            <div v-if="mobileOpen" class="sm:hidden border-t border-white/10">
                 <div class="px-3 py-2 space-y-1">
-                    <Link :href="route('admin.dashboard')"
-                        :class="mobileNavLinkClass(route().current('admin.dashboard'))"
-                        @click="showingNavigationDropdown = false">
+                    <Link :href="route('admin.dashboard')" :class="mobileNavLinkClass(route().current('admin.dashboard'))" @click="mobileOpen = false">
                         <HomeIcon class="w-4 h-4" />
                         Panelis
                     </Link>
 
-                    <Link :href="route('admin.complaints.index')"
-                        :class="mobileNavLinkClass(route().current('admin.complaints.*'))"
-                        @click="showingNavigationDropdown = false">
+                    <Link :href="route('admin.complaints.index')" :class="mobileNavLinkClass(route().current('admin.complaints.*'))" @click="mobileOpen = false">
                         <ExclamationTriangleIcon class="w-4 h-4" />
                         Sūdzības
                     </Link>
 
                     <template v-if="isAdmin">
-                        <Link :href="route('admin.seekers.index')"
-                            :class="mobileNavLinkClass(route().current('admin.seekers.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.seekers.index')" :class="mobileNavLinkClass(route().current('admin.seekers.*'))" @click="mobileOpen = false">
                             <MagnifyingGlassIcon class="w-4 h-4" />
                             Meklētāji
                         </Link>
 
-                        <Link :href="route('admin.masters.index')"
-                            :class="mobileNavLinkClass(route().current('admin.masters.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.masters.index')" :class="mobileNavLinkClass(route().current('admin.masters.*'))" @click="mobileOpen = false">
                             <WrenchScrewdriverIcon class="w-4 h-4" />
                             Meistari
                         </Link>
 
-                        <Link :href="route('admin.services.index')"
-                            :class="mobileNavLinkClass(route().current('admin.services.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.services.index')" :class="mobileNavLinkClass(route().current('admin.services.*'))" @click="mobileOpen = false">
                             <BriefcaseIcon class="w-4 h-4" />
                             Pakalpojumi
                         </Link>
 
-                        <Link :href="route('admin.job-requests.index')"
-                            :class="mobileNavLinkClass(route().current('admin.job-requests.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.job-requests.index')" :class="mobileNavLinkClass(route().current('admin.job-requests.*'))" @click="mobileOpen = false">
                             <ClipboardDocumentListIcon class="w-4 h-4" />
                             Sludinājumi
                         </Link>
 
-                        <Link v-if="isAdmin" :href="route('admin.categories.index')"
-                            :class="mobileNavLinkClass(route().current('admin.categories.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.categories.index')" :class="mobileNavLinkClass(route().current('admin.categories.*'))" @click="mobileOpen = false">
                             <TagIcon class="w-4 h-4" />
                             Kategorijas
                         </Link>
 
-                        <Link :href="route('admin.staff.index')"
-                            :class="mobileNavLinkClass(route().current('admin.staff.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.staff.index')" :class="mobileNavLinkClass(route().current('admin.staff.*'))" @click="mobileOpen = false">
                             <UsersIcon class="w-4 h-4" />
                             Darbinieki
                         </Link>
 
-                        <Link :href="route('admin.audit-logs.index')"
-                            :class="mobileNavLinkClass(route().current('admin.audit-logs.*'))"
-                            @click="showingNavigationDropdown = false">
+                        <Link :href="route('admin.audit-logs.index')" :class="mobileNavLinkClass(route().current('admin.audit-logs.*'))" @click="mobileOpen = false">
                             <ClockIcon class="w-4 h-4" />
                             Audits
                         </Link>
                     </template>
                 </div>
 
+                <!-- Mobile user section -->
                 <div class="border-t border-white/10 px-4 py-3">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 bg-red-500 text-white">
                             {{ user.name.charAt(0).toUpperCase() }}
                         </span>
-                        <div>
-                            <p class="text-sm font-bold text-white">{{ user.name }}</p>
-                            <p class="text-xs text-white/50">{{ user.email }}</p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-white truncate">{{ user.name }}</p>
+                            <p class="text-xs text-white/50 truncate">{{ user.email }}</p>
                         </div>
+                        <span class="ml-auto text-xs font-bold px-2 py-0.5 rounded-full shrink-0" :class="roleBadgeClass">
+                            {{ roleLabel }}
+                        </span>
                     </div>
 
                     <div class="space-y-1">
                         <Link :href="route('profile.edit')"
                             class="block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                            @click="showingNavigationDropdown = false">
+                            @click="mobileOpen = false">
                             Mans Profils
                         </Link>
-
                         <Link :href="route('logout')" method="post" as="button"
                             class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                            @click="showingNavigationDropdown = false">
+                            @click="mobileOpen = false">
                             Iziet no sistēmas
                         </Link>
                     </div>
