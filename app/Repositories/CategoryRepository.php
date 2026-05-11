@@ -18,6 +18,11 @@ class CategoryRepository
         return Category::find($id);
     }
 
+    public function findBySlug(string $slug): ?Category
+    {
+        return Category::where(Category::SLUG, $slug)->first();
+    }
+
     public function getWithUsageCounts(): Collection
     {
         return Category::withCount(['services', 'jobRequests'])

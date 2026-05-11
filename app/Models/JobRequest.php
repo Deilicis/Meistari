@@ -35,7 +35,8 @@ class JobRequest extends Model
     public const AGREED_PRICE            = 'agreed_price';
     public const PRICE_TYPE              = 'price_type';
     public const COMPLETED_AT            = 'completed_at';
-    public const MASTER_COMPLETED_AT     = 'master_completed_at';
+    public const MASTER_COMPLETED_AT             = 'master_completed_at';
+    public const PENDING_CATEGORY_SUGGESTION_ID = 'pending_category_suggestion_id';
     public const CREATED_AT              = 'created_at';
     public const UPDATED_AT              = 'updated_at';
     public const DELETED_AT              = 'deleted_at';
@@ -58,6 +59,7 @@ class JobRequest extends Model
         self::LOCATION,
         self::IMAGES,
         self::STATUS,
+        self::PENDING_CATEGORY_SUGGESTION_ID,
         self::ACCEPTED_APPLICATION_ID,
         self::MASTER_ID,
         self::AGREED_PRICE,
@@ -89,6 +91,11 @@ class JobRequest extends Model
     public function getCategoryId(): int
     {
         return $this->getAttribute(self::CATEGORY_ID);
+    }
+
+    public function getPendingCategorySuggestionId(): ?int
+    {
+        return $this->getAttribute(self::PENDING_CATEGORY_SUGGESTION_ID);
     }
 
     public function getTitle(): string
@@ -155,6 +162,11 @@ class JobRequest extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function pendingCategorySuggestion(): BelongsTo
+    {
+        return $this->belongsTo(CategorySuggestion::class, self::PENDING_CATEGORY_SUGGESTION_ID, CategorySuggestion::ID);
     }
     
     public function applications(): HasMany
