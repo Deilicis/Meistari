@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { useActiveRole } from '@/composables/useActiveRole';
 import { useEscapeKey } from '@/composables/useEscapeKey';
@@ -29,7 +32,7 @@ useClickOutside(container, () => { open.value = false; });
             @click="open = !open"
             :aria-expanded="open"
             aria-haspopup="menu"
-            :aria-label="`Profila izvēlne — ${user.name}`"
+            :aria-label="t('nav.profile_menu_label', { name: user.name })"
             type="button"
             class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
         >
@@ -99,7 +102,7 @@ useClickOutside(container, () => { open.value = false; });
 
                 <!-- Add-role links when user has only one role -->
                 <div v-else class="px-4 py-3 border-t border-gray-100">
-                    <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Pievienot lomu</p>
+                    <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ t('nav.add_role') }}</p>
                     <button
                         v-if="!isMaster"
                         @click="addRoleModal = 'master'; open = false"
@@ -107,7 +110,7 @@ useClickOutside(container, () => { open.value = false; });
                         class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-yellow-50 hover:text-yellow-800 transition-colors text-left"
                     >
                         <span class="w-3 h-3 rounded-full bg-yellow-400 flex-shrink-0" />
-                        Pievienot meistara lomu →
+                        {{ t('nav.add_master_role') }}
                     </button>
                     <button
                         v-if="!isSeeker"
@@ -116,7 +119,7 @@ useClickOutside(container, () => { open.value = false; });
                         class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-emerald-50 hover:text-emerald-800 transition-colors text-left"
                     >
                         <span class="w-3 h-3 rounded-full bg-emerald-400 flex-shrink-0" />
-                        Pievienot meklētāja lomu →
+                        {{ t('nav.add_seeker_role') }}
                     </button>
                 </div>
 
@@ -128,7 +131,7 @@ useClickOutside(container, () => { open.value = false; });
                         class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         @click="open = false"
                     >
-                        Mans Profils
+                        {{ t('nav.my_profile') }}
                     </Link>
                 </div>
 
@@ -141,7 +144,7 @@ useClickOutside(container, () => { open.value = false; });
                         role="menuitem"
                         class="w-full text-left flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                     >
-                        Iziet no sistēmas
+                        {{ t('nav.logout') }}
                     </Link>
                 </div>
             </div>

@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useActiveRole } from '@/composables/useActiveRole';
+
+const { t } = useI18n();
 import AddRoleModal from '@/Components/Navbar/AddRoleModal.vue';
 import type { AuthUser, Profile } from '@/types/models';
 import {
@@ -45,7 +48,7 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
         <div class="px-3 py-2 space-y-0.5">
             <Link :href="route('dashboard')" :class="route().current('dashboard') ? activeLinkClass : linkClass"
                 :aria-current="route().current('dashboard') ? 'page' : undefined" @click="close">
-                <HomeIcon class="w-4 h-4" aria-hidden="true" /> Mans Panelis
+                <HomeIcon class="w-4 h-4" aria-hidden="true" /> {{ t('nav.dashboard') }}
             </Link>
 
             <template v-if="isMasterActive">
