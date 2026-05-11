@@ -30,7 +30,7 @@ class JobPageService
 
     public function buildPayloadForUser(int $jobId, User $user): array
     {
-        $job = JobRequest::with(['user', 'master', 'escrowHold', 'acceptedApplication'])
+        $job = JobRequest::with(['user', 'master', 'escrowHold', 'acceptedApplication', 'pendingCategorySuggestion'])
             ->findOrFail($jobId);
 
         $viewerRole = $this->determineViewerRole($job, $user);
@@ -258,6 +258,11 @@ class JobPageService
                 'amount'          => $job->escrowHold->getAmount(),
                 'held_at'         => $job->escrowHold->getHeldAt()?->toISOString(),
                 'auto_release_at' => $job->escrowHold->getAutoReleaseAt()?->toISOString(),
+            ] : null,
+            'pending_category_suggestion' => $job->pendingCategorySuggestion ? [
+                'id'     => $job->pendingCategorySuggestion->getId(),
+                'name'   => $job->pendingCategorySuggestion->getName(),
+                'status' => $job->pendingCategorySuggestion->getStatus()->value,
             ] : null,
         ];
     }

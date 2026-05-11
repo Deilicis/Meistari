@@ -28,6 +28,7 @@ const form = useForm({
     title: '',
     description: '',
     category_id: '' as string | number,
+    pending_category_suggestion_id: null as number | null,
     budget: '',
     deadline: null as string | null,
     location: [''],
@@ -35,13 +36,26 @@ const form = useForm({
     images_to_delete: [] as string[],
 });
 
+const parentSelection = ref<PickerSelection | null>(null);
+const childSelection  = ref<PickerSelection | null>(null);
+
+const selectedParentCategory = computed(() =>
+    parentSelection.value?.type === 'category'
+        ? props.categories.find(c => c.id === (parentSelection.value as { type: 'category'; id: number }).id) ?? null
+        : null
+);
+const parentHasChildren = computed(() => (selectedParentCategory.value?.children?.length ?? 0) > 0);
+const showChildPicker   = computed(() => parentSelection.value?.type === 'category' && parentHasChildren.value);
+
+watch(parentSelection, () => { childSelection.value = null; });
+
 const getError = (key: string): string | undefined =>
     (form.errors as Record<string, string>)[key] ?? stepErrors.value[key];
 
 const isDirty = computed(() =>
     form.title.trim() !== '' ||
     form.description.trim() !== '' ||
-    !!form.category_id ||
+    !!parentSelection.value ||
     form.budget.trim() !== '' ||
     form.deadline !== null ||
     form.location.some(l => l.trim() !== '') ||
@@ -53,7 +67,8 @@ const stepLabels = ['Pamatinformācija', 'Detaļas', 'Fotoattēli'];
 const validateStep1 = (): boolean => {
     stepErrors.value = {};
     if (!form.title.trim()) stepErrors.value.title = 'Lūdzu, ievadiet nosaukumu.';
-    if (!form.category_id) stepErrors.value.category_id = 'Lūdzu, izvēlieties kategoriju.';
+    const finalSel = childSelection.value ?? parentSelection.value;
+    if (!finalSel) stepErrors.value.category_id = 'Lūdzu, izvēlieties kategoriju.';
     if (!form.description.trim()) stepErrors.value.description = 'Lūdzu, ievadiet aprakstu.';
     return Object.keys(stepErrors.value).length === 0;
 };
@@ -86,11 +101,20 @@ const submit = () => {
     const original = [...form.location];
     form.location = cleanLocations;
 
+    const finalSel = childSelection.value ?? parentSelection.value;
+    if (finalSel?.type === 'category') {
+        form.category_id = finalSel.id;
+        form.pending_category_suggestion_id = null;
+    } else if (finalSel?.type === 'suggestion') {
+        form.pending_category_suggestion_id = finalSel.id;
+        form.category_id = '';
+    }
+
     form.post(route('api.job-requests.store'), {
         forceFormData: true,
         onError: () => {
             form.location = original;
-            if (form.errors.title || form.errors.category_id || form.errors.description) {
+            if (form.errors.title || form.errors.category_id || form.errors.description || form.errors.pending_category_suggestion_id) {
                 step.value = 1;
             } else if (form.errors.location || form.errors.budget || form.errors.deadline) {
                 step.value = 2;
@@ -170,13 +194,19 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
                     <div>
                         <InputLabel value="Kategorija *" class="text-gray-700 font-medium mb-1" />
-                        <CategorySelect
-                            v-model="form.category_id"
-                            :categories="categories"
-                            :show-all-option="false"
-                            :required="true"
+                        <SmartCategoryPicker
+                            v-model="parentSelection"
+                            :parent-category-id="null"
+                            placeholder="Sāc rakstīt, lai meklētu kategoriju..."
                         />
-                        <InputError class="mt-1" :message="getError('category_id')" />
+                        <div v-if="showChildPicker" class="mt-2">
+                            <SmartCategoryPicker
+                                v-model="childSelection"
+                                :parent-category-id="selectedParentCategory!.id"
+                                placeholder="Meklēt apakškategoriju..."
+                            />
+                        </div>
+                        <InputError class="mt-1" :message="getError('category_id') || getError('pending_category_suggestion_id')" />
                     </div>
 
                     <div>

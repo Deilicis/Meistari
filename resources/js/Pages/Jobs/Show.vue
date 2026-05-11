@@ -81,6 +81,7 @@ interface JobData {
     client: { id: number; name: string };
     master: { id: number; name: string } | null;
     escrow: { status: string; amount: string; held_at: string | null; auto_release_at: string | null } | null;
+    pending_category_suggestion?: { id: number; name: string; status: string } | null;
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -404,6 +405,19 @@ async function handleChat() {
             <div v-else-if="job.status === 'cancelled'" class="flex gap-3 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
                 <XCircleIcon class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
                 <p class="text-sm text-gray-500">Šis darbs ir atcelts.</p>
+            </div>
+
+            <!-- Pending category suggestion banner (owner only) -->
+            <div
+                v-if="viewer_role === 'owner' && job.pending_category_suggestion"
+                class="flex items-start gap-2.5 p-3.5 bg-navy/5 border border-navy/10 rounded-2xl"
+            >
+                <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-navy/60" />
+                <p class="text-sm text-navy/80">
+                    Šis sludinājums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
+                    <span class="font-semibold">"{{ job.pending_category_suggestion.name }}"</span>
+                    tiek pārskatīts.
+                </p>
             </div>
 
             <!-- Timeline -->
