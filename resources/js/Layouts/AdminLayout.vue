@@ -166,6 +166,11 @@ const mobileNavLinkClass = (active: boolean) =>
                                 Kategorijas
                             </Link>
 
+                            <Link :href="route('admin.category-suggestions.index')" :class="navLinkClass(route().current('admin.category-suggestions.*'))">
+                                <ClockIcon class="w-3.5 h-3.5" />
+                                Priekšlikumi
+                            </Link>
+
                             <Link :href="route('admin.staff.index')" :class="navLinkClass(route().current('admin.staff.*'))">
                                 <UsersIcon class="w-3.5 h-3.5" />
                                 Darbinieki
@@ -217,6 +222,11 @@ const mobileNavLinkClass = (active: boolean) =>
                         <Link :href="route('admin.categories.index')" :class="mobileNavLinkClass(route().current('admin.categories.*'))" @click="mobileOpen = false">
                             <TagIcon class="w-4 h-4" />
                             Kategorijas
+                        </Link>
+
+                        <Link :href="route('admin.category-suggestions.index')" :class="mobileNavLinkClass(route().current('admin.category-suggestions.*'))" @click="mobileOpen = false">
+                            <ClockIcon class="w-4 h-4" />
+                            Priekšlikumi
                         </Link>
 
                         <Link :href="route('admin.staff.index')" :class="mobileNavLinkClass(route().current('admin.staff.*'))" @click="mobileOpen = false">

@@ -81,7 +81,7 @@ interface JobData {
     client: { id: number; name: string };
     master: { id: number; name: string } | null;
     escrow: { status: string; amount: string; held_at: string | null; auto_release_at: string | null } | null;
-    pending_category_suggestion?: { id: number; name: string; status: string } | null;
+    pending_category_suggestion?: { id: number; name: string; status: string; review_note: string | null } | null;
 }
 
 // ─── Props ────────────────────────────────────────────────────────────────────
