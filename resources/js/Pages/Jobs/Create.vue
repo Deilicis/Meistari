@@ -181,54 +181,54 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
 
-                <!-- Step 1: Pamatinformācija -->
+                <!-- Step 1 -->
                 <div v-if="step === 1" class="space-y-5">
                     <div>
-                        <InputLabel value="Virsraksts *" class="text-gray-700 font-medium mb-1" />
+                        <InputLabel :value="t('jobs.field_title_label')" class="text-gray-700 font-medium mb-1" />
                         <TextInput
                             type="text"
                             class="block w-full focus:border-navy focus:ring-navy"
                             v-model="form.title"
-                            placeholder="Piem., Nepieciešams lamināta ieklājējs dzīvoklī"
+                            :placeholder="t('jobs.field_title_placeholder')"
                             autofocus
                         />
                         <InputError class="mt-1" :message="getError('title')" />
                     </div>
 
                     <div>
-                        <InputLabel value="Kategorija *" class="text-gray-700 font-medium mb-1" />
+                        <InputLabel :value="t('jobs.field_category_label')" class="text-gray-700 font-medium mb-1" />
                         <SmartCategoryPicker
                             v-model="parentSelection"
                             :parent-category-id="null"
-                            placeholder="Sāc rakstīt, lai meklētu kategoriju..."
+                            :placeholder="t('jobs.field_category_placeholder')"
                         />
                         <div v-if="showChildPicker" class="mt-2">
                             <SmartCategoryPicker
                                 v-model="childSelection"
                                 :parent-category-id="selectedParentCategory!.id"
-                                placeholder="Meklēt apakškategoriju..."
+                                :placeholder="t('jobs.field_subcategory_placeholder')"
                             />
                         </div>
                         <InputError class="mt-1" :message="getError('category_id') || getError('pending_category_suggestion_id')" />
                     </div>
 
                     <div>
-                        <InputLabel value="Apraksts *" class="text-gray-700 font-medium mb-1" />
+                        <InputLabel :value="t('jobs.field_description_label')" class="text-gray-700 font-medium mb-1" />
                         <textarea
                             v-model="form.description"
                             rows="5"
-                            placeholder="Apraksti darbu pēc iespējas sīkāk — materiāli, izmēri, īpašas prasības..."
+                            :placeholder="t('jobs.field_description_placeholder')"
                             class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-navy focus:ring-1 focus:ring-navy outline-none resize-y"
                         />
                         <InputError class="mt-1" :message="getError('description')" />
                     </div>
                 </div>
 
-                <!-- Step 2: Detaļas -->
+                <!-- Step 2 -->
                 <div v-else-if="step === 2" class="space-y-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <InputLabel value="Budžets (€)" class="text-gray-700 font-medium mb-1" />
+                            <InputLabel :value="t('jobs.field_budget_label')" class="text-gray-700 font-medium mb-1" />
                             <TextInput
                                 type="number"
                                 step="0.01"
@@ -240,14 +240,14 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                             <InputError class="mt-1" :message="getError('budget')" />
                         </div>
                         <div>
-                            <InputLabel value="Izpildes termiņš" class="text-gray-700 font-medium mb-1" />
+                            <InputLabel :value="t('jobs.field_deadline_label')" class="text-gray-700 font-medium mb-1" />
                             <VueDatePicker
                                 v-model="form.deadline"
                                 model-type="iso"
                                 :enable-time-picker="false"
                                 format="dd.MM.yyyy"
                                 :locale="lv"
-                                placeholder="Izvēlies datumu"
+                                :placeholder="t('jobs.field_deadline_placeholder')"
                                 auto-apply
                                 :clearable="true"
                                 :teleport="true"
@@ -258,7 +258,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                     </div>
 
                     <div>
-                        <InputLabel value="Atrašanās vieta *" class="text-gray-700 font-medium mb-1" />
+                        <InputLabel :value="t('jobs.field_location_label')" class="text-gray-700 font-medium mb-1" />
                         <div class="space-y-2">
                             <div
                                 v-for="(_, i) in form.location"
@@ -269,7 +269,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                                     type="text"
                                     class="flex-1 focus:border-navy focus:ring-navy"
                                     v-model="form.location[i]"
-                                    placeholder="Piem., Rīga, Centrs"
+                                    :placeholder="t('jobs.field_location_placeholder')"
                                 />
                                 <button
                                     v-if="form.location.length > 1"
@@ -287,17 +287,17 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                             class="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:text-navy/70 transition-colors"
                         >
                             <PlusIcon class="w-3.5 h-3.5" stroke-width="2.5" />
-                            Pievienot vietu
+                            {{ t('jobs.add_location') }}
                         </button>
                         <InputError class="mt-1" :message="getError('location')" />
                     </div>
                 </div>
 
-                <!-- Step 3: Fotoattēli -->
+                <!-- Step 3 -->
                 <div v-else-if="step === 3" class="space-y-5">
                     <div>
-                        <InputLabel value="Fotoattēli (neobligāti)" class="text-gray-700 font-medium mb-1" />
-                        <p class="text-xs text-gray-400 mb-3">Pievieno attēlus, lai meistari labāk izprastu darbu. Maks. 10 attēli.</p>
+                        <InputLabel :value="t('jobs.field_photos_label')" class="text-gray-700 font-medium mb-1" />
+                        <p class="text-xs text-gray-400 mb-3">{{ t('jobs.field_photos_hint') }}</p>
                         <PortfolioUploader
                             v-model:newFiles="form.images"
                             v-model:imagesToDelete="form.images_to_delete"
@@ -316,7 +316,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:border-gray-300 hover:text-gray-800 transition-colors"
                     >
                         <ArrowLeftIcon class="w-4 h-4" />
-                        Atpakaļ
+                        {{ t('profile.back_btn') }}
                     </button>
                     <button
                         v-else
@@ -325,7 +325,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:border-gray-300 hover:text-gray-800 transition-colors"
                     >
                         <XMarkIcon class="w-4 h-4" />
-                        Atcelt
+                        {{ t('jobs.cancel_btn') }}
                     </button>
 
                     <button
@@ -334,7 +334,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                         @click="nextStep"
                         class="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-navy hover:bg-navy/90 rounded-xl transition-colors"
                     >
-                        Tālāk
+                        {{ t('jobs.next_btn') }}
                         <ArrowRightIcon class="w-4 h-4" />
                     </button>
                     <button
@@ -345,7 +345,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                         class="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl transition-colors disabled:opacity-60"
                     >
                         <CheckIcon class="w-4 h-4" />
-                        {{ form.processing ? 'Publicē...' : 'Publicēt sludinājumu' }}
+                        {{ form.processing ? t('jobs.publishing_btn') : t('jobs.publish_btn') }}
                     </button>
                 </div>
             </div>
@@ -359,20 +359,20 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                 @click.self="showCancelConfirm = false"
             >
                 <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4">
-                    <h3 class="text-base font-bold text-gray-900 mb-2">Atcelt sludinājuma izveidi?</h3>
-                    <p class="text-sm text-gray-500 mb-5">Visi ievadītie dati tiks zaudēti.</p>
+                    <h3 class="text-base font-bold text-gray-900 mb-2">{{ t('jobs.cancel_confirm_title') }}</h3>
+                    <p class="text-sm text-gray-500 mb-5">{{ t('jobs.cancel_confirm_desc') }}</p>
                     <div class="flex justify-end gap-3">
                         <button
                             @click="showCancelConfirm = false"
                             class="px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:border-gray-300 transition-colors"
                         >
-                            Turpināt
+                            {{ t('jobs.cancel_confirm_continue') }}
                         </button>
                         <Link
                             :href="route('seeker.job-requests.index')"
                             class="px-4 py-2 text-sm font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors"
                         >
-                            Jā, atcelt
+                            {{ t('jobs.cancel_confirm_yes') }}
                         </Link>
                     </div>
                 </div>

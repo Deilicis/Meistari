@@ -3,6 +3,8 @@ import { ref, watch, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import JobStatusBadge from '@/Components/Jobs/JobStatusBadge.vue';
 import JobLifecycleTimeline from '@/Components/Jobs/JobLifecycleTimeline.vue';
