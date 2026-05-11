@@ -6,6 +6,9 @@ import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import FormField from '@/Components/Form/FormField.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type EnumOption = string | { name: string; value: string };
 
@@ -21,8 +24,8 @@ const getOptionValue = (option: EnumOption): string => {
 
 const getProfileLabel = (option: EnumOption): string => {
     const val = getOptionValue(option).toLowerCase();
-    if (val === 'individual') return 'Privātpersona';
-    if (val === 'company') return 'Uzņēmums';
+    if (val === 'individual') return t('auth.register.individual');
+    if (val === 'company') return t('auth.register.company');
     return typeof option === 'string' ? option : option.name;
 };
 
@@ -69,11 +72,11 @@ const submit = () => {
 
 <template>
     <AuthLayout>
-        <Head title="Reģistrēties" />
+        <Head :title="t('auth.register.title')" />
 
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-navy">Izveido kontu</h2>
-            <p class="text-sm text-gray-500 mt-1">Pievienojies platformai un sāc darboties jau šodien.</p>
+            <h2 class="text-2xl font-bold text-navy">{{ t('auth.register.title') }}</h2>
+            <p class="text-sm text-gray-500 mt-1">{{ t('auth.register.subtitle') }}</p>
         </div>
 
         <form @submit.prevent="submit" class="space-y-4">
