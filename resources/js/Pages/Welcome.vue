@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import WelcomeNav from '@/Components/Welcome/WelcomeNav.vue';
 import WelcomeHero from '@/Components/Welcome/WelcomeHero.vue';
 import StatsBar from '@/Components/Welcome/StatsBar.vue';
@@ -24,7 +27,7 @@ const isAuth = computed(() => !!(page.props as any).auth?.user);
 </script>
 
 <template>
-    <Head title="Meistari - Atrodi uzticamu meistaru" />
+    <Head :title="t('welcome.meta_title')" />
 
     <div class="min-h-screen flex flex-col font-sans bg-gray-50">
         <WelcomeNav :canLogin="canLogin" :canRegister="canRegister" :isAuth="isAuth" />

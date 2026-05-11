@@ -153,11 +153,11 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
             <div class="space-y-0.5">
                 <Link :href="route('profile.edit')"
                     class="block px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-                    @click="close">Mans Profils
+                    @click="close">{{ t('nav.my_profile') }}
                 </Link>
                 <Link :href="route('logout')" method="post" as="button"
                     class="w-full text-left block px-3 py-2 rounded-md text-sm font-medium text-red-300 hover:text-red-200 hover:bg-white/10 transition-colors"
-                    @click="close">Iziet no sistēmas
+                    @click="close">{{ t('nav.logout') }}
                 </Link>
             </div>
         </div>
