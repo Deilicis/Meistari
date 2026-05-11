@@ -4,7 +4,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import { useI18n } from 'vue-i18n';
-import { formatDate } from '@/utils/formatters';
+import { formatDate, formatCurrency } from '@/utils/formatters';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import LeaveReviewModal from '@/Components/Common/LeaveReviewModal.vue';
@@ -284,9 +284,9 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
 
     <ConfirmDialog
         :show="cancelTarget !== null"
-        title="Atcelt pieteikumu?"
-        :message="cancelTarget ? `Vai tiešām vēlaties atcelt pieteikumu sludinājumam &quot;${cancelTarget.job_request?.title ?? ''}&quot;?` : ''"
-        confirmLabel="Atcelt pieteikumu"
+        :title="t('applications.cancel_confirm_title')"
+        :message="cancelTarget ? `${t('applications.cancel_confirm_title')} &quot;${cancelTarget.job_request?.title ?? ''}&quot;?` : ''"
+        :confirmLabel="t('applications.cancel_btn')"
         :processing="cancelling"
         @confirm="confirmCancel"
         @cancel="cancelTarget = null"

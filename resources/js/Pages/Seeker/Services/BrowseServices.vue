@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BrowseServicesSearchBar from '@/Components/Search/BrowseServicesSearchBar.vue';
 import PublicServiceCard from '@/Components/Services/PublicServiceCard.vue';
@@ -59,7 +62,7 @@ const onApplied = () => {
 </script>
 
 <template>
-    <Head title="Pakalpojumi" />
+    <Head :title="t('browse.services_title')" />
 
     <AuthenticatedLayout>
         <div class="bg-navy">
@@ -68,9 +71,9 @@ const onApplied = () => {
                 <div class="flex items-center gap-3">
                     <MagnifyingGlassIcon class="w-6 h-6 text-emerald-400" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Pakalpojumi</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('browse.services_title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            <span class="text-emerald-400 font-semibold">{{ services.total }}</span> pieejami pakalpojumi
+                            <span class="text-emerald-400 font-semibold">{{ t('browse.services_count', { n: services.total }) }}</span>
                         </p>
                     </div>
                 </div>
@@ -84,8 +87,8 @@ const onApplied = () => {
 
                 <EmptyState
                     v-if="services.data.length === 0"
-                    :title="hasActiveFilters() ? 'Nav atrasts neviens pakalpojums' : 'Pagaidām nav pieejamu pakalpojumu'"
-                    :description="hasActiveFilters() ? 'Mēģiniet mainīt meklēšanas kritērijus.' : 'Meistari vēl nav publicējuši savus pakalpojumus.'"
+                    :title="hasActiveFilters() ? t('browse.services_empty_filter_title') : t('browse.services_empty_title')"
+                    :description="hasActiveFilters() ? t('browse.services_empty_filter_desc') : t('browse.services_empty_desc')"
                 >
                     <template #icon>
                         <MagnifyingGlassIcon class="w-8 h-8 text-navy/30" />
@@ -96,7 +99,7 @@ const onApplied = () => {
                             @click="clearFilters"
                             class="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-navy-hover transition-colors"
                         >
-                            Notīrīt filtrus
+                            {{ t('browse.clear_filters') }}
                         </button>
                     </template>
                 </EmptyState>
