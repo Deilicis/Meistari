@@ -18,6 +18,7 @@ import {
     Bars3Icon,
     XMarkIcon,
     ClockIcon,
+    TagIcon,
 } from '@heroicons/vue/24/outline';
 
 const page = usePage<{
@@ -124,6 +125,15 @@ const mobileNavLinkClass = (active: boolean) =>
                                 >
                                     <ClipboardDocumentListIcon class="w-3 h-3" />
                                     Sludinājumi
+                                </Link>
+
+                                <Link
+                                    v-if="isAdmin"
+                                    :href="route('admin.categories.index')"
+                                    :class="navLinkClass(route().current('admin.categories.*'))"
+                                >
+                                    <TagIcon class="w-3 h-3" />
+                                    Kategorijas
                                 </Link>
 
                                 <Link
