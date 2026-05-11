@@ -266,7 +266,7 @@
       "faq_2_q": "Is the platform free?",
       "faq_2_a": "Registration and profile creation are free. A commission fee on successful transactions may be applied in the future.",
       "faq_3_q": "How do I report a problem with a Master?",
-      "faq_3_a": "Open the Master's profile and click \"Report a problem\", or write to info@meistari.lv.",
+      "faq_3_a": "Open the Master's profile and click \"Report a problem\", or write to info{'@'}meistari.lv.",
       "faq_4_q": "Can I delete my account?",
       "faq_4_a": "Yes — in Profile Settings under \"Account management\" you'll find the account deletion option.",
       "faq_5_q": "How long does a profile stay active?",
