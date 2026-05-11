@@ -11,6 +11,7 @@ use App\Enums\Job\JobStatusEnum;
 use App\Enums\NotificationTypeEnum;
 use App\Models\JobRequest;
 use App\Notifications\Job\JobCompletedNotification;
+use App\Repositories\CategoryRepository;
 use App\Services\NotificationService;
 use App\Services\Repositories\Application\ApplicationDbRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,6 +26,7 @@ class JobRequestLogicRepository
         private readonly JobRequestDbRepository  $dbRepository,
         private readonly ApplicationDbRepository $applicationDbRepository,
         private readonly NotificationService     $notificationService,
+        private readonly CategoryRepository      $categoryRepository,
     ) {
     }
 
@@ -62,6 +64,13 @@ class JobRequestLogicRepository
 
         $slug = Str::slug($dto->title) . '-' . uniqid();
 
+        if ($dto->pendingCategorySuggestionId !== null) {
+            $cits = $this->categoryRepository->findBySlug('cits');
+            if ($cits) {
+                $dto->categoryId = $cits->getId();
+            }
+        }
+
         $dataToSave = [
             JobRequest::USER_ID     => $dto->userId,
             JobRequest::CATEGORY_ID => $dto->categoryId,
@@ -74,6 +83,10 @@ class JobRequestLogicRepository
             JobRequest::LOCATION    => $dto->location,
             JobRequest::IMAGES      => $images,
         ];
+
+        if ($dto->pendingCategorySuggestionId !== null) {
+            $dataToSave[JobRequest::PENDING_CATEGORY_SUGGESTION_ID] = $dto->pendingCategorySuggestionId;
+        }
 
         return $this->dbRepository->create($dataToSave);
     }

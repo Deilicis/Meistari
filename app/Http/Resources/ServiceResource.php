@@ -7,6 +7,7 @@ namespace App\Http\Resources;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\CategorySuggestionResource;
 
 /**
  * @mixin Service
@@ -25,8 +26,15 @@ class ServiceResource extends JsonResource
             Service::LOCATION => $this->getLocation(),
             Service::IS_ACTIVE          => $this->getIsActive(),
             Service::CREATED_AT         => $this->getCreatedAt(),
-            'applications_count'        => $this->whenCounted('applications'),
-            'category'                  => new CategoryResource($this->whenLoaded('category')),
+            'applications_count'          => $this->whenCounted('applications'),
+            'category'                    => new CategoryResource($this->whenLoaded('category')),
+            'pending_category_suggestion' => $this->whenLoaded('pendingCategorySuggestion', fn () =>
+                $this->pendingCategorySuggestion ? [
+                    'id'     => $this->pendingCategorySuggestion->getId(),
+                    'name'   => $this->pendingCategorySuggestion->getName(),
+                    'status' => $this->pendingCategorySuggestion->getStatus()->value,
+                ] : null
+            ),
         ];
     }
 }

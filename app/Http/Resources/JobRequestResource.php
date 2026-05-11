@@ -26,7 +26,14 @@ class JobRequestResource extends JsonResource
             JobRequest::STATUS => $this->getStatus()->value,
             JobRequest::CREATED_AT => $this->getCreatedAt(),
             
-            'category' => new CategoryResource($this->whenLoaded('category')),
+            'category'                    => new CategoryResource($this->whenLoaded('category')),
+            'pending_category_suggestion' => $this->whenLoaded('pendingCategorySuggestion', fn () =>
+                $this->pendingCategorySuggestion ? [
+                    'id'     => $this->pendingCategorySuggestion->getId(),
+                    'name'   => $this->pendingCategorySuggestion->getName(),
+                    'status' => $this->pendingCategorySuggestion->getStatus()->value,
+                ] : null
+            ),
         ];
     }
 }
