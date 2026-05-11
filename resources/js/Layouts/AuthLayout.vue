@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import ApplicationLogo from '@/Components/Common/ApplicationLogo.vue';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
 import { CheckIcon, ChevronLeftIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
+
+const features = computed(() => [
+    t('auth.side_feature_1'),
+    t('auth.side_feature_2'),
+    t('auth.side_feature_3'),
+]);
 </script>
 
 <template>
@@ -23,22 +34,18 @@ import { CheckIcon, ChevronLeftIcon } from '@heroicons/vue/24/outline';
 
                 <div class="mb-10">
                     <span class="inline-block text-gold text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-gold/30 bg-gold/5 mb-5">
-                        Latvijas meistaru platforma
+                        {{ t('auth.side_tagline') }}
                     </span>
                     <h2 class="text-3xl lg:text-4xl font-extrabold leading-tight text-white mb-4">
-                        Atrodi uzticamu meistaru vai piedāvā savus pakalpojumus
+                        {{ t('auth.side_heading') }}
                     </h2>
                     <p class="text-white/50 text-sm leading-relaxed">
-                        Ātri, ērti un droši. Reģistrējies un sāc darboties jau šodien.
+                        {{ t('auth.side_subtitle') }}
                     </p>
                 </div>
 
                 <div class="space-y-3">
-                    <div v-for="item in [
-                        'Sertificēti un pārbaudīti meistari visā Latvijā',
-                        'Publicē sludinājumu un saņem piedāvājumus ātri',
-                        'Bezmaksas reģistrācija — bez slēptajām maksām',
-                    ]" :key="item" class="flex items-start gap-3">
+                    <div v-for="item in features" :key="item" class="flex items-start gap-3">
                         <div class="w-5 h-5 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center shrink-0 mt-0.5">
                             <CheckIcon class="w-3 h-3 text-gold" stroke-width="3" />
                         </div>
@@ -47,11 +54,12 @@ import { CheckIcon, ChevronLeftIcon } from '@heroicons/vue/24/outline';
                 </div>
             </div>
 
-            <div class="relative z-10 mt-10">
+            <div class="relative z-10 mt-10 flex items-center justify-between">
                 <Link href="/" class="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors">
                     <ChevronLeftIcon class="w-3.5 h-3.5" />
-                    Atpakaļ uz sākumlapu
+                    {{ t('auth.back_to_home') }}
                 </Link>
+                <LanguageSwitcher />
             </div>
         </div>
 
