@@ -407,18 +407,34 @@ async function handleChat() {
                 <p class="text-sm text-gray-500">Šis darbs ir atcelts.</p>
             </div>
 
-            <!-- Pending category suggestion banner (owner only) -->
-            <div
-                v-if="viewer_role === 'owner' && job.pending_category_suggestion"
-                class="flex items-start gap-2.5 p-3.5 bg-navy/5 border border-navy/10 rounded-2xl"
-            >
-                <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-navy/60" />
-                <p class="text-sm text-navy/80">
-                    Šis sludinājums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
-                    <span class="font-semibold">"{{ job.pending_category_suggestion.name }}"</span>
-                    tiek pārskatīts.
-                </p>
-            </div>
+            <!-- Category suggestion banner (owner only) -->
+            <template v-if="viewer_role === 'owner' && job.pending_category_suggestion">
+                <div
+                    v-if="job.pending_category_suggestion.status === 'pending'"
+                    class="flex items-start gap-2.5 p-3.5 bg-navy/5 border border-navy/10 rounded-2xl"
+                >
+                    <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-navy/60" />
+                    <p class="text-sm text-navy/80">
+                        Šis sludinājums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
+                        <span class="font-semibold">"{{ job.pending_category_suggestion.name }}"</span>
+                        tiek pārskatīts.
+                    </p>
+                </div>
+                <div
+                    v-else-if="job.pending_category_suggestion.status === 'rejected'"
+                    class="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-200 rounded-2xl"
+                >
+                    <XCircleIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
+                    <div class="text-sm">
+                        <p class="font-semibold text-red-700">
+                            Kategorijas priekšlikums "<span>{{ job.pending_category_suggestion.name }}</span>" tika noraidīts.
+                        </p>
+                        <p v-if="job.pending_category_suggestion.review_note" class="text-red-600 mt-0.5">
+                            {{ job.pending_category_suggestion.review_note }}
+                        </p>
+                    </div>
+                </div>
+            </template>
 
             <!-- Timeline -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">

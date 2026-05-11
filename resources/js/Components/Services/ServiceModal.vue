@@ -9,7 +9,7 @@ import InputError from '@/Components/Form/InputError.vue';
 import Checkbox from '@/Components/Form/Checkbox.vue';
 import TagInput from '@/Components/Tag/TagInput.vue';
 import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
-import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 import type { PickerSelection } from '@/types/categorysuggestion';
 
@@ -156,18 +156,34 @@ const save = async () => {
 
         <!-- Saturs -->
         <div class="p-6">
-            <!-- Pending suggestion banner (edit mode only) -->
-            <div
-                v-if="service?.pending_category_suggestion"
-                class="mb-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800"
-            >
-                <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
-                <span>
-                    Šis pakalpojums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
-                    <span class="font-semibold">"{{ service.pending_category_suggestion.name }}"</span>
-                    tiek pārskatīts.
-                </span>
-            </div>
+            <!-- Suggestion banner (edit mode only) -->
+            <template v-if="service?.pending_category_suggestion">
+                <div
+                    v-if="service.pending_category_suggestion.status === 'pending'"
+                    class="mb-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800"
+                >
+                    <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+                    <span>
+                        Šis pakalpojums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
+                        <span class="font-semibold">"{{ service.pending_category_suggestion.name }}"</span>
+                        tiek pārskatīts.
+                    </span>
+                </div>
+                <div
+                    v-else-if="service.pending_category_suggestion.status === 'rejected'"
+                    class="mb-4 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-sm"
+                >
+                    <XCircleIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
+                    <div>
+                        <p class="font-semibold text-red-700">
+                            Priekšlikums "<span>{{ service.pending_category_suggestion.name }}</span>" tika noraidīts.
+                        </p>
+                        <p v-if="service.pending_category_suggestion.review_note" class="text-red-600 mt-0.5">
+                            {{ service.pending_category_suggestion.review_note }}
+                        </p>
+                    </div>
+                </div>
+            </template>
 
             <form @submit.prevent="save" class="space-y-5">
 

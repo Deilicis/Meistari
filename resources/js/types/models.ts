@@ -24,7 +24,7 @@ export interface JobRequest {
     applications_count?: number;
     created_at: string;
     updated_at: string;
-    pending_category_suggestion?: { id: number; name: string; status: string } | null;
+    pending_category_suggestion?: { id: number; name: string; status: string; review_note: string | null } | null;
 }
 
 export interface Service {
@@ -42,7 +42,7 @@ export interface Service {
     created_at: string;
     updated_at: string;
     applications_count?: number;
-    pending_category_suggestion?: { id: number; name: string; status: string } | null;
+    pending_category_suggestion?: { id: number; name: string; status: string; review_note: string | null } | null;
 }
 
 export interface Profile {
