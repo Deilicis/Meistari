@@ -251,6 +251,13 @@ const mobileNavLinkClass = (active: boolean) =>
                             Sludinājumi
                         </Link>
 
+                        <Link v-if="isAdmin" :href="route('admin.categories.index')"
+                            :class="mobileNavLinkClass(route().current('admin.categories.*'))"
+                            @click="showingNavigationDropdown = false">
+                            <TagIcon class="w-4 h-4" />
+                            Kategorijas
+                        </Link>
+
                         <Link :href="route('admin.staff.index')"
                             :class="mobileNavLinkClass(route().current('admin.staff.*'))"
                             @click="showingNavigationDropdown = false">
