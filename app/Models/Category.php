@@ -10,19 +10,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use Auditable, HasFactory;
+    use Auditable, HasFactory, SoftDeletes;
 
-    public const TABLE = 'categories';
-    public const ID = 'id';
-    public const NAME = 'name';
-    public const SLUG = 'slug';
-    public const ICON = 'icon';
-    public const PARENT_ID = 'parent_id';
+    public const TABLE      = 'categories';
+    public const ID         = 'id';
+    public const NAME       = 'name';
+    public const SLUG       = 'slug';
+    public const ICON       = 'icon';
+    public const PARENT_ID  = 'parent_id';
+    public const IS_SYSTEM  = 'is_system';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -31,6 +34,11 @@ class Category extends Model
         self::SLUG,
         self::ICON,
         self::PARENT_ID,
+        self::IS_SYSTEM,
+    ];
+
+    protected $casts = [
+        self::IS_SYSTEM => 'boolean',
     ];
 
     public function getId(): int
@@ -56,6 +64,21 @@ class Category extends Model
     public function getParentId(): ?int
     {
         return $this->getAttribute(self::PARENT_ID);
+    }
+
+    public function isSystem(): bool
+    {
+        return (bool) $this->getAttribute(self::IS_SYSTEM);
+    }
+
+    public function isTopLevel(): bool
+    {
+        return $this->getParentId() === null;
+    }
+
+    public function isSubcategory(): bool
+    {
+        return $this->getParentId() !== null;
     }
 
     public function getCreatedAt(): ?Carbon

@@ -12,6 +12,7 @@ export interface PriceProposal {
     responded_at: string | null;
     created_at: string;
     is_pending: boolean;
+    job_request_id?: number | null;
 }
 
 export interface ProposalState {

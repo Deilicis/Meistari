@@ -123,10 +123,19 @@ async function counter(amount: number, note: string | null) {
                     <CurrencyEuroIcon class="w-4 h-4 text-gold flex-shrink-0" />
                     <span class="text-xs font-bold text-navy uppercase tracking-wide">Cenas piedāvājums</span>
                 </div>
-                <span
-                    class="text-xs font-semibold px-2 py-0.5 rounded-full"
-                    :class="statusCls[proposal.status]"
-                >{{ proposal.status_label }}</span>
+                <div class="flex items-center gap-2">
+                    <span
+                        class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                        :class="statusCls[proposal.status]"
+                    >{{ proposal.status_label }}</span>
+                    <a
+                        v-if="proposal.job_request_id"
+                        :href="`/jobs/${proposal.job_request_id}`"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-xs text-slate-400 hover:text-slate-600 hover:underline transition-colors whitespace-nowrap"
+                    >Skatīt darbu →</a>
+                </div>
             </div>
 
             <!-- Body -->

@@ -24,7 +24,7 @@ class MessageDbRepository
     public function getForConversation(int $conversationId): Collection
     {
         return Message::where(Message::CONVERSATION_ID, $conversationId)
-            ->with(['sender', 'proposal.proposedBy', 'proposal.respondedBy'])
+            ->with(['sender', 'proposal.proposedBy', 'proposal.respondedBy', 'proposal.application'])
             ->orderBy(Message::CREATED_AT)
             ->get();
     }

@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ProposalChatCard from '@/Components/Chat/ProposalChatCard.vue';
-import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon, BriefcaseIcon } from '@heroicons/vue/24/outline';
 import type { PriceProposal } from '@/types/proposal';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -44,11 +44,18 @@ interface Conversation {
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
+interface RelatedJob {
+    id: number;
+    title: string;
+    status: string;
+}
+
 const props = defineProps<{
     conversation: Conversation;
     messages: Message[];
     conversations: Conversation[];
     auth_user_id: number;
+    related_job: RelatedJob | null;
 }>();
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -245,6 +252,20 @@ onUnmounted(() => {
                         <p class="text-sm font-semibold text-gray-900">{{ conversation.other_user.name }}</p>
                         <p class="text-xs text-gray-400">Aktīvs</p>
                     </div>
+                </div>
+
+                <!-- Related job banner -->
+                <div v-if="related_job" class="flex items-center gap-2 px-5 py-2 bg-navy/5 border-b border-navy/10 flex-shrink-0">
+                    <BriefcaseIcon class="w-3.5 h-3.5 text-navy/50 flex-shrink-0" />
+                    <span class="text-xs text-navy/70 truncate min-w-0">
+                        Saruna par darbu: <span class="font-semibold">„{{ related_job.title }}"</span>
+                    </span>
+                    <a
+                        :href="`/jobs/${related_job.id}`"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="ml-auto text-xs font-semibold text-navy hover:underline flex-shrink-0"
+                    >Skatīt →</a>
                 </div>
 
                 <!-- Messages -->

@@ -32,7 +32,8 @@ class PriceProposalResource extends JsonResource
             ] : null,
             'responded_at' => $this->getRespondedAt()?->toISOString(),
             'created_at'   => $this->getCreatedAt()?->toISOString(),
-            'is_pending'   => $this->isPending(),
+            'is_pending'     => $this->isPending(),
+            'job_request_id' => $this->whenLoaded('application', fn () => $this->application->getJobRequestId()),
         ];
     }
 }

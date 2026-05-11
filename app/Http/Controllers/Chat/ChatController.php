@@ -11,6 +11,7 @@ use App\Http\Resources\ConversationResource;
 use App\Http\Resources\MessageResource;
 use App\Models\Conversation;
 use App\Services\Repositories\Chat\ChatLogicRepository;
+use App\Services\Repositories\Chat\ConversationDbRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,7 +20,8 @@ use Inertia\Response;
 class ChatController extends Controller
 {
     public function __construct(
-        private readonly ChatLogicRepository $chatRepository,
+        private readonly ChatLogicRepository    $chatRepository,
+        private readonly ConversationDbRepository $conversationDb,
     ) {}
 
     public function index(Request $request): Response
@@ -42,12 +44,18 @@ class ChatController extends Controller
         $conversation->load(['sender', 'receiver', 'messages' => fn ($q) => $q->latest()->limit(1)]);
         $messages      = $this->chatRepository->getMessages($conversation->getId(), $authId);
         $conversations = $this->chatRepository->getConversationsForUser($authId);
+        $relatedJob    = $this->conversationDb->findRelatedJobForConversation($conversation->getId());
 
         return Inertia::render('Chat/Show', [
             'conversation'  => (new ConversationResource($conversation))->toArray($request),
             'messages'      => MessageResource::collection($messages)->resolve($request),
             'conversations' => ConversationResource::collection($conversations)->resolve($request),
             'auth_user_id'  => $authId,
+            'related_job'   => $relatedJob ? [
+                'id'     => $relatedJob->getId(),
+                'title'  => $relatedJob->getTitle(),
+                'status' => $relatedJob->getStatus()->value,
+            ] : null,
         ]);
     }
 

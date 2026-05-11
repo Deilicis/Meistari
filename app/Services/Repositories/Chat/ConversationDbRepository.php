@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Repositories\Chat;
 
+use App\Models\Application;
 use App\Models\Conversation;
+use App\Models\JobRequest;
 use Illuminate\Support\Collection;
 
 class ConversationDbRepository
@@ -29,6 +31,30 @@ class ConversationDbRepository
             Conversation::SENDER_ID   => $senderId,
             Conversation::RECEIVER_ID => $receiverId,
         ]);
+    }
+
+    public function findRelatedJobForConversation(int $conversationId): ?JobRequest
+    {
+        $conversation = $this->findById($conversationId);
+        if (!$conversation) {
+            return null;
+        }
+
+        $a = $conversation->getSenderId();
+        $b = $conversation->getReceiverId();
+
+        return JobRequest::select('job_requests.*')
+            ->join('applications', 'applications.' . Application::JOB_REQUEST_ID, '=', 'job_requests.' . JobRequest::ID)
+            ->where(function ($q) use ($a, $b) {
+                $q->where('applications.' . Application::USER_ID, $a)
+                  ->where('job_requests.' . JobRequest::USER_ID, $b);
+            })
+            ->orWhere(function ($q) use ($a, $b) {
+                $q->where('applications.' . Application::USER_ID, $b)
+                  ->where('job_requests.' . JobRequest::USER_ID, $a);
+            })
+            ->orderByDesc('applications.' . Application::CREATED_AT)
+            ->first();
     }
 
     public function getForUser(int $userId): Collection
