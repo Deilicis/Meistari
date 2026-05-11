@@ -6,8 +6,10 @@ namespace App\Http\Requests\Service;
 
 use App\DataTransferObjects\Service\SaveServiceRequestData;
 use App\Enums\Service\ServicePriceTypeEnum;
+use App\Enums\CategorySuggestionStatusEnum;
 use App\Helpers\ValidationRuleHelper;
 use App\Models\Category;
+use App\Models\CategorySuggestion;
 use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
@@ -40,8 +42,15 @@ class SaveServiceRequest extends FormRequest
         $serviceId = $this->route('service')?->getId();
 
         return [
+            'pending_category_suggestion_id' => [
+                ValidationRuleHelper::NULLABLE,
+                ValidationRuleHelper::INTEGER,
+                Rule::exists(CategorySuggestion::TABLE, CategorySuggestion::ID)
+                    ->where(fn ($q) => $q->where(CategorySuggestion::STATUS, CategorySuggestionStatusEnum::PENDING->value)),
+            ],
             Service::CATEGORY_ID => [
-                ValidationRuleHelper::REQUIRED,
+                'required_without:pending_category_suggestion_id',
+                ValidationRuleHelper::NULLABLE,
                 ValidationRuleHelper::INTEGER,
                 ValidationRuleHelper::EXISTS . ':' . Category::TABLE . ',' . Category::ID
             ],
@@ -90,7 +99,10 @@ class SaveServiceRequest extends FormRequest
         $dto = new SaveServiceRequestData();
         
         $dto->userId = $this->user()->id;
-        $dto->categoryId = (int) $this->validated(Service::CATEGORY_ID);
+        $dto->categoryId = $this->validated(Service::CATEGORY_ID) !== null ? (int) $this->validated(Service::CATEGORY_ID) : 0;
+        $dto->pendingCategorySuggestionId = $this->validated('pending_category_suggestion_id') !== null
+            ? (int) $this->validated('pending_category_suggestion_id')
+            : null;
         $dto->title = $this->validated(Service::TITLE);
         $dto->slug = $this->validated(Service::SLUG);
         $dto->description = $this->validated(Service::DESCRIPTION);

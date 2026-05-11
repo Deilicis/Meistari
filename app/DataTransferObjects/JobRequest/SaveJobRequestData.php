@@ -22,4 +22,5 @@ class SaveJobRequestData
     public array $images = [];
     /** @var array<string> */
     public array $imagesToDelete = [];
+    public ?int $pendingCategorySuggestionId = null;
 }

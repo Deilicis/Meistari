@@ -22,5 +22,6 @@ enum NotificationTypeEnum: string
     case PROPOSAL_RECEIVED    = 'proposal_received';
     case PROPOSAL_ACCEPTED    = 'proposal_accepted';
     case PROPOSAL_REJECTED    = 'proposal_rejected';
-    case PROPOSAL_WITHDRAWN   = 'proposal_withdrawn';
+    case PROPOSAL_WITHDRAWN          = 'proposal_withdrawn';
+    case NEW_CATEGORY_SUGGESTION     = 'new_category_suggestion';
 }

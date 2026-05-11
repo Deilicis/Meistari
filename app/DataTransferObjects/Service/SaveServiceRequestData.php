@@ -18,19 +18,26 @@ class SaveServiceRequestData
     public ServicePriceTypeEnum $priceType;
     public array $location;
     public bool $isActive;
+    public ?int $pendingCategorySuggestionId = null;
 
     public function toArray(): array
     {
-        return [
-            Service::USER_ID => $this->userId,
+        $data = [
+            Service::USER_ID     => $this->userId,
             Service::CATEGORY_ID => $this->categoryId,
-            Service::TITLE => $this->title,
-            Service::SLUG => $this->slug,
+            Service::TITLE       => $this->title,
+            Service::SLUG        => $this->slug,
             Service::DESCRIPTION => $this->description,
-            Service::PRICE => $this->price,
-            Service::PRICE_TYPE => $this->priceType->value,
-            Service::LOCATION => $this->location,
-            Service::IS_ACTIVE => $this->isActive,
+            Service::PRICE       => $this->price,
+            Service::PRICE_TYPE  => $this->priceType->value,
+            Service::LOCATION    => $this->location,
+            Service::IS_ACTIVE   => $this->isActive,
         ];
+
+        if ($this->pendingCategorySuggestionId !== null) {
+            $data[Service::PENDING_CATEGORY_SUGGESTION_ID] = $this->pendingCategorySuggestionId;
+        }
+
+        return $data;
     }
 }
