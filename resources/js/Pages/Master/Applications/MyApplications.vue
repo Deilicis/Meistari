@@ -111,7 +111,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
 </script>
 
 <template>
-    <Head title="Mani Pieteikumi" />
+    <Head :title="t('applications.master_my_title')" />
 
     <AuthenticatedLayout>
 
@@ -122,10 +122,9 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                 <div class="flex items-center gap-3">
                     <ClipboardDocumentListIcon class="w-6 h-6 text-gold" />
                     <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">Mani pieteikumi</h1>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('applications.master_my_title') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">
-                            Pieteikumi uz darba sludinājumiem ·
-                            <span class="text-gold font-semibold">{{ applications.length }}</span> kopā
+                            {{ t('applications.master_my_subtitle', { count: applications.length }) }}
                         </p>
                     </div>
                 </div>
@@ -166,7 +165,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                     <!-- Top bar: title, category, status, date -->
                     <div
                         class="px-5 pt-5 pb-4 border-l-4"
-                        :class="statusConfig[app.status].borderClass"
+                        :class="statusClasses[app.status].borderClass"
                     >
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0 flex-1">
@@ -197,9 +196,9 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                             <div class="shrink-0 flex flex-col items-end gap-1.5">
                                 <span
                                     class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                                    :class="statusConfig[app.status].badgeClass"
+                                    :class="statusClasses[app.status].badgeClass"
                                 >
-                                    {{ statusConfig[app.status].label }}
+                                    {{ t('statuses.application.' + app.status) }}
                                 </span>
                                 <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
                             </div>
@@ -211,7 +210,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                         <p v-if="app.cover_letter" class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {{ app.cover_letter }}
                         </p>
-                        <p v-else class="text-sm text-gray-400 italic">Nav pievienota vēstule.</p>
+                        <p v-else class="text-sm text-gray-400 italic">{{ t('applications.no_cover_letter') }}</p>
 
                         <div class="flex items-center gap-5 flex-wrap text-sm">
                             <span
@@ -219,16 +218,16 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                                 class="flex items-center gap-1.5 text-gray-500"
                             >
                                 <BanknotesIcon class="w-3.5 h-3.5 text-gray-400" />
-                                Budžets:
-                                <span class="font-semibold text-gray-800">€{{ app.job_request.budget }}</span>
+                                {{ t('applications.budget_label') }}
+                                <span class="font-semibold text-gray-800">{{ formatCurrency(app.job_request.budget) }}</span>
                             </span>
                             <span
                                 v-if="app.price_offer != null"
                                 class="flex items-center gap-1.5 text-gray-500"
                             >
                                 <BanknotesIcon class="w-3.5 h-3.5 text-emerald-500" />
-                                Mans piedāvājums:
-                                <span class="font-semibold text-emerald-700">€{{ app.price_offer }}</span>
+                                {{ t('applications.my_offer_label') }}
+                                <span class="font-semibold text-emerald-700">{{ formatCurrency(app.price_offer) }}</span>
                             </span>
                         </div>
                     </div>
@@ -241,7 +240,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                             class="inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline transition-colors"
                         >
                             <ArrowTopRightOnSquareIcon class="w-4 h-4" />
-                            Skatīt darbu
+                            {{ t('applications.view_job') }}
                         </Link>
                         <span v-else />
 
@@ -252,7 +251,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                                 class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 rounded-lg px-3 py-1.5 transition-colors"
                             >
                                 <XCircleIcon class="w-3.5 h-3.5" />
-                                Atcelt pieteikumu
+                                {{ t('applications.cancel_btn') }}
                             </button>
                             <button
                                 v-if="app.status === 'completed' && app.job_request?.status === 'completed'"
@@ -260,7 +259,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                                 class="inline-flex items-center gap-1.5 text-xs font-semibold text-navy bg-navy/5 border border-navy/20 hover:bg-navy/10 rounded-lg px-3 py-1.5 transition-colors"
                             >
                                 <StarIcon class="w-3.5 h-3.5" />
-                                Atstāt atsauksmi
+                                {{ t('applications.leave_review') }}
                             </button>
                         </div>
                     </div>
@@ -273,10 +272,10 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                     <ClipboardDocumentListIcon class="w-6 h-6 text-gold/60" />
                 </div>
                 <p class="text-base font-semibold text-gray-700 mb-1">
-                    {{ activeFilter === 'all' ? 'Vēl nav neviena pieteikuma' : 'Nav pieteikumu šajā kategorijā' }}
+                    {{ activeFilter === 'all' ? t('applications.my_empty_all_title') : t('applications.my_empty_filter_title') }}
                 </p>
                 <p class="text-sm text-gray-400">
-                    {{ activeFilter === 'all' ? 'Atrodiet darba sludinājumus un pieteicieties!' : 'Izmēģiniet citu filtru.' }}
+                    {{ activeFilter === 'all' ? t('applications.my_empty_all_desc_master') : t('applications.my_empty_filter_desc') }}
                 </p>
             </div>
 
