@@ -44,6 +44,7 @@ use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PriceProposalController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\CategorySuggestionController;
 use App\Http\Controllers\Stripe\CheckoutSuccessController;
 use App\Http\Controllers\Stripe\WebhookController as StripeWebhookController;
 
@@ -198,8 +199,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
 
+    // API: Kategoriju priekšlikumi
+    Route::post('/category-suggestions', [CategorySuggestionController::class, 'store'])->name('category-suggestions.store');
+
     // API: Kategorijas
     Route::prefix('categories')->name('categories.')->group(function () {
+        Route::get('/search', [CategorySuggestionController::class, 'search'])->name('search');
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::get('/{id}', [CategoryController::class, 'show'])->name('show');
 
