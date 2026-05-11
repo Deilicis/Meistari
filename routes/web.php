@@ -43,6 +43,7 @@ use App\Http\Controllers\JobRequest\JobRequestShowPageController;
 use App\Http\Controllers\ServiceApplication\MasterServiceApplicationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PriceProposalController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Stripe\CheckoutSuccessController;
 use App\Http\Controllers\Stripe\WebhookController as StripeWebhookController;
 
