@@ -2,7 +2,9 @@
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { CheckCircleIcon } from '@heroicons/vue/24/solid';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const props = defineProps<{ job_id: number }>();
 </script>
 

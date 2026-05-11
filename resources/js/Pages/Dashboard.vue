@@ -4,8 +4,11 @@ import SeekerDashboard from './DashboardPartials/SeekerDashboard.vue';
 import MasterDashboard from './DashboardPartials/MasterDashboard.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useActiveRole } from '@/composables/useActiveRole';
 import type { AuthUser, Service, JobRequest } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     stats: Record<string, number>;
