@@ -437,7 +437,12 @@
     "delete_btn": "Dzēst",
     "clear_filters_btn": "Notīrīt filtrus",
     "reject_proposal_btn": "Noraidīt",
-    "withdraw_proposal_btn": "Atsaukt"
+    "withdraw_proposal_btn": "Atsaukt",
+    "accept_app_btn": "Pieņemt",
+    "accept_app_success": "Pieteikums pieņemts!",
+    "accept_app_error": "Kļūda pieņemot pieteikumu.",
+    "reject_app_success": "Pieteikums noraidīts.",
+    "reject_app_error": "Kļūda noraidot pieteikumu."
   },
   "services": {
     "my_title": "Mani Pakalpojumi",

@@ -437,7 +437,12 @@
     "delete_btn": "Delete",
     "clear_filters_btn": "Clear filters",
     "reject_proposal_btn": "Reject",
-    "withdraw_proposal_btn": "Withdraw"
+    "withdraw_proposal_btn": "Withdraw",
+    "accept_app_btn": "Accept",
+    "accept_app_success": "Application accepted!",
+    "accept_app_error": "Error accepting application.",
+    "reject_app_success": "Application rejected.",
+    "reject_app_error": "Error rejecting application."
   },
   "services": {
     "my_title": "My Services",

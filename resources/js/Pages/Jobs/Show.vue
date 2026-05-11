@@ -682,32 +682,30 @@ async function handleChat() {
 
             <!-- Own application (applicant) -->
             <div v-if="ownApp && viewer_role === 'applicant'" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 class="text-sm font-bold text-navy mb-4">Tavs pieteikums</h2>
+                <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.your_application') }}</h2>
                 <div class="space-y-3">
                     <div class="flex items-center gap-2 flex-wrap">
                         <span
                             class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                            :class="appStatusBadge[ownApp.status].cls"
-                        >{{ appStatusBadge[ownApp.status].label }}</span>
+                            :class="appStatusBadgeClass[ownApp.status]"
+                        >{{ t('statuses.application.' + ownApp.status) }}</span>
                         <span class="text-xs text-gray-400">{{ formatDate(ownApp.created_at) }}</span>
                     </div>
                     <p v-if="ownApp.cover_letter" class="text-sm text-gray-600 leading-relaxed">
                         {{ ownApp.cover_letter }}
                     </p>
-                    <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                    <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
 
                     <div v-if="ownApp.status === 'shortlisted'" class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <p class="text-xs font-semibold text-blue-700">Tavs pieteikums ir apsvēršanā!</p>
-                        <p class="text-xs text-blue-600 mt-0.5">
-                            Klients pārskata tavu kandidatūru. Vari sazināties ar viņu čatā.
-                        </p>
+                        <p class="text-xs font-semibold text-blue-700">{{ t('jobs.shortlisted_notice_title') }}</p>
+                        <p class="text-xs text-blue-600 mt-0.5">{{ t('jobs.shortlisted_notice_desc') }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Assigned master card (owner) -->
             <div v-if="job.master && (viewer_role === 'owner' || viewer_role === 'admin')" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 class="text-sm font-bold text-navy mb-3">Pieņemtais meistars</h2>
+                <h2 class="text-sm font-bold text-navy mb-3">{{ t('jobs.accepted_master_card') }}</h2>
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm shrink-0">
                         {{ job.master.name.slice(0, 2).toUpperCase() }}
@@ -717,21 +715,21 @@ async function handleChat() {
                             :href="route('master.public-profile', job.master.id)"
                             class="text-sm font-bold text-gray-900 hover:text-navy hover:underline transition-colors"
                         >{{ job.master.name }}</a>
-                        <p class="text-xs text-gray-400">Pieņemtais meistars</p>
+                        <p class="text-xs text-gray-400">{{ t('jobs.accepted_master_role_label') }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Escrow info -->
             <div v-if="job.escrow" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 class="text-sm font-bold text-navy mb-4">Maksājuma informācija</h2>
+                <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.escrow_title') }}</h2>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
                     <div>
-                        <p class="text-xs text-gray-500 mb-0.5">Summa</p>
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_amount_label') }}</p>
                         <p class="text-sm font-semibold text-navy">{{ formatMoney(job.escrow.amount) }}</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 mb-0.5">Statuss</p>
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_status_label') }}</p>
                         <p
                             class="text-sm font-semibold"
                             :class="{
@@ -740,11 +738,11 @@ async function handleChat() {
                                 'text-gray-500':    job.escrow.status === 'refunded',
                             }"
                         >
-                            {{ job.escrow.status === 'held' ? 'Rezervēts' : job.escrow.status === 'released' ? 'Izmaksāts' : 'Atgriezts' }}
+                            {{ t('statuses.escrow.' + job.escrow.status) }}
                         </p>
                     </div>
                     <div v-if="job.escrow.auto_release_at">
-                        <p class="text-xs text-gray-500 mb-0.5">Auto-atbrīvošana</p>
+                        <p class="text-xs text-gray-500 mb-0.5">{{ t('jobs.escrow_auto_release_label') }}</p>
                         <p class="text-sm text-gray-700">{{ formatDate(job.escrow.auto_release_at) }}</p>
                     </div>
                 </div>
@@ -752,7 +750,7 @@ async function handleChat() {
 
             <!-- Job details -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
-                <h2 class="text-sm font-bold text-navy">Darba informācija</h2>
+                <h2 class="text-sm font-bold text-navy">{{ t('jobs.info_title') }}</h2>
                 <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ job.description }}</p>
 
                 <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
@@ -760,7 +758,7 @@ async function handleChat() {
                     <div v-if="viewer_role !== 'owner'" class="flex items-start gap-2">
                         <UserIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Klients</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.client_label') }}</p>
                             <a
                                 :href="route('seeker.public-profile', job.client.id)"
                                 class="text-sm font-medium text-gray-800 hover:underline hover:text-navy transition-colors"
@@ -772,7 +770,7 @@ async function handleChat() {
                     <div v-if="job.budget" class="flex items-start gap-2">
                         <CurrencyEuroIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Budžets</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.budget_label') }}</p>
                             <p class="text-sm font-medium text-gray-800">{{ formatMoney(job.budget) }}</p>
                         </div>
                     </div>
@@ -781,7 +779,7 @@ async function handleChat() {
                     <div v-if="job.agreed_price" class="flex items-start gap-2">
                         <BanknotesIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Vienotā cena</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.agreed_price_label') }}</p>
                             <p class="text-sm font-medium text-gray-800">{{ formatMoney(job.agreed_price, job.price_type) }}</p>
                         </div>
                     </div>
@@ -790,7 +788,7 @@ async function handleChat() {
                     <div v-if="job.deadline" class="flex items-start gap-2">
                         <CalendarIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Termiņš</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.deadline_label') }}</p>
                             <p class="text-sm text-gray-700">{{ formatDate(job.deadline) }}</p>
                         </div>
                     </div>
@@ -799,7 +797,7 @@ async function handleChat() {
                     <div v-if="job.location?.length" class="flex items-start gap-2">
                         <MapPinIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Atrašanās vieta</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.location_label') }}</p>
                             <p class="text-sm text-gray-700">{{ job.location.join(', ') }}</p>
                         </div>
                     </div>
@@ -808,7 +806,7 @@ async function handleChat() {
                     <div class="flex items-start gap-2">
                         <ClockIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Izveidots</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.created_label') }}</p>
                             <p class="text-sm text-gray-700">{{ formatDate(job.created_at) }}</p>
                         </div>
                     </div>
@@ -817,7 +815,7 @@ async function handleChat() {
                     <div v-if="job.completed_at" class="flex items-start gap-2">
                         <CheckCircleIcon class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                         <div>
-                            <p class="text-xs text-gray-500">Pabeigts</p>
+                            <p class="text-xs text-gray-500">{{ t('jobs.completed_label') }}</p>
                             <p class="text-sm text-gray-700">{{ formatDate(job.completed_at) }}</p>
                         </div>
                     </div>
@@ -825,7 +823,7 @@ async function handleChat() {
 
                 <!-- Images -->
                 <div v-if="job.images?.length" class="pt-2 border-t border-gray-100">
-                    <p class="text-xs text-gray-500 mb-2">Fotogrāfijas</p>
+                    <p class="text-xs text-gray-500 mb-2">{{ t('jobs.photos_label') }}</p>
                     <div class="grid grid-cols-3 gap-2">
                         <img
                             v-for="(img, i) in job.images"
