@@ -435,7 +435,9 @@
     "price_not_set": "Nav noteikta",
     "edit_btn": "Rediģēt",
     "delete_btn": "Dzēst",
-    "clear_filters_btn": "Notīrīt filtrus"
+    "clear_filters_btn": "Notīrīt filtrus",
+    "reject_proposal_btn": "Noraidīt",
+    "withdraw_proposal_btn": "Atsaukt"
   },
   "services": {
     "my_title": "Mani Pakalpojumi",

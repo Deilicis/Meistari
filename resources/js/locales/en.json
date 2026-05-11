@@ -435,7 +435,9 @@
     "price_not_set": "Not set",
     "edit_btn": "Edit",
     "delete_btn": "Delete",
-    "clear_filters_btn": "Clear filters"
+    "clear_filters_btn": "Clear filters",
+    "reject_proposal_btn": "Reject",
+    "withdraw_proposal_btn": "Withdraw"
   },
   "services": {
     "my_title": "My Services",

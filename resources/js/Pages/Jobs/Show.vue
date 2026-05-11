@@ -448,7 +448,7 @@ async function handleChat() {
 
             <!-- Actions panel -->
             <div v-if="showActionPanel" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h2 class="text-sm font-bold text-navy mb-3">Pieejamās darbības</h2>
+                <h2 class="text-sm font-bold text-navy mb-3">{{ t('jobs.available_actions') }}</h2>
                 <div class="flex flex-wrap gap-2">
                     <button
                         v-if="has('pay')"
@@ -456,7 +456,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold bg-navy text-white rounded-lg hover:bg-navy/90 disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'pay' ? 'Lūdzu, uzgaidiet...' : 'Apmaksāt darbu' }}
+                        {{ loading === 'pay' ? t('jobs.action_please_wait') : t('jobs.action_pay') }}
                     </button>
                     <button
                         v-if="has('mark_complete')"
@@ -464,7 +464,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold bg-navy text-white rounded-lg hover:bg-navy/90 disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'mark_complete' ? 'Lūdzu, uzgaidiet...' : 'Atzīmēt kā pabeigtu' }}
+                        {{ loading === 'mark_complete' ? t('jobs.action_please_wait') : t('jobs.action_mark_complete') }}
                     </button>
                     <button
                         v-if="has('confirm_complete')"
@@ -472,7 +472,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'confirm_complete' ? 'Lūdzu, uzgaidiet...' : 'Apstiprināt pabeigšanu' }}
+                        {{ loading === 'confirm_complete' ? t('jobs.action_please_wait') : t('jobs.action_confirm_complete') }}
                     </button>
                     <button
                         v-if="has('withdraw_application')"
@@ -480,7 +480,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'withdraw' ? 'Lūdzu, uzgaidiet...' : 'Atsaukt pieteikumu' }}
+                        {{ loading === 'withdraw' ? t('jobs.action_please_wait') : t('jobs.action_withdraw') }}
                     </button>
                     <button
                         v-if="has('resolve_dispute_release')"
@@ -488,7 +488,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 transition-colors"
                     >
-                        Atbrīvot maksājumu meistaram
+                        {{ t('jobs.action_release_payment') }}
                     </button>
                     <button
                         v-if="has('resolve_dispute_refund')"
@@ -496,7 +496,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold bg-amber-500 text-white rounded-lg hover:bg-amber-600 disabled:opacity-50 transition-colors"
                     >
-                        Atmaksāt klientam
+                        {{ t('jobs.action_refund_client') }}
                     </button>
                     <button
                         v-if="has('dispute')"
@@ -504,7 +504,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
                     >
-                        Atvērt strīdu
+                        {{ t('jobs.action_dispute') }}
                     </button>
                     <button
                         v-if="has('cancel')"
@@ -512,7 +512,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
                     >
-                        Atcelt darbu
+                        {{ t('jobs.action_cancel') }}
                     </button>
                     <button
                         v-if="has('delete_job')"
@@ -520,7 +520,7 @@ async function handleChat() {
                         :disabled="!!loading"
                         class="px-4 py-2 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'delete_job' ? 'Dzēš...' : 'Dzēst darbu' }}
+                        {{ loading === 'delete_job' ? t('jobs.action_deleting') : t('jobs.action_delete') }}
                     </button>
                 </div>
             </div>
@@ -530,9 +530,9 @@ async function handleChat() {
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <p class="text-sm font-bold text-navy">
-                            {{ has('chat_with_master') ? 'Čatot ar meistaru' : 'Čatot ar klientu' }}
+                            {{ has('chat_with_master') ? t('jobs.chat_with_master') : t('jobs.chat_with_client') }}
                         </p>
-                        <p class="text-xs text-gray-400 mt-0.5">Sazinieties par darba detaļām</p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ t('jobs.chat_details') }}</p>
                     </div>
                     <button
                         @click="handleChat"
@@ -540,7 +540,7 @@ async function handleChat() {
                         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold bg-navy text-white rounded-xl hover:bg-navy/90 disabled:opacity-50 transition-colors shrink-0"
                     >
                         <ChatBubbleLeftRightIcon class="w-4 h-4" />
-                        {{ loading === 'chat' ? 'Atver...' : 'Atvērt čatu' }}
+                        {{ loading === 'chat' ? t('jobs.opening_chat') : t('jobs.open_chat') }}
                     </button>
                 </div>
             </div>
@@ -550,7 +550,7 @@ async function handleChat() {
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-sm font-bold text-navy flex items-center gap-2">
                         <ClipboardDocumentListIcon class="w-4 h-4 text-navy/60" />
-                        Iesniegtie pieteikumi
+                        {{ t('jobs.submitted_applications') }}
                     </h2>
                     <span class="text-xs font-bold text-white bg-navy px-2.5 py-1 rounded-full">
                         {{ apps.length }}
@@ -559,8 +559,8 @@ async function handleChat() {
 
                 <div v-if="apps.length === 0" class="py-8 text-center">
                     <ClipboardDocumentListIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    <p class="text-sm text-gray-500">Vēl nav neviena pieteikuma.</p>
-                    <p class="text-xs text-gray-400 mt-1">Meistari drīzumā iesniegs savus piedāvājumus.</p>
+                    <p class="text-sm text-gray-500">{{ t('jobs.no_applications_msg') }}</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ t('jobs.applications_coming_msg') }}</p>
                 </div>
 
                 <div v-else class="space-y-3">
@@ -595,8 +595,8 @@ async function handleChat() {
                                     >{{ applicantName(app) }}</a>
                                     <span
                                         class="text-xs font-semibold px-2 py-0.5 rounded-full"
-                                        :class="appStatusBadge[app.status].cls"
-                                    >{{ appStatusBadge[app.status].label }}</span>
+                                        :class="appStatusBadgeClass[app.status]"
+                                    >{{ t('statuses.application.' + app.status) }}</span>
                                     <!-- Pending proposal amount badge -->
                                     <span
                                         v-if="app.pending_proposal"
@@ -612,7 +612,7 @@ async function handleChat() {
                                 <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-2">
                                     {{ app.cover_letter }}
                                 </p>
-                                <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                                <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                             </div>
 
                             <!-- Per-application buttons (pending / shortlisted, owner only, open jobs only) -->
@@ -627,7 +627,7 @@ async function handleChat() {
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 rounded-lg disabled:opacity-50 transition-colors"
                                 >
                                     <StarIcon class="w-3.5 h-3.5" />
-                                    Apsvērt
+                                    {{ t('jobs.shortlist_btn') }}
                                 </button>
                                 <!-- Proposal-based accept (shows price inline) — only when master proposed -->
                                 <button
@@ -636,7 +636,7 @@ async function handleChat() {
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    Pieņemt {{ formatMoney(app.pending_proposal.amount) }}
+                                    {{ t('jobs.accept_proposal_btn', { price: formatMoney(app.pending_proposal.amount) }) }}
                                 </button>
                                 <!-- Proposal-based counter — only when master proposed -->
                                 <button
@@ -645,7 +645,7 @@ async function handleChat() {
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-navy bg-white border border-navy/20 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    Cita cena
+                                    {{ t('jobs.counter_price_btn') }}
                                 </button>
                                 <!-- No proposal yet: submit fresh -->
                                 <button
@@ -654,7 +654,7 @@ async function handleChat() {
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-navy bg-white border border-navy/20 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    Piedāvāt cenu
+                                    {{ t('jobs.propose_price_btn') }}
                                 </button>
                                 <!-- Reject proposal — only when master proposed -->
                                 <button
@@ -663,7 +663,7 @@ async function handleChat() {
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    Noraidīt
+                                    {{ t('jobs.reject_proposal_btn') }}
                                 </button>
                                 <!-- Withdraw — only when owner proposed it themselves -->
                                 <button
@@ -672,7 +672,7 @@ async function handleChat() {
                                     :disabled="!!loading"
                                     class="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg disabled:opacity-50 transition-colors"
                                 >
-                                    Atsaukt
+                                    {{ t('jobs.withdraw_proposal_btn') }}
                                 </button>
                             </div>
                         </div>
