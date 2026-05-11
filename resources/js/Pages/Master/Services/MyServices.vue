@@ -3,7 +3,10 @@ import { ref, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+const { t } = useI18n();
 import PrimaryButton from '@/Components/Form/PrimaryButton.vue';
 import ServiceModal from '@/Components/Services/ServiceModal.vue';
 import ConfirmationModal from '@/Components/Common/ConfirmationModal.vue';
@@ -70,10 +73,10 @@ const executeDelete = async () => {
 
     try {
         await axios.delete(`/api/services/${serviceToDelete.value}`);
-        toast.success('Pakalpojums veiksmīgi izdzēsts!');
+        toast.success(t('services.deleted_toast'));
         refreshServices();
     } catch {
-        toast.error('Neizdevās izdzēst pakalpojumu.');
+        toast.error(t('services.delete_failed'));
     } finally {
         isDeleteModalOpen.value = false;
         serviceToDelete.value = null;
