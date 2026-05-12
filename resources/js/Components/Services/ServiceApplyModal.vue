@@ -2,10 +2,13 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import { XMarkIcon, ClipboardDocumentListIcon } from '@heroicons/vue/24/outline';
 import type { ServiceWithMaster } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -45,15 +48,15 @@ const submit = async () => {
             budget_offer: budgetOffer.value || null,
         });
 
-        toast.success('Pieteikums veiksmīgi iesniegts!');
+        toast.success(t('services.apply_success_toast'));
         reset();
         emit('applied');
     } catch (error: any) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors ?? {};
-            toast.error('Lūdzu, pārbaudiet formu.');
+            toast.error(t('services.apply_form_error'));
         } else {
-            toast.error('Notika neparedzēta kļūda.');
+            toast.error(t('services.apply_unexpected_error'));
         }
     } finally {
         processing.value = false;
@@ -69,7 +72,7 @@ const submit = async () => {
                     <ClipboardDocumentListIcon class="w-4 h-4 text-emerald-300" />
                 </div>
                 <div>
-                    <h2 class="text-base font-bold text-white">Pieteikties</h2>
+                    <h2 class="text-base font-bold text-white">{{ t('services.apply_title') }}</h2>
                     <p v-if="service" class="text-xs text-white/50 truncate max-w-xs">{{ service.title }}</p>
                 </div>
             </div>
@@ -81,22 +84,22 @@ const submit = async () => {
         <div class="p-6 space-y-5">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                    Jūsu ziņojums <span class="text-red-500">*</span>
+                    {{ t('services.apply_message_label') }} <span class="text-red-500">*</span>
                 </label>
                 <textarea
                     v-model="message"
                     rows="5"
                     class="block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                    placeholder="Aprakstiet sevi, savu pieredzi un kāpēc esat piemērots šim darbam..."
+                    :placeholder="t('services.apply_message_placeholder')"
                 ></textarea>
-                <p class="mt-1 text-xs text-gray-400">Minimums 10 rakstzīmes</p>
+                <p class="mt-1 text-xs text-gray-400">{{ t('services.apply_message_min') }}</p>
                 <InputError v-if="errors.message" :message="errors.message" class="mt-1" />
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                    Budžeta piedāvājums (€)
-                    <span class="text-gray-400 font-normal">(neobligāti)</span>
+                    {{ t('services.apply_budget_label') }}
+                    <span class="text-gray-400 font-normal">{{ t('services.apply_budget_optional') }}</span>
                 </label>
                 <input
                     v-model="budgetOffer"
@@ -104,7 +107,7 @@ const submit = async () => {
                     step="0.01"
                     min="0"
                     class="block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                    placeholder="Piem., 150"
+                    :placeholder="t('services.apply_budget_placeholder')"
                 />
                 <InputError v-if="errors.budget_offer" :message="errors.budget_offer" class="mt-1" />
             </div>
@@ -118,7 +121,7 @@ const submit = async () => {
                 @click="close"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-                Atcelt
+                {{ t('common.cancel') }}
             </button>
             <button
                 type="button"
@@ -130,7 +133,7 @@ const submit = async () => {
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                {{ processing ? 'Iesniedz...' : 'Iesniegt pieteikumu' }}
+                {{ processing ? t('services.apply_submitting') : t('services.apply_submit') }}
             </button>
         </div>
     </Modal>

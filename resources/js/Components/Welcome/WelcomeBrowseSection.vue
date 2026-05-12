@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 import WelcomeServiceCard from '@/Components/Welcome/WelcomeServiceCard.vue';
 import WelcomeJobCard from '@/Components/Welcome/WelcomeJobCard.vue';
 import type { WelcomeServiceCard as ServiceCardType, WelcomeJobRequestCard } from '@/types/welcome';
+
+const { t } = useI18n();
 
 defineProps<{
     services: ServiceCardType[];
@@ -31,7 +34,7 @@ const emit = defineEmits<{
                         class="px-5 py-2 text-sm font-semibold rounded-lg transition-colors"
                         :class="activeTab === 'services' ? 'bg-navy text-white shadow-sm' : 'text-gray-500 hover:text-navy'"
                     >
-                        Pakalpojumi
+                        {{ t('welcome.browse_services_tab') }}
                         <span class="ml-1.5 text-xs opacity-60">{{ services.length }}</span>
                     </button>
                     <button
@@ -39,15 +42,15 @@ const emit = defineEmits<{
                         class="px-5 py-2 text-sm font-semibold rounded-lg transition-colors"
                         :class="activeTab === 'jobs' ? 'bg-navy text-white shadow-sm' : 'text-gray-500 hover:text-navy'"
                     >
-                        Darba sludinājumi
+                        {{ t('welcome.browse_jobs_tab') }}
                         <span class="ml-1.5 text-xs opacity-60">{{ jobRequests.length }}</span>
                     </button>
                 </div>
 
                 <p v-if="hasActiveFilters" class="text-sm text-gray-500">
-                    Filtrēts results
+                    {{ t('welcome.browse_filtered') }}
                     <button @click="emit('clearFilters')" class="ml-2 text-xs font-semibold text-navy hover:underline">
-                        Notīrīt
+                        {{ t('welcome.browse_clear_filters') }}
                     </button>
                 </p>
             </div>
@@ -55,7 +58,7 @@ const emit = defineEmits<{
             <div v-if="activeTab === 'services'">
                 <div v-if="services.length === 0" class="text-center py-16 text-gray-400">
                     <MagnifyingGlassIcon class="w-10 h-10 mx-auto mb-3 opacity-30" />
-                    <p class="text-sm font-medium">Nav atrasts neviens pakalpojums.</p>
+                    <p class="text-sm font-medium">{{ t('welcome.browse_no_services') }}</p>
                 </div>
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     <WelcomeServiceCard
@@ -70,7 +73,7 @@ const emit = defineEmits<{
             <div v-if="activeTab === 'jobs'">
                 <div v-if="jobRequests.length === 0" class="text-center py-16 text-gray-400">
                     <MagnifyingGlassIcon class="w-10 h-10 mx-auto mb-3 opacity-30" />
-                    <p class="text-sm font-medium">Nav atrasts neviens sludinājums.</p>
+                    <p class="text-sm font-medium">{{ t('welcome.browse_no_jobs') }}</p>
                 </div>
                 <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     <WelcomeJobCard
@@ -83,10 +86,10 @@ const emit = defineEmits<{
             </div>
 
             <div class="mt-10 text-center">
-                <p class="text-sm text-gray-400 mb-3">Apskata tikai 8 no visiem pieejamajiem ierakstiem</p>
+                <p class="text-sm text-gray-400 mb-3">{{ t('welcome.browse_preview_note') }}</p>
                 <Link v-if="canRegister" :href="route('register')"
                     class="inline-flex items-center gap-2 bg-navy text-white text-sm font-bold px-6 py-2.5 rounded-xl hover:bg-navy-hover transition-colors">
-                    Reģistrēties un skatīt visus
+                    {{ t('welcome.browse_register_all') }}
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>

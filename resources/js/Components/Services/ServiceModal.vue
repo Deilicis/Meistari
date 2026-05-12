@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
@@ -12,6 +13,8 @@ import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue
 import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 import type { PickerSelection } from '@/types/categorysuggestion';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -97,7 +100,7 @@ const save = async () => {
 
     const finalSel = childSelection.value ?? parentSelection.value;
     if (!finalSel) {
-        validationErrors.value = { category_id: ['Lūdzu, izvēlieties kategoriju.'] };
+        validationErrors.value = { category_id: [t('services.category_required_error')] };
         processing.value = false;
         return;
     }
@@ -113,12 +116,12 @@ const save = async () => {
     try {
         if (form.value.id) {
             await axios.put(`/api/services/${form.value.id}`, payload);
-            toast.success('Pakalpojums atjaunināts!');
+            toast.success(t('services.updated_toast'));
         } else {
             await axios.post('/api/services', payload);
             const successMsg = finalSel.type === 'suggestion'
-                ? 'Pakalpojums publicēts. Tavs kategorijas priekšlikums tiks pārskatīts.'
-                : 'Jauns pakalpojums pievienots!';
+                ? t('services.created_with_suggestion_toast')
+                : t('services.created_toast');
             toast.success(successMsg);
         }
 
@@ -127,9 +130,9 @@ const save = async () => {
     } catch (error: any) {
         if (error.response?.status === 422) {
             validationErrors.value = error.response.data.errors;
-            toast.error('Lūdzu, izlabojiet kļūdas formā.');
+            toast.error(t('services.form_error_toast'));
         } else {
-            toast.error('Notika neparedzēta kļūda.');
+            toast.error(t('services.unexpected_error_toast'));
         }
     } finally {
         processing.value = false;
@@ -146,7 +149,7 @@ const save = async () => {
                     <WrenchScrewdriverIcon class="w-4 h-4 text-gold" />
                 </div>
                 <h2 class="text-base font-bold text-white">
-                    {{ form.id ? 'Rediģēt pakalpojumu' : 'Jauns pakalpojums' }}
+                    {{ form.id ? t('services.modal_edit_title') : t('services.modal_create_title') }}
                 </h2>
             </div>
             <button @click="emit('close')" type="button" class="text-white/60 hover:text-white transition-colors">
@@ -163,11 +166,7 @@ const save = async () => {
                     class="mb-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800"
                 >
                     <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
-                    <span>
-                        Šis pakalpojums ir pievienots kategorijai "Cits", kamēr tavs ieteikums
-                        <span class="font-semibold">"{{ service.pending_category_suggestion.name }}"</span>
-                        tiek pārskatīts.
-                    </span>
+                    <span>{{ t('services.suggestion_pending_banner', { name: service.pending_category_suggestion.name }) }}</span>
                 </div>
                 <div
                     v-else-if="service.pending_category_suggestion.status === 'rejected'"
@@ -176,7 +175,7 @@ const save = async () => {
                     <XCircleIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
                     <div>
                         <p class="font-semibold text-red-700">
-                            Priekšlikums "<span>{{ service.pending_category_suggestion.name }}</span>" tika noraidīts.
+                            {{ t('services.suggestion_rejected_title', { name: service.pending_category_suggestion.name }) }}
                         </p>
                         <p v-if="service.pending_category_suggestion.review_note" class="text-red-600 mt-0.5">
                             {{ service.pending_category_suggestion.review_note }}
@@ -189,32 +188,32 @@ const save = async () => {
 
                 <!-- Nosaukums -->
                 <div>
-                    <InputLabel for="title" value="Nosaukums" class="text-gray-700 font-medium" />
+                    <InputLabel for="title" :value="t('services.field_title_label')" class="text-gray-700 font-medium" />
                     <TextInput
                         id="title"
                         v-model="form.title"
                         type="text"
                         class="mt-1 block w-full focus:border-navy focus:ring-navy"
-                        placeholder="Piem., Santehnikas remonts"
+                        :placeholder="t('services.field_title_placeholder')"
                     />
                     <InputError class="mt-1.5" :message="validationErrors.title?.[0]" />
                 </div>
 
                 <!-- Kategorija -->
                 <div>
-                    <InputLabel value="Kategorija" class="text-gray-700 font-medium" />
+                    <InputLabel :value="t('services.field_category_label')" class="text-gray-700 font-medium" />
                     <div class="mt-1">
                         <SmartCategoryPicker
                             v-model="parentSelection"
                             :parent-category-id="null"
-                            placeholder="Sāc rakstīt, lai meklētu kategoriju..."
+                            :placeholder="t('services.field_category_placeholder')"
                         />
                     </div>
                     <div v-if="showChildPicker" class="mt-2">
                         <SmartCategoryPicker
                             v-model="childSelection"
                             :parent-category-id="selectedParentCategory!.id"
-                            placeholder="Meklēt apakškategoriju..."
+                            :placeholder="t('services.field_subcategory_placeholder')"
                         />
                     </div>
                     <InputError
@@ -225,13 +224,13 @@ const save = async () => {
 
                 <!-- Apraksts -->
                 <div>
-                    <InputLabel for="description" value="Apraksts" class="text-gray-700 font-medium" />
+                    <InputLabel for="description" :value="t('services.field_description_label')" class="text-gray-700 font-medium" />
                     <textarea
                         id="description"
                         v-model="form.description"
                         rows="3"
                         class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                        placeholder="Detalizēts piedāvājuma apraksts..."
+                        :placeholder="t('services.field_description_placeholder')"
                     ></textarea>
                     <InputError class="mt-1.5" :message="validationErrors.description?.[0]" />
                 </div>
@@ -239,28 +238,28 @@ const save = async () => {
                 <!-- Cena un cenas tips -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <InputLabel for="price" value="Cena (€)" class="text-gray-700 font-medium" />
+                        <InputLabel for="price" :value="t('services.field_price_label')" class="text-gray-700 font-medium" />
                         <TextInput
                             id="price"
                             v-model="form.price"
                             type="number"
                             step="0.01"
                             class="mt-1 block w-full focus:border-navy focus:ring-navy"
-                            placeholder="50.00"
+                            :placeholder="t('services.field_price_placeholder')"
                         />
                         <InputError class="mt-1.5" :message="validationErrors.price?.[0]" />
                     </div>
 
                     <div>
-                        <InputLabel for="price_type" value="Cenas tips" class="text-gray-700 font-medium" />
+                        <InputLabel for="price_type" :value="t('services.field_price_type_label')" class="text-gray-700 font-medium" />
                         <select
                             id="price_type"
                             v-model="form.price_type"
                             class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
                         >
-                            <option value="fixed">Fiksēta cena</option>
-                            <option value="hourly">Stundas likme</option>
-                            <option value="negotiable">Vienojoties</option>
+                            <option value="fixed">{{ t('services.price_type_fixed_label') }}</option>
+                            <option value="hourly">{{ t('services.price_type_hourly_label') }}</option>
+                            <option value="negotiable">{{ t('services.price_type_negotiable_label') }}</option>
                         </select>
                         <InputError class="mt-1.5" :message="validationErrors.price_type?.[0]" />
                     </div>
@@ -268,10 +267,10 @@ const save = async () => {
 
                 <!-- Lokācijas -->
                 <div>
-                    <InputLabel value="Lokācijas (Pilsētas vai 'Attālināti')" class="text-gray-700 font-medium" />
+                    <InputLabel :value="t('services.field_locations_label')" class="text-gray-700 font-medium" />
                     <TagInput
                         v-model="form.location"
-                        placeholder="Piem., Rīga, visa Latvija..."
+                        :placeholder="t('services.field_locations_placeholder')"
                         :maxTags="10"
                     />
                     <InputError class="mt-1.5" :message="validationErrors.location?.[0] || validationErrors['location.0']?.[0]" />
@@ -281,8 +280,8 @@ const save = async () => {
                 <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
                     <Checkbox name="is_active" v-model:checked="form.is_active" />
                     <div>
-                        <p class="text-sm font-medium text-gray-700">Publiski redzams</p>
-                        <p class="text-xs text-gray-500">Pakalpojums būs pieejams meklēšanā</p>
+                        <p class="text-sm font-medium text-gray-700">{{ t('services.field_visible_label') }}</p>
+                        <p class="text-xs text-gray-500">{{ t('services.field_visible_desc') }}</p>
                     </div>
                 </div>
 
@@ -293,7 +292,7 @@ const save = async () => {
                         @click="emit('close')"
                         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        Atcelt
+                        {{ t('common.cancel') }}
                     </button>
                     <button
                         type="submit"
@@ -304,7 +303,7 @@ const save = async () => {
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        {{ processing ? 'Saglabā...' : 'Saglabāt' }}
+                        {{ processing ? t('services.saving_btn') : t('common.save') }}
                     </button>
                 </div>
 

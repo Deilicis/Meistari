@@ -34,7 +34,7 @@ function switchTo(role: 'master' | 'seeker') {
     router.post(route('role.switch'), { target_role: role }, {
         onFinish:  () => { switching.value = false; },
         onSuccess: () => close(),
-        onError:   () => toast.error('Neizdevās pārslēgt lomu.'),
+        onError:   () => toast.error(t('nav.role_switch_error')),
     });
 }
 
@@ -139,7 +139,7 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
         <!-- User section -->
         <div class="border-t border-white/10 px-4 py-3">
             <div class="flex items-center gap-3 mb-3">
-                <img v-if="user.profile?.avatar" :src="`/storage/${user.profile.avatar}`" :alt="`${user.name} avatārs`"
+                <img v-if="user.profile?.avatar" :src="`/storage/${user.profile.avatar}`" :alt="t('common.avatar_alt', { name: user.name })"
                     class="w-9 h-9 rounded-full object-cover border border-white/20 shrink-0" />
                 <span v-else class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                     :class="accentBgClass" aria-hidden="true">

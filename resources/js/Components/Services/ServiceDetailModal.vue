@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency } from '@/utils/formatters';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
@@ -14,6 +16,8 @@ import {
     FlagIcon,
 } from '@heroicons/vue/24/outline';
 import type { ServiceWithMaster } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -39,17 +43,20 @@ const avatarInitials = computed(() => masterName.value.slice(0, 2).toUpperCase()
 
 const formatPrice = (): string => {
     if (!props.service) return '—';
-    if (props.service.price_type === 'negotiable') return 'Vienojoties';
+    if (props.service.price_type === 'negotiable') return t('services.price_negotiable');
     if (!props.service.price) return '—';
-    const formatted = new Intl.NumberFormat('lv-LV', {
-        style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
-    }).format(props.service.price);
-    return props.service.price_type === 'hourly' ? `${formatted} / stundā` : formatted;
+    const formatted = formatCurrency(props.service.price);
+    return props.service.price_type === 'hourly' ? `${formatted}${t('services.detail_per_hour')}` : formatted;
 };
 
 const priceTypeLabel = computed(() => {
     if (!props.service) return '';
-    return { fixed: 'Fiksēta cena', hourly: 'Stundas likme', negotiable: 'Vienojoties' }[props.service.price_type] ?? '';
+    const map: Record<string, string> = {
+        fixed:      t('services.detail_price_fixed'),
+        hourly:     t('services.detail_price_hourly'),
+        negotiable: t('services.detail_price_negotiable'),
+    };
+    return map[props.service.price_type] ?? '';
 });
 
 const lightboxIndex = ref<number | null>(null);
@@ -101,13 +108,13 @@ watch(() => props.show, (newVal) => {
 
                         <!-- Description -->
                         <div class="mb-5">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Apraksts</h3>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('services.detail_description') }}</h3>
                             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ service.description }}</p>
                         </div>
 
                         <!-- Locations -->
                         <div v-if="service.location?.length">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Pakalpojuma vietas</h3>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('services.detail_locations') }}</h3>
                             <div class="flex flex-wrap gap-2">
                                 <span
                                     v-for="loc in service.location"
@@ -123,7 +130,7 @@ watch(() => props.show, (newVal) => {
 
                     <!-- Right: master profile -->
                     <div class="md:col-span-1 p-6 bg-gray-50/60">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Par meistaru</h3>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">{{ t('services.detail_about_master') }}</h3>
 
                         <!-- Avatar + name -->
                         <a :href="route('master.public-profile', service.user.id)" class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
@@ -154,7 +161,7 @@ watch(() => props.show, (newVal) => {
                         <div v-if="profile?.experiences?.length" class="mb-4">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                                 <BriefcaseIcon class="w-3.5 h-3.5" />
-                                Pieredze
+                                {{ t('services.detail_experience') }}
                             </h4>
                             <ul class="space-y-2">
                                 <li
@@ -172,7 +179,7 @@ watch(() => props.show, (newVal) => {
                         <div v-if="profile?.portfolio_images?.length" class="mb-4">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                                 <PhotoIcon class="w-3.5 h-3.5" />
-                                Portfolio
+                                {{ t('services.detail_portfolio') }}
                             </h4>
                             <div class="grid grid-cols-4 gap-1.5">
                                 <div
@@ -195,10 +202,10 @@ watch(() => props.show, (newVal) => {
                     v-if="authUserId !== service.user?.id"
                     @click="complaintOpen = true"
                     class="inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
-                    title="Ziņot par pārkāpumu"
+                    :title="t('modals.complaint.title')"
                 >
                     <FlagIcon class="w-3.5 h-3.5" />
-                    Ziņot
+                    {{ t('services.detail_report') }}
                 </button>
                 <div v-else />
                 <div class="flex items-center gap-3">
@@ -206,7 +213,7 @@ watch(() => props.show, (newVal) => {
                     @click="emit('close')"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                    Aizvērt
+                    {{ t('services.detail_close') }}
                 </button>
 
                 <div
@@ -214,14 +221,14 @@ watch(() => props.show, (newVal) => {
                     class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold"
                 >
                     <CheckBadgeIcon class="w-4 h-4" />
-                    Pieteikums iesniegts
+                    {{ t('services.detail_applied') }}
                 </div>
                 <button
                     v-else
                     @click="emit('apply')"
                     class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors"
                 >
-                    Pieteikties
+                    {{ t('services.detail_apply_btn') }}
                 </button>
                 </div>
             </div>
@@ -233,7 +240,7 @@ watch(() => props.show, (newVal) => {
             :reported-user-id="service.user.id"
             reported-entity-type="App\Models\Service"
             :reported-entity-id="service.id"
-            entity-label="šo pakalpojumu"
+            :entity-label="t('services.detail_this_service')"
             @close="complaintOpen = false"
         />
 

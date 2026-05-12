@@ -39,7 +39,7 @@ useClickOutside(container, () => { open.value = false; });
             <img
                 v-if="user.profile?.avatar"
                 :src="`/storage/${user.profile.avatar}`"
-                :alt="`${user.name} avatārs`"
+                :alt="t('common.avatar_alt', { name: user.name })"
                 class="w-7 h-7 rounded-full object-cover border border-white/20 shrink-0"
             />
             <span
@@ -73,7 +73,7 @@ useClickOutside(container, () => { open.value = false; });
                         <img
                             v-if="user.profile?.avatar"
                             :src="`/storage/${user.profile.avatar}`"
-                            :alt="`${user.name} avatārs`"
+                            :alt="t('common.avatar_alt', { name: user.name })"
                             class="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
                         />
                         <span
