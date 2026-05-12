@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { CheckIcon } from '@heroicons/vue/24/solid';
 import type { JobStatus } from '@/types/jobLifecycle';
 
 const props = defineProps<{ job: { status: JobStatus }; isClient: boolean }>();
 
+const { t } = useI18n();
+
 type Step = { key: JobStatus; label: string };
 
-const mainSteps: Step[] = [
-    { key: 'open',                  label: 'Atvērts' },
-    { key: 'accepted',              label: 'Pieņemts' },
-    { key: 'in_progress',           label: 'Darbā' },
-    { key: 'awaiting_confirmation', label: 'Gaida' },
-    { key: 'completed',             label: 'Pabeigts' },
-];
+const mainSteps = computed((): Step[] => [
+    { key: 'open',                  label: t('statuses.job.open') },
+    { key: 'accepted',              label: t('statuses.job.accepted') },
+    { key: 'in_progress',           label: t('statuses.job.in_progress') },
+    { key: 'awaiting_confirmation', label: t('statuses.job.awaiting_confirmation') },
+    { key: 'completed',             label: t('statuses.job.completed') },
+]);
 
 const statusOrder: Record<JobStatus, number> = {
     open: 0, accepted: 1, in_progress: 2, awaiting_confirmation: 3,
@@ -80,8 +83,8 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
                 <span class="text-white text-xs font-bold">!</span>
             </div>
             <div>
-                <p class="text-sm font-bold text-red-700">Strīdā</p>
-                <p class="text-xs text-red-500">Mēs izskatām situāciju un sazināsimies ar jums.</p>
+                <p class="text-sm font-bold text-red-700">{{ t('statuses.job.disputed') }}</p>
+                <p class="text-xs text-red-500">{{ t('jobs.timeline_disputed_desc') }}</p>
             </div>
         </div>
 
@@ -90,7 +93,7 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
             <div class="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center shrink-0">
                 <span class="text-white text-xs font-bold">✕</span>
             </div>
-            <p class="text-sm font-medium text-gray-500">Darbs tika atcelts</p>
+            <p class="text-sm font-medium text-gray-500">{{ t('jobs.timeline_cancelled') }}</p>
         </div>
     </div>
 </template>

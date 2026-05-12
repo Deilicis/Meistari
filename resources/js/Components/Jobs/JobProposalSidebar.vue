@@ -165,20 +165,20 @@ function historyLabel(p: PriceProposal): string {
                     </p>
                     <p v-if="pending.note" class="mt-2 text-sm text-gray-600 italic leading-relaxed">"{{ pending.note }}"</p>
                     <span class="inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
-                        Gaida atbildi
+                        {{ t('proposals.awaiting_badge') }}
                     </span>
                 </div>
 
                 <!-- Own proposal: only withdraw -->
                 <div v-if="isOwn" class="space-y-2">
-                    <p class="text-xs text-gray-500 font-medium">Tavs piedāvājums gaida atbildi.</p>
+                    <p class="text-xs text-gray-500 font-medium">{{ t('proposals.own_awaiting') }}</p>
                     <button
                         v-if="proposals.can_withdraw"
                         @click="showWithdrawModal = true"
                         :disabled="!!loading"
                         class="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50 transition-colors"
                     >
-                        Atsaukt piedāvājumu
+                        {{ t('proposals.withdraw_btn') }}
                     </button>
                 </div>
 
@@ -190,7 +190,7 @@ function historyLabel(p: PriceProposal): string {
                         :disabled="!!loading"
                         class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl disabled:opacity-50 transition-colors"
                     >
-                        {{ loading === 'accept' ? 'Apstrādā...' : `Pieņemt ${formatMoney(pending.amount)}` }}
+                        {{ loading === 'accept' ? t('proposals.processing') : t('proposals.accept_btn', { price: formatMoney(pending.amount) }) }}
                     </button>
                     <button
                         v-if="proposals.can_counter"
@@ -198,7 +198,7 @@ function historyLabel(p: PriceProposal): string {
                         :disabled="!!loading"
                         class="w-full px-4 py-2.5 text-sm font-semibold text-navy bg-white border border-navy/30 hover:bg-navy/5 rounded-xl disabled:opacity-50 transition-colors"
                     >
-                        Piedāvāt citu cenu
+                        {{ t('proposals.counter_btn') }}
                     </button>
                     <button
                         v-if="proposals.can_reject"
@@ -206,7 +206,7 @@ function historyLabel(p: PriceProposal): string {
                         :disabled="!!loading"
                         class="text-sm font-medium text-red-600 hover:text-red-700 py-1 disabled:opacity-50 transition-colors"
                     >
-                        Noraidīt piedāvājumu
+                        {{ t('proposals.reject_btn') }}
                     </button>
                 </div>
             </template>
@@ -216,10 +216,10 @@ function historyLabel(p: PriceProposal): string {
         <template v-else>
             <div class="text-center py-4">
                 <p v-if="proposals.history.length > 0" class="text-sm text-gray-500 mb-3">
-                    Nav aktīva piedāvājuma.
+                    {{ t('proposals.no_active') }}
                 </p>
                 <p v-else class="text-sm text-gray-500 mb-3">
-                    Nav neviena cenas piedāvājuma.
+                    {{ t('proposals.no_proposals') }}
                 </p>
                 <button
                     v-if="proposals.can_submit_fresh"
@@ -227,7 +227,7 @@ function historyLabel(p: PriceProposal): string {
                     :disabled="!!loading"
                     class="px-4 py-2 text-sm font-semibold text-navy bg-white border border-navy/30 hover:bg-navy/5 rounded-xl disabled:opacity-50 transition-colors"
                 >
-                    Pievienot piedāvājumu
+                    {{ t('proposals.add_proposal') }}
                 </button>
             </div>
         </template>
@@ -239,7 +239,7 @@ function historyLabel(p: PriceProposal): string {
                 class="flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-navy transition-colors w-full text-left"
             >
                 <component :is="showHistory ? ChevronUpIcon : ChevronDownIcon" class="w-3.5 h-3.5" />
-                Vēsture ({{ proposals.history.length }} piedāvājumi)
+                {{ t('proposals.history_header', { count: proposals.history.length }) }}
             </button>
 
             <div v-if="showHistory" class="mt-3 space-y-2">

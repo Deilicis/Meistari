@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import type { JobLifecycle, JobAllowedAction } from '@/types/jobLifecycle';
 import ConfirmDisputeModal from '@/Components/Jobs/ConfirmDisputeModal.vue';
 import ConfirmCancelModal from '@/Components/Jobs/ConfirmCancelModal.vue';
@@ -9,17 +10,18 @@ import ConfirmCancelModal from '@/Components/Jobs/ConfirmCancelModal.vue';
 const props = defineProps<{ job: JobLifecycle }>();
 const emit = defineEmits<{ updated: [job: JobLifecycle] }>();
 
+const { t } = useI18n();
 const loading = ref<JobAllowedAction | null>(null);
 const showDisputeModal = ref(false);
 const showCancelModal = ref(false);
 
-const actionLabels: Partial<Record<JobAllowedAction, string>> = {
-    pay:           'Apmaksāt darbu',
-    mark_complete: 'Atzīmēt kā pabeigtu',
-    confirm:       'Apstiprināt pabeigšanu',
-    dispute:       'Atvērt strīdu',
-    cancel:        'Atcelt darbu',
-};
+const actionLabels = computed((): Partial<Record<JobAllowedAction, string>> => ({
+    pay:           t('jobs.action_pay'),
+    mark_complete: t('jobs.action_mark_complete'),
+    confirm:       t('jobs.action_confirm_complete'),
+    dispute:       t('jobs.action_dispute'),
+    cancel:        t('jobs.action_cancel'),
+}));
 
 const routeMap: Partial<Record<JobAllowedAction, () => string>> = {
     pay:           () => route('jobs.lifecycle.pay',          props.job.id),
@@ -41,9 +43,9 @@ async function post(action: JobAllowedAction, body: Record<string, unknown> = {}
             return;
         }
         emit('updated', data);
-        toast.success('Veiksmīgi!');
+        toast.success(t('jobs.lifecycle_success_toast'));
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -81,7 +83,7 @@ function onCancelSubmit(reason: string | null) {
                     'bg-gray-500 hover:bg-gray-600 text-white':       action === 'cancel',
                 }"
             >
-                {{ loading === action ? 'Lūdzu, uzgaidiet...' : actionLabels[action] }}
+                {{ loading === action ? t('jobs.action_please_wait') : actionLabels[action] }}
             </button>
         </template>
     </div>
