@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import TextInput from '@/Components/Form/TextInput.vue';
 import CategorySelect from '@/Components/Form/CategorySelect.vue';
 import type { Category } from '@/types/models';
@@ -11,9 +12,11 @@ const filterForm = defineModel<{
     search: string;
     category_id: string | number;
     status: string;
-    budget_min: string | number;
-    budget_max: string | number;
+    budget_min: string;
+    budget_max: string;
 }>({ required: true });
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -25,7 +28,7 @@ const filterForm = defineModel<{
                     v-model="filterForm.search"
                     type="text"
                     class="w-full"
-                    placeholder="Meklēt pēc nosaukuma..."
+                    :placeholder="t('search.my_jobs_placeholder')"
                 />
             </div>
 
@@ -39,18 +42,18 @@ const filterForm = defineModel<{
 
             <div>
                 <select v-model="filterForm.status" class="border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm w-full text-sm">
-                    <option value="">Visi statusi</option>
-                    <option value="active">Aktīvs</option>
-                    <option value="assigned">Piešķirts</option>
-                    <option value="completed">Pabeigts</option>
-                    <option value="cancelled">Atcelts</option>
+                    <option value="">{{ t('search.all_statuses') }}</option>
+                    <option value="active">{{ t('search.status_active') }}</option>
+                    <option value="assigned">{{ t('search.status_accepted') }}</option>
+                    <option value="completed">{{ t('search.status_completed') }}</option>
+                    <option value="cancelled">{{ t('search.status_cancelled') }}</option>
                 </select>
             </div>
 
             <div class="flex items-center gap-2">
-                <TextInput v-model="filterForm.budget_min" type="number" class="w-full" placeholder="No €" />
+                <TextInput v-model="filterForm.budget_min" type="number" class="w-full" :placeholder="t('search.price_from')" />
                 <span class="text-gray-400 flex-shrink-0">–</span>
-                <TextInput v-model="filterForm.budget_max" type="number" class="w-full" placeholder="Līdz €" />
+                <TextInput v-model="filterForm.budget_max" type="number" class="w-full" :placeholder="t('search.price_to')" />
             </div>
 
         </div>

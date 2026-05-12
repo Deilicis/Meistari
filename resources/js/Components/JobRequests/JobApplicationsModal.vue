@@ -32,12 +32,12 @@ const emit = defineEmits<{
 
 const processing = ref<number | null>(null);
 
-const statusConfig: Record<string, { label: string; badgeClass: string }> = {
-    pending:   { label: 'Gaida',      badgeClass: 'bg-amber-100 text-amber-700' },
-    accepted:  { label: 'Pieņemts',   badgeClass: 'bg-emerald-100 text-emerald-700' },
-    rejected:  { label: 'Noraidīts',  badgeClass: 'bg-red-100 text-red-700' },
-    completed: { label: 'Pabeigts',   badgeClass: 'bg-blue-100 text-blue-700' },
-    cancelled: { label: 'Atcelts',    badgeClass: 'bg-gray-100 text-gray-600' },
+const statusBadgeClass: Record<string, string> = {
+    pending:   'bg-amber-100 text-amber-700',
+    accepted:  'bg-emerald-100 text-emerald-700',
+    rejected:  'bg-red-100 text-red-700',
+    completed: 'bg-blue-100 text-blue-700',
+    cancelled: 'bg-gray-100 text-gray-600',
 };
 
 const acceptedApplication = computed(() =>

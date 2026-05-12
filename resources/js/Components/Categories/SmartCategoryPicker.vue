@@ -199,7 +199,7 @@ watch(() => props.modelValue, (val) => {
                     type="button"
                     @click="clearSelection"
                     class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label="Notīrīt izvēli"
+                    :aria-label="t('categories.picker.clear_aria')"
                 >
                     <XMarkIcon class="w-4 h-4" />
                 </button>

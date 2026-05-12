@@ -14,7 +14,8 @@
     "search": "Search",
     "submit": "Submit",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "avatar_alt": "{name} avatar"
   },
   "auth": {
     "login": {
@@ -184,7 +185,15 @@
       "terms": "Terms",
       "privacy": "Privacy Policy",
       "contact": "Contact"
-    }
+    },
+    "browse_services_tab": "Services",
+    "browse_jobs_tab": "Job listings",
+    "browse_filtered": "Filtered results",
+    "browse_clear_filters": "Clear",
+    "browse_no_services": "No services found.",
+    "browse_no_jobs": "No listings found.",
+    "browse_preview_note": "Showing only 8 of all available listings",
+    "browse_register_all": "Register and see all"
   },
   "notifications": {
     "ui": {
@@ -469,7 +478,9 @@
     "accept_app_success": "Application accepted!",
     "accept_app_error": "Error accepting application.",
     "reject_app_success": "Application rejected.",
-    "reject_app_error": "Error rejecting application."
+    "reject_app_error": "Error rejecting application.",
+    "completed_badge": "Job completed",
+    "leave_review_btn": "Review"
   },
   "services": {
     "my_title": "My Services",
@@ -745,7 +756,8 @@
       "pending_prefix": "Pending: \"{name}\"",
       "pending_remove_aria": "Remove category suggestion",
       "pending_helper": "Will be published under \"Other\" while the suggestion is under review.",
-      "suggest_error": "Failed to submit suggestion."
+      "suggest_error": "Failed to submit suggestion.",
+      "clear_aria": "Clear selection"
     }
   },
   "proposals": {
@@ -930,6 +942,7 @@
     "status_completed": "Completed",
     "status_cancelled": "Cancelled",
     "status_only_active": "Active only",
-    "status_only_inactive": "Inactive only"
+    "status_only_inactive": "Inactive only",
+    "status_active": "Active"
   }
 }

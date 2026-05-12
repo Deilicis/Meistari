@@ -14,7 +14,8 @@
     "search": "Meklēt",
     "submit": "Iesniegt",
     "yes": "Jā",
-    "no": "Nē"
+    "no": "Nē",
+    "avatar_alt": "{name} avatārs"
   },
   "auth": {
     "login": {
@@ -184,7 +185,15 @@
       "terms": "Noteikumi",
       "privacy": "Privātuma politika",
       "contact": "Kontakti"
-    }
+    },
+    "browse_services_tab": "Pakalpojumi",
+    "browse_jobs_tab": "Darba sludinājumi",
+    "browse_filtered": "Filtrēti rezultāti",
+    "browse_clear_filters": "Notīrīt",
+    "browse_no_services": "Nav atrasts neviens pakalpojums.",
+    "browse_no_jobs": "Nav atrasts neviens sludinājums.",
+    "browse_preview_note": "Apskata tikai 8 no visiem pieejamajiem ierakstiem",
+    "browse_register_all": "Reģistrēties un skatīt visus"
   },
   "notifications": {
     "ui": {
@@ -469,7 +478,9 @@
     "accept_app_success": "Pieteikums pieņemts!",
     "accept_app_error": "Kļūda pieņemot pieteikumu.",
     "reject_app_success": "Pieteikums noraidīts.",
-    "reject_app_error": "Kļūda noraidot pieteikumu."
+    "reject_app_error": "Kļūda noraidot pieteikumu.",
+    "completed_badge": "Darbs pabeigts",
+    "leave_review_btn": "Atsauksme"
   },
   "services": {
     "my_title": "Mani Pakalpojumi",
@@ -745,7 +756,8 @@
       "pending_prefix": "Gaida: \"{name}\"",
       "pending_remove_aria": "Noņemt kategorijas priekšlikumu",
       "pending_helper": "Publicēsies kategorijā \"Cits\", kamēr priekšlikums tiek pārskatīts.",
-      "suggest_error": "Neizdevās iesniegt priekšlikumu."
+      "suggest_error": "Neizdevās iesniegt priekšlikumu.",
+      "clear_aria": "Notīrīt izvēli"
     }
   },
   "proposals": {
@@ -930,6 +942,7 @@
     "status_completed": "Pabeigts",
     "status_cancelled": "Atcelts",
     "status_only_active": "Tikai aktīvie",
-    "status_only_inactive": "Tikai neaktīvie"
+    "status_only_inactive": "Tikai neaktīvie",
+    "status_active": "Aktīvs"
   }
 }

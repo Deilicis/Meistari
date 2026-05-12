@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import TextInput from '@/Components/Form/TextInput.vue';
 import CategorySelect from '@/Components/Form/CategorySelect.vue';
 import type { Category } from '@/types/models';
@@ -10,9 +11,11 @@ defineProps<{
 const filterForm = defineModel<{
     search: string;
     category_id: string | number;
-    price_min: string | number;
-    price_max: string | number;
+    price_min: string;
+    price_max: string;
 }>({ required: true });
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const filterForm = defineModel<{
                     v-model="filterForm.search"
                     type="text"
                     class="w-full"
-                    placeholder="Meklēt pēc nosaukuma..."
+                    :placeholder="t('search.browse_services_placeholder')"
                 />
             </div>
 
@@ -37,9 +40,9 @@ const filterForm = defineModel<{
             </div>
 
             <div class="md:col-span-2 flex items-center gap-2">
-                <TextInput v-model="filterForm.price_min" type="number" class="w-full" placeholder="No €" />
+                <TextInput v-model="filterForm.price_min" type="number" class="w-full" :placeholder="t('search.price_from')" />
                 <span class="text-gray-400 flex-shrink-0">–</span>
-                <TextInput v-model="filterForm.price_max" type="number" class="w-full" placeholder="Līdz €" />
+                <TextInput v-model="filterForm.price_max" type="number" class="w-full" :placeholder="t('search.price_to')" />
             </div>
 
         </div>

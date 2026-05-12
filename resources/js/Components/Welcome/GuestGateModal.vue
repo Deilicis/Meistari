@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
 
 defineProps<{
@@ -8,6 +9,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{ close: [] }>();
+const { t } = useI18n();
 </script>
 
 <template>
@@ -30,18 +32,18 @@ const emit = defineEmits<{ close: [] }>();
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-navy mb-2">Nepieciešams konts</h3>
+                <h3 class="text-lg font-bold text-navy mb-2">{{ t('modals.guest.title') }}</h3>
                 <p class="text-sm text-gray-500 mb-6 leading-relaxed">
-                    Lai apskatītu detaļas un pieteiktos, lūdzu piesakieties vai reģistrējieties — tas ir bezmaksas!
+                    {{ t('modals.guest.desc') }}
                 </p>
                 <div class="flex gap-3">
                     <Link :href="route('login')"
                         class="flex-1 py-2.5 rounded-xl border border-navy text-navy text-sm font-semibold hover:bg-navy/5 transition-colors text-center">
-                        Ienākt
+                        {{ t('modals.guest.login') }}
                     </Link>
                     <Link v-if="canRegister" :href="route('register')"
                         class="flex-1 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-navy-hover transition-colors text-center">
-                        Reģistrēties
+                        {{ t('modals.guest.register') }}
                     </Link>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import TextInput from '@/Components/Form/TextInput.vue';
 import CategorySelect from '@/Components/Form/CategorySelect.vue';
 import type { Category } from '@/types/models';
@@ -10,9 +11,11 @@ defineProps<{
 const filterForm = defineModel<{
     search: string;
     category_id: string | number;
-    budget_min: string | number;
-    budget_max: string | number;
+    budget_min: string;
+    budget_max: string;
 }>({ required: true });
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const filterForm = defineModel<{
                     v-model="filterForm.search"
                     type="text"
                     class="w-full"
-                    placeholder="Meklēt darba sludinājumus..."
+                    :placeholder="t('search.browse_jobs_placeholder')"
                 />
             </div>
 
@@ -37,9 +40,9 @@ const filterForm = defineModel<{
             </div>
 
             <div class="md:col-span-2 flex gap-2">
-                <TextInput v-model="filterForm.budget_min" type="number" class="w-full" placeholder="Budžets no €" />
+                <TextInput v-model="filterForm.budget_min" type="number" class="w-full" :placeholder="t('search.budget_from')" />
                 <span class="text-gray-400 flex-shrink-0">–</span>
-                <TextInput v-model="filterForm.budget_max" type="number" class="w-full" placeholder="Budžets līdz €" />
+                <TextInput v-model="filterForm.budget_max" type="number" class="w-full" :placeholder="t('search.budget_to')" />
             </div>
 
         </div>
