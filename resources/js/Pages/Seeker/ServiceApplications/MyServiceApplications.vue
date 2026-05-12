@@ -258,7 +258,7 @@ const confirmCancel = async () => {
     <ConfirmDialog
         :show="cancelTarget !== null"
         :title="t('applications.cancel_confirm_title')"
-        :message="cancelTarget ? `Vai tiešām vēlaties atcelt pieteikumu pakalpojumam &quot;${cancelTarget.service.title}&quot;?` : ''"
+        :message="cancelTarget ? t('applications.cancel_confirm_message', { title: cancelTarget.service.title }) : ''"
         :confirmLabel="t('applications.cancel_btn')"
         :processing="cancelling"
         @confirm="confirmCancel"
