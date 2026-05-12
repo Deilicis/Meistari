@@ -148,14 +148,14 @@ const reject = async (app: JobApplication) => {
                                     class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700"
                                 >
                                     <CheckBadgeIcon class="w-3.5 h-3.5" />
-                                    Pieņemts
+                                    {{ t('statuses.application.accepted') }}
                                 </span>
                                 <span
                                     v-else
                                     class="text-xs font-semibold px-2 py-0.5 rounded-full"
-                                    :class="statusConfig[app.status]?.badgeClass"
+                                    :class="statusBadgeClass[app.status]"
                                 >
-                                    {{ statusConfig[app.status]?.label }}
+                                    {{ t('statuses.application.' + app.status) }}
                                 </span>
                             </div>
 
@@ -171,7 +171,7 @@ const reject = async (app: JobApplication) => {
                             <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">
                                 {{ app.cover_letter }}
                             </p>
-                            <p v-else class="text-xs text-gray-400 italic">Nav pavadvēstules.</p>
+                            <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                         </div>
 
                         <!-- Actions (only for pending when job is open) -->
@@ -182,7 +182,7 @@ const reject = async (app: JobApplication) => {
                                 class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
                             >
                                 <CheckIcon class="w-3.5 h-3.5" />
-                                Pieņemt
+                                {{ t('jobs.accept_app_btn') }}
                             </button>
                             <button
                                 @click="reject(app)"
@@ -190,7 +190,7 @@ const reject = async (app: JobApplication) => {
                                 class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-colors disabled:opacity-50"
                             >
                                 <XCircleIcon class="w-3.5 h-3.5" />
-                                Noraidīt
+                                {{ t('jobs.reject_proposal_btn') }}
                             </button>
                         </div>
 
@@ -200,7 +200,7 @@ const reject = async (app: JobApplication) => {
                                 @click="emit('review', app.user.id, job.id)"
                                 class="px-3 py-1.5 text-xs font-semibold text-navy border border-navy/30 hover:bg-navy/5 rounded-lg transition-colors"
                             >
-                                Atsauksme
+                                {{ t('jobs.leave_review_btn') }}
                             </button>
                         </div>
                     </div>
@@ -213,7 +213,7 @@ const reject = async (app: JobApplication) => {
                     @click="emit('close')"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                    Aizvērt
+                    {{ t('common.close') }}
                 </button>
 
                 <div class="flex items-center gap-3">
@@ -222,13 +222,13 @@ const reject = async (app: JobApplication) => {
                         class="text-sm font-semibold text-emerald-700 flex items-center gap-2"
                     >
                         <CheckBadgeIcon class="w-4 h-4" />
-                        Darbs pabeigts
+                        {{ t('jobs.completed_badge') }}
                     </div>
                     <a
                         :href="route('jobs.show', job.id)"
                         class="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy/90 rounded-lg transition-colors"
                     >
-                        Skatīt darbu
+                        {{ t('jobs.view_job') }}
                     </a>
                 </div>
             </div>

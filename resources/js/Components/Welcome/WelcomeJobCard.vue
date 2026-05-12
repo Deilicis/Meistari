@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { MapPinIcon, CalendarIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import type { WelcomeJobRequestCard } from '@/types/welcome';
+
+const { t } = useI18n();
 
 const props = defineProps<{ job: WelcomeJobRequestCard }>();
 const emit = defineEmits<{ open: [] }>();
@@ -67,7 +70,7 @@ const formattedDate = computed(() => {
                 @click="emit('open')"
                 class="px-4 py-1.5 rounded-lg bg-navy text-white text-xs font-semibold hover:bg-navy-hover transition-colors shrink-0"
             >
-                Apskatīt
+                {{ t('job_requests.view_btn') }}
             </button>
         </div>
     </div>

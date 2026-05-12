@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { MapPinIcon, CheckBadgeIcon } from '@heroicons/vue/24/outline';
 import type { WelcomeServiceCard as ServiceCardType } from '@/types/welcome';
+
+const { t } = useI18n();
 
 const props = defineProps<{ service: ServiceCardType }>();
 const emit = defineEmits<{ open: [] }>();
@@ -62,7 +65,7 @@ const formattedPrice = computed(() => {
                 @click="emit('open')"
                 class="px-4 py-1.5 rounded-lg bg-navy text-white text-xs font-semibold hover:bg-navy-hover transition-colors shrink-0"
             >
-                Apskatīt
+                {{ t('services.card_view_btn') }}
             </button>
         </div>
     </div>

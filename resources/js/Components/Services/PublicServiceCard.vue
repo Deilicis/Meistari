@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { MapPinIcon, CheckBadgeIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
 import type { ServiceWithMaster } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     service: ServiceWithMaster;
@@ -115,7 +118,7 @@ const formatPrice = (): string => {
                 @click="emit('open', service)"
                 class="px-5 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-navy-hover transition-colors whitespace-nowrap"
             >
-                Apskatīt
+                {{ t('services.card_view_btn') }}
             </button>
         </div>
 

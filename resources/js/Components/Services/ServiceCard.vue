@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { MapPinIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
 import type { Service } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     service: Service;
@@ -48,7 +51,7 @@ const formatPrice = (service: Service): string => {
                         ? 'bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200'
                         : 'bg-red-100 text-red-800 ring-1 ring-red-200'"
                 >
-                    {{ service.is_active ? 'Aktīvs' : 'Neaktīvs' }}
+                    {{ service.is_active ? t('services.active') : t('services.inactive') }}
                 </span>
             </div>
             <h3 class="text-sm font-bold text-navy mb-1 line-clamp-1">{{ service.title }}</h3>
@@ -75,7 +78,7 @@ const formatPrice = (service: Service): string => {
                 <button
                     @click="emit('edit', service)"
                     class="p-1.5 rounded-lg text-gray-400 hover:text-navy hover:bg-navy/5 transition-colors"
-                    title="Rediģēt"
+                    :title="t('common.edit')"
                 >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -85,7 +88,7 @@ const formatPrice = (service: Service): string => {
                 <button
                     @click.stop="emit('delete', service.id)"
                     class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                    title="Dzēst"
+                    :title="t('common.delete')"
                 >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

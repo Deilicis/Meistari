@@ -159,7 +159,7 @@ const formatBudget = (): string => {
                                     v-if="profile?.type"
                                     class="inline-flex text-xs text-gray-400 mt-0.5"
                                 >
-                                    {{ profile.type === 'company' ? 'Uzņēmums' : 'Privātpersona' }}
+                                    {{ profile.type === 'company' ? t('profile.type_company') : t('profile.type_individual') }}
                                 </span>
                             </div>
                         </a>
@@ -172,7 +172,7 @@ const formatBudget = (): string => {
                     v-if="authUserId !== job.user?.id"
                     @click="complaintOpen = true"
                     class="inline-flex items-center gap-1 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded px-2 py-1 transition-colors"
-                    title="Ziņot par pārkāpumu"
+                    :title="t('modals.complaint.title')"
                 >
                     <FlagIcon class="w-3.5 h-3.5" />
                     {{ t('job_requests.detail_report') }}

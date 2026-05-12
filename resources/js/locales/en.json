@@ -314,7 +314,9 @@
     "confirm_password_label": "Confirm new password",
     "save_password_btn": "Save password",
     "password_saved_msg": "Password changed successfully.",
-    "back_btn": "Back"
+    "back_btn": "Back",
+    "type_company": "Company",
+    "type_individual": "Individual"
   },
   "browse": {
     "services_title": "Services",
@@ -926,7 +928,8 @@
     "detail_close": "Close",
     "detail_this_listing": "this listing",
     "card_view_btn": "View",
-    "card_applied_badge": "Applied"
+    "card_applied_badge": "Applied",
+    "view_btn": "View"
   },
   "search": {
     "browse_jobs_placeholder": "Search job listings...",

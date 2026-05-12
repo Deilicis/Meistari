@@ -314,7 +314,9 @@
     "confirm_password_label": "Apstiprināt jauno paroli",
     "save_password_btn": "Saglabāt paroli",
     "password_saved_msg": "Parole veiksmīgi nomainīta.",
-    "back_btn": "Atpakaļ"
+    "back_btn": "Atpakaļ",
+    "type_company": "Uzņēmums",
+    "type_individual": "Privātpersona"
   },
   "browse": {
     "services_title": "Pakalpojumi",
@@ -926,7 +928,8 @@
     "detail_close": "Aizvērt",
     "detail_this_listing": "šo sludinājumu",
     "card_view_btn": "Apskatīt",
-    "card_applied_badge": "Pieteicies"
+    "card_applied_badge": "Pieteicies",
+    "view_btn": "Apskatīt"
   },
   "search": {
     "browse_jobs_placeholder": "Meklēt darba sludinājumus...",

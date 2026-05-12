@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { MapPinIcon, CheckBadgeIcon, CalendarDaysIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import * as HeroIcons from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 import type { JobRequestWithSeeker } from '@/types/models';
 
 const props = defineProps<{
@@ -122,7 +125,7 @@ const formatBudget = (): string => {
                 @click="emit('open', job)"
                 class="px-5 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-navy-hover transition-colors whitespace-nowrap"
             >
-                Apskatīt
+                {{ t('job_requests.view_btn') }}
             </button>
         </div>
 
