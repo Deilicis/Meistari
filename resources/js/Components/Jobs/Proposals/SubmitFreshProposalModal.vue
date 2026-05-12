@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
+
+const { t } = useI18n();
 
 defineProps<{
     show: boolean;
@@ -18,7 +21,7 @@ const error  = ref<string | null>(null);
 function handleSubmit() {
     const n = parseFloat(amount.value);
     if (!amount.value || isNaN(n) || n < 1) {
-        error.value = 'Ievadiet derīgu summu (min €1).';
+        error.value = t('proposals.min_amount_error');
         return;
     }
     error.value = null;
@@ -38,11 +41,11 @@ function handleClose() {
 <template>
     <Modal :show="show" @close="handleClose" maxWidth="sm">
         <div class="p-6">
-            <h3 class="text-base font-bold text-navy mb-4">Jauns cenas piedāvājums</h3>
+            <h3 class="text-base font-bold text-navy mb-4">{{ t('proposals.fresh_title') }}</h3>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Cena (€) <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('proposals.price_label') }} <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">€</span>
                         <input
@@ -58,12 +61,12 @@ function handleClose() {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Piezīme <span class="text-gray-400">(neobligāti)</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('proposals.note_label') }} <span class="text-gray-400">{{ t('proposals.note_optional') }}</span></label>
                     <textarea
                         v-model="note"
                         rows="3"
                         maxlength="500"
-                        placeholder="Paskaidrojiet savu piedāvājumu..."
+                        :placeholder="t('proposals.note_placeholder')"
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy/30 focus:border-navy resize-none"
                     />
                     <p class="text-xs text-gray-400 text-right mt-0.5">{{ note.length }}/500</p>
@@ -75,13 +78,13 @@ function handleClose() {
                     @click="handleClose"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                    Atcelt
+                    {{ t('common.cancel') }}
                 </button>
                 <button
                     @click="handleSubmit"
                     class="px-4 py-2 text-sm font-semibold text-white bg-navy hover:bg-navy/90 rounded-lg transition-colors"
                 >
-                    Nosūtīt piedāvājumu
+                    {{ t('proposals.send_fresh') }}
                 </button>
             </div>
         </div>

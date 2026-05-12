@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import type { Category } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     modelValue: string | number;
@@ -90,8 +93,8 @@ function onChildChange(event: Event) {
             :class="selectClass"
             :required="required && !hasChildren"
         >
-            <option v-if="showAllOption !== false" value="">{{ placeholder ?? 'Visas kategorijas' }}</option>
-            <option v-else value="" disabled>{{ placeholder ?? 'Izvēlieties kategoriju' }}</option>
+            <option v-if="showAllOption !== false" value="">{{ placeholder ?? t('forms.category_select.all_categories') }}</option>
+            <option v-else value="" disabled>{{ placeholder ?? t('forms.category_select.select_category') }}</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
         </select>
 
@@ -103,7 +106,7 @@ function onChildChange(event: Event) {
             :required="required"
         >
             <option value="" :disabled="required">
-                {{ subcategoryPlaceholder ?? 'Izvēlieties apakškategoriju' }}
+                {{ subcategoryPlaceholder ?? t('forms.category_select.select_subcategory') }}
             </option>
             <option v-for="child in selectedParent?.children" :key="child.id" :value="child.id">
                 {{ child.name }}

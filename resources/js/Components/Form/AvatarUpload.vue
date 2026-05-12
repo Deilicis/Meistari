@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import InputError from '@/Components/Form/InputError.vue';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     initialAvatar: string | null;
@@ -50,11 +53,11 @@ const removeAvatar = () => {
 
         <div class="flex flex-col items-center w-full max-w-[200px] gap-2 mt-4">
             <label class="w-full text-center cursor-pointer bg-navy hover:bg-navy-hover px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition-colors">
-                <span>{{ preview ? 'Mainīt bildi' : 'Augšupielādēt bildi' }}</span>
+                <span>{{ preview ? t('forms.avatar.change') : t('forms.avatar.upload') }}</span>
                 <input id="avatar-upload" type="file" class="sr-only" accept="image/*" @change="handleAvatarChange" />
             </label>
             <button v-if="preview" type="button" @click="removeAvatar" class="text-sm text-red-600 hover:text-red-800">
-                Noņemt bildi
+                {{ t('forms.avatar.remove') }}
             </button>
         </div>
         <InputError class="mt-1 text-center" :message="error" />

@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency } from '@/utils/formatters';
 import Modal from '@/Components/Common/Modal.vue';
 import {
     XMarkIcon,
@@ -12,6 +14,8 @@ import {
     ClipboardDocumentListIcon,
 } from '@heroicons/vue/24/outline';
 import type { JobRequest, JobApplication } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -52,10 +56,10 @@ const accept = async (app: JobApplication) => {
     processing.value = app.id;
     try {
         await axios.patch(route('api.applications.accept', app.id));
-        toast.success('Pieteikums pieņemts!');
+        toast.success(t('jobs.accept_app_success'));
         emit('updated');
     } catch (e: any) {
-        toast.error(e.response?.data?.message ?? 'Kļūda pieņemot pieteikumu.');
+        toast.error(e.response?.data?.message ?? t('jobs.accept_app_error'));
     } finally {
         processing.value = null;
     }
@@ -65,10 +69,10 @@ const reject = async (app: JobApplication) => {
     processing.value = app.id;
     try {
         await axios.patch(route('api.applications.reject', app.id));
-        toast.success('Pieteikums noraidīts.');
+        toast.success(t('jobs.reject_app_success'));
         emit('updated');
     } catch (e: any) {
-        toast.error(e.response?.data?.message ?? 'Kļūda noraidot pieteikumu.');
+        toast.error(e.response?.data?.message ?? t('jobs.reject_app_error'));
     } finally {
         processing.value = null;
     }
@@ -84,7 +88,7 @@ const reject = async (app: JobApplication) => {
             <!-- Header -->
             <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div class="min-w-0">
-                    <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">Pieteikumi</p>
+                    <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">{{ t('jobs.submitted_applications') }}</p>
                     <a
                         :href="route('jobs.show', job.id)"
                         class="text-base font-bold text-white leading-snug truncate hover:text-gold transition-colors block"
@@ -106,8 +110,8 @@ const reject = async (app: JobApplication) => {
                 <!-- Empty state -->
                 <div v-if="applications.length === 0" class="py-12 text-center">
                     <ClipboardDocumentListIcon class="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                    <p class="text-sm font-medium text-gray-500">Vēl nav neviena pieteikuma.</p>
-                    <p class="text-xs text-gray-400 mt-1">Meistari drīzumā iesniegs savus piedāvājumus.</p>
+                    <p class="text-sm font-medium text-gray-500">{{ t('jobs.no_applications_msg') }}</p>
+                    <p class="text-xs text-gray-400 mt-1">{{ t('jobs.applications_coming_msg') }}</p>
                 </div>
 
                 <!-- Application cards -->
@@ -160,7 +164,7 @@ const reject = async (app: JobApplication) => {
                             <!-- Price offer -->
                             <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-2">
                                 <CurrencyEuroIcon class="w-4 h-4 text-gold" />
-                                {{ new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(app.price_offer) }}
+                                {{ formatCurrency(app.price_offer) }}
                             </div>
 
                             <!-- Cover letter -->

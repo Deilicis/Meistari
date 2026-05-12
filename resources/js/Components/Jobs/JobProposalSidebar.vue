@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { CurrencyEuroIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/24/outline';
+import { formatCurrency } from '@/utils/formatters';
 import type { ProposalState, PriceProposal } from '@/types/proposal';
 import ConfirmAcceptProposalModal  from './Proposals/ConfirmAcceptProposalModal.vue';
 import ConfirmRejectProposalModal  from './Proposals/ConfirmRejectProposalModal.vue';
@@ -16,6 +18,8 @@ const props = defineProps<{
     jobId: number;
     currentUserId: number;
 }>();
+
+const { t } = useI18n();
 
 const loading       = ref<string | null>(null);
 const showHistory   = ref(false);
@@ -35,17 +39,17 @@ function formatMoney(amount: string | number | null): string {
     if (amount === null || amount === undefined) return '—';
     const n = typeof amount === 'string' ? parseFloat(amount) : amount;
     if (isNaN(n)) return '—';
-    return new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+    return formatCurrency(n);
 }
 
 function formatRelative(iso: string | null): string {
     if (!iso) return '';
     const diff = Date.now() - new Date(iso).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1)   return 'Tikko';
-    if (mins < 60)  return `pirms ${mins} min`;
+    if (mins < 1)   return t('chat.just_now');
+    if (mins < 60)  return t('chat.minutes_ago', { n: mins });
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `pirms ${hours} h`;
+    if (hours < 24) return t('notifications.ui.hours_ago', { n: hours });
     return new Date(iso).toLocaleDateString('lv-LV', { day: 'numeric', month: 'short' });
 }
 
@@ -62,11 +66,11 @@ async function accept() {
     loading.value = 'accept';
     try {
         await axios.post(route('proposals.accept', pending.value.id));
-        toast.success('Piedāvājums pieņemts!');
+        toast.success(t('jobs.accept_proposal_success'));
         showAcceptModal.value = false;
         router.reload({ only: ['job', 'proposals', 'allowed_actions', 'applications'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -77,11 +81,11 @@ async function reject() {
     loading.value = 'reject';
     try {
         await axios.post(route('proposals.reject', pending.value.id));
-        toast.success('Piedāvājums noraidīts.');
+        toast.success(t('jobs.reject_proposal_success'));
         showRejectModal.value = false;
         router.reload({ only: ['proposals', 'applications'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -92,11 +96,11 @@ async function withdraw() {
     loading.value = 'withdraw';
     try {
         await axios.post(route('proposals.withdraw', pending.value.id));
-        toast.success('Piedāvājums atsaukts.');
+        toast.success(t('jobs.withdraw_proposal_success'));
         showWithdrawModal.value = false;
         router.reload({ only: ['proposals', 'applications'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -107,11 +111,11 @@ async function counter(amount: number, note: string | null) {
     loading.value = 'counter';
     try {
         await axios.post(route('proposals.counter', pending.value.id), { amount, note });
-        toast.success('Pretpiedāvājums nosūtīts.');
+        toast.success(t('jobs.counter_proposal_success'));
         showCounterModal.value = false;
         router.reload({ only: ['proposals', 'applications'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -121,11 +125,11 @@ async function submitFresh(amount: number, note: string | null) {
     loading.value = 'fresh';
     try {
         await axios.post(route('proposals.store', props.proposals.application_id), { amount, note });
-        toast.success('Piedāvājums nosūtīts.');
+        toast.success(t('jobs.fresh_proposal_success'));
         showFreshModal.value = false;
         router.reload({ only: ['proposals', 'applications'] });
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -140,14 +144,14 @@ function historyLabel(p: PriceProposal): string {
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
         <div class="flex items-center gap-2 mb-4">
             <CurrencyEuroIcon class="w-4 h-4 text-gold" />
-            <h2 class="text-sm font-bold text-navy">Cenas piedāvājums</h2>
+            <h2 class="text-sm font-bold text-navy">{{ t('proposals.title') }}</h2>
         </div>
 
         <!-- Pending proposal exists -->
         <template v-if="pending">
             <!-- Accepted state -->
             <div v-if="pending.status === 'accepted'" class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
-                <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Vienojāties</p>
+                <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">{{ t('proposals.accepted_header') }}</p>
                 <p class="text-2xl font-bold text-emerald-700">{{ formatMoney(pending.amount) }}</p>
             </div>
 
@@ -156,7 +160,7 @@ function historyLabel(p: PriceProposal): string {
                 <div class="mb-4">
                     <p class="text-2xl font-bold text-navy mb-1">{{ formatMoney(pending.amount) }}</p>
                     <p class="text-xs text-gray-500">
-                        <span>Piedāvāja: {{ pending.proposed_by.name }}</span>
+                        <span>{{ t('proposals.proposed_by') }} {{ pending.proposed_by.name }}</span>
                         <span class="ml-2 text-gray-400">{{ formatRelative(pending.created_at) }}</span>
                     </p>
                     <p v-if="pending.note" class="mt-2 text-sm text-gray-600 italic leading-relaxed">"{{ pending.note }}"</p>

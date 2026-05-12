@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import {
     CheckIcon,
     ClockIcon,
@@ -21,6 +22,8 @@ const props = defineProps<{
 const emit = defineEmits<{
     'update:modelValue': [value: PickerSelection | null];
 }>();
+
+const { t } = useI18n();
 
 const containerRef = ref<HTMLElement | null>(null);
 const query        = ref('');
@@ -112,7 +115,7 @@ async function submitSuggestion() {
         query.value = '';
         showSuggestForm.value = false;
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Neizdevās iesniegt priekšlikumu.');
+        toast.error(e?.response?.data?.message ?? t('categories.picker.suggest_error'));
     } finally {
         submittingSuggestion.value = false;
     }
@@ -159,19 +162,19 @@ watch(() => props.modelValue, (val) => {
                 <div class="flex items-center gap-2">
                     <ClockIcon class="w-4 h-4 text-amber-600 flex-shrink-0" />
                     <span class="text-sm font-medium text-amber-800 truncate min-w-0">
-                        Gaida: "{{ modelValue.name }}"
+                        {{ t('categories.picker.pending_prefix', { name: modelValue.name }) }}
                     </span>
                     <button
                         type="button"
                         @click="clearSelection"
                         class="ml-auto p-0.5 text-amber-500 hover:text-amber-700 flex-shrink-0"
-                        aria-label="Noņemt kategorijas priekšlikumu"
+                        :aria-label="t('categories.picker.pending_remove_aria')"
                     >
                         <XMarkIcon class="w-4 h-4" />
                     </button>
                 </div>
                 <p class="text-xs text-amber-600 leading-snug">
-                    Publicēsies kategorijā "Cits", kamēr priekšlikums tiek pārskatīts.
+                    {{ t('categories.picker.pending_helper') }}
                 </p>
             </div>
         </template>
@@ -185,7 +188,7 @@ watch(() => props.modelValue, (val) => {
                 <input
                     v-model="query"
                     type="text"
-                    :placeholder="placeholder ?? 'Sāc rakstīt, lai meklētu kategorijas...'"
+                    :placeholder="placeholder ?? t('categories.picker.placeholder')"
                     :disabled="disabled"
                     @focus="openDropdown"
                     class="w-full pl-9 pr-8 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:border-navy focus:ring-navy disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
@@ -208,13 +211,13 @@ watch(() => props.modelValue, (val) => {
                 class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
             >
                 <!-- Loading -->
-                <div v-if="loading" class="px-3 py-2 text-xs text-gray-400">Meklē...</div>
+                <div v-if="loading" class="px-3 py-2 text-xs text-gray-400">{{ t('categories.picker.searching') }}</div>
 
                 <template v-else>
                     <!-- Approved categories -->
                     <template v-if="results.approved.length > 0">
                         <div class="px-3 pt-2 pb-0.5 text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                            Kategorijas
+                            {{ t('categories.picker.approved_section') }}
                         </div>
                         <button
                             v-for="cat in results.approved"
@@ -231,7 +234,7 @@ watch(() => props.modelValue, (val) => {
                     <!-- Pending suggestions -->
                     <template v-if="results.pending.length > 0">
                         <div class="px-3 pt-2 pb-0.5 text-[10px] font-bold text-gray-400 uppercase tracking-wide">
-                            Gaida apstiprinājumu
+                            {{ t('categories.picker.pending_section') }}
                         </div>
                         <button
                             v-for="sug in results.pending"
@@ -242,7 +245,7 @@ watch(() => props.modelValue, (val) => {
                         >
                             <ClockIcon class="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
                             <span class="flex-1 min-w-0 truncate">{{ sug.name }}</span>
-                            <span class="text-[10px] text-amber-400 flex-shrink-0">Gaida apstiprinājumu</span>
+                            <span class="text-[10px] text-amber-400 flex-shrink-0">{{ t('categories.picker.pending_section') }}</span>
                         </button>
                     </template>
 
@@ -251,7 +254,7 @@ watch(() => props.modelValue, (val) => {
                         v-if="!hasResults() && query.trim().length > 0 && !showSuggestAction()"
                         class="px-3 py-2 text-sm text-gray-400"
                     >
-                        Nav atrastu kategoriju.
+                        {{ t('categories.picker.no_results') }}
                     </div>
 
                     <!-- Suggest action -->
@@ -262,7 +265,7 @@ watch(() => props.modelValue, (val) => {
                         class="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-navy hover:bg-navy/5 border-t border-gray-100 text-left"
                     >
                         <SparklesIcon class="w-3.5 h-3.5 flex-shrink-0" />
-                        Ieteikt jaunu kategoriju: "{{ query.trim() }}"
+                        {{ t('categories.picker.suggest_action', { name: query.trim() }) }}
                     </button>
                 </template>
             </div>
@@ -272,11 +275,11 @@ watch(() => props.modelValue, (val) => {
                 v-if="showSuggestForm"
                 class="mt-2 p-4 border border-amber-200 bg-amber-50 rounded-xl space-y-3"
             >
-                <p class="text-xs font-semibold text-amber-800">Ieteikt jaunu kategoriju</p>
+                <p class="text-xs font-semibold text-amber-800">{{ t('categories.picker.suggest_title') }}</p>
 
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">
-                        Nosaukums <span class="text-red-500">*</span>
+                        {{ t('categories.picker.suggest_name_label') }} <span class="text-red-500">*</span>
                     </label>
                     <input
                         v-model="suggestionName"
@@ -288,7 +291,7 @@ watch(() => props.modelValue, (val) => {
 
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">
-                        Kāpēc šī kategorija būtu noderīga? <span class="text-gray-400">(nav obligāti)</span>
+                        {{ t('categories.picker.suggest_note_label') }} <span class="text-gray-400">{{ t('categories.picker.suggest_note_optional') }}</span>
                     </label>
                     <textarea
                         v-model="suggestionNote"
@@ -305,14 +308,14 @@ watch(() => props.modelValue, (val) => {
                         :disabled="!suggestionName.trim() || submittingSuggestion"
                         class="flex-1 px-3 py-1.5 text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors disabled:opacity-40"
                     >
-                        {{ submittingSuggestion ? 'Iesniedz...' : 'Iesniegt priekšlikumu' }}
+                        {{ submittingSuggestion ? t('categories.picker.suggest_submitting') : t('categories.picker.suggest_submit') }}
                     </button>
                     <button
                         type="button"
                         @click="cancelSuggest"
                         class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
                     >
-                        Atcelt
+                        {{ t('common.cancel') }}
                     </button>
                 </div>
             </div>

@@ -3,8 +3,10 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { CurrencyEuroIcon } from '@heroicons/vue/24/outline';
 import type { PriceProposal } from '@/types/proposal';
+import { formatCurrency } from '@/utils/formatters';
 import CounterProposalModal        from '@/Components/Jobs/Proposals/CounterProposalModal.vue';
 import ConfirmAcceptProposalModal  from '@/Components/Jobs/Proposals/ConfirmAcceptProposalModal.vue';
 import ConfirmRejectProposalModal  from '@/Components/Jobs/Proposals/ConfirmRejectProposalModal.vue';
@@ -19,6 +21,8 @@ const props = defineProps<{
 const emit = defineEmits<{
     proposalActed: [proposalId: number];
 }>();
+
+const { t } = useI18n();
 
 const loading       = ref<string | null>(null);
 const showAccept    = ref(false);
@@ -38,21 +42,16 @@ const statusCls: Record<string, string> = {
 };
 
 function formatMoney(amount: string): string {
-    return new Intl.NumberFormat('lv-LV', {
-        style:                 'currency',
-        currency:              'EUR',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(parseFloat(amount));
+    return formatCurrency(parseFloat(amount));
 }
 
 function formatRelative(iso: string): string {
     const diff = Date.now() - new Date(iso).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1)   return 'Tikko';
-    if (mins < 60)  return `pirms ${mins} min`;
+    if (mins < 1)   return t('chat.just_now');
+    if (mins < 60)  return t('chat.minutes_ago', { n: mins });
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `pirms ${hours} h`;
+    if (hours < 24) return t('notifications.ui.hours_ago', { n: hours });
     return new Date(iso).toLocaleDateString('lv-LV', { day: 'numeric', month: 'short' });
 }
 
@@ -60,11 +59,11 @@ async function accept() {
     loading.value = 'accept';
     try {
         await axios.post(route('proposals.accept', props.proposal.id));
-        toast.success('Piedāvājums pieņemts!');
+        toast.success(t('jobs.accept_proposal_success'));
         showAccept.value = false;
         emit('proposalActed', props.proposal.id);
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -74,11 +73,11 @@ async function reject() {
     loading.value = 'reject';
     try {
         await axios.post(route('proposals.reject', props.proposal.id));
-        toast.success('Piedāvājums noraidīts.');
+        toast.success(t('jobs.reject_proposal_success'));
         showReject.value = false;
         emit('proposalActed', props.proposal.id);
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -88,11 +87,11 @@ async function withdraw() {
     loading.value = 'withdraw';
     try {
         await axios.post(route('proposals.withdraw', props.proposal.id));
-        toast.success('Piedāvājums atsaukts.');
+        toast.success(t('jobs.withdraw_proposal_success'));
         showWithdraw.value = false;
         emit('proposalActed', props.proposal.id);
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -102,11 +101,11 @@ async function counter(amount: number, note: string | null) {
     loading.value = 'counter';
     try {
         await axios.post(route('proposals.counter', props.proposal.id), { amount, note });
-        toast.success('Pretpiedāvājums nosūtīts.');
+        toast.success(t('jobs.counter_proposal_success'));
         showCounter.value = false;
         emit('proposalActed', props.proposal.id);
     } catch (e: any) {
-        toast.error(e?.response?.data?.message ?? 'Radās kļūda.');
+        toast.error(e?.response?.data?.message ?? t('proposals.error_toast'));
     } finally {
         loading.value = null;
     }
@@ -121,7 +120,7 @@ async function counter(amount: number, note: string | null) {
             <div class="flex items-center justify-between px-4 py-2 border-b border-slate-200 bg-white">
                 <div class="flex items-center gap-2">
                     <CurrencyEuroIcon class="w-4 h-4 text-gold flex-shrink-0" />
-                    <span class="text-xs font-bold text-navy uppercase tracking-wide">Cenas piedāvājums</span>
+                    <span class="text-xs font-bold text-navy uppercase tracking-wide">{{ t('proposals.title') }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span
@@ -134,7 +133,7 @@ async function counter(amount: number, note: string | null) {
                         target="_blank"
                         rel="noopener noreferrer"
                         class="text-xs text-slate-400 hover:text-slate-600 hover:underline transition-colors whitespace-nowrap"
-                    >Skatīt darbu →</a>
+                    >{{ t('proposals.view_job') }}</a>
                 </div>
             </div>
 
@@ -142,7 +141,7 @@ async function counter(amount: number, note: string | null) {
             <div class="px-4 py-3">
                 <p class="text-2xl font-bold text-navy mb-1">{{ formatMoney(proposal.amount) }}</p>
                 <p class="text-xs text-gray-500 mb-2">
-                    Piedāvāja: <span class="font-medium text-gray-700">{{ proposal.proposed_by.name }}</span>
+                    {{ t('proposals.proposed_by') }} <span class="font-medium text-gray-700">{{ proposal.proposed_by.name }}</span>
                     <span class="ml-1.5 text-gray-400">{{ formatRelative(proposal.created_at) }}</span>
                 </p>
                 <p v-if="proposal.note" class="text-sm text-gray-600 italic leading-relaxed">"{{ proposal.note }}"</p>
@@ -152,13 +151,13 @@ async function counter(amount: number, note: string | null) {
             <div v-if="isPending" class="px-4 py-3 border-t border-slate-200 bg-white/60">
                 <!-- Own proposal: only withdraw -->
                 <div v-if="isOwn" class="flex items-center justify-between">
-                    <p class="text-xs text-gray-500">Gaida atbildi.</p>
+                    <p class="text-xs text-gray-500">{{ t('proposals.awaiting') }}</p>
                     <button
                         @click="showWithdraw = true"
                         :disabled="!!loading"
                         class="text-xs font-medium text-red-600 hover:text-red-700 disabled:opacity-50 transition-colors"
                     >
-                        Atsaukt piedāvājumu
+                        {{ t('proposals.withdraw_btn') }}
                     </button>
                 </div>
 
@@ -169,21 +168,21 @@ async function counter(amount: number, note: string | null) {
                         :disabled="!!loading"
                         class="flex-1 px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg disabled:opacity-50 transition-colors"
                     >
-                        Pieņemt {{ formatMoney(proposal.amount) }}
+                        {{ t('proposals.accept_btn', { price: formatMoney(proposal.amount) }) }}
                     </button>
                     <button
                         @click="showCounter = true"
                         :disabled="!!loading"
                         class="flex-1 px-3 py-1.5 text-xs font-semibold text-navy border border-navy/30 hover:bg-navy/5 rounded-lg disabled:opacity-50 transition-colors"
                     >
-                        Piedāvāt citu
+                        {{ t('proposals.counter_btn') }}
                     </button>
                     <button
                         @click="showReject = true"
                         :disabled="!!loading"
                         class="w-full text-xs font-medium text-red-600 hover:text-red-700 py-1 disabled:opacity-50 transition-colors"
                     >
-                        Noraidīt
+                        {{ t('proposals.reject_btn') }}
                     </button>
                 </div>
             </div>

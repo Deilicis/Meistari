@@ -2,7 +2,10 @@
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import { useActiveRole } from '@/composables/useActiveRole';
+
+const { t } = useI18n();
 
 const emit = defineEmits<{ switched: [] }>();
 
@@ -16,14 +19,14 @@ function switchTo(role: 'master' | 'seeker') {
     router.post(route('role.switch'), { target_role: role }, {
         onFinish:  () => { switching.value = false; },
         onSuccess: () => emit('switched'),
-        onError:   () => toast.error('Neizdevās pārslēgt lomu.'),
+        onError:   () => toast.error(t('nav.role_switch_error')),
     });
 }
 </script>
 
 <template>
     <div class="px-4 py-3 border-t border-gray-100">
-        <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Aktīvais skats</p>
+        <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ t('nav.role_section') }}</p>
         <div class="space-y-1">
             <button
                 v-if="isMaster"
@@ -39,8 +42,8 @@ function switchTo(role: 'master' | 'seeker') {
                     class="w-3 h-3 rounded-full border-2 flex-shrink-0 transition-colors"
                     :class="isMasterActive ? 'bg-yellow-400 border-yellow-400' : 'border-gray-300'"
                 />
-                Meistars
-                <span v-if="isMasterActive" class="ml-auto text-[10px] font-bold text-yellow-600 uppercase tracking-wide">Aktīvs</span>
+                {{ t('nav.role_master') }}
+                <span v-if="isMasterActive" class="ml-auto text-[10px] font-bold text-yellow-600 uppercase tracking-wide">{{ t('nav.active') }}</span>
             </button>
 
             <button
@@ -57,8 +60,8 @@ function switchTo(role: 'master' | 'seeker') {
                     class="w-3 h-3 rounded-full border-2 flex-shrink-0 transition-colors"
                     :class="isSeekerActive ? 'bg-emerald-400 border-emerald-400' : 'border-gray-300'"
                 />
-                Meklētājs
-                <span v-if="isSeekerActive" class="ml-auto text-[10px] font-bold text-emerald-600 uppercase tracking-wide">Aktīvs</span>
+                {{ t('nav.role_seeker') }}
+                <span v-if="isSeekerActive" class="ml-auto text-[10px] font-bold text-emerald-600 uppercase tracking-wide">{{ t('nav.active') }}</span>
             </button>
         </div>
     </div>

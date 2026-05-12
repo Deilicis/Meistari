@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import ImageLightbox from '@/Components/Common/ImageLightbox.vue';
 import ComplaintModal from '@/Components/Common/ComplaintModal.vue';
+import { formatCurrency } from '@/utils/formatters';
 import {
     XMarkIcon,
     MapPinIcon,
@@ -14,6 +16,8 @@ import {
     FlagIcon,
 } from '@heroicons/vue/24/outline';
 import type { JobRequestWithSeeker } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -38,7 +42,7 @@ const seekerName = computed(() => {
 const avatarInitials = computed(() => seekerName.value.slice(0, 2).toUpperCase());
 
 const formatDeadline = (d: string) =>
-    new Date(d).toLocaleString('lv-LV', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    new Date(d).toLocaleString([], { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
 const lightboxIndex = ref<number | null>(null);
 const complaintOpen = ref(false);
@@ -52,10 +56,8 @@ watch(() => props.show, (newVal) => {
 });
 
 const formatBudget = (): string => {
-    if (!props.job?.budget) return 'Vienojams';
-    return new Intl.NumberFormat('lv-LV', {
-        style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
-    }).format(props.job.budget);
+    if (!props.job?.budget) return t('job_requests.detail_negotiable');
+    return formatCurrency(props.job.budget);
 };
 </script>
 
@@ -87,7 +89,7 @@ const formatBudget = (): string => {
                                 </div>
                                 <div>
                                     <p class="text-xl font-extrabold text-navy">{{ formatBudget() }}</p>
-                                    <p class="text-xs text-gray-400">Budžets</p>
+                                    <p class="text-xs text-gray-400">{{ t('job_requests.detail_budget') }}</p>
                                 </div>
                             </div>
                             <div v-if="job.deadline" class="flex items-center gap-2 text-sm text-gray-600">
@@ -97,12 +99,12 @@ const formatBudget = (): string => {
                         </div>
 
                         <div class="mb-5">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Apraksts</h3>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('job_requests.detail_description') }}</h3>
                             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ job.description }}</p>
                         </div>
 
                         <div v-if="job.location?.length">
-                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Darba vieta</h3>
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('job_requests.detail_location') }}</h3>
                             <div class="flex flex-wrap gap-2">
                                 <span
                                     v-for="loc in job.location"
@@ -118,7 +120,7 @@ const formatBudget = (): string => {
                         <div v-if="job.images?.length" class="mt-5">
                             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                                 <PhotoIcon class="w-3.5 h-3.5" />
-                                Attēli
+                                {{ t('job_requests.detail_images') }}
                             </h3>
                             <div class="grid grid-cols-4 gap-1.5">
                                 <div
@@ -134,7 +136,7 @@ const formatBudget = (): string => {
                     </div>
 
                     <div class="md:col-span-1 p-6 bg-gray-50/60">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">Par pasūtītāju</h3>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">{{ t('job_requests.detail_about_client') }}</h3>
 
                         <a
                             v-if="job?.user?.id"
@@ -173,7 +175,7 @@ const formatBudget = (): string => {
                     title="Ziņot par pārkāpumu"
                 >
                     <FlagIcon class="w-3.5 h-3.5" />
-                    Ziņot
+                    {{ t('job_requests.detail_report') }}
                 </button>
                 <div v-else />
                 <div class="flex items-center gap-3">
@@ -181,7 +183,7 @@ const formatBudget = (): string => {
                         @click="emit('close')"
                         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        Aizvērt
+                        {{ t('job_requests.detail_close') }}
                     </button>
 
                     <div
@@ -189,14 +191,14 @@ const formatBudget = (): string => {
                         class="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold"
                     >
                         <CheckBadgeIcon class="w-4 h-4" />
-                        Jau pieteicies
+                        {{ t('job_requests.detail_applied') }}
                     </div>
                     <button
                         v-else
                         @click="emit('apply')"
                         class="px-5 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy-hover transition-colors"
                     >
-                        Pieteikties
+                        {{ t('job_requests.detail_apply_btn') }}
                     </button>
                 </div>
             </div>
@@ -208,7 +210,7 @@ const formatBudget = (): string => {
             :reported-user-id="job.user.id"
             reported-entity-type="App\Models\JobRequest"
             :reported-entity-id="job.id"
-            entity-label="šo sludinājumu"
+            :entity-label="t('job_requests.detail_this_listing')"
             @close="complaintOpen = false"
         />
 

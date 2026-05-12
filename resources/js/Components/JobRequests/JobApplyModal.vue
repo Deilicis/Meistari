@@ -2,10 +2,13 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import { XMarkIcon, ClipboardDocumentListIcon } from '@heroicons/vue/24/outline';
 import type { JobRequestWithSeeker } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -45,17 +48,17 @@ const submit = async () => {
             price_offer: priceOffer.value || null,
         });
 
-        toast.success('Pieteikums veiksmīgi iesniegts!');
+        toast.success(t('job_requests.apply_success_toast'));
         reset();
         emit('applied');
     } catch (error: any) {
         if (error.response?.status === 422) {
             errors.value = error.response.data.errors ?? {};
-            toast.error(error.response.data.message ?? 'Lūdzu, pārbaudiet formu.');
+            toast.error(error.response.data.message ?? t('job_requests.apply_form_error'));
         } else if (error.response?.status === 403) {
-            toast.error(error.response.data.message ?? 'Nav atļauts.');
+            toast.error(error.response.data.message ?? t('job_requests.apply_not_allowed'));
         } else {
-            toast.error('Notika neparedzēta kļūda.');
+            toast.error(t('job_requests.apply_unexpected_error'));
         }
     } finally {
         processing.value = false;
@@ -71,7 +74,7 @@ const submit = async () => {
                     <ClipboardDocumentListIcon class="w-4 h-4 text-emerald-300" />
                 </div>
                 <div>
-                    <h2 class="text-base font-bold text-white">Pieteikties</h2>
+                    <h2 class="text-base font-bold text-white">{{ t('job_requests.apply_title') }}</h2>
                     <p v-if="job" class="text-xs text-white/50 truncate max-w-xs">{{ job.title }}</p>
                 </div>
             </div>
@@ -83,8 +86,8 @@ const submit = async () => {
         <div class="p-6 space-y-5">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                    Jūsu piedāvātā cena (€)
-                    <span class="text-gray-400 font-normal">(neobligāti)</span>
+                    {{ t('job_requests.apply_price_label') }}
+                    <span class="text-gray-400 font-normal">{{ t('job_requests.apply_price_optional') }}</span>
                 </label>
                 <input
                     v-model="priceOffer"
@@ -92,24 +95,24 @@ const submit = async () => {
                     step="0.01"
                     min="0"
                     class="block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                    placeholder="Piem., 150"
+                    :placeholder="t('job_requests.apply_price_placeholder')"
                 />
                 <InputError v-if="errors.price_offer" :message="errors.price_offer" class="mt-1" />
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                    Pavadvēstule
-                    <span class="text-gray-400 font-normal">(neobligāti)</span>
+                    {{ t('job_requests.apply_cover_label') }}
+                    <span class="text-gray-400 font-normal">{{ t('job_requests.apply_price_optional') }}</span>
                 </label>
                 <textarea
                     v-model="coverLetter"
                     rows="5"
                     maxlength="2000"
                     class="block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                    placeholder="Aprakstiet sevi, savu pieredzi un kāpēc esat piemērots šim darbam..."
+                    :placeholder="t('job_requests.apply_cover_placeholder')"
                 ></textarea>
-                <p class="mt-1 text-xs text-gray-400">Maks. 2000 rakstzīmes</p>
+                <p class="mt-1 text-xs text-gray-400">{{ t('job_requests.apply_cover_max') }}</p>
                 <InputError v-if="errors.cover_letter" :message="errors.cover_letter" class="mt-1" />
             </div>
 
@@ -122,7 +125,7 @@ const submit = async () => {
                 @click="close"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
             >
-                Atcelt
+                {{ t('common.cancel') }}
             </button>
             <button
                 type="button"
@@ -134,7 +137,7 @@ const submit = async () => {
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                {{ processing ? 'Iesniedz...' : 'Iesniegt pieteikumu' }}
+                {{ processing ? t('job_requests.apply_submitting') : t('job_requests.apply_submit') }}
             </button>
         </div>
     </Modal>

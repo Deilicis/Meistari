@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Common/Modal.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
@@ -12,6 +13,8 @@ import { lv } from 'date-fns/locale';
 import { toast } from 'vue-sonner';
 import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category } from '@/types/models';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -68,7 +71,7 @@ const removeLocation = (index: number) => form.location.splice(index, 1);
 const submit = () => {
     const cleanLocations = form.location.filter(loc => loc.trim() !== '');
     if (cleanLocations.length === 0) {
-        form.setError('location', 'Norādiet vismaz vienu vietu.');
+        form.setError('location', t('job_requests.location_required_error'));
         return;
     }
 
@@ -84,7 +87,7 @@ const submit = () => {
                 emit('close');
             },
             onError: () => {
-                toast.error('Lūdzu, pārbaudiet formu un izlabojiet kļūdas.');
+                toast.error(t('job_requests.form_error_toast'));
                 form.location = originalLocations;
             },
         });
@@ -97,7 +100,7 @@ const submit = () => {
                 emit('close');
             },
             onError: () => {
-                toast.error('Lūdzu, pārbaudiet formu un izlabojiet kļūdas.');
+                toast.error(t('job_requests.form_error_toast'));
                 form.location = originalLocations;
             },
         });
@@ -119,7 +122,7 @@ const closeModal = () => {
                     <ClipboardDocumentListIcon class="w-4 h-4 text-emerald-300" />
                 </div>
                 <h2 class="text-base font-bold text-white">
-                    {{ jobRequest ? 'Rediģēt sludinājumu' : 'Jauns darba sludinājums' }}
+                    {{ jobRequest ? t('job_requests.modal_edit_title') : t('job_requests.modal_create_title') }}
                 </h2>
             </div>
             <button @click="closeModal" type="button" class="text-white/60 hover:text-white transition-colors">
@@ -134,13 +137,13 @@ const closeModal = () => {
 
                     <!-- Title (full width) -->
                     <div class="md:col-span-2">
-                        <InputLabel for="title" value="Virsraksts *" class="text-gray-700 font-medium" />
+                        <InputLabel for="title" :value="t('job_requests.field_title_label')" class="text-gray-700 font-medium" />
                         <TextInput
                             id="title"
                             type="text"
                             class="mt-1 block w-full focus:border-navy focus:ring-navy"
                             v-model="form.title"
-                            placeholder="Piem., Nepieciešams lamināta ieklājējs"
+                            :placeholder="t('job_requests.field_title_placeholder')"
                             required
                         />
                         <InputError class="mt-1.5" :message="getError('title')" />
@@ -148,7 +151,7 @@ const closeModal = () => {
 
                     <!-- Category -->
                     <div>
-                        <InputLabel for="category" value="Kategorija *" class="text-gray-700 font-medium" />
+                        <InputLabel for="category" :value="t('job_requests.field_category_label')" class="text-gray-700 font-medium" />
                         <div class="mt-1">
                             <CategorySelect
                                 v-model="form.category_id"
@@ -163,7 +166,7 @@ const closeModal = () => {
                     <!-- Budget + Deadline -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <InputLabel for="budget" value="Budžets (€)" class="text-gray-700 font-medium" />
+                            <InputLabel for="budget" :value="t('job_requests.field_budget_label')" class="text-gray-700 font-medium" />
                             <TextInput
                                 id="budget"
                                 type="number"
@@ -177,14 +180,14 @@ const closeModal = () => {
                             <InputError class="mt-1.5" :message="getError('budget')" />
                         </div>
                         <div>
-                            <InputLabel for="deadline" value="Termiņš" class="text-gray-700 font-medium" />
+                            <InputLabel for="deadline" :value="t('job_requests.field_deadline_label')" class="text-gray-700 font-medium" />
                             <VueDatePicker
                                 v-model="form.deadline"
                                 model-type="iso"
                                 :enable-time-picker="true"
                                 format="dd.MM.yyyy HH:mm"
                                 :locale="lv"
-                                placeholder="Izvēlies datumu un laiku"
+                                :placeholder="t('job_requests.field_deadline_placeholder')"
                                 auto-apply
                                 :clearable="true"
                                 :teleport="true"
@@ -197,13 +200,13 @@ const closeModal = () => {
 
                     <!-- Description (full width) -->
                     <div class="md:col-span-2">
-                        <InputLabel for="description" value="Darba apraksts *" class="text-gray-700 font-medium" />
+                        <InputLabel for="description" :value="t('job_requests.field_description_label')" class="text-gray-700 font-medium" />
                         <textarea
                             id="description"
                             rows="4"
                             class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
                             v-model="form.description"
-                            placeholder="Aprakstiet nepieciešamo darbu apjomu, detaļas un specifiku..."
+                            :placeholder="t('job_requests.field_description_placeholder')"
                             required
                         ></textarea>
                         <InputError class="mt-1.5" :message="getError('description')" />
@@ -211,14 +214,14 @@ const closeModal = () => {
 
                     <!-- Locations (full width) -->
                     <div class="md:col-span-2">
-                        <InputLabel value="Darba norises vieta(s) *" class="text-gray-700 font-medium" />
+                        <InputLabel :value="t('job_requests.field_location_label')" class="text-gray-700 font-medium" />
                         <div class="mt-1 space-y-2">
                             <div v-for="(_loc, index) in form.location" :key="index" class="flex gap-2">
                                 <TextInput
                                     type="text"
                                     class="block w-full focus:border-navy focus:ring-navy"
                                     v-model="form.location[index]"
-                                    placeholder="Pilsēta vai precīza adrese"
+                                    :placeholder="t('job_requests.field_location_placeholder')"
                                     required
                                 />
                                 <button
@@ -236,7 +239,7 @@ const closeModal = () => {
                                 class="inline-flex items-center gap-1.5 text-sm font-medium text-navy hover:text-navy-hover transition-colors"
                             >
                                 <PlusIcon class="w-4 h-4" />
-                                Pievienot vēl vienu vietu
+                                {{ t('job_requests.add_location') }}
                             </button>
                         </div>
                         <InputError class="mt-1.5" :message="getError('location')" />
@@ -260,7 +263,7 @@ const closeModal = () => {
                         @click="closeModal"
                         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        Atcelt
+                        {{ t('common.cancel') }}
                     </button>
                     <button
                         type="submit"
@@ -271,7 +274,7 @@ const closeModal = () => {
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        {{ jobRequest ? 'Saglabāt izmaiņas' : 'Publicēt sludinājumu' }}
+                        {{ jobRequest ? t('job_requests.save_changes_btn') : t('jobs.publish_btn') }}
                     </button>
                 </div>
             </form>

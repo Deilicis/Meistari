@@ -2,8 +2,11 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { toast } from 'vue-sonner';
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import { FlagIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 const props = defineProps<{
     show: boolean;
@@ -28,7 +31,7 @@ const close = () => {
 const submit = async () => {
     error.value = '';
     if (reason.value.trim().length < 20) {
-        error.value = 'Iemeslam jābūt vismaz 20 rakstzīmēm.';
+        error.value = t('modals.complaint.min_chars_error');
         return;
     }
     submitting.value = true;
@@ -39,11 +42,11 @@ const submit = async () => {
             reported_entity_id:   props.reportedEntityId ?? null,
             reason:              reason.value.trim(),
         });
-        toast.success('Sūdzība iesniegta!');
+        toast.success(t('modals.complaint.success'));
         close();
     } catch (e: any) {
         const msg = e?.response?.data?.message ?? e?.response?.data?.errors?.reason?.[0];
-        error.value = msg ?? 'Neizdevās iesniegt sūdzību.';
+        error.value = msg ?? t('modals.complaint.error');
     } finally {
         submitting.value = false;
     }
@@ -55,24 +58,24 @@ const submit = async () => {
         <div class="bg-navy px-6 py-4 rounded-t-xl flex items-center gap-3">
             <FlagIcon class="w-5 h-5 text-rose-400 flex-shrink-0" />
             <div>
-                <h2 class="text-base font-bold text-white">Ziņot par pārkāpumu</h2>
+                <h2 class="text-base font-bold text-white">{{ t('modals.complaint.title') }}</h2>
                 <p class="text-white/50 text-xs mt-0.5">
-                    {{ entityLabel ? `Jūs ziņojat par ${entityLabel}` : 'Jūs ziņojat par šo lietotāju' }}
+                    {{ entityLabel ? t('modals.complaint.reporting', { label: entityLabel }) : t('modals.complaint.reporting_generic') }}
                 </p>
             </div>
         </div>
 
         <div class="p-6 space-y-4">
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1">Iemesls</label>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t('modals.complaint.reason_label') }}</label>
                 <textarea
                     v-model="reason"
                     rows="4"
-                    placeholder="Aprakstiet pārkāpumu..."
+                    :placeholder="t('modals.complaint.reason_placeholder')"
                     class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 focus:border-rose-400 resize-none transition"
                 />
                 <p v-if="error" class="text-xs text-rose-500 mt-1">{{ error }}</p>
-                <p class="text-xs text-gray-400 mt-1">Minimums 20 rakstzīmes ({{ reason.trim().length }} / 20)</p>
+                <p class="text-xs text-gray-400 mt-1">{{ t('modals.complaint.min_chars', { count: reason.trim().length }) }}</p>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-1">
@@ -81,7 +84,7 @@ const submit = async () => {
                     @click="close"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                    Atcelt
+                    {{ t('common.cancel') }}
                 </button>
                 <button
                     type="button"
@@ -89,7 +92,7 @@ const submit = async () => {
                     :disabled="submitting"
                     class="px-4 py-2 text-sm font-semibold text-white bg-rose-500 rounded-lg hover:bg-rose-600 transition-colors disabled:opacity-50"
                 >
-                    Iesniegt sūdzību
+                    {{ t('modals.complaint.submit') }}
                 </button>
             </div>
         </div>

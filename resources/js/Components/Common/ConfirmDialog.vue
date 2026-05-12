@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import Modal from '@/Components/Common/Modal.vue';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+
+const { t } = useI18n();
 
 defineProps<{
     show: boolean;
@@ -35,7 +38,7 @@ const emit = defineEmits<{
                     @click="emit('cancel')"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                    Atpakaļ
+                    {{ t('common.back') }}
                 </button>
                 <button
                     type="button"
@@ -47,7 +50,7 @@ const emit = defineEmits<{
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    {{ confirmLabel ?? 'Apstiprināt' }}
+                    {{ confirmLabel ?? t('common.confirm') }}
                 </button>
             </div>
         </div>
