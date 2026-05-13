@@ -20,6 +20,13 @@ class ServicePageController extends Controller
     ) {
     }
 
+    public function create(): Response
+    {
+        return Inertia::render('Master/Services/Create', [
+            'categories' => $this->categoryLogicRepo->getNestedCategories(),
+        ]);
+    }
+
     public function index(Request $request): Response
     {
         $filters = $request->only(['search', 'category_id', 'is_active', 'price_min', 'price_max']);

@@ -144,7 +144,7 @@ const submit = () => {
                                 <TextInput id="phone_number" type="text" class="mt-1 block w-full bg-gray-50 focus:bg-white" v-model="form.phone_number" placeholder="+371 20000000" />
                                 <InputError class="mt-2" :message="form.errors.phone_number" />
                             </div>
-                            <div class="md:col-span-2">
+                            <div v-if="isMaster" class="md:col-span-2">
                                 <InputLabel for="description" :value="t('profile.field_bio_label')" class="font-medium" />
                                 <textarea
                                     id="description"

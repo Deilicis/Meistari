@@ -174,6 +174,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Meistara panelis
     Route::middleware(['role:master'])->prefix('master')->name('master.')->group(function () {
         Route::get('/my-services',             [ServicePageController::class,                  'index'])->name('services.index');
+        Route::get('/my-services/create',      [ServicePageController::class,                  'create'])->name('services.create');
         Route::get('/browse-categories',       [JobRequestCategoryBrowsePageController::class, 'index'])->name('job-requests.categories');
         Route::get('/browse-jobs',             [JobRequestBrowsePageController::class,         'index'])->name('job-requests.index');
         Route::get('/my-applications',         [ApplicationPageController::class,              'index'])->name('applications.index');

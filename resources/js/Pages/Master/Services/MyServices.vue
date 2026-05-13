@@ -53,11 +53,6 @@ const refreshServices = () => {
     router.reload({ only: ['services'] });
 };
 
-const openCreateModal = () => {
-    serviceToEdit.value = null;
-    isServiceModalOpen.value = true;
-};
-
 const openEditModal = (service: Service) => {
     serviceToEdit.value = service;
     isServiceModalOpen.value = true;
@@ -111,13 +106,13 @@ const clearFilters = () => {
                             </p>
                         </div>
                     </div>
-                    <button
-                        @click="openCreateModal"
+                    <a
+                        :href="route('master.services.create')"
                         class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 transition-colors shrink-0"
                     >
                         <PlusIcon class="w-4 h-4" stroke-width="2.5" />
                         {{ t('services.add_new_btn') }}
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -145,7 +140,7 @@ const clearFilters = () => {
                     <PrimaryButton v-if="Object.values(filterForm).some(x => x !== '')" @click="clearFilters">
                         {{ t('services.clear_filters_btn') }}
                     </PrimaryButton>
-                    <PrimaryButton v-else @click="openCreateModal">
+                    <PrimaryButton v-else @click="router.visit(route('master.services.create'))">
                         {{ t('services.create_first_btn') }}
                     </PrimaryButton>
                 </div>
