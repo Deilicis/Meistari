@@ -12,47 +12,41 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $parents = [
-            'Santehnika'            => ['icon' => 'WrenchScrewdriverIcon', 'children' => [
-                'Cauruļu remonts',
-                'Apkures sistēmas',
-                'Kanalizācija',
+        $structure = [
+            'Apkure un siltumtehnika' => ['icon' => 'FireIcon', 'children' => [
+                'Krāsnis', 'Radiatori', 'Siltumsūkņi',
             ]],
-            'Elektrika'             => ['icon' => 'BoltIcon', 'children' => [
-                'Elektroinstalācija',
-                'Apgaismojums',
-                'Drošības sistēmas',
+            'Elektroinstalācija' => ['icon' => 'BoltIcon', 'children' => [
+                'Iekšējie darbi', 'Ārējie darbi', 'Apgaismojums',
             ]],
-            'Būvniecība un Remonts' => ['icon' => 'HomeModernIcon', 'children' => [
-                'Iekštelpu remonts',
-                'Fasādes darbi',
-                'Jumta darbi',
-                'Flīzēšana',
+            'Santehnika' => ['icon' => 'WrenchScrewdriverIcon', 'children' => [
+                'Cauruļvadi', 'Sanitārtehnika', 'Ūdens sildītāji',
             ]],
-            'Uzkopšana'             => ['icon' => 'SparklesIcon', 'children' => [
-                'Dzīvokļu uzkopšana',
-                'Biroju uzkopšana',
-                'Logu tīrīšana',
+            'Būvniecība un remonts' => ['icon' => 'HomeModernIcon', 'children' => [
+                'Iekšējais remonts', 'Ārējais remonts', 'Jaunbūves',
             ]],
-            'IT un Datori'          => ['icon' => 'ComputerDesktopIcon', 'children' => [
-                'Datoru remonts',
-                'Tīmekļa izstrāde',
-                'Tīklu uzstādīšana',
+            'Logu tīrīšana' => ['icon' => 'SparklesIcon', 'children' => [
+                'Stiklu pakalpojumi', 'Karkasu mazgāšana',
             ]],
-            'Auto Remonts'          => ['icon' => 'TruckIcon', 'children' => [
-                'Dzinēja remonts',
-                'Virsbūves remonts',
-                'Riepu serviss',
+            'Krāsošana' => ['icon' => 'PaintBrushIcon', 'children' => [
+                'Iekšējā krāsošana', 'Fasāžu krāsošana',
+            ]],
+            'Dārza darbi' => ['icon' => 'SunIcon', 'children' => [
+                'Zāles pļaušana', 'Stādīšana', 'Sniega tīrīšana',
+            ]],
+            'Tīrīšana' => ['icon' => 'SparklesIcon', 'children' => [
+                'Dzīvokļu uzkopšana', 'Biroju tīrīšana', 'Pēcremonta tīrīšana',
             ]],
         ];
 
-        foreach ($parents as $name => $config) {
+        foreach ($structure as $name => $config) {
             $parent = Category::updateOrCreate(
                 [Category::SLUG => Str::slug($name)],
                 [
                     Category::NAME      => $name,
                     Category::ICON      => $config['icon'],
                     Category::PARENT_ID => null,
+                    Category::IS_SYSTEM => false,
                 ]
             );
 
@@ -63,6 +57,7 @@ class CategorySeeder extends Seeder
                         Category::NAME      => $childName,
                         Category::ICON      => null,
                         Category::PARENT_ID => $parent->getId(),
+                        Category::IS_SYSTEM => false,
                     ]
                 );
             }
