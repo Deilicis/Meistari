@@ -54,7 +54,6 @@ class AdminServiceController extends Controller
             Service::TITLE,
             Service::DESCRIPTION,
             Service::PRICE,
-            Service::PRICE_TYPE,
             Service::IS_ACTIVE,
             Service::LOCATION,
         ]));

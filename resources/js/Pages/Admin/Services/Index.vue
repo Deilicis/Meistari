@@ -163,11 +163,8 @@ const formatDate = (d: string) =>
 
                             <!-- Price -->
                             <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
-                                <span v-if="service.price">
-                                    €{{ service.price }}
-                                    <span class="text-xs text-gray-400">{{ priceTypeLabel(service.price_type) }}</span>
-                                </span>
-                                <span v-else class="text-gray-400">{{ priceTypeLabel(service.price_type) }}</span>
+                                <span v-if="service.price">€{{ service.price }}</span>
+                                <span v-else class="text-gray-400">Vienojoties</span>
                             </td>
 
                             <!-- Status -->

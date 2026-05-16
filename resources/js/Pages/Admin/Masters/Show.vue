@@ -24,7 +24,6 @@ interface Service {
     title: string;
     is_active: boolean;
     price: number | null;
-    price_type: string;
     created_at: string;
     category: { name: string } | null;
 }
@@ -69,15 +68,6 @@ defineProps<{ master: Master }>();
 const fromServiceId = computed(() =>
     new URLSearchParams(window.location.search).get('from_service_id')
 );
-
-const priceTypeLabel = (type: string) => {
-    const map: Record<string, string> = {
-        fixed: 'Fiksēta',
-        hourly: '/stundā',
-        negotiable: 'Vienojoties',
-    };
-    return map[type] ?? type;
-};
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -242,9 +232,9 @@ const typeClass = (type: string | null) => type === 'company'
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
                                 <span v-if="service.price" class="text-sm font-semibold text-gray-700">
-                                    €{{ service.price }} <span class="text-xs font-normal text-gray-400">{{ priceTypeLabel(service.price_type) }}</span>
+                                    €{{ service.price }}
                                 </span>
-                                <span v-else class="text-xs text-gray-400">{{ priceTypeLabel(service.price_type) }}</span>
+                                <span v-else class="text-xs text-gray-400">Vienojoties</span>
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
                                     :class="service.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'"
