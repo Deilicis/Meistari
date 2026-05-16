@@ -137,7 +137,7 @@ const formatDate = (d: string) =>
                                 </span>
                             </td>
                             <td class="px-6 py-4 hidden lg:table-cell max-w-xs">
-                                <p class="text-gray-600 truncate">{{ complaint.reason.slice(0, 80) }}{{ complaint.reason.length > 80 ? '…' : '' }}</p>
+                                <p class="text-gray-600 truncate">{{ complaint.reason.slice(0, 80) }}{{ complaint.reason.length > 80 ? '...' : '' }}</p>
                             </td>
                             <td class="px-6 py-4">
                                 <span

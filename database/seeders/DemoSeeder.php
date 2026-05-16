@@ -13,7 +13,6 @@ use App\Enums\NotificationTypeEnum;
 use App\Enums\PriceProposalStatusEnum;
 use App\Enums\Profile\ProfileTypeEnum;
 use App\Enums\Role\RoleNameEnum;
-use App\Enums\Service\ServicePriceTypeEnum;
 use App\Models\Application;
 use App\Models\Category;
 use App\Models\CategorySuggestion;
@@ -231,67 +230,67 @@ class DemoSeeder extends Seeder
 
         $services = [
             // Andrejs - electrical
-            ['andrejs', 'Elektroinstalācijas darbi dzīvokļos', 'Iekšējie darbi', 350.00, ServicePriceTypeEnum::FIXED,
+            ['andrejs', 'Elektroinstalācijas darbi dzīvokļos', 'Iekšējie darbi', 350.00,
              'Veicu pilnu dzīvokļu elektroinstalāciju - rozešu, slēdžu montāža, elektrisko sadaļu uzstādīšana, vadu vads grīdā un sienās. Garantija 2 gadi. Darbus veicu rūpīgi un tīri.'],
-            ['andrejs', 'Apgaismojuma montāža un konfigurācija', 'Apgaismojums', 25.00, ServicePriceTypeEnum::HOURLY,
+            ['andrejs', 'Apgaismojuma montāža un konfigurācija', 'Apgaismojums', 25.00,
              'Lustru, LED lentes, sienas gaismekļu un downlight montāža. Palīdzu izvēlēties pareizo gaismas temperatūru un izvietojumu. Pieejams arī viedās mājas sistēmu integrācijai.'],
-            ['andrejs', 'Ārējā elektroinstalācija privātmājām', 'Ārējie darbi', 800.00, ServicePriceTypeEnum::FIXED,
+            ['andrejs', 'Ārējā elektroinstalācija privātmājām', 'Ārējie darbi', 800.00,
              'Pieslēgšanās tīklam, āra apgaismojums, dārza rozetes, drošinātāju kastes montāža ārpusē. Strādāju ar sertificētiem materiāliem.'],
 
             // Peteris - plumbing
-            ['peteris', 'Cauruļvadu uzstādīšana un remonts', 'Cauruļvadi', 30.00, ServicePriceTypeEnum::HOURLY,
+            ['peteris', 'Cauruļvadu uzstādīšana un remonts', 'Cauruļvadi', 30.00,
              'Ūdens un kanalizācijas cauruļvadu montāža, noplūžu novēršana, caurules nomaiņa. Ātri reaģēju avārijas gadījumos. Strādāju ar PPR, vara un plastmasas caurulēm.'],
-            ['peteris', 'Sanitārtehnikas montāža', 'Sanitārtehnika', 200.00, ServicePriceTypeEnum::FIXED,
+            ['peteris', 'Sanitārtehnikas montāža', 'Sanitārtehnika', 200.00,
              'Vanniņas, dušas kabīnes, tualetes, izlietnes uzstādīšana un pieslēgšana. Varu nodrošināt arī ūdens mīkstinātāju uzstādīšanu. Garantija 1 gads.'],
-            ['peteris', 'Ūdens sildītāja uzstādīšana', 'Ūdens sildītāji', 120.00, ServicePriceTypeEnum::FIXED,
+            ['peteris', 'Ūdens sildītāja uzstādīšana', 'Ūdens sildītāji', 120.00,
              'Dažādu ražotāju ūdens sildītāju uzstādīšana un pieslēgšana. Nodrošinu arī vecā sildītāja demontāžu un utilizāciju. Darbs ar garantiju.'],
 
             // Martins - painting
-            ['martins', 'Dzīvokļu iekštelpu krāsošana', 'Iekšējā krāsošana', 400.00, ServicePriceTypeEnum::FIXED,
+            ['martins', 'Dzīvokļu iekštelpu krāsošana', 'Iekšējā krāsošana', 400.00,
              'Sienu un griestu krāsošana ar kvalitatīvām materiālām. Ietver virsmas sagatavošanu, špaktelēšanu un gruntēšanu. Darbu veicu ātri un tīri, aizsargājot mēbeles.'],
-            ['martins', 'Fasāžu krāsošana un renovācija', 'Fasāžu krāsošana', 15.00, ServicePriceTypeEnum::HOURLY,
+            ['martins', 'Fasāžu krāsošana un renovācija', 'Fasāžu krāsošana', 15.00,
              'Ēku fasāžu krāsošana ar speciāliem āra krāsojumiem. Nodrošinu sastatnes un visu nepieciešamo aprīkojumu. Darbu var veikt gan mazām, gan lielām ēkām.'],
 
             // Ilze - cleaning
-            ['ilze', 'Pēcremonta tīrīšana dzīvokļos', 'Pēcremonta tīrīšana', 180.00, ServicePriceTypeEnum::FIXED,
+            ['ilze', 'Pēcremonta tīrīšana dzīvokļos', 'Pēcremonta tīrīšana', 180.00,
              'Rūpīga telpu uzkopšana pēc remonta darbiem - putekļu, apmetuma un krāsas palieku savākšana, logu, durvju un grīdu mazgāšana. Izmantoju profesionālu aprīkojumu.'],
-            ['ilze', 'Biroju regulārā tīrīšana', 'Biroju tīrīšana', 15.00, ServicePriceTypeEnum::HOURLY,
+            ['ilze', 'Biroju regulārā tīrīšana', 'Biroju tīrīšana', 15.00,
              'Biroja telpu regulāra ikdienas vai iknedēļas uzkopšana. Putekļu slaucīšana, grīdu mazgāšana, virtuves zona, sanitārie mezgli. Diskrēti un uzticami.'],
-            ['ilze', 'Dzīvokļa ģenerāltīrīšana', 'Dzīvokļu uzkopšana', 130.00, ServicePriceTypeEnum::FIXED,
+            ['ilze', 'Dzīvokļa ģenerāltīrīšana', 'Dzīvokļu uzkopšana', 130.00,
              'Pilna dzīvokļa ģenerāltīrīšana - ledusskapja mazgāšana iekšā, mikroviļņu krāsns, virtuves virsmas, vannas istaba, logu stikli, grīdas. Viss blizgst.'],
 
             // Roberts - carpentry
-            ['roberts', 'Mēbeļu izgatavošana pēc pasūtījuma', 'Iekšējais remonts', null, ServicePriceTypeEnum::NEGOTIABLE,
+            ['roberts', 'Mēbeļu izgatavošana pēc pasūtījuma', 'Iekšējais remonts', null,
              'Dizaina mēbeles pēc individuāla pasūtījuma - skapji, plaukti, virtuves mēbeles, galdi un krēsli. Strādāju ar dažādiem koku veidiem. Iespēja sniegt tāmi pēc rasējuma.'],
-            ['roberts', 'Koka žogu izbūve', 'Ārējais remonts', 55.00, ServicePriceTypeEnum::FIXED,
+            ['roberts', 'Koka žogu izbūve', 'Ārējais remonts', 55.00,
              'Dažāda veida koka žogu projektēšana un izbūve. Lietoju impregnētu koku vai teraskoku. Ietver pamatu vai balstu uzstādīšanu. Darbu veicu visu gadu.'],
-            ['roberts', 'Iekšdurvju uzstādīšana', 'Iekšējais remonts', 160.00, ServicePriceTypeEnum::FIXED,
+            ['roberts', 'Iekšdurvju uzstādīšana', 'Iekšējais remonts', 160.00,
              'Iekštelpu durvju montāža ar visu furnitūru - eņģes, slēdzenes, sliekšņi. Strādāju arī ar čuguna durvīm. Precīzs mērījums un perfekta montāža.'],
 
             // Linda - landscaping
-            ['linda', 'Dārza kopšana un zāles pļaušana', 'Zāles pļaušana', 20.00, ServicePriceTypeEnum::HOURLY,
+            ['linda', 'Dārza kopšana un zāles pļaušana', 'Zāles pļaušana', 20.00,
              'Regulāra dārza kopšana un zāliena pļaušana ar profesionālu aprīkojumu. Nodrošinu arī zāles savākšanu un utilizāciju. Pieejama regulāra apkalpošana visas vasaras garumā.'],
-            ['linda', 'Dārza stādīšana un labiekārtošana', 'Stādīšana', 280.00, ServicePriceTypeEnum::FIXED,
+            ['linda', 'Dārza stādīšana un labiekārtošana', 'Stādīšana', 280.00,
              'Dārza projektēšana un stādīšana - augļu koki, krūmi, daudzgadīgie augi, dzīvžogi. Palīdzu izvēlēties augus atbilstoši apgaismojumam un augsnei. Bezmaksas konsultācija.'],
-            ['linda', 'Sniega tīrīšana privātīpašumā', 'Sniega tīrīšana', 18.00, ServicePriceTypeEnum::HOURLY,
+            ['linda', 'Sniega tīrīšana privātīpašumā', 'Sniega tīrīšana', 18.00,
              'Piebraucamā ceļa, dārza taciņu un terases tīrīšana no sniega. Arī apkaisīšana ar smiltīm/sāli. Ātrs atsaucības laiks - būšu pie jums 2 stundu laikā.'],
 
             // Janis - tiling
-            ['janis', 'Flīžu klāšana virtuvēs un vannas istabās', 'Iekšējais remonts', 25.00, ServicePriceTypeEnum::HOURLY,
+            ['janis', 'Flīžu klāšana virtuvēs un vannas istabās', 'Iekšējais remonts', 25.00,
              'Keramikas, akmens un mozaīkas flīžu klāšana. Precīzs darbs ar minimālu šuvju platumu. Iekļauj pamatnes sagatavošanu un hidroizolāciju. Liela pieredze sudrabainā un sarežģītā zīmējumā.'],
-            ['janis', 'Grīdas flīžu klāšana lielās platībās', 'Iekšējais remonts', 18.00, ServicePriceTypeEnum::HOURLY,
+            ['janis', 'Grīdas flīžu klāšana lielās platībās', 'Iekšējais remonts', 18.00,
              'Lielu laukumu flīzēšana - priekšnami, gaiteņi, terases. Darbu veicu ātri un precīzi. Varu strādāt gan ar pieejamiem materiāliem, gan palīdzēt ar materiālu izvēli.'],
 
             // Kristine - window cleaning
-            ['kristine', 'Logu mazgāšana daudzdzīvokļu mājām', 'Stiklu pakalpojumi', 3.00, ServicePriceTypeEnum::FIXED,
+            ['kristine', 'Logu mazgāšana daudzdzīvokļu mājām', 'Stiklu pakalpojumi', 3.00,
              'Logu ārpuses un iekšpuses mazgāšana dzīvokļos un daudzdzīvokļu mājās. Cena norādīta par vienu logu vērtni. Izmantoju profesionālos tīrīšanas līdzekļus bez strīpām.'],
-            ['kristine', 'Karkasu un rāmju mazgāšana', 'Karkasu mazgāšana', 15.00, ServicePriceTypeEnum::HOURLY,
+            ['kristine', 'Karkasu un rāmju mazgāšana', 'Karkasu mazgāšana', 15.00,
              'Logu rāmju, karkasu un palodžu rūpīga tīrīšana. Noņemu seno krāsu, netīrumus un pelējumu. Strādāju arī ar PVC un alumīnija rāmjiem.'],
-            ['kristine', 'Logu tīrīšana privātmājām', 'Stiklu pakalpojumi', 80.00, ServicePriceTypeEnum::FIXED,
+            ['kristine', 'Logu tīrīšana privātmājām', 'Stiklu pakalpojumi', 80.00,
              'Privātmājas logu pilnīga tīrīšana iekšpusē un ārpusē. Ietver palodzes, karkasus un žalūzijas. Cena atkarīga no logu skaita - sazinies, lai saņemtu individuālu piedāvājumu.'],
         ];
 
-        foreach ($services as $i => [$masterKey, $title, $subCatName, $price, $priceType, $desc]) {
+        foreach ($services as $i => [$masterKey, $title, $subCatName, $price, $desc]) {
             Service::create([
                 Service::USER_ID      => $this->masters[$masterKey]->getId(),
                 Service::CATEGORY_ID  => $this->c($subCatName)->getId(),
@@ -299,7 +298,6 @@ class DemoSeeder extends Seeder
                 Service::SLUG         => Str::slug($title) . '-' . ($i + 1),
                 Service::DESCRIPTION  => $desc,
                 Service::PRICE        => $price,
-                Service::PRICE_TYPE   => $priceType,
                 Service::LOCATION     => [$this->masters[$masterKey]->profile->getCity()],
                 Service::IS_ACTIVE    => true,
             ]);

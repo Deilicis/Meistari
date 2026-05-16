@@ -34,12 +34,10 @@ const iconComponent = computed(() => {
 });
 
 const formatPrice = (): string => {
-    if (props.service.price_type === 'negotiable') return 'Vienojoties';
-    if (!props.service.price) return '-';
-    const formatted = new Intl.NumberFormat('lv-LV', {
+    if (!props.service.price) return 'Vienojoties';
+    return new Intl.NumberFormat('lv-LV', {
         style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
     }).format(props.service.price);
-    return props.service.price_type === 'hourly' ? `${formatted}/h` : formatted;
 };
 </script>
 

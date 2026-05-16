@@ -20,9 +20,8 @@ const iconComponent = computed(() => {
 });
 
 const formatPrice = (service: Service): string => {
-    if (service.price_type === 'negotiable' || !service.price) return 'Vienojoties';
-    const suffix = service.price_type === 'hourly' ? ' €/h' : ' €';
-    return service.price + suffix;
+    if (!service.price) return 'Vienojoties';
+    return service.price + ' €';
 };
 </script>
 

@@ -32,7 +32,6 @@ const form = ref({
     title: '',
     description: '',
     price: '' as number | string,
-    price_type: 'fixed',
     location: [] as string[],
     is_active: true,
 });
@@ -68,7 +67,6 @@ watch(() => props.show, (isOpen) => {
             title: props.service.title,
             description: props.service.description,
             price: props.service.price || '',
-            price_type: props.service.price_type,
             location: Array.isArray(props.service.location) ? props.service.location : [],
             is_active: props.service.is_active,
         };
@@ -88,7 +86,7 @@ watch(() => props.show, (isOpen) => {
             childSelection.value  = null;
         }
     } else {
-        form.value = { id: null, title: '', description: '', price: '', price_type: 'fixed', location: [], is_active: true };
+        form.value = { id: null, title: '', description: '', price: '', location: [], is_active: true };
         parentSelection.value = null;
         childSelection.value  = null;
     }
@@ -235,34 +233,18 @@ const save = async () => {
                     <InputError class="mt-1.5" :message="validationErrors.description?.[0]" />
                 </div>
 
-                <!-- Cena un cenas tips -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <InputLabel for="price" :value="t('services.field_price_label')" class="text-gray-700 font-medium" />
-                        <TextInput
-                            id="price"
-                            v-model="form.price"
-                            type="number"
-                            step="0.01"
-                            class="mt-1 block w-full focus:border-navy focus:ring-navy"
-                            :placeholder="t('services.field_price_placeholder')"
-                        />
-                        <InputError class="mt-1.5" :message="validationErrors.price?.[0]" />
-                    </div>
-
-                    <div>
-                        <InputLabel for="price_type" :value="t('services.field_price_type_label')" class="text-gray-700 font-medium" />
-                        <select
-                            id="price_type"
-                            v-model="form.price_type"
-                            class="mt-1 block w-full border-gray-300 focus:border-navy focus:ring-navy rounded-md shadow-sm text-sm"
-                        >
-                            <option value="fixed">{{ t('services.price_type_fixed_label') }}</option>
-                            <option value="hourly">{{ t('services.price_type_hourly_label') }}</option>
-                            <option value="negotiable">{{ t('services.price_type_negotiable_label') }}</option>
-                        </select>
-                        <InputError class="mt-1.5" :message="validationErrors.price_type?.[0]" />
-                    </div>
+                <!-- Cena -->
+                <div>
+                    <InputLabel for="price" :value="t('services.field_price_label')" class="text-gray-700 font-medium" />
+                    <TextInput
+                        id="price"
+                        v-model="form.price"
+                        type="number"
+                        step="0.01"
+                        class="mt-1 block w-full focus:border-navy focus:ring-navy"
+                        :placeholder="t('services.field_price_placeholder')"
+                    />
+                    <InputError class="mt-1.5" :message="validationErrors.price?.[0]" />
                 </div>
 
                 <!-- Lokācijas -->

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests\Service;
 
 use App\DataTransferObjects\Service\SaveServiceRequestData;
-use App\Enums\Service\ServicePriceTypeEnum;
 use App\Enums\CategorySuggestionStatusEnum;
 use App\Helpers\ValidationRuleHelper;
 use App\Models\Category;
@@ -74,10 +73,6 @@ class SaveServiceRequest extends FormRequest
                 ValidationRuleHelper::NUMERIC,
                 'min:0'
             ],
-            Service::PRICE_TYPE => [
-                ValidationRuleHelper::REQUIRED,
-                Rule::enum(ServicePriceTypeEnum::class)
-            ],
             Service::LOCATION => [
                 ValidationRuleHelper::REQUIRED,
                 'array',
@@ -109,8 +104,7 @@ class SaveServiceRequest extends FormRequest
         
         $price = $this->validated(Service::PRICE);
         $dto->price = $price !== null ? (float) $price : null;
-        
-        $dto->priceType = ServicePriceTypeEnum::from($this->validated(Service::PRICE_TYPE));
+
         $dto->location = $this->validated(Service::LOCATION);
         $dto->isActive = (bool) $this->validated(Service::IS_ACTIVE);
 

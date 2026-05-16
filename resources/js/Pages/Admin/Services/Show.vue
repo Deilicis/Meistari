@@ -17,7 +17,6 @@ interface Service {
     description: string;
     is_active: boolean;
     price: number | null;
-    price_type: string;
     location: string[] | null;
     created_at: string;
     updated_at: string;
@@ -48,12 +47,6 @@ const doDelete = (serviceId: number) => {
         },
     });
 };
-
-const priceTypeLabel = (type: string) => ({
-    fixed: 'Fiksēta',
-    hourly: 'Stundā',
-    negotiable: 'Vienojoties',
-}[type] ?? type);
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleString('lv-LV', {

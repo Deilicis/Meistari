@@ -36,7 +36,6 @@ export interface Service {
     slug: string;
     description: string;
     price: number | null;
-    price_type: 'hourly' | 'fixed' | 'negotiable';
     location: string[];
     is_active: boolean;
     created_at: string;
@@ -95,7 +94,6 @@ export interface ServiceApplicationWithService {
         slug: string;
         description: string;
         price: number | null;
-        price_type: 'hourly' | 'fixed' | 'negotiable';
         location: string[];
         is_active: boolean;
         category: { id: number; name: string } | null;

@@ -83,7 +83,7 @@
         "side_subtitle": "Fast, convenient and secure. Register and get started today.",
         "side_feature_1": "Certified and vetted Masters across Latvia",
         "side_feature_2": "Post a listing and receive offers fast",
-        "side_feature_3": "Free registration — no hidden fees",
+        "side_feature_3": "Free registration - no hidden fees",
         "back_to_home": "Back to home"
     },
     "nav": {
@@ -111,7 +111,7 @@
         "add_master_role": "Add Master role →",
         "add_seeker_role": "Add Client role →",
         "active": "Active",
-        "profile_menu_label": "Profile menu — {name}",
+        "profile_menu_label": "Profile menu - {name}",
         "master_role_label": "Master's",
         "seeker_role_label": "Seeker's",
         "add_role_modal_title": "Add {role} role",
@@ -347,7 +347,7 @@
         "categories_empty_desc": "Try changing your search term.",
         "all_services": "All services",
         "all_listings": "All listings",
-        "all_label_prefix": "All —",
+        "all_label_prefix": "All -",
         "all_label_prefix_dash": "All - ",
         "listings_count": "{n} listings",
         "job_listings_title": "Job listings",
@@ -370,7 +370,7 @@
         "field_category_placeholder": "Start typing to search for a category...",
         "field_subcategory_placeholder": "Search subcategory...",
         "field_description_label": "Description *",
-        "field_description_placeholder": "Describe the work in as much detail as possible — materials, dimensions, special requirements...",
+        "field_description_placeholder": "Describe the work in as much detail as possible - materials, dimensions, special requirements...",
         "field_budget_label": "Budget (€)",
         "field_deadline_label": "Completion deadline",
         "field_deadline_placeholder": "Choose a date",
@@ -643,7 +643,7 @@
         "my_empty_filter_desc": "Try a different filter.",
         "leave_review": "Leave a review",
         "for_service_title": "Service applications",
-        "for_service_page_title": "Applications — {title}",
+        "for_service_page_title": "Applications - {title}",
         "cancel_confirm_message": "Are you sure you want to cancel your application for \"{title}\"?"
     },
     "public_profile": {
@@ -690,7 +690,7 @@
     },
     "static": {
         "terms": {
-            "meta_title": "Terms of Service — Meistari",
+            "meta_title": "Terms of Service - Meistari",
             "hero_title": "Terms of Service",
             "hero_subtitle": "Effective from 1 January 2026",
             "s1_heading": "1. General provisions",
@@ -698,7 +698,7 @@
             "s2_heading": "2. Registration and account",
             "s2_body": "By registering, the user confirms that the information provided is true and accurate. Each user may only register one account. The platform reserves the right to block or delete accounts that violate these terms or are used maliciously.",
             "s3_heading": "3. Service provider obligations",
-            "s3_body": "Masters must ensure that the information in their profile — experience, certificates, services and prices — is current and accurate. The Master is personally responsible for the quality of services rendered, deadlines, and compliance with applicable regulations.",
+            "s3_body": "Masters must ensure that the information in their profile - experience, certificates, services and prices - is current and accurate. The Master is personally responsible for the quality of services rendered, deadlines, and compliance with applicable regulations.",
             "s4_heading": "4. Prohibited conduct",
             "s4_intro": "The following is prohibited on the platform:",
             "s4_item_1": "Posting misleading or false information",
@@ -714,7 +714,7 @@
             "s7_body": "For questions or clarifications, please contact us:"
         },
         "privacy": {
-            "meta_title": "Privacy Policy — Meistari",
+            "meta_title": "Privacy Policy - Meistari",
             "hero_title": "Privacy Policy",
             "hero_subtitle": "How we process your data",
             "s1_heading": "1. Data controller",
@@ -750,7 +750,7 @@
             "s7_body": "Users will be notified of material changes to the privacy policy by email at least 14 days before they take effect. The latest version of the policy is always available on this page."
         },
         "contacts": {
-            "meta_title": "Contact — Meistari",
+            "meta_title": "Contact - Meistari",
             "hero_title": "Get in touch",
             "hero_subtitle": "We're here to help",
             "email_card_title": "Email",
@@ -767,7 +767,7 @@
             "faq_3_q": "How do I report a problem with a Master?",
             "faq_3_a": "Open the Master's profile and click \"Report a problem\", or write to info{'@'}meistari.lv.",
             "faq_4_q": "Can I delete my account?",
-            "faq_4_a": "Yes — in Profile Settings under \"Account management\" you'll find the account deletion option.",
+            "faq_4_a": "Yes - in Profile Settings under \"Account management\" you'll find the account deletion option.",
             "faq_5_q": "How long does a profile stay active?",
             "faq_5_a": "Your profile stays active until the account is deleted or deactivated."
         }
@@ -874,7 +874,7 @@
         },
         "guest": {
             "title": "Account required",
-            "desc": "To view details and apply, please log in or register — it's free!",
+            "desc": "To view details and apply, please log in or register - it's free!",
             "login": "Log in",
             "register": "Register"
         }

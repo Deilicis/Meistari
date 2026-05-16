@@ -31,7 +31,6 @@ class ServiceApplicationListResource extends JsonResource
                 Service::SLUG        => $this->service->getSlug(),
                 Service::DESCRIPTION => $this->service->getDescription(),
                 Service::PRICE       => $this->service->getPrice(),
-                Service::PRICE_TYPE  => $this->service->getPriceType()->value,
                 Service::LOCATION    => $this->service->getLocation(),
                 Service::IS_ACTIVE   => $this->service->getIsActive(),
                 'category' => $this->service->category

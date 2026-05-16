@@ -43,21 +43,9 @@ const avatarInitials = computed(() => masterName.value.slice(0, 2).toUpperCase()
 
 const formatPrice = (): string => {
     if (!props.service) return '-';
-    if (props.service.price_type === 'negotiable') return t('services.price_negotiable');
-    if (!props.service.price) return '-';
-    const formatted = formatCurrency(props.service.price);
-    return props.service.price_type === 'hourly' ? `${formatted}${t('services.detail_per_hour')}` : formatted;
+    if (!props.service.price) return t('services.price_negotiable');
+    return formatCurrency(props.service.price);
 };
-
-const priceTypeLabel = computed(() => {
-    if (!props.service) return '';
-    const map: Record<string, string> = {
-        fixed:      t('services.detail_price_fixed'),
-        hourly:     t('services.detail_price_hourly'),
-        negotiable: t('services.detail_price_negotiable'),
-    };
-    return map[props.service.price_type] ?? '';
-});
 
 const lightboxIndex = ref<number | null>(null);
 const complaintOpen = ref(false);
@@ -102,7 +90,6 @@ watch(() => props.show, (newVal) => {
                             </div>
                             <div>
                                 <p class="text-xl font-extrabold text-navy">{{ formatPrice() }}</p>
-                                <p class="text-xs text-gray-400">{{ priceTypeLabel }}</p>
                             </div>
                         </div>
 

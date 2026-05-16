@@ -83,7 +83,7 @@
         "side_subtitle": "Ātri, ērti un droši. Reģistrējies un sāc darboties jau šodien.",
         "side_feature_1": "Sertificēti un pārbaudīti meistari visā Latvijā",
         "side_feature_2": "Publicē sludinājumu un saņem piedāvājumus ātri",
-        "side_feature_3": "Bezmaksas reģistrācija — bez slēptajām maksām",
+        "side_feature_3": "Bezmaksas reģistrācija - bez slēptajām maksām",
         "back_to_home": "Atpakaļ uz sākumlapu"
     },
     "nav": {
@@ -111,7 +111,7 @@
         "add_master_role": "Pievienot meistara lomu →",
         "add_seeker_role": "Pievienot meklētāja lomu →",
         "active": "Aktīvs",
-        "profile_menu_label": "Profila izvēlne — {name}",
+        "profile_menu_label": "Profila izvēlne - {name}",
         "master_role_label": "Meistara",
         "seeker_role_label": "Meklētāja",
         "add_role_modal_title": "Pievienot {role} lomu",
@@ -347,7 +347,7 @@
         "categories_empty_desc": "Mēģiniet mainīt meklēšanas vārdu.",
         "all_services": "Visi pakalpojumi",
         "all_listings": "Visi sludinājumi",
-        "all_label_prefix": "Visi —",
+        "all_label_prefix": "Visi -",
         "all_label_prefix_dash": "Visi - ",
         "listings_count": "{n} sludinājumi",
         "job_listings_title": "Darba sludinājumi",
@@ -370,7 +370,7 @@
         "field_category_placeholder": "Sāc rakstīt, lai meklētu kategoriju...",
         "field_subcategory_placeholder": "Meklēt apakškategoriju...",
         "field_description_label": "Apraksts *",
-        "field_description_placeholder": "Apraksti darbu pēc iespējas sīkāk — materiāli, izmēri, īpašas prasības...",
+        "field_description_placeholder": "Apraksti darbu pēc iespējas sīkāk - materiāli, izmēri, īpašas prasības...",
         "field_budget_label": "Budžets (€)",
         "field_deadline_label": "Izpildes termiņš",
         "field_deadline_placeholder": "Izvēlies datumu",
@@ -643,7 +643,7 @@
         "my_empty_filter_desc": "Izmēģiniet citu filtru.",
         "leave_review": "Atstāt atsauksmi",
         "for_service_title": "Pieteikumi pakalpojumam",
-        "for_service_page_title": "Pieteikumi — {title}",
+        "for_service_page_title": "Pieteikumi - {title}",
         "cancel_confirm_message": "Vai tiešām vēlaties atcelt pieteikumu pakalpojumam \"{title}\"?"
     },
     "public_profile": {
@@ -690,7 +690,7 @@
     },
     "static": {
         "terms": {
-            "meta_title": "Lietošanas noteikumi — Meistari",
+            "meta_title": "Lietošanas noteikumi - Meistari",
             "hero_title": "Lietošanas noteikumi",
             "hero_subtitle": "Spēkā no 2026. gada 1. janvāra",
             "s1_heading": "1. Vispārīgie noteikumi",
@@ -698,7 +698,7 @@
             "s2_heading": "2. Reģistrācija un konts",
             "s2_body": "Reģistrējoties lietotājs apliecina, ka ievadītā informācija ir patiesa un precīza. Katrs lietotājs drīkst reģistrēt tikai vienu kontu. Platforma patur tiesības bloķēt vai dzēst kontus, kas pārkāpj šos noteikumus vai tiek izmantoti ļaunprātīgi.",
             "s3_heading": "3. Pakalpojumu sniedzēju pienākumi",
-            "s3_body": "Meistariem ir jānodrošina, ka viņu profilā norādītā informācija — pieredze, sertifikāti, pakalpojumi un cenas — ir aktuāla un patiesa. Meistars ir personīgi atbildīgs par sniegto pakalpojumu kvalitāti, izpildes termiņiem un atbilstību normatīvajiem aktiem.",
+            "s3_body": "Meistariem ir jānodrošina, ka viņu profilā norādītā informācija - pieredze, sertifikāti, pakalpojumi un cenas - ir aktuāla un patiesa. Meistars ir personīgi atbildīgs par sniegto pakalpojumu kvalitāti, izpildes termiņiem un atbilstību normatīvajiem aktiem.",
             "s4_heading": "4. Aizliegtā darbība",
             "s4_intro": "Platformā ir aizliegts:",
             "s4_item_1": "Ievietot maldinošu vai nepatiesi informāciju",
@@ -714,7 +714,7 @@
             "s7_body": "Jautājumu vai neskaidrību gadījumā lūdzam sazināties ar mums:"
         },
         "privacy": {
-            "meta_title": "Privātuma politika — Meistari",
+            "meta_title": "Privātuma politika - Meistari",
             "hero_title": "Privātuma politika",
             "hero_subtitle": "Kā mēs apstrādājam jūsu datus",
             "s1_heading": "1. Pārzinis",
@@ -750,7 +750,7 @@
             "s7_body": "Par būtiskām izmaiņām privātuma politikā lietotāji tiks informēti e-pastā vismaz 14 dienas pirms to stāšanās spēkā. Jaunākā politikas versija vienmēr ir pieejama šajā lapā."
         },
         "contacts": {
-            "meta_title": "Kontakti — Meistari",
+            "meta_title": "Kontakti - Meistari",
             "hero_title": "Sazinieties ar mums",
             "hero_subtitle": "Esam šeit, lai palīdzētu",
             "email_card_title": "E-pasts",
@@ -767,7 +767,7 @@
             "faq_3_q": "Kā ziņot par problēmu ar meistaru?",
             "faq_3_a": "Atver attiecīgā meistara profilu un nospied \"Ziņot par problēmu\", vai raksti uz info{'@'}meistari.lv.",
             "faq_4_q": "Vai varu dzēst savu kontu?",
-            "faq_4_a": "Jā — Profila iestatījumos sadaļā \"Konta pārvaldība\" ir pieejama konta dzēšanas opcija.",
+            "faq_4_a": "Jā - Profila iestatījumos sadaļā \"Konta pārvaldība\" ir pieejama konta dzēšanas opcija.",
             "faq_5_q": "Cik ilgi profils paliek aktīvs?",
             "faq_5_a": "Profils paliek aktīvs, kamēr konts nav dzēsts vai deaktivizēts."
         }
@@ -874,7 +874,7 @@
         },
         "guest": {
             "title": "Nepieciešams konts",
-            "desc": "Lai apskatītu detaļas un pieteiktos, lūdzu piesakieties vai reģistrējieties — tas ir bezmaksas!",
+            "desc": "Lai apskatītu detaļas un pieteiktos, lūdzu piesakieties vai reģistrējieties - tas ir bezmaksas!",
             "login": "Ienākt",
             "register": "Reģistrēties"
         }

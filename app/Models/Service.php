@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Traits\Auditable;
 use Carbon\Carbon;
-use App\Enums\Service\ServicePriceTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,7 +24,6 @@ class Service extends Model
     public const SLUG = 'slug';
     public const DESCRIPTION = 'description';
     public const PRICE = 'price';
-    public const PRICE_TYPE = 'price_type';
     public const LOCATION = 'location';
     public const IS_ACTIVE = 'is_active';
     public const PENDING_CATEGORY_SUGGESTION_ID = 'pending_category_suggestion_id';
@@ -46,14 +44,12 @@ class Service extends Model
         self::SLUG,
         self::DESCRIPTION,
         self::PRICE,
-        self::PRICE_TYPE,
         self::LOCATION,
         self::IS_ACTIVE,
     ];
 
     protected $casts = [
         self::PRICE => self::DECIMAL,
-        self::PRICE_TYPE => ServicePriceTypeEnum::class,
         self::IS_ACTIVE => self::BOOLEAN,
         self::LOCATION => self::ARRAY_CAST,
     ];
@@ -98,11 +94,6 @@ class Service extends Model
         return $this->getAttribute(self::PRICE) !== null 
             ? (float) $this->getAttribute(self::PRICE) 
             : null;
-    }
-
-    public function getPriceType(): ServicePriceTypeEnum
-    {
-        return $this->getAttribute(self::PRICE_TYPE);
     }
 
     public function getLocation(): array

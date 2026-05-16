@@ -3,7 +3,6 @@ export interface WelcomeServiceCard {
     title: string;
     description: string;
     price: number | null;
-    price_type: 'hourly' | 'fixed' | 'negotiable';
     location: string[];
     category: { id: number; name: string } | null;
     user: {

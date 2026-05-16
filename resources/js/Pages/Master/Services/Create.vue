@@ -32,7 +32,6 @@ const form = ref({
     title: '',
     description: '',
     price: '' as number | string,
-    price_type: 'fixed',
     location: [] as string[],
     is_active: true,
 });
@@ -226,31 +225,17 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
                 <!-- Step 2: Details -->
                 <div v-else-if="step === 2" class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <InputLabel :value="t('services.field_price_label')" class="text-gray-700 font-medium mb-1" />
-                            <TextInput
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                class="block w-full focus:border-navy focus:ring-navy"
-                                v-model="form.price"
-                                :placeholder="t('services.field_price_placeholder')"
-                            />
-                            <InputError class="mt-1" :message="getError('price')" />
-                        </div>
-                        <div>
-                            <InputLabel :value="t('services.field_price_type_label')" class="text-gray-700 font-medium mb-1" />
-                            <select
-                                v-model="form.price_type"
-                                class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-navy focus:ring-1 focus:ring-navy outline-none"
-                            >
-                                <option value="fixed">{{ t('services.price_type_fixed_label') }}</option>
-                                <option value="hourly">{{ t('services.price_type_hourly_label') }}</option>
-                                <option value="negotiable">{{ t('services.price_type_negotiable_label') }}</option>
-                            </select>
-                            <InputError class="mt-1" :message="getError('price_type')" />
-                        </div>
+                    <div>
+                        <InputLabel :value="t('services.field_price_label')" class="text-gray-700 font-medium mb-1" />
+                        <TextInput
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            class="block w-full focus:border-navy focus:ring-navy"
+                            v-model="form.price"
+                            :placeholder="t('services.field_price_placeholder')"
+                        />
+                        <InputError class="mt-1" :message="getError('price')" />
                     </div>
 
                     <div>

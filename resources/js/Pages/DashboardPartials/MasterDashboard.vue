@@ -38,10 +38,8 @@ defineProps<{
 }>();
 
 const formatPrice = (service: Service): string => {
-    if (service.price_type === 'negotiable') return t('services.price_negotiable');
-    if (!service.price) return '-';
-    const formatted = formatCurrency(service.price);
-    return service.price_type === 'hourly' ? `${formatted}/h` : formatted;
+    if (!service.price) return t('services.price_negotiable');
+    return formatCurrency(service.price);
 };
 
 const appStatusClasses: Record<ApplicationStatus, string> = {

@@ -32,7 +32,7 @@ class NewServiceApplicationNotification extends Notification
         $budgetOffer  = $this->application->getBudgetOffer();
 
         $preview = mb_strlen($message) > 200
-            ? mb_substr($message, 0, 200) . '…'
+            ? mb_substr($message, 0, 200) . '...'
             : $message;
 
         $mail = (new MailMessage)

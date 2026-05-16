@@ -33,12 +33,6 @@ const statusClasses: Record<ServiceApplicationStatus, { badgeClass: string; bord
     cancelled: { badgeClass: 'bg-gray-100 text-gray-500',       borderClass: 'border-l-gray-300' },
 };
 
-const priceTypeLabel = computed(() => ({
-    hourly:     t('services.price_type_hourly_suffix'),
-    fixed:      t('services.price_type_fixed'),
-    negotiable: t('services.price_type_negotiable'),
-}));
-
 const tabs = computed(() => [
     { key: 'all' as const,       label: t('applications.tab_all') },
     { key: 'pending' as const,   label: t('applications.tab_pending') },
@@ -192,11 +186,10 @@ const confirmCancel = async () => {
                         <div class="flex items-center gap-5 flex-wrap text-sm">
                             <span class="flex items-center gap-1.5 text-gray-500">
                                 <BanknotesIcon class="w-3.5 h-3.5 text-gray-400" />
-                                <span v-if="app.service.price != null">
-                                    <span class="font-semibold text-gray-800">{{ formatCurrency(app.service.price) }}</span>
-                                    {{ priceTypeLabel[app.service.price_type] }}
+                                <span v-if="app.service.price != null" class="font-semibold text-gray-800">
+                                    {{ formatCurrency(app.service.price) }}
                                 </span>
-                                <span v-else class="italic text-gray-400">{{ priceTypeLabel[app.service.price_type] }}</span>
+                                <span v-else class="italic text-gray-400">{{ t('services.price_negotiable') }}</span>
                             </span>
                             <span
                                 v-if="app.budget_offer != null"

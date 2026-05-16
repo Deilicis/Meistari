@@ -97,7 +97,7 @@ const appStatusClass = (s: string) => ({
 
 const truncate = (text: string | null, len = 100) => {
     if (!text) return '-';
-    return text.length > len ? text.slice(0, len) + '…' : text;
+    return text.length > len ? text.slice(0, len) + '...' : text;
 };
 
 const formatDate = (d: string) =>
