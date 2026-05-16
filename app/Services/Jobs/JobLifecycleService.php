@@ -57,7 +57,7 @@ class JobLifecycleService
     public function acceptApplication(AcceptApplicationDTO $dto): JobRequest
     {
         return DB::transaction(function () use ($dto): JobRequest {
-            // lockForUpdate novērš sacensību ar paralēliem pieprasījumiem —
+            // lockForUpdate novērš sacensību ar paralēliem pieprasījumiem -
             // ja divi klienti vienlaikus mēģinātu pieņemt pieteikumus uz
             // to pašu darbu, otrais gaidītu, kamēr pirmais pabeidz.
             $job = JobRequest::lockForUpdate()->findOrFail($dto->jobRequestId);
@@ -144,9 +144,9 @@ class JobLifecycleService
      * "checkout.session.completed" notikuma. Tas ir vienīgais uzticamais
      * signāls, ka klients tiešām ir samaksājis.
      *
-     * SVARĪGI par idempotenci: Stripe atkārto webhook izsaukumus, ja mūsu
+     * SVARĪGI par idempotenci: Stripe atkārto webhook izsaukumus, ja
      * serveris kādreiz neatbild laikā. Tāpēc šī metode pirms jebkādām
-     * izmaiņām pārbauda, vai darbs jau nav apstrādāts — pretējā gadījumā
+     * izmaiņām pārbauda, vai darbs jau nav apstrādāts - pretējā gadījumā
      * mēs varētu izveidot vairākus eskrov ierakstus par to pašu maksājumu.
      */
     public function confirmPaymentReceived(int $jobRequestId, string $stripeSessionId, float $amountReceived): void
@@ -154,7 +154,7 @@ class JobLifecycleService
         DB::transaction(function () use ($jobRequestId, $stripeSessionId, $amountReceived): void {
             $job = JobRequest::lockForUpdate()->findOrFail($jobRequestId);
 
-            // Idempotences sargs — ja darbs jau ir "in_progress", maksājums
+            // Idempotences sargs - ja darbs jau ir "in_progress", maksājums
             // jau ir apstrādāts, šis ir Stripe atkārtots webhook izsaukums,
             // ko mēs ignorējam.
             if ($job->getStatus() === JobStatusEnum::IN_PROGRESS) {
@@ -163,7 +163,7 @@ class JobLifecycleService
 
             $this->stateMachine->assertCanTransition($job->getStatus(), JobStatusEnum::IN_PROGRESS);
 
-            // Izveido eskrov ierakstu — nauda formāli "tiek turēta" platformas
+            // Izveido eskrov ierakstu. Nauda formāli "tiek turēta" platformas
             // kontā, līdz klients apstiprina darba pabeigšanu vai notiek
             // automātiska atbrīvošana pēc 7 dienām.
             $this->escrowRepo->create([
@@ -182,7 +182,7 @@ class JobLifecycleService
             $this->notificationService->create(new CreateNotificationDTO(
                 userId: $job->getMasterId(),
                 type: NotificationTypeEnum::JOB_PAID,
-                title: 'Klients samaksāja — vari sākt darbu!',
+                title: 'Klients samaksāja - vari sākt darbu!',
                 body: '"' . $job->getTitle() . '" ir gatavs sākšanai.',
                 actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
@@ -192,7 +192,7 @@ class JobLifecycleService
 
     /**
      * Meistars atzīmē darbu kā pabeigtu no savas puses. Darbs pāriet
-     * stāvoklī "awaiting_confirmation" — klientam tagad ir 7 dienas, lai
+     * stāvoklī "awaiting_confirmation" - klientam tagad ir 7 dienas, lai
      * vai nu apstiprinātu pabeigšanu, vai atvērtu strīdu. Ja klients nereaģē,
      * autoReleaseExpired() vēlāk veiks automātisku atbrīvošanu.
      */
@@ -211,8 +211,6 @@ class JobLifecycleService
         $this->jobRequestRepo->setMasterCompletedAt($job->getId());
 
         // Iestatām automātiskās atbrīvošanas termiņu eskrov ierakstā.
-        // Ja klients neapstiprina 7 dienās, scheduled command (artisan
-        // jobs:auto-release) atbrīvos naudu meistaram.
         $escrow = $this->escrowRepo->findByJobRequest($job->getId());
         if ($escrow) {
             $this->escrowRepo->setAutoReleaseAt($escrow->getId(), Carbon::now()->addDays(7));
@@ -231,8 +229,8 @@ class JobLifecycleService
     }
 
     /**
-     * Klients apstiprina darba pabeigšanu. Tas ir "veiksmīgais" beigu ceļš —
-     * darbs tiek atzīmēts kā pabeigts un eskrov nauda tiek atbrīvota
+     * Klients apstiprina darba pabeigšanu.
+     * Darbs tiek atzīmēts kā pabeigts un eskrov nauda tiek atbrīvota
      * meistaram caur EscrowService.
      */
     public function confirmComplete(ConfirmJobDTO $dto): JobRequest
@@ -249,7 +247,7 @@ class JobLifecycleService
 
         $this->jobRequestRepo->setCompletedAt($job->getId());
 
-        // Faktiskā eskrov atbrīvošana — mainās statuss uz "released",
+        // Faktiskā eskrov atbrīvošana - mainās statuss uz "released",
         // produkcijas vidē šeit notiktu reāls Stripe pārvedums meistaram.
         $this->escrowService->release($job->getId());
 
@@ -270,16 +268,15 @@ class JobLifecycleService
 
     /**
      * Atver strīdu par darbu. Var izsaukt gan klients, gan meistars, ja
-     * viņi nav vienisprātis par darba kvalitāti vai pabeigšanu. Darbs
+     * viņi nav apmierināti par darba kvalitāti vai pabeigšanu. Darbs
      * pāriet stāvoklī "disputed" un eskrov nauda paliek iesaldēta līdz
-     * admina lēmumam (skat. AdminDisputeController).
+     * admina lēmumam.
      */
     public function dispute(DisputeJobDTO $dto): JobRequest
     {
         $job = $this->jobRequestRepo->findById($dto->jobRequestId);
         abort_if(!$job, 404);
 
-        // Strīdu drīkst atvērt tikai darba dalībnieki — klients vai meistars.
         $isClient = $job->getUserId() === $dto->userId;
         $isMaster = $job->getMasterId() === $dto->userId;
 
@@ -289,18 +286,18 @@ class JobLifecycleService
 
         $this->stateMachine->assertCanTransition($job->getStatus(), JobStatusEnum::DISPUTED);
 
-        // Saglabājam pašu strīda ierakstu — iemeslu, iniciatoru, laiku.
+        // Saglabājam pašu strīda ierakstu - iemeslu, iniciatoru, laiku.
         $this->jobRequestRepo->updateStatus($job->getId(), JobStatusEnum::DISPUTED);
         $this->disputeRepo->create($job->getId(), $dto->userId, $dto->reason);
 
-        // Paziņojam otrai pusei — kurš nav iniciators, tas saņem paziņojumu.
+        // Paziņojam otrai pusei - kurš nav iniciators, tas saņem paziņojumu.
         $notifyUserId = $isClient ? $job->getMasterId() : $job->getUserId();
         if ($notifyUserId) {
             $this->notificationService->create(new CreateNotificationDTO(
                 userId: $notifyUserId,
                 type: NotificationTypeEnum::JOB_DISPUTED,
                 title: 'Darbs ir strīdā',
-                body: '"' . $job->getTitle() . '" — otra puse atvēra strīdu. Mēs ar jums sazināsimies.',
+                body: '"' . $job->getTitle() . '" - otra puse atvēra strīdu. Mēs ar jums sazināsimies.',
                 actionUrl: route('jobs.show', $job->getId()),
                 metadata: ['job_request_id' => $job->getId()],
             ));
@@ -389,7 +386,7 @@ class JobLifecycleService
                 ));
             }
 
-            // Paziņojam arī klientam — viņš varēja vienkārši aizmirst
+            // Paziņojam arī klientam - viņš varēja vienkārši aizmirst
             // apstiprināt, tāpēc tas nav uzbrūkošs paziņojums.
             $this->notificationService->create(new CreateNotificationDTO(
                 userId: $job->getUserId(),

@@ -22,7 +22,7 @@ const note   = ref<string>('');
 const error  = ref<string | null>(null);
 
 function formatMoney(a: string | null): string {
-    if (!a) return '—';
+    if (!a) return '-';
     return formatCurrency(parseFloat(a));
 }
 

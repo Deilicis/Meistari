@@ -46,7 +46,7 @@ watch(() => page.props.flash, () => displayToast(), { deep: true });
             <!-- Top row: logo + right controls -->
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-14 items-center justify-between">
-                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
+                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari - sākumlapa">
                         <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
                         <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
                             Meistari

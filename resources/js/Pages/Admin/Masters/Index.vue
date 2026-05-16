@@ -173,7 +173,7 @@ const typeClass = (type: string | null) => type === 'company'
 
                             <!-- City -->
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
-                                {{ master.profile?.city ?? '—' }}
+                                {{ master.profile?.city ?? '-' }}
                             </td>
 
                             <!-- Date -->
@@ -229,7 +229,7 @@ const typeClass = (type: string | null) => type === 'company'
             <!-- Pagination -->
             <div v-if="masters.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>
-                    Rāda {{ masters.from }}–{{ masters.to }} no {{ masters.total }}
+                    Rāda {{ masters.from }}-{{ masters.to }} no {{ masters.total }}
                 </p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in masters.links" :key="link.label">

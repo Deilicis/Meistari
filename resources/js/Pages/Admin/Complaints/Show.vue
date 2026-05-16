@@ -99,7 +99,7 @@ const entityRoute = (type: string | null, id: number | null): string | null => {
 };
 
 const formatDate = (d: string | null) => {
-    if (!d) return '—';
+    if (!d) return '-';
     return new Date(d).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 </script>
@@ -182,7 +182,7 @@ const formatDate = (d: string | null) => {
                                     class="inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline"
                                 >
                                     {{ entityLabel(complaint.reported_entity_type) }} #{{ complaint.reported_entity_id }}
-                                    <span v-if="complaint.reported_entity?.title" class="text-gray-500 font-normal">— {{ complaint.reported_entity.title }}</span>
+                                    <span v-if="complaint.reported_entity?.title" class="text-gray-500 font-normal">- {{ complaint.reported_entity.title }}</span>
                                 </Link>
                             </template>
                             <span v-else class="text-sm text-gray-600">

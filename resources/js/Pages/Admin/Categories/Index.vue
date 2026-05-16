@@ -230,7 +230,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
                             <button
                                 v-if="!cat.is_system"
                                 @click="openDelete(cat)"
-                                :title="cat.can_delete ? 'Dzēst' : 'Nevar dzēst — ir lietojums vai apakškategorijas'"
+                                :title="cat.can_delete ? 'Dzēst' : 'Nevar dzēst - ir lietojums vai apakškategorijas'"
                                 class="p-1.5 rounded-lg transition-colors"
                                 :class="cat.can_delete ? 'text-gray-400 hover:text-red-600 hover:bg-red-50' : 'text-gray-200 cursor-not-allowed'"
                             >
@@ -277,7 +277,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
                                 </button>
                                 <button
                                     @click="openDelete(child)"
-                                    :title="child.can_delete ? 'Dzēst' : 'Nevar dzēst — ir lietojums'"
+                                    :title="child.can_delete ? 'Dzēst' : 'Nevar dzēst - ir lietojums'"
                                     class="p-1.5 rounded-lg transition-colors"
                                     :class="child.can_delete ? 'text-gray-400 hover:text-red-600 hover:bg-red-50' : 'text-gray-200 cursor-not-allowed'"
                                 >

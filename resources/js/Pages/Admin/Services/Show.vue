@@ -88,7 +88,7 @@ const masterLink = (service: Service) =>
                                 {{ service.is_active ? 'Aktīvs' : 'Neaktīvs' }}
                             </span>
                         </div>
-                        <p class="text-white/50 text-sm mt-1">{{ service.category?.name ?? '—' }} · #{{ service.id }}</p>
+                        <p class="text-white/50 text-sm mt-1">{{ service.category?.name ?? '-' }} · #{{ service.id }}</p>
                     </div>
                     <button
                         @click="showDeleteConfirm = true"
@@ -112,7 +112,7 @@ const masterLink = (service: Service) =>
                     <div class="p-6 space-y-4">
                         <div>
                             <p class="text-xs text-gray-400">Kategorija</p>
-                            <p class="text-sm font-medium text-gray-900 mt-0.5">{{ service.category?.name ?? '—' }}</p>
+                            <p class="text-sm font-medium text-gray-900 mt-0.5">{{ service.category?.name ?? '-' }}</p>
                         </div>
 
                         <div>

@@ -173,13 +173,13 @@ const formatDate = (d: string) =>
 
                             <!-- Category -->
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
-                                {{ job.category?.name ?? '—' }}
+                                {{ job.category?.name ?? '-' }}
                             </td>
 
                             <!-- Budget -->
                             <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
                                 <span v-if="job.budget">€{{ job.budget }}</span>
-                                <span v-else class="text-gray-400">—</span>
+                                <span v-else class="text-gray-400">-</span>
                             </td>
 
                             <!-- Status -->
@@ -223,7 +223,7 @@ const formatDate = (d: string) =>
 
             <!-- Pagination -->
             <div v-if="jobRequests.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
-                <p>Rāda {{ jobRequests.from }}–{{ jobRequests.to }} no {{ jobRequests.total }}</p>
+                <p>Rāda {{ jobRequests.from }}-{{ jobRequests.to }} no {{ jobRequests.total }}</p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in jobRequests.links" :key="link.label">
                         <Link

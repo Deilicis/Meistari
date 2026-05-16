@@ -156,7 +156,7 @@ const formatDate = (d: string) =>
 
                             <!-- City -->
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
-                                {{ seeker.profile?.city ?? '—' }}
+                                {{ seeker.profile?.city ?? '-' }}
                             </td>
 
                             <!-- Date -->
@@ -212,7 +212,7 @@ const formatDate = (d: string) =>
             <!-- Pagination -->
             <div v-if="seekers.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>
-                    Rāda {{ seekers.from }}–{{ seekers.to }} no {{ seekers.total }}
+                    Rāda {{ seekers.from }}-{{ seekers.to }} no {{ seekers.total }}
                 </p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in seekers.links" :key="link.label">

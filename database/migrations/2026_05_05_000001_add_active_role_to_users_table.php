@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('active_role')->nullable()->after('remember_token');
         });
 
-        // Backfill from existing role pivot — master takes priority if user somehow has both
+        // Backfill from existing role pivot - master takes priority if user somehow has both
         $masterRoleId = DB::table('roles')->where('name', 'master')->value('id');
         $seekerRoleId = DB::table('roles')->where('name', 'seeker')->value('id');
 

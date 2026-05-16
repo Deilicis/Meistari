@@ -206,7 +206,7 @@ const formatDate = (dateStr: string) =>
                             <div class="min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">
                                     <span class="capitalize">{{ log.action }}</span>
-                                    <span class="text-gray-400 font-normal"> — </span>
+                                    <span class="text-gray-400 font-normal"> - </span>
                                     <span class="text-gray-600">{{ formatModelType(log.auditable_type) }}</span>
                                 </p>
                                 <p class="text-xs text-gray-400 mt-0.5">

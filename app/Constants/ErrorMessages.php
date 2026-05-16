@@ -21,7 +21,7 @@ class ErrorMessages
     public const JOB_NOT_YOURS                 = 'Šis sludinājums jums nepieder.';
     public const SERVICE_APPLICATION_NOT_YOURS = 'Šis pieteikums nepieder jūsu pakalpojumam.';
     public const JOB_NOT_ACTIVE                = 'Šis sludinājums vairs nav aktīvs.';
-    public const JOB_NOT_ASSIGNED              = 'Darbs nav piešķirts — nevar atzīmēt kā pabeigtu.';
+    public const JOB_NOT_ASSIGNED              = 'Darbs nav piešķirts - nevar atzīmēt kā pabeigtu.';
     public const JOB_NOT_COMPLETED             = 'Atsauksmes var atstāt tikai pēc darba pabeigšanas.';
     public const REVIEW_ALREADY_SUBMITTED      = 'Jūs jau esat atstājuši atsauksmi par šo darbu.';
     public const REVIEW_NOT_PARTICIPANT        = 'Jūs neesat šī darba dalībnieks.';

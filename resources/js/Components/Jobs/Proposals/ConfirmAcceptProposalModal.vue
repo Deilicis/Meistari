@@ -17,7 +17,7 @@ const emit = defineEmits<{
 }>();
 
 function formatMoney(amount: string | null): string {
-    if (!amount) return '—';
+    if (!amount) return '-';
     return formatCurrency(parseFloat(amount));
 }
 </script>

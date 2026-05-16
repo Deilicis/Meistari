@@ -186,7 +186,7 @@ const formatDate = (d: string) =>
                                             <TrashIcon class="w-4 h-4" />
                                         </button>
                                     </template>
-                                    <span v-else class="text-xs text-gray-300 pr-1">—</span>
+                                    <span v-else class="text-xs text-gray-300 pr-1">-</span>
                                 </div>
                             </td>
                         </tr>
@@ -196,7 +196,7 @@ const formatDate = (d: string) =>
 
             <!-- Pagination -->
             <div v-if="staff.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
-                <p>Rāda {{ staff.from }}–{{ staff.to }} no {{ staff.total }}</p>
+                <p>Rāda {{ staff.from }}-{{ staff.to }} no {{ staff.total }}</p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in staff.links" :key="link.label">
                         <a

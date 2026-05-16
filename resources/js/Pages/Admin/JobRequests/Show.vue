@@ -96,7 +96,7 @@ const appStatusClass = (s: string) => ({
 }[s] ?? 'bg-gray-100 text-gray-600');
 
 const truncate = (text: string | null, len = 100) => {
-    if (!text) return '—';
+    if (!text) return '-';
     return text.length > len ? text.slice(0, len) + '…' : text;
 };
 
@@ -131,7 +131,7 @@ const formatDateTime = (d: string) =>
                                 {{ statusLabel(jobRequest.status) }}
                             </span>
                         </div>
-                        <p class="text-white/50 text-sm mt-1">{{ jobRequest.category?.name ?? '—' }} · #{{ jobRequest.id }}</p>
+                        <p class="text-white/50 text-sm mt-1">{{ jobRequest.category?.name ?? '-' }} · #{{ jobRequest.id }}</p>
                     </div>
                     <button
                         @click="showDeleteConfirm = true"
@@ -155,14 +155,14 @@ const formatDateTime = (d: string) =>
                     <div class="p-6 space-y-4">
                         <div>
                             <p class="text-xs text-gray-400">Kategorija</p>
-                            <p class="text-sm font-medium text-gray-900 mt-0.5">{{ jobRequest.category?.name ?? '—' }}</p>
+                            <p class="text-sm font-medium text-gray-900 mt-0.5">{{ jobRequest.category?.name ?? '-' }}</p>
                         </div>
 
                         <div>
                             <p class="text-xs text-gray-400">Budžets</p>
                             <p class="text-sm font-medium text-gray-900 mt-0.5">
                                 <span v-if="jobRequest.budget">€{{ jobRequest.budget }}</span>
-                                <span v-else class="text-gray-400">—</span>
+                                <span v-else class="text-gray-400">-</span>
                             </p>
                         </div>
 
@@ -170,7 +170,7 @@ const formatDateTime = (d: string) =>
                             <p class="text-xs text-gray-400">Termiņš</p>
                             <p class="text-sm font-medium text-gray-900 mt-0.5">
                                 <span v-if="jobRequest.deadline">{{ formatDateTime(jobRequest.deadline) }}</span>
-                                <span v-else class="text-gray-400">—</span>
+                                <span v-else class="text-gray-400">-</span>
                             </p>
                         </div>
 
@@ -281,7 +281,7 @@ const formatDateTime = (d: string) =>
                             <!-- Price offer -->
                             <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
                                 <span v-if="app.price_offer">€{{ app.price_offer }}</span>
-                                <span v-else class="text-gray-400">—</span>
+                                <span v-else class="text-gray-400">-</span>
                             </td>
 
                             <!-- Cover letter -->

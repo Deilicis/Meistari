@@ -39,7 +39,7 @@ defineProps<{
 
 const formatPrice = (service: Service): string => {
     if (service.price_type === 'negotiable') return t('services.price_negotiable');
-    if (!service.price) return '—';
+    if (!service.price) return '-';
     const formatted = formatCurrency(service.price);
     return service.price_type === 'hourly' ? `${formatted}/h` : formatted;
 };
@@ -179,7 +179,7 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 truncate">{{ service.title }}</p>
-                            <p class="text-xs text-gray-400 mt-0.5">{{ service.category?.name ?? '—' }}</p>
+                            <p class="text-xs text-gray-400 mt-0.5">{{ service.category?.name ?? '-' }}</p>
                         </div>
                         <div class="shrink-0 text-right">
                             <p class="text-sm font-bold text-navy">{{ formatPrice(service) }}</p>
@@ -230,10 +230,10 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
                         <ClockIcon class="w-4 h-4 text-gray-300 shrink-0" />
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-gray-900 truncate">
-                                {{ app.job_request?.title ?? '—' }}
+                                {{ app.job_request?.title ?? '-' }}
                             </p>
                             <p class="text-xs text-gray-400 mt-0.5">
-                                {{ app.job_request?.category?.name ?? '—' }} · {{ formatDate(app.created_at) }}
+                                {{ app.job_request?.category?.name ?? '-' }} · {{ formatDate(app.created_at) }}
                             </p>
                         </div>
                         <span

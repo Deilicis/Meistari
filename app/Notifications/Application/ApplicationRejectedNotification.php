@@ -30,7 +30,7 @@ class ApplicationRejectedNotification extends Notification
             ->subject('Atjauninājums par jūsu pieteikumu')
             ->greeting('Sveiki!')
             ->line("Diemžēl jūsu pieteikums darbam **{$jobTitle}** šoreiz netika pieņemts.")
-            ->line('Nepadodies — Meistari platformā ir daudz citu iespēju, kas gaida tieši jūs.')
+            ->line('Nepadodies - Meistari platformā ir daudz citu iespēju, kas gaida tieši jūs.')
             ->action('Pārlūkot sludinājumus', route('master.job-requests.index'))
             ->salutation('Ar cieņu, Meistari komanda');
     }

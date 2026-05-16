@@ -70,7 +70,7 @@ const mobileNavLinkClass = (active: boolean) =>
                 <div class="flex h-14 items-center justify-between">
 
                     <!-- Logo -->
-                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari — sākumlapa">
+                    <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari - sākumlapa">
                         <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
                         <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
                             Meistari

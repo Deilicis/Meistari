@@ -180,7 +180,7 @@ const formatDate = (d: string) =>
                             <div class="min-w-0">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ jr.title }}</p>
                                 <p class="text-xs text-gray-400 mt-0.5">
-                                    {{ jr.category?.name ?? '—' }} · {{ formatDate(jr.created_at) }}
+                                    {{ jr.category?.name ?? '-' }} · {{ formatDate(jr.created_at) }}
                                 </p>
                             </div>
                             <span

@@ -38,10 +38,10 @@ const isAuth = computed(() => !!(page.props as any).auth?.user);
                 <section>
                     <h2 class="text-xl font-semibold text-navy mb-3">{{ t('static.privacy.s2_heading') }}</h2>
                     <ul class="list-disc list-inside space-y-1.5 text-slate-600">
-                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_1_label') }}</span> — {{ t('static.privacy.s2_item_1_val') }}</li>
-                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_2_label') }}</span> — {{ t('static.privacy.s2_item_2_val') }}</li>
-                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_3_label') }}</span> — {{ t('static.privacy.s2_item_3_val') }}</li>
-                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_4_label') }}</span> — {{ t('static.privacy.s2_item_4_val') }}</li>
+                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_1_label') }}</span> - {{ t('static.privacy.s2_item_1_val') }}</li>
+                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_2_label') }}</span> - {{ t('static.privacy.s2_item_2_val') }}</li>
+                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_3_label') }}</span> - {{ t('static.privacy.s2_item_3_val') }}</li>
+                        <li><span class="font-medium text-slate-700">{{ t('static.privacy.s2_item_4_label') }}</span> - {{ t('static.privacy.s2_item_4_val') }}</li>
                     </ul>
                 </section>
 

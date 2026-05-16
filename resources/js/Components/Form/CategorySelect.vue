@@ -70,10 +70,10 @@ function onParentChange(event: Event) {
     const parent = props.categories.find(c => c.id === Number(val));
 
     if (!parent?.children?.length) {
-        // Leaf parent — emit immediately
+        // Leaf parent - emit immediately
         emit('update:modelValue', Number(val));
     } else {
-        // Has children — emit parent ID so filter shows parent + children results
+        // Has children - emit parent ID so filter shows parent + children results
         emit('update:modelValue', Number(val));
     }
 }

@@ -51,7 +51,7 @@ class CategorySuggestionService
                 userId: $admin->getId(),
                 type: NotificationTypeEnum::NEW_CATEGORY_SUGGESTION,
                 title: 'Jauns kategorijas priekšlikums',
-                body: '"' . $suggestion->getName() . '" — pārskatīt priekšlikumu.',
+                body: '"' . $suggestion->getName() . '" - pārskatīt priekšlikumu.',
                 actionUrl: url('/admin/category-suggestions/' . $suggestion->getId()),
                 metadata: ['suggestion_id' => $suggestion->getId()],
             ));

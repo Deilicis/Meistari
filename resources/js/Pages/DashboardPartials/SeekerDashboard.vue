@@ -179,7 +179,7 @@ const jobStatusClasses: Record<JobStatus, string> = {
                                         {{ t('statuses.job.' + job.status) }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ job.category?.name ?? '—' }}</p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ job.category?.name ?? '-' }}</p>
                                 <div class="flex items-center gap-3 mt-1">
                                     <span v-if="job.location?.length" class="inline-flex items-center gap-1 text-xs text-gray-400">
                                         <MapPinIcon class="w-3 h-3" />
@@ -239,13 +239,13 @@ const jobStatusClasses: Record<JobStatus, string> = {
                             <UserIcon v-else class="w-4 h-4 text-navy/40" />
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-gray-900 truncate">{{ app.user?.name ?? '—' }}</p>
+                            <p class="text-sm font-semibold text-gray-900 truncate">{{ app.user?.name ?? '-' }}</p>
                             <Link
                                 v-if="app.job_request"
                                 :href="route('jobs.show', app.job_request.id)"
                                 class="text-xs text-navy/70 hover:text-navy hover:underline mt-0.5 truncate block transition-colors"
                             >{{ app.job_request.title }}</Link>
-                            <p v-else class="text-xs text-gray-400 mt-0.5">—</p>
+                            <p v-else class="text-xs text-gray-400 mt-0.5">-</p>
                         </div>
                         <div class="shrink-0 text-right">
                             <p v-if="app.price_offer" class="text-sm font-bold text-navy">

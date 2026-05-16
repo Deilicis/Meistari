@@ -237,7 +237,7 @@ const typeClass = (type: string | null) => type === 'company'
                             <div class="min-w-0">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ service.title }}</p>
                                 <p class="text-xs text-gray-400 mt-0.5">
-                                    {{ service.category?.name ?? '—' }} · {{ formatDate(service.created_at) }}
+                                    {{ service.category?.name ?? '-' }} · {{ formatDate(service.created_at) }}
                                 </p>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">

@@ -22,7 +22,7 @@ const initials = computed(() => masterName.value.slice(0, 2).toUpperCase());
 const formattedPrice = computed(() => {
     const s = props.service;
     if (s.price_type === 'negotiable') return 'Vienojoties';
-    if (!s.price) return '—';
+    if (!s.price) return '-';
     const f = new Intl.NumberFormat('lv-LV', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(s.price);
     return s.price_type === 'hourly' ? `${f}/h` : f;
 });

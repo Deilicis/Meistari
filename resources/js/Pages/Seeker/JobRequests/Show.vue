@@ -89,9 +89,9 @@ function applicantName(app: JobApplication): string {
 }
 
 function formatMoney(amount: string | null, type: string | null): string {
-    if (!amount) return '—';
+    if (!amount) return '-';
     const n = parseFloat(amount);
-    if (isNaN(n)) return '—';
+    if (isNaN(n)) return '-';
     const formatted = formatCurrency(n);
     return type === 'hourly' ? `${formatted}/h` : formatted;
 }
@@ -224,7 +224,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                 </div>
             </div>
 
-            <!-- Actions (lifecycle buttons — accept_application handled above) -->
+            <!-- Actions (lifecycle buttons - accept_application handled above) -->
             <div
                 v-if="job.allowed_actions.filter(a => a !== 'accept_application').length > 0"
                 class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"

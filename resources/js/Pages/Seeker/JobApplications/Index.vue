@@ -155,8 +155,8 @@ async function reject(app: SeekerJobApplication) {
                                 <div class="flex items-start justify-between gap-2 flex-wrap">
                                     <div>
                                         <p v-if="app.job_request" class="text-[10px] text-navy/60 font-semibold uppercase tracking-wide mb-0.5">{{ app.job_request.title }}</p>
-                                        <p v-else class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">—</p>
-                                        <p class="text-sm font-bold text-navy">{{ app.applicant?.name ?? '—' }}</p>
+                                        <p v-else class="text-[10px] text-gray-400 font-medium uppercase tracking-wide mb-0.5">-</p>
+                                        <p class="text-sm font-bold text-navy">{{ app.applicant?.name ?? '-' }}</p>
                                     </div>
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"

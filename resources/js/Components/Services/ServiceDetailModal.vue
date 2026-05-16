@@ -33,7 +33,7 @@ const emit = defineEmits<{
 const profile = computed(() => props.service?.user?.profile ?? null);
 
 const masterName = computed(() => {
-    if (!profile.value) return props.service?.user?.name ?? '—';
+    if (!profile.value) return props.service?.user?.name ?? '-';
     if (profile.value.type === 'company') return profile.value.company_name ?? props.service!.user.name;
     const parts = [profile.value.first_name, profile.value.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : props.service!.user.name;
@@ -42,9 +42,9 @@ const masterName = computed(() => {
 const avatarInitials = computed(() => masterName.value.slice(0, 2).toUpperCase());
 
 const formatPrice = (): string => {
-    if (!props.service) return '—';
+    if (!props.service) return '-';
     if (props.service.price_type === 'negotiable') return t('services.price_negotiable');
-    if (!props.service.price) return '—';
+    if (!props.service.price) return '-';
     const formatted = formatCurrency(props.service.price);
     return props.service.price_type === 'hourly' ? `${formatted}${t('services.detail_per_hour')}` : formatted;
 };

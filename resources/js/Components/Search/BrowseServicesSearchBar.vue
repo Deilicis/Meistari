@@ -41,7 +41,7 @@ const { t } = useI18n();
 
             <div class="md:col-span-2 flex items-center gap-2">
                 <TextInput v-model="filterForm.price_min" type="number" class="w-full" :placeholder="t('search.price_from')" />
-                <span class="text-gray-400 flex-shrink-0">–</span>
+                <span class="text-gray-400 flex-shrink-0">-</span>
                 <TextInput v-model="filterForm.price_max" type="number" class="w-full" :placeholder="t('search.price_to')" />
             </div>
 

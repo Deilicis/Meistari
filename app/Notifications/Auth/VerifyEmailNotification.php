@@ -12,7 +12,7 @@ class VerifyEmailNotification extends VerifyEmail
     protected function buildMailMessage($url): MailMessage
     {
         return (new MailMessage)
-            ->subject('Apstiprini savu e-pasta adresi — Meistari')
+            ->subject('Apstiprini savu e-pasta adresi - Meistari')
             ->greeting('Sveiki!')
             ->line('Paldies, ka reģistrējāties Meistari platformā!')
             ->line('Nospiediet pogu zemāk, lai apstiprinātu savu e-pasta adresi.')

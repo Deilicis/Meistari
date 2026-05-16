@@ -167,7 +167,7 @@ async function submitMerge() {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatDate(iso: string | null): string {
-    if (!iso) return '—';
+    if (!iso) return '-';
     return new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
@@ -247,7 +247,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                                 <div class="mt-2 flex flex-wrap gap-3 text-xs text-gray-500">
                                     <span class="flex items-center gap-1">
                                         <UserIcon class="w-3.5 h-3.5" />
-                                        {{ s.suggested_by?.name ?? '—' }}
+                                        {{ s.suggested_by?.name ?? '-' }}
                                     </span>
                                     <span class="flex items-center gap-1">
                                         <ClockIcon class="w-3.5 h-3.5" />
@@ -318,14 +318,14 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                                     <div v-if="s.parent_category" class="text-xs text-gray-400">apakš "{{ s.parent_category.name }}"</div>
                                     <div v-if="s.review_note" class="text-xs text-gray-500 mt-0.5 italic">{{ s.review_note }}</div>
                                 </td>
-                                <td class="px-4 py-3 text-gray-600">{{ s.suggested_by?.name ?? '—' }}</td>
+                                <td class="px-4 py-3 text-gray-600">{{ s.suggested_by?.name ?? '-' }}</td>
                                 <td class="px-4 py-3">
                                     <span
                                         class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold"
                                         :class="statusBadge[s.status]?.cls"
                                     >{{ statusBadge[s.status]?.label }}</span>
                                 </td>
-                                <td class="px-4 py-3 text-gray-600">{{ s.resulting_category?.name ?? '—' }}</td>
+                                <td class="px-4 py-3 text-gray-600">{{ s.resulting_category?.name ?? '-' }}</td>
                                 <td class="px-4 py-3 text-gray-400 text-xs">{{ formatDate(s.reviewed_at) }}</td>
                             </tr>
                         </tbody>

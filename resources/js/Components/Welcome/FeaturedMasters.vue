@@ -25,7 +25,7 @@ const initials = (master: FeaturedMaster): string =>
     displayName(master).slice(0, 2).toUpperCase();
 
 const formatRating = (r: number | null): string =>
-    r !== null ? Number(r).toFixed(1) : '—';
+    r !== null ? Number(r).toFixed(1) : '-';
 </script>
 
 <template>

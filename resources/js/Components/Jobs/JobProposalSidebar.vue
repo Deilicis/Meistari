@@ -36,9 +36,9 @@ const isOwn = computed(() =>
 );
 
 function formatMoney(amount: string | number | null): string {
-    if (amount === null || amount === undefined) return '—';
+    if (amount === null || amount === undefined) return '-';
     const n = typeof amount === 'string' ? parseFloat(amount) : amount;
-    if (isNaN(n)) return '—';
+    if (isNaN(n)) return '-';
     return formatCurrency(n);
 }
 
@@ -250,7 +250,7 @@ function historyLabel(p: PriceProposal): string {
                 >
                     <div class="min-w-0">
                         <span class="font-semibold text-navy">{{ formatMoney(p.amount) }}</span>
-                        <span class="text-gray-500 ml-1.5">— {{ p.proposed_by.name }}</span>
+                        <span class="text-gray-500 ml-1.5">- {{ p.proposed_by.name }}</span>
                         <p v-if="p.note" class="text-gray-400 italic mt-0.5 line-clamp-1">"{{ p.note }}"</p>
                     </div>
                     <div class="flex flex-col items-end gap-1 shrink-0">

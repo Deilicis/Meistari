@@ -19,7 +19,7 @@ const emit = defineEmits<{
 const profile = computed(() => props.service.user?.profile ?? null);
 
 const masterName = computed(() => {
-    if (!profile.value) return props.service.user?.name ?? '—';
+    if (!profile.value) return props.service.user?.name ?? '-';
     if (profile.value.type === 'company') return profile.value.company_name ?? props.service.user.name;
     const parts = [profile.value.first_name, profile.value.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : props.service.user.name;
@@ -35,7 +35,7 @@ const iconComponent = computed(() => {
 
 const formatPrice = (): string => {
     if (props.service.price_type === 'negotiable') return 'Vienojoties';
-    if (!props.service.price) return '—';
+    if (!props.service.price) return '-';
     const formatted = new Intl.NumberFormat('lv-LV', {
         style: 'currency', currency: 'EUR', maximumFractionDigits: 0,
     }).format(props.service.price);

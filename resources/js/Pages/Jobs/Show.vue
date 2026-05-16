@@ -173,9 +173,9 @@ function applicantName(app: PageApplication): string {
 }
 
 function formatMoney(amount: string | number | null | undefined, type?: string | null): string {
-    if (amount === null || amount === undefined || amount === '') return '—';
+    if (amount === null || amount === undefined || amount === '') return '-';
     const n = typeof amount === 'string' ? parseFloat(amount) : amount;
-    if (isNaN(n)) return '—';
+    if (isNaN(n)) return '-';
     const formatted = formatCurrency(n);
     return type === 'hourly' ? `${formatted}/h` : formatted;
 }
@@ -629,7 +629,7 @@ async function handleChat() {
                                     <StarIcon class="w-3.5 h-3.5" />
                                     {{ t('jobs.shortlist_btn') }}
                                 </button>
-                                <!-- Proposal-based accept (shows price inline) — only when master proposed -->
+                                <!-- Proposal-based accept (shows price inline) - only when master proposed -->
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="acceptingProposal = app.pending_proposal"
@@ -638,7 +638,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.accept_proposal_btn', { price: formatMoney(app.pending_proposal.amount) }) }}
                                 </button>
-                                <!-- Proposal-based counter — only when master proposed -->
+                                <!-- Proposal-based counter - only when master proposed -->
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="counteringApp = app"
@@ -656,7 +656,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.propose_price_btn') }}
                                 </button>
-                                <!-- Reject proposal — only when master proposed -->
+                                <!-- Reject proposal - only when master proposed -->
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="rejectingProposal = app.pending_proposal"
@@ -665,7 +665,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.reject_proposal_btn') }}
                                 </button>
-                                <!-- Withdraw — only when owner proposed it themselves -->
+                                <!-- Withdraw - only when owner proposed it themselves -->
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id === currentUserId"
                                     @click="withdrawingProposal = app.pending_proposal"

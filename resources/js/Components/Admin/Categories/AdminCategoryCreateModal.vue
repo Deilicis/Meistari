@@ -46,7 +46,7 @@ function submit() {
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-md">
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                     <h2 class="text-base font-bold text-navy">
-                        {{ parentCategory ? `Pievienot apakškategoriju — ${parentCategory.name}` : 'Pievienot kategoriju' }}
+                        {{ parentCategory ? `Pievienot apakškategoriju - ${parentCategory.name}` : 'Pievienot kategoriju' }}
                     </h2>
                     <button @click="emit('close')" class="text-gray-400 hover:text-gray-600 transition-colors">
                         <XMarkIcon class="w-5 h-5" />
@@ -73,7 +73,7 @@ function submit() {
                             v-model="parentId"
                             class="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy bg-white"
                         >
-                            <option :value="null">— Augstākā līmeņa kategorija —</option>
+                            <option :value="null">- Augstākā līmeņa kategorija -</option>
                             <option
                                 v-for="cat in topLevelCategories.filter(c => !c.is_system)"
                                 :key="cat.id"

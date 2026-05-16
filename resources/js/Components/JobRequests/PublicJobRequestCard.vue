@@ -19,7 +19,7 @@ const emit = defineEmits<{
 const profile = computed(() => props.job.user?.profile ?? null);
 
 const seekerName = computed(() => {
-    if (!profile.value) return props.job.user?.name ?? '—';
+    if (!profile.value) return props.job.user?.name ?? '-';
     if (profile.value.type === 'company') return profile.value.company_name ?? props.job.user.name;
     const parts = [profile.value.first_name, profile.value.last_name].filter(Boolean);
     return parts.length ? parts.join(' ') : props.job.user.name;

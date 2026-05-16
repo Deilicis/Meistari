@@ -75,7 +75,7 @@ const actionLabel = (action: string) => ({
 
 const changeCount = (log: AuditLog): string => {
     const vals = log.action === 'updated' ? log.new_values : (log.new_values ?? log.old_values);
-    if (!vals) return '—';
+    if (!vals) return '-';
     const count = Object.keys(vals).filter(k => !HIDDEN_FIELDS.has(k)).length;
     return `${count} ${count === 1 ? 'lauks' : 'lauki'}`;
 };
@@ -92,7 +92,7 @@ const formatDate = (d: string) =>
     });
 
 const formatValue = (v: any): string => {
-    if (v === null || v === undefined) return '—';
+    if (v === null || v === undefined) return '-';
     if (typeof v === 'boolean') return v ? 'Jā' : 'Nē';
     if (typeof v === 'object') return JSON.stringify(v);
     return String(v);
@@ -211,7 +211,7 @@ const formatValue = (v: any): string => {
 
                                 <!-- IP -->
                                 <td class="px-4 py-3 text-gray-400 font-mono text-xs hidden lg:table-cell">
-                                    {{ log.ip_address ?? '—' }}
+                                    {{ log.ip_address ?? '-' }}
                                 </td>
 
                                 <!-- Time -->
@@ -282,7 +282,7 @@ const formatValue = (v: any): string => {
 
             <!-- Pagination -->
             <div v-if="auditLogs.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
-                <p>Rāda {{ auditLogs.from }}–{{ auditLogs.to }} no {{ auditLogs.total }}</p>
+                <p>Rāda {{ auditLogs.from }}-{{ auditLogs.to }} no {{ auditLogs.total }}</p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in auditLogs.links" :key="link.label">
                         <Link

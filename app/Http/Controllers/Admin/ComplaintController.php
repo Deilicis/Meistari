@@ -107,7 +107,7 @@ class ComplaintController extends Controller
         $this->notificationService->create(new CreateNotificationDTO(
             userId: $clientId,
             type: NotificationTypeEnum::JOB_DISPUTED,
-            title: 'Strīds atrisināts — darbs atvērts atkārtoti',
+            title: 'Strīds atrisināts - darbs atvērts atkārtoti',
             body: '"' . $jobTitle . '" ir atgriezts atvērtā stāvoklī. Vari pieņemt jaunu meistaru.',
             actionUrl: route('jobs.show', $jobId),
             metadata: ['job_request_id' => $jobId],

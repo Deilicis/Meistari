@@ -165,7 +165,7 @@ const formatDate = (d: string) =>
 
                             <!-- Category -->
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
-                                {{ service.category?.name ?? '—' }}
+                                {{ service.category?.name ?? '-' }}
                             </td>
 
                             <!-- Price -->
@@ -218,7 +218,7 @@ const formatDate = (d: string) =>
 
             <!-- Pagination -->
             <div v-if="services.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
-                <p>Rāda {{ services.from }}–{{ services.to }} no {{ services.total }}</p>
+                <p>Rāda {{ services.from }}-{{ services.to }} no {{ services.total }}</p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in services.links" :key="link.label">
                         <Link

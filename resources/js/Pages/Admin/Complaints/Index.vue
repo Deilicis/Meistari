@@ -168,7 +168,7 @@ const formatDate = (d: string) =>
 
             <!-- Pagination -->
             <div v-if="complaints.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
-                <p>Rāda {{ complaints.from }}–{{ complaints.to }} no {{ complaints.total }}</p>
+                <p>Rāda {{ complaints.from }}-{{ complaints.to }} no {{ complaints.total }}</p>
                 <div class="flex items-center gap-1">
                     <template v-for="link in complaints.links" :key="link.label">
                         <Link

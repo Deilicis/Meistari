@@ -57,10 +57,10 @@ const tabCount = (key: ApplicationStatus | 'all') => {
 const seekerName = (app: ApplicationWithJobRequest): string => {
     const profile = app.job_request?.user?.profile;
     const user = app.job_request?.user;
-    if (!profile) return user?.name ?? '—';
-    if (profile.type === 'company') return profile.company_name ?? user?.name ?? '—';
+    if (!profile) return user?.name ?? '-';
+    if (profile.type === 'company') return profile.company_name ?? user?.name ?? '-';
     const parts = [profile.first_name, profile.last_name].filter(Boolean);
-    return parts.length ? parts.join(' ') : (user?.name ?? '—');
+    return parts.length ? parts.join(' ') : (user?.name ?? '-');
 };
 
 // Review modal
@@ -171,7 +171,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2 flex-wrap mb-1.5">
                                     <h3 class="font-bold text-navy text-base leading-snug">
-                                        {{ app.job_request?.title ?? '—' }}
+                                        {{ app.job_request?.title ?? '-' }}
                                     </h3>
                                     <span
                                         v-if="app.job_request?.category"
