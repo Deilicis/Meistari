@@ -111,8 +111,8 @@ const masterLink = (service: Service) =>
                         <div>
                             <p class="text-xs text-gray-400">Cena</p>
                             <p class="text-sm font-medium text-gray-900 mt-0.5">
-                                <span v-if="service.price">€{{ service.price }} · {{ priceTypeLabel(service.price_type) }}</span>
-                                <span v-else>{{ priceTypeLabel(service.price_type) }}</span>
+                                <span v-if="service.price">€{{ service.price }}</span>
+                                <span v-else class="text-gray-400">Vienojoties</span>
                             </p>
                         </div>
 
