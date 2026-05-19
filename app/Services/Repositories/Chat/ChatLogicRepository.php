@@ -48,7 +48,7 @@ class ChatLogicRepository
         try {
             MessageSent::dispatch($message);
         } catch (\Throwable) {
-            // Broadcasting failure does not prevent message delivery
+
         }
 
         if ($dto->type === MessageTypeEnum::TEXT) {

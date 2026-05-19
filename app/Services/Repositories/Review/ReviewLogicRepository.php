@@ -35,8 +35,6 @@ class ReviewLogicRepository
             abort(422, ErrorMessages::JOB_NOT_COMPLETED);
         }
 
-        // Verify reviewer is a participant: either the seeker who owns the job,
-        // or the master whose application was accepted.
         $isSeeker = $jobRequest->getUserId() === $reviewerId;
 
         if (!$isSeeker) {

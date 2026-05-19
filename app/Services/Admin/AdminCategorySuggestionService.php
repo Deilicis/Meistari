@@ -113,7 +113,6 @@ class AdminCategorySuggestionService
         });
     }
 
-    // ─── Private helpers ─────────────────────────────────────────────────────────
 
     private function loadPendingOrFail(int $id): CategorySuggestion
     {

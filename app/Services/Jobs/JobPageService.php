@@ -119,7 +119,7 @@ class JobPageService
                 if (in_array($status, [JobStatusEnum::ACCEPTED, JobStatusEnum::IN_PROGRESS, JobStatusEnum::AWAITING_CONFIRMATION, JobStatusEnum::DISPUTED])) {
                     $actions[] = 'chat_with_master';
                 }
-                // Also allow chat if a shortlisted application exists
+
                 if ($status === JobStatusEnum::OPEN) {
                     $hasShortlisted = Application::where(Application::JOB_REQUEST_ID, $job->getId())
                         ->where(Application::STATUS, ApplicationStatusEnum::SHORTLISTED->value)

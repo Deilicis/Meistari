@@ -23,7 +23,7 @@ class NotificationService
         try {
             NotificationCreated::dispatch($notification);
         } catch (\Throwable) {
-            // Broadcasting failure does not prevent notification persistence
+
         }
 
         return $notification;

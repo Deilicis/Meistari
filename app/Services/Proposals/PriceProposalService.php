@@ -229,7 +229,6 @@ class PriceProposalService
         return $proposal;
     }
 
-    // ─── Private helpers ─────────────────────────────────────────────────────────
 
     private function loadProposal(int $id): PriceProposal
     {

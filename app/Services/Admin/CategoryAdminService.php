@@ -111,7 +111,6 @@ class CategoryAdminService
         });
     }
 
-    // ─── Private helpers ─────────────────────────────────────────────────────────
 
     private function loadOrFail(int $id): Category
     {

@@ -48,7 +48,7 @@ class ProposalChatService
         try {
             MessageSent::dispatch($message);
         } catch (\Throwable) {
-            // Broadcasting failure does not prevent chat delivery
+
         }
     }
 
