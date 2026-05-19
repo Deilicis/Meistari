@@ -261,7 +261,7 @@ onUnmounted(() => {
                 <div v-if="related_job" class="flex items-center gap-2 px-5 py-2 bg-navy/5 border-b border-navy/10 flex-shrink-0">
                     <BriefcaseIcon class="w-3.5 h-3.5 text-navy/50 flex-shrink-0" />
                     <span class="text-xs text-navy/70 truncate min-w-0">
-                        {{ t('chat.related_job_banner') }} <span class="font-semibold">„{{ related_job.title }}"</span>
+                        {{ t('chat.related_job_banner') }} <span class="font-semibold">"{{ related_job.title }}"</span>
                     </span>
                     <a
                         :href="`/jobs/${related_job.id}`"

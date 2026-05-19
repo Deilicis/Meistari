@@ -70,9 +70,9 @@ function submit() {
 
                     <div v-if="targetId" class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
                         Visi pakalpojumi un darbi tiks pārvietoti uz
-                        <span class="font-semibold">„{{ targetName }}"</span>,
-                        un <span class="font-semibold">„{{ source.name }}"</span> tiks dzēsta.
-                        <span v-if="source.children_count > 0"> Apakškategorijas tiks pārvietotas uz „{{ targetName }}".</span>
+                        <span class="font-semibold">"{{ targetName }}"</span>,
+                        un <span class="font-semibold">"{{ source.name }}"</span> tiks dzēsta.
+                        <span v-if="source.children_count > 0"> Apakškategorijas tiks pārvietotas uz "{{ targetName }}".</span>
                     </div>
 
                     <div class="flex gap-3 pt-2">

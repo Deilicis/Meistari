@@ -292,14 +292,14 @@ class DemoSeeder extends Seeder
 
         foreach ($services as $i => [$masterKey, $title, $subCatName, $price, $desc]) {
             Service::create([
-                Service::USER_ID      => $this->masters[$masterKey]->getId(),
+                Service::USER_ID => $this->masters[$masterKey]->getId(),
                 Service::CATEGORY_ID  => $this->c($subCatName)->getId(),
-                Service::TITLE        => $title,
-                Service::SLUG         => Str::slug($title) . '-' . ($i + 1),
-                Service::DESCRIPTION  => $desc,
-                Service::PRICE        => $price,
-                Service::LOCATION     => [$this->masters[$masterKey]->profile->getCity()],
-                Service::IS_ACTIVE    => true,
+                Service::TITLE => $title,
+                Service::SLUG => Str::slug($title) . '-' . ($i + 1),
+                Service::DESCRIPTION => $desc,
+                Service::PRICE => $price,
+                Service::LOCATION => [$this->masters[$masterKey]->profile->getCity()],
+                Service::IS_ACTIVE => true,
             ]);
         }
 
@@ -308,38 +308,38 @@ class DemoSeeder extends Seeder
         $andrejs1 = Service::where(Service::USER_ID, $this->masters['andrejs']->getId())->first();
         if ($andrejs1) {
             ServiceApplication::create([
-                ServiceApplication::SERVICE_ID   => $andrejs1->getId(),
-                ServiceApplication::USER_ID      => $this->seekers['tonijs']->getId(),
-                ServiceApplication::MESSAGE       => 'Sveiki! Interesē apgaismojuma montāža dzīvokļa viesistabā. Vai varat sniegt tāmi?',
-                ServiceApplication::BUDGET_OFFER  => 200.00,
-                ServiceApplication::STATUS        => ApplicationStatusEnum::PENDING,
+                ServiceApplication::SERVICE_ID => $andrejs1->getId(),
+                ServiceApplication::USER_ID => $this->seekers['tonijs']->getId(),
+                ServiceApplication::MESSAGE => 'Sveiki! Interesē apgaismojuma montāža dzīvokļa viesistabā. Vai varat sniegt tāmi?',
+                ServiceApplication::BUDGET_OFFER => 200.00,
+                ServiceApplication::STATUS => ApplicationStatusEnum::PENDING,
             ]);
         }
         $ilze3 = Service::where(Service::USER_ID, $this->masters['ilze']->getId())
             ->orderBy(Service::ID, 'desc')->first();
         if ($ilze3) {
             ServiceApplication::create([
-                ServiceApplication::SERVICE_ID   => $ilze3->getId(),
-                ServiceApplication::USER_ID      => $this->seekers['karlis']->getId(),
-                ServiceApplication::MESSAGE       => 'Nepieciešama ģenerāltīrīšana pirms īres līguma beigām.',
-                ServiceApplication::BUDGET_OFFER  => 130.00,
-                ServiceApplication::STATUS        => ApplicationStatusEnum::ACCEPTED,
+                ServiceApplication::SERVICE_ID => $ilze3->getId(),
+                ServiceApplication::USER_ID => $this->seekers['karlis']->getId(),
+                ServiceApplication::MESSAGE => 'Nepieciešama ģenerāltīrīšana pirms īres līguma beigām.',
+                ServiceApplication::BUDGET_OFFER => 130.00,
+                ServiceApplication::STATUS => ApplicationStatusEnum::ACCEPTED,
             ]);
         }
 
         Carbon::setTestNow(null);
     }
 
-    // ─── Jobs, Applications, Proposals, Escrow ────────────────────────────────
+    // Jobs, Applications, Proposals, Escrow
 
     private function createJobsAndApplications(): void
     {
         $m = $this->masters;
         $s = $this->seekers;
 
-        // ── TONIJS (5 jobs) ─────────────────────────────────────────────────
+        // TONIJS (5 jobs)
 
-        // 1. OPEN - shortlisted negotiation (andrejs)
+        // 1. OPEN - andrejs
         Carbon::setTestNow(Carbon::now()->subDays(4));
         $j1 = $this->makeJob($s['tonijs'], 'Elektroinstalācija viesistabā', $this->c('Iekšējie darbi'), 300.00, ['Rīga'],
             'Nepieciešams uzstādīt 4 jaunas rozetes viesistabā un nomainīt galveno sadalnī paneļa drošinātāju. Dzīvoklis 3. stāvā. Labprāt sazinātos šonedēļ.');
@@ -511,7 +511,7 @@ class DemoSeeder extends Seeder
             Review::COMMENT        => 'Lieliski darbi! Roberts strādāja ļoti rūpīgi, terase izskatās kā jauna. Iesaku.',
         ]);
 
-        // ── ANNA (4 jobs) ────────────────────────────────────────────────────
+        // ANNA (4 jobs)
 
         // 6. OPEN - 2 pending apps
         Carbon::setTestNow(Carbon::now()->subDays(2));
@@ -1058,10 +1058,11 @@ class DemoSeeder extends Seeder
      */
     private function addMessages(Conversation $conv, User $u1, User $u2, array $messages): void
     {
+        $base = Carbon::now();
         foreach ($messages as $msg) {
             [$sender, $body, $hoursAgo] = $msg;
             $unread = $msg[3] ?? false;
-            $sentAt = Carbon::now()->addHours($hoursAgo); // hoursAgo is negative
+            $sentAt = $base->copy()->addHours($hoursAgo);
             Carbon::setTestNow($sentAt);
             Message::create([
                 Message::CONVERSATION_ID => $conv->getId(),

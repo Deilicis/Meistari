@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 class AutoReleaseExpiredJobsCommand extends Command
 {
-    protected $signature   = 'jobs:auto-release';
+    protected $signature = "jobs:auto-release";
     protected $description = 'Auto-release escrow for jobs awaiting confirmation past 7 days';
 
     public function handle(JobLifecycleService $service): int

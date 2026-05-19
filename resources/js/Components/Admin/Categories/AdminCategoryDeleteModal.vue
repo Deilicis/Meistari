@@ -37,7 +37,7 @@ const blockingReasons = computed(() => {
 
                 <div class="px-6 py-5 space-y-4">
                     <p class="text-sm text-gray-700">
-                        Vai tiešām dzēst kategoriju <span class="font-semibold">„{{ category.name }}"</span>?
+                        Vai tiešām dzēst kategoriju <span class="font-semibold">"{{ category.name }}"</span>?
                     </p>
 
                     <div v-if="blockingReasons.length > 0" class="p-3 bg-red-50 border border-red-200 rounded-xl">

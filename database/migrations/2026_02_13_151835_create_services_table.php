@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\Service\ServicePriceTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +18,6 @@ return new class extends Migration
     private const SLUG = 'slug';
     private const DESCRIPTION = 'description';
     private const PRICE = 'price';
-    private const PRICE_TYPE = 'price_type';
     private const LOCATION = 'location';
     private const IS_ACTIVE = 'is_active';
     private const CREATED_AT = 'created_at';
@@ -40,8 +38,6 @@ return new class extends Migration
             $table->string(self::SLUG)->unique();
             $table->text(self::DESCRIPTION);
             $table->decimal(self::PRICE, 10, 2)->nullable();
-            $table->enum(self::PRICE_TYPE, ServicePriceTypeEnum::values())
-                  ->default(ServicePriceTypeEnum::HOURLY->value);
             $table->string(self::LOCATION);
             $table->boolean(self::IS_ACTIVE)->default(true);
             $table->timestamp(self::CREATED_AT)->useCurrent();
