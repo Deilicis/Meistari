@@ -33,27 +33,27 @@ class SeekerPublicProfileController extends Controller
 
         return Inertia::render('Public/SeekerProfile', [
             'seeker' => [
-                'id'      => $user->id,
-                'name'    => $user->name,
+                'id' => $user->id,
+                'name' => $user->name,
                 'profile' => $user->profile,
             ],
             'reviews' => $reviews->map(fn(Review $r) => [
-                'id'         => $r->getId(),
-                'rating'     => $r->getRating(),
-                'comment'    => $r->getComment(),
+                'id' => $r->getId(),
+                'rating' => $r->getRating(),
+                'comment' => $r->getComment(),
                 'created_at' => $r->getCreatedAt(),
-                'reviewer'   => [
-                    'id'      => $r->reviewer->id,
-                    'name'    => $r->reviewer->name,
+                'reviewer' => [
+                    'id' => $r->reviewer->id,
+                    'name' => $r->reviewer->name,
                     'profile' => $r->reviewer->profile,
                 ],
             ]),
-            'avg_rating'   => $avgRating,
+            'avg_rating' => $avgRating,
             'review_count' => $reviews->count(),
             'job_requests' => $jobRequests->map(fn(JobRequest $jr) => [
-                'id'       => $jr->getId(),
-                'title'    => $jr->getTitle(),
-                'budget'   => $jr->getBudget(),
+                'id' => $jr->getId(),
+                'title' => $jr->getTitle(),
+                'budget' => $jr->getBudget(),
                 'deadline' => $jr->getDeadline(),
                 'category' => $jr->category ? ['name' => $jr->category->getName()] : null,
             ]),

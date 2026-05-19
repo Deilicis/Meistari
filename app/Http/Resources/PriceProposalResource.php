@@ -16,23 +16,23 @@ class PriceProposalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'           => $this->getId(),
-            'amount'       => number_format($this->getAmount(), 2, '.', ''),
-            'price_type'   => $this->getPriceType(),
-            'note'         => $this->getNote(),
-            'status'       => $this->getStatus()->value,
+            'id' => $this->getId(),
+            'amount' => number_format($this->getAmount(), 2, '.', ''),
+            'price_type' => $this->getPriceType(),
+            'note' => $this->getNote(),
+            'status' => $this->getStatus()->value,
             'status_label' => $this->getStatus()->label(),
-            'proposed_by'  => [
-                'id'   => $this->proposedBy?->getId(),
+            'proposed_by' => [
+                'id' => $this->proposedBy?->getId(),
                 'name' => $this->proposedBy?->getName(),
             ],
             'responded_by' => $this->respondedBy ? [
-                'id'   => $this->respondedBy->getId(),
+                'id' => $this->respondedBy->getId(),
                 'name' => $this->respondedBy->getName(),
             ] : null,
             'responded_at' => $this->getRespondedAt()?->toISOString(),
-            'created_at'   => $this->getCreatedAt()?->toISOString(),
-            'is_pending'     => $this->isPending(),
+            'created_at' => $this->getCreatedAt()?->toISOString(),
+            'is_pending' => $this->isPending(),
             'job_request_id' => $this->whenLoaded('application', fn () => $this->application->getJobRequestId()),
         ];
     }

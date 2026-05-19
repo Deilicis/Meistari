@@ -19,10 +19,10 @@ class SaveApplicationData
     {
         return [
             'job_request_id' => $this->jobRequestId,
-            'user_id'        => $this->userId,
-            'cover_letter'   => $this->coverLetter,
-            'price_offer'    => $this->priceOffer,
-            'status'         => ApplicationStatusEnum::PENDING->value,
+            'user_id' => $this->userId,
+            'cover_letter' => $this->coverLetter,
+            'price_offer' => $this->priceOffer,
+            'status' => ApplicationStatusEnum::PENDING->value,
         ];
     }
 }

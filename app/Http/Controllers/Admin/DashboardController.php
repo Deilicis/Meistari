@@ -22,18 +22,18 @@ class DashboardController extends Controller
     {
         return Inertia::render('Admin/Dashboard', [
             'stats' => [
-                'seekers'           => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::SEEKER->value))->count(),
-                'masters'           => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MASTER->value))->count(),
-                'moderators'        => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MODERATOR->value))->count(),
-                'services'          => Service::count(),
-                'jobRequests'       => JobRequest::count(),
+                'seekers' => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::SEEKER->value))->count(),
+                'masters' => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MASTER->value))->count(),
+                'moderators' => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MODERATOR->value))->count(),
+                'services' => Service::count(),
+                'jobRequests' => JobRequest::count(),
                 'pendingComplaints' => Complaint::where(Complaint::STATUS, ComplaintStatusEnum::PENDING->value)->count(),
             ],
             'recentComplaints' => Complaint::with(['reporter:id,name', 'reportedUser:id,name'])
                 ->latest()
                 ->take(5)
                 ->get(),
-            'recentAuditLogs'  => AuditLog::with('user:id,name')
+            'recentAuditLogs' => AuditLog::with('user:id,name')
                 ->latest()
                 ->take(10)
                 ->get(),

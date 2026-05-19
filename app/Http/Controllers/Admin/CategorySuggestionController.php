@@ -26,13 +26,13 @@ class CategorySuggestionController extends Controller
         $categories = $this->categoryRepo->getWithUsageCounts();
 
         return Inertia::render('Admin/CategorySuggestions/Index', [
-            'pending'    => $this->service->getPendingList(),
-            'resolved'   => $this->service->getResolvedList(),
+            'pending' => $this->service->getPendingList(),
+            'resolved' => $this->service->getResolvedList(),
             'categories' => $categories->map(fn ($c) => [
-                'id'       => $c->getId(),
-                'name'     => $c->getName(),
+                'id' => $c->getId(),
+                'name' => $c->getName(),
                 'children' => $c->children?->map(fn ($ch) => [
-                    'id'   => $ch->getId(),
+                    'id' => $ch->getId(),
                     'name' => $ch->getName(),
                 ])->values()->toArray() ?? [],
             ])->values()->toArray(),

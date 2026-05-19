@@ -44,9 +44,9 @@ class ProfileFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                Profile::EXPERIENCES     => $this->generateExperiences(),
+                Profile::EXPERIENCES => $this->generateExperiences(),
                 Profile::PORTFOLIO_IMAGES => $this->generatePortfolioImages(fake()->numberBetween(3, 6)),
-                Profile::IS_VERIFIED     => fake()->boolean(70),
+                Profile::IS_VERIFIED => fake()->boolean(70),
             ];
         });
     }
@@ -55,51 +55,51 @@ class ProfileFactory extends Factory
     {
         $trades = [
             [
-                'title'       => 'Elektriķis',
+                'title' => 'Elektriķis',
                 'description' => 'Elektroinstalācijas darbi, rozešu un slēdžu montāža, apgaismojuma sistēmas, kabeļu vadi dzīvokļos un privātmājās.',
             ],
             [
-                'title'       => 'Santehniķis',
+                'title' => 'Santehniķis',
                 'description' => 'Cauruļvadu sistēmu izbūve un remonts, krānu un skalotāju nomaiņa, vannas istabas iekārtošana.',
             ],
             [
-                'title'       => 'Flīzētājs',
+                'title' => 'Flīzētājs',
                 'description' => 'Keramikas un akmens flīžu likšana virtuvēs, vannas istabās un uz grīdām, izlīdzināšanas darbi.',
             ],
             [
-                'title'       => 'Galdnieks',
+                'title' => 'Galdnieks',
                 'description' => 'Mēbeļu izgatavošana pēc pasūtījuma, restaurācija un atjaunošana, iebūvētās skapju sistēmas.',
             ],
             [
-                'title'       => 'Krāsotājs',
+                'title' => 'Krāsotājs',
                 'description' => 'Telpu un fasāžu krāsošana, tapešu līmēšana, virsmu sagatavošana un špaktelēšana.',
             ],
             [
-                'title'       => 'Jumtnieks',
+                'title' => 'Jumtnieks',
                 'description' => 'Jumtu segumu montāža un nomaiņa, hidroizolācija, jumta logsienu un drenāžas sistēmu uzstādīšana.',
             ],
             [
-                'title'       => 'Metinātājs',
+                'title' => 'Metinātājs',
                 'description' => 'Metāla konstrukciju metināšana un izgatavošana, nojumes, vārti, margas un metāla kāpnes.',
             ],
             [
-                'title'       => 'Apmetējs',
+                'title' => 'Apmetējs',
                 'description' => 'Iekštelpu un ārsienu apmešana, dekoratīvās apdares darbi, sausā apmetuma sistēmas.',
             ],
             [
-                'title'       => 'Grīdas speciālists',
+                'title' => 'Grīdas speciālists',
                 'description' => 'Lamināta, parketa un koka grīdas ieklāšana, izlīdzināšanas masas lietoša, grīdas siltināšana.',
             ],
             [
-                'title'       => 'Logu un durvju montāža',
+                'title' => 'Logu un durvju montāža',
                 'description' => 'PVC un alumīnija logu uzstādīšana un nomaiņa, iekšdurvju un āra durvju montāža, blīvēšana.',
             ],
             [
-                'title'       => 'Siltināšanas speciālists',
+                'title' => 'Siltināšanas speciālists',
                 'description' => 'Ēku ārsienu siltināšana ar minerālvati un EPS plāksnēm, pēdu sistēmas, bāzes apmetums.',
             ],
             [
-                'title'       => 'Ģipškartons',
+                'title' => 'Ģipškartons',
                 'description' => 'Starpsienu izbūve, paneļu montāža, stāvu pārsegumi, uguns un skaņas izolācijas risinājumi.',
             ],
         ];
@@ -109,8 +109,8 @@ class ProfileFactory extends Factory
         $selected = array_slice($trades, 0, $count);
 
         return array_map(fn($trade) => [
-            'title'       => $trade['title'],
-            'years'       => (string) fake()->numberBetween(1, 20),
+            'title' => $trade['title'],
+            'years' => (string) fake()->numberBetween(1, 20),
             'description' => $trade['description'],
         ], $selected);
     }
@@ -135,9 +135,9 @@ class ProfileFactory extends Factory
         $images = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $filename  = bin2hex(random_bytes(10)) . '.jpg';
-            $filepath  = $portfolioDir . '/' . $filename;
-            $palette   = $palettes[array_rand($palettes)];
+            $filename = bin2hex(random_bytes(10)) . '.jpg';
+            $filepath = $portfolioDir . '/' . $filename;
+            $palette = $palettes[array_rand($palettes)];
             [$dark, $light] = $palette;
 
             $img = imagecreatetruecolor(800, 600);

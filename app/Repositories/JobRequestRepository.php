@@ -29,10 +29,10 @@ class JobRequestRepository
     ): void {
         JobRequest::where(JobRequest::ID, $jobId)->update([
             JobRequest::ACCEPTED_APPLICATION_ID => $applicationId,
-            JobRequest::MASTER_ID               => $masterId,
-            JobRequest::AGREED_PRICE            => $agreedPrice,
-            JobRequest::PRICE_TYPE              => $priceType,
-            JobRequest::STATUS                  => JobStatusEnum::ACCEPTED->value,
+            JobRequest::MASTER_ID => $masterId,
+            JobRequest::AGREED_PRICE => $agreedPrice,
+            JobRequest::PRICE_TYPE => $priceType,
+            JobRequest::STATUS => JobStatusEnum::ACCEPTED->value,
         ]);
     }
 
@@ -40,7 +40,7 @@ class JobRequestRepository
     {
         JobRequest::where(JobRequest::ID, $jobId)->update([
             JobRequest::MASTER_COMPLETED_AT => Carbon::now(),
-            JobRequest::STATUS              => JobStatusEnum::AWAITING_CONFIRMATION->value,
+            JobRequest::STATUS => JobStatusEnum::AWAITING_CONFIRMATION->value,
         ]);
     }
 
@@ -48,7 +48,7 @@ class JobRequestRepository
     {
         JobRequest::where(JobRequest::ID, $jobId)->update([
             JobRequest::COMPLETED_AT => Carbon::now(),
-            JobRequest::STATUS       => JobStatusEnum::COMPLETED->value,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED->value,
         ]);
     }
 }

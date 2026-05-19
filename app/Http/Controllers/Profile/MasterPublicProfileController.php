@@ -25,22 +25,22 @@ class MasterPublicProfileController extends Controller
 
         return Inertia::render('Public/MasterProfile', [
             'master' => [
-                'id'      => $user->id,
-                'name'    => $user->name,
+                'id' => $user->id,
+                'name' => $user->name,
                 'profile' => $user->profile,
             ],
             'reviews' => $displayable->map(fn(Review $r) => [
-                'id'         => $r->getId(),
-                'rating'     => $r->getRating(),
-                'comment'    => $r->getComment(),
+                'id' => $r->getId(),
+                'rating' => $r->getRating(),
+                'comment' => $r->getComment(),
                 'created_at' => $r->getCreatedAt(),
-                'reviewer'   => [
-                    'id'      => $r->reviewer->id,
-                    'name'    => $r->reviewer->name,
+                'reviewer' => [
+                    'id' => $r->reviewer->id,
+                    'name' => $r->reviewer->name,
                     'profile' => $r->reviewer->profile,
                 ],
             ]),
-            'avg_rating'   => $displayable->isNotEmpty() ? round($displayable->avg(Review::RATING), 1) : null,
+            'avg_rating' => $displayable->isNotEmpty() ? round($displayable->avg(Review::RATING), 1) : null,
             'review_count' => $displayable->count(),
         ]);
     }

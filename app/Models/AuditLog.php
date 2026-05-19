@@ -11,16 +11,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class AuditLog extends Model
 {
-    public const TABLE          = 'audit_logs';
-    public const ID             = 'id';
-    public const USER_ID        = 'user_id';
-    public const ACTION         = 'action';
+    public const TABLE = 'audit_logs';
+    public const ID = 'id';
+    public const USER_ID = 'user_id';
+    public const ACTION = 'action';
     public const AUDITABLE_TYPE = 'auditable_type';
-    public const AUDITABLE_ID   = 'auditable_id';
-    public const OLD_VALUES     = 'old_values';
-    public const NEW_VALUES     = 'new_values';
-    public const IP_ADDRESS     = 'ip_address';
-    public const CREATED_AT     = 'created_at';
+    public const AUDITABLE_ID = 'auditable_id';
+    public const OLD_VALUES = 'old_values';
+    public const NEW_VALUES = 'new_values';
+    public const IP_ADDRESS = 'ip_address';
+    public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = null;
 

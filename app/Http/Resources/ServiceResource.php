@@ -23,15 +23,15 @@ class ServiceResource extends JsonResource
             Service::DESCRIPTION => $this->getDescription(),
             Service::PRICE => $this->getPrice(),
             Service::LOCATION => $this->getLocation(),
-            Service::IS_ACTIVE          => $this->getIsActive(),
-            Service::CREATED_AT         => $this->getCreatedAt(),
-            'applications_count'          => $this->whenCounted('applications'),
-            'category'                    => new CategoryResource($this->whenLoaded('category')),
+            Service::IS_ACTIVE => $this->getIsActive(),
+            Service::CREATED_AT => $this->getCreatedAt(),
+            'applications_count' => $this->whenCounted('applications'),
+            'category' => new CategoryResource($this->whenLoaded('category')),
             'pending_category_suggestion' => $this->whenLoaded('pendingCategorySuggestion', fn () =>
                 $this->pendingCategorySuggestion ? [
-                    'id'          => $this->pendingCategorySuggestion->getId(),
-                    'name'        => $this->pendingCategorySuggestion->getName(),
-                    'status'      => $this->pendingCategorySuggestion->getStatus()->value,
+                    'id' => $this->pendingCategorySuggestion->getId(),
+                    'name' => $this->pendingCategorySuggestion->getName(),
+                    'status' => $this->pendingCategorySuggestion->getStatus()->value,
                     'review_note' => $this->pendingCategorySuggestion->getReviewNote(),
                 ] : null
             ),

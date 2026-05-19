@@ -19,18 +19,18 @@ class SeekerJobApplicationResource extends JsonResource
         $profile = $this->user?->profile;
 
         return [
-            Application::ID           => $this->getId(),
+            Application::ID => $this->getId(),
             Application::COVER_LETTER => $this->getCoverLetter(),
-            Application::PRICE_OFFER  => $this->getPriceOffer(),
-            Application::STATUS       => $this->getStatus()->value,
-            Application::CREATED_AT   => $this->getCreatedAt()?->toISOString(),
+            Application::PRICE_OFFER => $this->getPriceOffer(),
+            Application::STATUS => $this->getStatus()->value,
+            Application::CREATED_AT => $this->getCreatedAt()?->toISOString(),
             'job_request' => $this->jobRequest ? [
-                JobRequest::ID    => $this->jobRequest->getId(),
+                JobRequest::ID => $this->jobRequest->getId(),
                 JobRequest::TITLE => $this->jobRequest->getTitle(),
             ] : null,
             'applicant' => $this->user ? [
-                'id'         => $this->user->getId(),
-                'name'       => $this->user->getName(),
+                'id' => $this->user->getId(),
+                'name' => $this->user->getName(),
                 'avatar_url' => $profile?->getAvatar()
                     ? '/storage/' . $profile->getAvatar()
                     : null,

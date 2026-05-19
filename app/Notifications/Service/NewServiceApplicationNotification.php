@@ -27,9 +27,9 @@ class NewServiceApplicationNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $serviceTitle = $this->application->service->getTitle();
-        $seekerName   = $this->applicant->getName();
-        $message      = $this->application->getMessage();
-        $budgetOffer  = $this->application->getBudgetOffer();
+        $seekerName = $this->applicant->getName();
+        $message = $this->application->getMessage();
+        $budgetOffer = $this->application->getBudgetOffer();
 
         $preview = mb_strlen($message) > 200
             ? mb_substr($message, 0, 200) . '...'

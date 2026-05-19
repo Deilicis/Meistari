@@ -17,7 +17,7 @@ class CounterProposalRequest extends FormRequest
     {
         return [
             'amount' => ['required', 'numeric', 'min:1', 'max:999999.99'],
-            'note'   => ['nullable', 'string', 'max:500'],
+            'note' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

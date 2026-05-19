@@ -18,10 +18,10 @@ class CategorySuggestionRepository
     {
         return CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $dto->suggestedByUserId,
-            CategorySuggestion::NAME                 => $dto->name,
-            CategorySuggestion::PARENT_CATEGORY_ID   => $dto->parentCategoryId,
-            CategorySuggestion::NOTE                 => $dto->note,
-            CategorySuggestion::STATUS               => CategorySuggestionStatusEnum::PENDING->value,
+            CategorySuggestion::NAME => $dto->name,
+            CategorySuggestion::PARENT_CATEGORY_ID => $dto->parentCategoryId,
+            CategorySuggestion::NOTE => $dto->note,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING->value,
         ]);
     }
 
@@ -74,9 +74,9 @@ class CategorySuggestionRepository
     public function markApproved(int $id, int $reviewedByUserId, int $resultingCategoryId): void
     {
         CategorySuggestion::where(CategorySuggestion::ID, $id)->update([
-            CategorySuggestion::STATUS               => CategorySuggestionStatusEnum::APPROVED->value,
-            CategorySuggestion::REVIEWED_BY_USER_ID  => $reviewedByUserId,
-            CategorySuggestion::REVIEWED_AT          => Carbon::now(),
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::APPROVED->value,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $reviewedByUserId,
+            CategorySuggestion::REVIEWED_AT => Carbon::now(),
             CategorySuggestion::RESULTING_CATEGORY_ID => $resultingCategoryId,
         ]);
     }
@@ -84,19 +84,19 @@ class CategorySuggestionRepository
     public function markRejected(int $id, int $reviewedByUserId, string $reviewNote): void
     {
         CategorySuggestion::where(CategorySuggestion::ID, $id)->update([
-            CategorySuggestion::STATUS              => CategorySuggestionStatusEnum::REJECTED->value,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::REJECTED->value,
             CategorySuggestion::REVIEWED_BY_USER_ID => $reviewedByUserId,
-            CategorySuggestion::REVIEWED_AT         => Carbon::now(),
-            CategorySuggestion::REVIEW_NOTE         => $reviewNote,
+            CategorySuggestion::REVIEWED_AT => Carbon::now(),
+            CategorySuggestion::REVIEW_NOTE => $reviewNote,
         ]);
     }
 
     public function markMerged(int $id, int $reviewedByUserId, int $resultingCategoryId): void
     {
         CategorySuggestion::where(CategorySuggestion::ID, $id)->update([
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::MERGED->value,
-            CategorySuggestion::REVIEWED_BY_USER_ID   => $reviewedByUserId,
-            CategorySuggestion::REVIEWED_AT           => Carbon::now(),
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::MERGED->value,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $reviewedByUserId,
+            CategorySuggestion::REVIEWED_AT => Carbon::now(),
             CategorySuggestion::RESULTING_CATEGORY_ID => $resultingCategoryId,
         ]);
     }
@@ -105,13 +105,13 @@ class CategorySuggestionRepository
     {
         $services = Service::where(Service::PENDING_CATEGORY_SUGGESTION_ID, $suggestionId)
             ->update([
-                Service::CATEGORY_ID                      => $categoryId,
-                Service::PENDING_CATEGORY_SUGGESTION_ID   => null,
+                Service::CATEGORY_ID => $categoryId,
+                Service::PENDING_CATEGORY_SUGGESTION_ID => null,
             ]);
 
         $jobs = JobRequest::where(JobRequest::PENDING_CATEGORY_SUGGESTION_ID, $suggestionId)
             ->update([
-                JobRequest::CATEGORY_ID                    => $categoryId,
+                JobRequest::CATEGORY_ID => $categoryId,
                 JobRequest::PENDING_CATEGORY_SUGGESTION_ID => null,
             ]);
 

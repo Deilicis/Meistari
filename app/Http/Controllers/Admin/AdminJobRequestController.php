@@ -35,7 +35,7 @@ class AdminJobRequestController extends Controller
 
         return Inertia::render('Admin/JobRequests/Index', [
             'jobRequests' => $query->latest()->paginate(20)->withQueryString(),
-            'filters'     => $request->only(['search', 'status', 'category_id']),
+            'filters' => $request->only(['search', 'status', 'category_id']),
         ]);
     }
 

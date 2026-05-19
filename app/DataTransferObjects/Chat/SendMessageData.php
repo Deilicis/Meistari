@@ -12,7 +12,7 @@ final class SendMessageData
         public readonly int             $conversationId,
         public readonly int             $senderId,
         public readonly string          $body,
-        public readonly MessageTypeEnum $type       = MessageTypeEnum::TEXT,
+        public readonly MessageTypeEnum $type = MessageTypeEnum::TEXT,
         public readonly ?int            $proposalId = null,
     ) {}
 }

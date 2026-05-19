@@ -57,9 +57,9 @@ class CategoryRepository
     public function create(CreateCategoryDTO $dto, string $slug): Category
     {
         return Category::create([
-            Category::NAME      => $dto->name,
-            Category::SLUG      => $slug,
-            Category::ICON      => $dto->icon,
+            Category::NAME => $dto->name,
+            Category::SLUG => $slug,
+            Category::ICON => $dto->icon,
             Category::PARENT_ID => $dto->parentId,
         ]);
     }
@@ -69,8 +69,8 @@ class CategoryRepository
         $category = Category::findOrFail($id);
 
         $data = [
-            Category::NAME      => $dto->name,
-            Category::ICON      => $dto->icon,
+            Category::NAME => $dto->name,
+            Category::ICON => $dto->icon,
             Category::PARENT_ID => $dto->parentId,
         ];
 

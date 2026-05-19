@@ -37,10 +37,10 @@ class LoginUserRequest extends FormRequest
     {
         return [
             'email.required' => 'E-pasts ir obligāts.',
-            'email.string'   => 'E-pastam jābūt tekstam.',
-            'email.email'    => 'Lūdzu ievadiet derīgu e-pasta adresi.',
+            'email.string' => 'E-pastam jābūt tekstam.',
+            'email.email' => 'Lūdzu ievadiet derīgu e-pasta adresi.',
             'password.required' => 'Parole ir obligāta.',
-            'password.string'   => 'Parolei jābūt tekstam.',
+            'password.string' => 'Parolei jābūt tekstam.',
         ];
     }
 

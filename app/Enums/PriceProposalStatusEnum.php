@@ -6,19 +6,19 @@ namespace App\Enums;
 
 enum PriceProposalStatusEnum: string
 {
-    case PENDING   = 'pending';
-    case ACCEPTED  = 'accepted';
+    case PENDING = 'pending';
+    case ACCEPTED = 'accepted';
     case COUNTERED = 'countered';
-    case REJECTED  = 'rejected';
+    case REJECTED = 'rejected';
     case WITHDRAWN = 'withdrawn';
 
     public function label(): string
     {
         return match($this) {
-            self::PENDING   => 'Gaida atbildi',
-            self::ACCEPTED  => 'Pieņemts',
+            self::PENDING => 'Gaida atbildi',
+            self::ACCEPTED => 'Pieņemts',
             self::COUNTERED => 'Pretpiedāvāts',
-            self::REJECTED  => 'Noraidīts',
+            self::REJECTED => 'Noraidīts',
             self::WITHDRAWN => 'Atsaukts',
         };
     }

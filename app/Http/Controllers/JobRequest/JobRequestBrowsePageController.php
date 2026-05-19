@@ -26,9 +26,9 @@ class JobRequestBrowsePageController extends Controller
         $filters = $request->only(['search', 'category_id', 'budget_min', 'budget_max']);
 
         return Inertia::render('Master/JobRequests/BrowseJobRequests', [
-            'jobRequests'   => $this->jobRequestLogicRepo->getPublicJobRequests($filters),
-            'categories'    => $this->categoryLogicRepo->getNestedCategories(),
-            'filters'       => $filters,
+            'jobRequests' => $this->jobRequestLogicRepo->getPublicJobRequests($filters),
+            'categories' => $this->categoryLogicRepo->getNestedCategories(),
+            'filters' => $filters,
             'appliedJobIds' => $this->applicationLogicRepo->getAppliedJobIds(Auth::id()),
         ]);
     }

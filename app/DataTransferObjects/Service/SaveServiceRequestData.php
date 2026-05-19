@@ -21,14 +21,14 @@ class SaveServiceRequestData
     public function toArray(): array
     {
         $data = [
-            Service::USER_ID     => $this->userId,
+            Service::USER_ID => $this->userId,
             Service::CATEGORY_ID => $this->categoryId,
-            Service::TITLE       => $this->title,
-            Service::SLUG        => $this->slug,
+            Service::TITLE => $this->title,
+            Service::SLUG => $this->slug,
             Service::DESCRIPTION => $this->description,
-            Service::PRICE       => $this->price,
-            Service::LOCATION    => $this->location,
-            Service::IS_ACTIVE   => $this->isActive,
+            Service::PRICE => $this->price,
+            Service::LOCATION => $this->location,
+            Service::IS_ACTIVE => $this->isActive,
         ];
 
         if ($this->pendingCategorySuggestionId !== null) {

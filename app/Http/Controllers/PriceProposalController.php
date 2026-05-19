@@ -31,7 +31,7 @@ class PriceProposalController extends Controller
 
         return response()->json([
             'message' => 'Piedāvājums nosūtīts.',
-            'data'    => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
+            'data' => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
         ], 201);
     }
 
@@ -46,7 +46,7 @@ class PriceProposalController extends Controller
 
         return response()->json([
             'message' => 'Pretpiedāvājums nosūtīts.',
-            'data'    => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
+            'data' => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
         ]);
     }
 
@@ -59,7 +59,7 @@ class PriceProposalController extends Controller
 
         return response()->json([
             'message' => 'Piedāvājums pieņemts!',
-            'data'    => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
+            'data' => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
         ]);
     }
 
@@ -72,7 +72,7 @@ class PriceProposalController extends Controller
 
         return response()->json([
             'message' => 'Piedāvājums noraidīts.',
-            'data'    => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
+            'data' => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
         ]);
     }
 
@@ -85,7 +85,7 @@ class PriceProposalController extends Controller
 
         return response()->json([
             'message' => 'Piedāvājums atsaukts.',
-            'data'    => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
+            'data' => new PriceProposalResource($proposal->load(['proposedBy', 'respondedBy'])),
         ]);
     }
 }

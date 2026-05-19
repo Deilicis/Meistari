@@ -14,19 +14,19 @@ class PriceProposal extends Model
 {
     use SoftDeletes;
 
-    public const TABLE                 = 'price_proposals';
-    public const ID                    = 'id';
-    public const JOB_APPLICATION_ID    = 'job_application_id';
-    public const PROPOSED_BY_USER_ID   = 'proposed_by_user_id';
-    public const AMOUNT                = 'amount';
-    public const PRICE_TYPE            = 'price_type';
-    public const NOTE                  = 'note';
-    public const STATUS                = 'status';
-    public const RESPONDED_BY_USER_ID  = 'responded_by_user_id';
-    public const RESPONDED_AT          = 'responded_at';
-    public const CREATED_AT            = 'created_at';
-    public const UPDATED_AT            = 'updated_at';
-    public const DELETED_AT            = 'deleted_at';
+    public const TABLE = 'price_proposals';
+    public const ID = 'id';
+    public const JOB_APPLICATION_ID = 'job_application_id';
+    public const PROPOSED_BY_USER_ID = 'proposed_by_user_id';
+    public const AMOUNT = 'amount';
+    public const PRICE_TYPE = 'price_type';
+    public const NOTE = 'note';
+    public const STATUS = 'status';
+    public const RESPONDED_BY_USER_ID = 'responded_by_user_id';
+    public const RESPONDED_AT = 'responded_at';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -42,8 +42,8 @@ class PriceProposal extends Model
     ];
 
     protected $casts = [
-        self::AMOUNT       => 'decimal:2',
-        self::STATUS       => PriceProposalStatusEnum::class,
+        self::AMOUNT => 'decimal:2',
+        self::STATUS => PriceProposalStatusEnum::class,
         self::RESPONDED_AT => 'datetime',
     ];
 

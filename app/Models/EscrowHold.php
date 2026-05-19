@@ -14,21 +14,21 @@ class EscrowHold extends Model
 {
     use SoftDeletes;
 
-    public const TABLE             = 'escrow_holds';
-    public const ID                = 'id';
-    public const JOB_REQUEST_ID    = 'job_request_id';
-    public const CLIENT_ID         = 'client_id';
-    public const MASTER_ID         = 'master_id';
-    public const AMOUNT            = 'amount';
-    public const STATUS            = 'status';
+    public const TABLE = 'escrow_holds';
+    public const ID = 'id';
+    public const JOB_REQUEST_ID = 'job_request_id';
+    public const CLIENT_ID = 'client_id';
+    public const MASTER_ID = 'master_id';
+    public const AMOUNT = 'amount';
+    public const STATUS = 'status';
     public const PAYMENT_REFERENCE = 'payment_reference';
-    public const HELD_AT           = 'held_at';
-    public const RELEASED_AT       = 'released_at';
-    public const REFUNDED_AT       = 'refunded_at';
-    public const AUTO_RELEASE_AT   = 'auto_release_at';
-    public const CREATED_AT        = 'created_at';
-    public const UPDATED_AT        = 'updated_at';
-    public const DELETED_AT        = 'deleted_at';
+    public const HELD_AT = 'held_at';
+    public const RELEASED_AT = 'released_at';
+    public const REFUNDED_AT = 'refunded_at';
+    public const AUTO_RELEASE_AT = 'auto_release_at';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -46,11 +46,11 @@ class EscrowHold extends Model
     ];
 
     protected $casts = [
-        self::STATUS         => EscrowStatusEnum::class,
-        self::AMOUNT         => 'decimal:2',
-        self::HELD_AT        => 'datetime',
-        self::RELEASED_AT    => 'datetime',
-        self::REFUNDED_AT    => 'datetime',
+        self::STATUS => EscrowStatusEnum::class,
+        self::AMOUNT => 'decimal:2',
+        self::HELD_AT => 'datetime',
+        self::RELEASED_AT => 'datetime',
+        self::REFUNDED_AT => 'datetime',
         self::AUTO_RELEASE_AT => 'datetime',
     ];
 

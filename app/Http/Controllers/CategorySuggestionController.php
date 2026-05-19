@@ -26,7 +26,7 @@ class CategorySuggestionController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $q        = (string) $request->get('q', '');
+        $q = (string) $request->get('q', '');
         $parentId = $request->filled('parent_id') ? (int) $request->get('parent_id') : null;
 
         if (mb_strlen($q) < 1) {
@@ -44,16 +44,16 @@ class CategorySuggestionController extends Controller
 
         return response()->json([
             'approved' => $approved->map(fn ($c) => [
-                'id'        => $c->getId(),
-                'name'      => $c->getName(),
-                'slug'      => $c->getSlug(),
+                'id' => $c->getId(),
+                'name' => $c->getName(),
+                'slug' => $c->getSlug(),
                 'parent_id' => $c->getParentId(),
             ]),
-            'pending'  => $pending->map(fn ($s) => [
-                'id'                => $s->getId(),
-                'name'              => $s->getName(),
+            'pending' => $pending->map(fn ($s) => [
+                'id' => $s->getId(),
+                'name' => $s->getName(),
                 'suggested_by_name' => $s->suggestedBy?->getName() ?? 'Cits lietotājs',
-                'created_at'        => $s->getCreatedAt()?->toISOString(),
+                'created_at' => $s->getCreatedAt()?->toISOString(),
             ]),
         ]);
     }

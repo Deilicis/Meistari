@@ -14,15 +14,15 @@ class Notification extends Model
 {
     use SoftDeletes;
 
-    public const TABLE      = 'notifications';
-    public const ID         = 'id';
-    public const USER_ID    = 'user_id';
-    public const TYPE       = 'type';
-    public const TITLE      = 'title';
-    public const BODY       = 'body';
+    public const TABLE = 'notifications';
+    public const ID = 'id';
+    public const USER_ID = 'user_id';
+    public const TYPE = 'type';
+    public const TITLE = 'title';
+    public const BODY = 'body';
     public const ACTION_URL = 'action_url';
-    public const METADATA   = 'metadata';
-    public const READ_AT    = 'read_at';
+    public const METADATA = 'metadata';
+    public const READ_AT = 'read_at';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';
@@ -40,9 +40,9 @@ class Notification extends Model
     ];
 
     protected $casts = [
-        self::TYPE     => NotificationTypeEnum::class,
+        self::TYPE => NotificationTypeEnum::class,
         self::METADATA => 'array',
-        self::READ_AT  => 'datetime',
+        self::READ_AT => 'datetime',
     ];
 
     public function getId(): int

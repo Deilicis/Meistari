@@ -19,15 +19,15 @@ class StoreComplaintRequest extends FormRequest
     public function rules(): array
     {
         return [
-            Complaint::REPORTED_USER_ID   => [
+            Complaint::REPORTED_USER_ID => [
                 ValidationRuleHelper::REQUIRED,
                 ValidationRuleHelper::INTEGER,
                 ValidationRuleHelper::EXISTS . ':' . User::TABLE . ',' . User::ID,
                 'different:' . User::ID,
             ],
             Complaint::REPORTED_ENTITY_TYPE => [ValidationRuleHelper::NULLABLE, ValidationRuleHelper::STRING, ValidationRuleHelper::MAX_255],
-            Complaint::REPORTED_ENTITY_ID   => [ValidationRuleHelper::NULLABLE, ValidationRuleHelper::INTEGER],
-            Complaint::REASON               => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, ValidationRuleHelper::MIN . ':20', ValidationRuleHelper::MAX . ':2000'],
+            Complaint::REPORTED_ENTITY_ID => [ValidationRuleHelper::NULLABLE, ValidationRuleHelper::INTEGER],
+            Complaint::REASON => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, ValidationRuleHelper::MIN . ':20', ValidationRuleHelper::MAX . ':2000'],
         ];
     }
 }

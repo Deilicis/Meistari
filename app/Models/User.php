@@ -20,17 +20,17 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Auditable, HasFactory, Notifiable, SoftDeletes;
 
-    public const TABLE            = 'users';
-    public const ID               = 'id';
-    public const NAME             = 'name';
-    public const EMAIL            = 'email';
+    public const TABLE = 'users';
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const EMAIL = 'email';
     public const EMAIL_VERIFIED_AT = 'email_verified_at';
-    public const PASSWORD         = 'password';
-    public const REMEMBER_TOKEN   = 'remember_token';
-    public const ACTIVE_ROLE      = 'active_role';
-    public const CREATED_AT       = 'created_at';
-    public const UPDATED_AT       = 'updated_at';
-    public const DELETED_AT       = 'deleted_at';
+    public const PASSWORD = 'password';
+    public const REMEMBER_TOKEN = 'remember_token';
+    public const ACTIVE_ROLE = 'active_role';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -48,8 +48,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         self::EMAIL_VERIFIED_AT => 'datetime',
-        self::PASSWORD          => 'hashed',
-        self::ACTIVE_ROLE       => RoleNameEnum::class,
+        self::PASSWORD => 'hashed',
+        self::ACTIVE_ROLE => RoleNameEnum::class,
     ];
 
     public function getId(): int

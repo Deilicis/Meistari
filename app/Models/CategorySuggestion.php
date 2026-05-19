@@ -15,18 +15,18 @@ class CategorySuggestion extends Model
 {
     use SoftDeletes;
 
-    public const TABLE                  = 'category_suggestions';
-    public const ID                     = 'id';
-    public const SUGGESTED_BY_USER_ID   = 'suggested_by_user_id';
-    public const NAME                   = 'name';
-    public const PARENT_CATEGORY_ID     = 'parent_category_id';
-    public const NOTE                   = 'note';
-    public const STATUS                 = 'status';
-    public const REVIEWED_BY_USER_ID    = 'reviewed_by_user_id';
-    public const REVIEWED_AT            = 'reviewed_at';
-    public const REVIEW_NOTE            = 'review_note';
-    public const RESULTING_CATEGORY_ID  = 'resulting_category_id';
-    public const DELETED_AT             = 'deleted_at';
+    public const TABLE = 'category_suggestions';
+    public const ID = 'id';
+    public const SUGGESTED_BY_USER_ID = 'suggested_by_user_id';
+    public const NAME = 'name';
+    public const PARENT_CATEGORY_ID = 'parent_category_id';
+    public const NOTE = 'note';
+    public const STATUS = 'status';
+    public const REVIEWED_BY_USER_ID = 'reviewed_by_user_id';
+    public const REVIEWED_AT = 'reviewed_at';
+    public const REVIEW_NOTE = 'review_note';
+    public const RESULTING_CATEGORY_ID = 'resulting_category_id';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 
@@ -43,7 +43,7 @@ class CategorySuggestion extends Model
     ];
 
     protected $casts = [
-        self::STATUS      => CategorySuggestionStatusEnum::class,
+        self::STATUS => CategorySuggestionStatusEnum::class,
         self::REVIEWED_AT => 'datetime',
     ];
 

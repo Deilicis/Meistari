@@ -16,9 +16,9 @@ class SystemCategorySeeder extends Seeder
         }
 
         Category::create([
-            Category::NAME      => 'Cits',
-            Category::SLUG      => 'cits',
-            Category::ICON      => 'EllipsisHorizontalCircleIcon',
+            Category::NAME => 'Cits',
+            Category::SLUG => 'cits',
+            Category::ICON => 'EllipsisHorizontalCircleIcon',
             Category::PARENT_ID => null,
             Category::IS_SYSTEM => true,
         ]);

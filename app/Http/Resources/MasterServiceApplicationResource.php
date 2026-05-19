@@ -20,18 +20,18 @@ class MasterServiceApplicationResource extends JsonResource
         $profile = $this->user->profile;
 
         return [
-            ServiceApplication::ID           => $this->getId(),
-            ServiceApplication::MESSAGE      => $this->getMessage(),
+            ServiceApplication::ID => $this->getId(),
+            ServiceApplication::MESSAGE => $this->getMessage(),
             ServiceApplication::BUDGET_OFFER => $this->getBudgetOffer(),
-            ServiceApplication::STATUS       => $this->getStatus()->value,
-            ServiceApplication::CREATED_AT   => $this->getCreatedAt()?->toISOString(),
+            ServiceApplication::STATUS => $this->getStatus()->value,
+            ServiceApplication::CREATED_AT => $this->getCreatedAt()?->toISOString(),
             'service' => [
-                Service::ID    => $this->service->getId(),
+                Service::ID => $this->service->getId(),
                 Service::TITLE => $this->service->getTitle(),
             ],
             'applicant' => [
-                'id'         => $this->user->getId(),
-                'name'       => $this->user->getName(),
+                'id' => $this->user->getId(),
+                'name' => $this->user->getName(),
                 'avatar_url' => $profile?->getAvatar()
                     ? '/storage/' . $profile->getAvatar()
                     : null,

@@ -6,6 +6,6 @@ namespace App\Enums;
 
 enum MessageTypeEnum: string
 {
-    case TEXT     = 'text';
+    case TEXT = 'text';
     case PROPOSAL = 'proposal';
 }

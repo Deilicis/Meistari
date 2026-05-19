@@ -24,7 +24,7 @@ class EscrowHoldRepository
     public function markReleased(int $id): void
     {
         EscrowHold::where(EscrowHold::ID, $id)->update([
-            EscrowHold::STATUS      => EscrowStatusEnum::RELEASED->value,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED->value,
             EscrowHold::RELEASED_AT => Carbon::now(),
         ]);
     }
@@ -32,7 +32,7 @@ class EscrowHoldRepository
     public function markRefunded(int $id): void
     {
         EscrowHold::where(EscrowHold::ID, $id)->update([
-            EscrowHold::STATUS      => EscrowStatusEnum::REFUNDED->value,
+            EscrowHold::STATUS => EscrowStatusEnum::REFUNDED->value,
             EscrowHold::REFUNDED_AT => Carbon::now(),
         ]);
     }

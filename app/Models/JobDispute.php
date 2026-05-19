@@ -13,16 +13,16 @@ class JobDispute extends Model
 {
     use SoftDeletes;
 
-    public const TABLE              = 'job_disputes';
-    public const ID                 = 'id';
-    public const JOB_REQUEST_ID     = 'job_request_id';
-    public const RAISED_BY_USER_ID  = 'raised_by_user_id';
-    public const REASON             = 'reason';
-    public const RESOLVED_AT        = 'resolved_at';
-    public const RESOLUTION_NOTE    = 'resolution_note';
-    public const CREATED_AT         = 'created_at';
-    public const UPDATED_AT         = 'updated_at';
-    public const DELETED_AT         = 'deleted_at';
+    public const TABLE = 'job_disputes';
+    public const ID = 'id';
+    public const JOB_REQUEST_ID = 'job_request_id';
+    public const RAISED_BY_USER_ID = 'raised_by_user_id';
+    public const REASON = 'reason';
+    public const RESOLVED_AT = 'resolved_at';
+    public const RESOLUTION_NOTE = 'resolution_note';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     protected $table = self::TABLE;
 

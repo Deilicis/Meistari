@@ -72,16 +72,16 @@ class JobRequestLogicRepository
         }
 
         $dataToSave = [
-            JobRequest::USER_ID     => $dto->userId,
+            JobRequest::USER_ID => $dto->userId,
             JobRequest::CATEGORY_ID => $dto->categoryId,
-            JobRequest::SLUG        => $slug,
-            JobRequest::TITLE       => $dto->title,
+            JobRequest::SLUG => $slug,
+            JobRequest::TITLE => $dto->title,
             JobRequest::DESCRIPTION => $dto->description,
-            JobRequest::STATUS      => $dto->status->value,
-            JobRequest::BUDGET      => $dto->budget,
-            JobRequest::DEADLINE    => $dto->deadline,
-            JobRequest::LOCATION    => $dto->location,
-            JobRequest::IMAGES      => $images,
+            JobRequest::STATUS => $dto->status->value,
+            JobRequest::BUDGET => $dto->budget,
+            JobRequest::DEADLINE => $dto->deadline,
+            JobRequest::LOCATION => $dto->location,
+            JobRequest::IMAGES => $images,
         ];
 
         if ($dto->pendingCategorySuggestionId !== null) {
@@ -117,12 +117,12 @@ class JobRequestLogicRepository
 
         $dataToUpdate = [
             JobRequest::CATEGORY_ID => $dto->categoryId,
-            JobRequest::TITLE       => $dto->title,
+            JobRequest::TITLE => $dto->title,
             JobRequest::DESCRIPTION => $dto->description,
-            JobRequest::BUDGET      => $dto->budget,
-            JobRequest::DEADLINE    => $dto->deadline,
-            JobRequest::LOCATION    => $dto->location,
-            JobRequest::IMAGES      => $images,
+            JobRequest::BUDGET => $dto->budget,
+            JobRequest::DEADLINE => $dto->deadline,
+            JobRequest::LOCATION => $dto->location,
+            JobRequest::IMAGES => $images,
         ];
 
         return $this->dbRepository->update($jobRequest, $dataToUpdate);

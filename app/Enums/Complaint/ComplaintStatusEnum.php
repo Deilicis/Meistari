@@ -6,9 +6,9 @@ namespace App\Enums\Complaint;
 
 enum ComplaintStatusEnum: string
 {
-    case PENDING   = 'pending';
-    case REVIEWED  = 'reviewed';
-    case RESOLVED  = 'resolved';
+    case PENDING = 'pending';
+    case REVIEWED = 'reviewed';
+    case RESOLVED = 'resolved';
     case DISMISSED = 'dismissed';
 
     public static function values(): array
@@ -19,9 +19,9 @@ enum ComplaintStatusEnum: string
     public function label(): string
     {
         return match($this) {
-            self::PENDING   => 'Gaida izskatīšanu',
-            self::REVIEWED  => 'Izskatīts',
-            self::RESOLVED  => 'Atrisināts',
+            self::PENDING => 'Gaida izskatīšanu',
+            self::REVIEWED => 'Izskatīts',
+            self::RESOLVED => 'Atrisināts',
             self::DISMISSED => 'Noraidīts',
         };
     }

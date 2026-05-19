@@ -16,10 +16,10 @@ class ApplicationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            Application::ID             => $this->getId(),
+            Application::ID => $this->getId(),
             Application::JOB_REQUEST_ID => $this->getJobRequestId(),
-            Application::STATUS         => $this->getStatus()->value,
-            Application::CREATED_AT     => $this->getCreatedAt(),
+            Application::STATUS => $this->getStatus()->value,
+            Application::CREATED_AT => $this->getCreatedAt(),
         ];
     }
 }

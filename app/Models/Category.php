@@ -16,13 +16,13 @@ class Category extends Model
 {
     use Auditable, HasFactory, SoftDeletes;
 
-    public const TABLE      = 'categories';
-    public const ID         = 'id';
-    public const NAME       = 'name';
-    public const SLUG       = 'slug';
-    public const ICON       = 'icon';
-    public const PARENT_ID  = 'parent_id';
-    public const IS_SYSTEM  = 'is_system';
+    public const TABLE = 'categories';
+    public const ID = 'id';
+    public const NAME = 'name';
+    public const SLUG = 'slug';
+    public const ICON = 'icon';
+    public const PARENT_ID = 'parent_id';
+    public const IS_SYSTEM = 'is_system';
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';

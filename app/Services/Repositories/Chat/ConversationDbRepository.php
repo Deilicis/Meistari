@@ -28,7 +28,7 @@ class ConversationDbRepository
     public function create(int $senderId, int $receiverId): Conversation
     {
         return Conversation::create([
-            Conversation::SENDER_ID   => $senderId,
+            Conversation::SENDER_ID => $senderId,
             Conversation::RECEIVER_ID => $receiverId,
         ]);
     }

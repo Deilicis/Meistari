@@ -46,7 +46,7 @@ class AdminCategorySuggestionService
         $suggestion = $this->loadPendingOrFail($dto->suggestionId);
 
         return DB::transaction(function () use ($dto, $suggestion): CategorySuggestion {
-            $slug     = $this->generateUniqueSlug($suggestion->getName());
+            $slug = $this->generateUniqueSlug($suggestion->getName());
             $category = $this->categoryRepo->create(new CreateCategoryDTO(
                 name:     $suggestion->getName(),
                 parentId: $suggestion->getParentCategoryId(),
@@ -90,7 +90,7 @@ class AdminCategorySuggestionService
     public function merge(MergeSuggestionDTO $dto): CategorySuggestion
     {
         $suggestion = $this->loadPendingOrFail($dto->suggestionId);
-        $target     = $this->categoryRepo->findById($dto->targetCategoryId);
+        $target = $this->categoryRepo->findById($dto->targetCategoryId);
 
         if ($target === null) {
             abort(422, 'Mērķa kategorija nav atrasta.');
@@ -134,7 +134,7 @@ class AdminCategorySuggestionService
     {
         $base = Str::slug($name, '-', 'lv');
         $slug = $base;
-        $i    = 2;
+        $i = 2;
 
         while (!$this->categoryRepo->isSlugUnique($slug)) {
             $slug = "{$base}-{$i}";
@@ -147,32 +147,32 @@ class AdminCategorySuggestionService
     private function serialize(CategorySuggestion $s): array
     {
         return [
-            'id'                 => $s->getId(),
-            'name'               => $s->getName(),
-            'note'               => $s->getNote(),
-            'status'             => $s->getStatus()->value,
-            'status_label'       => $s->getStatus()->label(),
-            'parent_category'    => $s->parentCategory ? [
-                'id'   => $s->parentCategory->getId(),
+            'id' => $s->getId(),
+            'name' => $s->getName(),
+            'note' => $s->getNote(),
+            'status' => $s->getStatus()->value,
+            'status_label' => $s->getStatus()->label(),
+            'parent_category' => $s->parentCategory ? [
+                'id' => $s->parentCategory->getId(),
                 'name' => $s->parentCategory->getName(),
             ] : null,
-            'suggested_by'       => $s->suggestedBy ? [
-                'id'   => $s->suggestedBy->getId(),
+            'suggested_by' => $s->suggestedBy ? [
+                'id' => $s->suggestedBy->getId(),
                 'name' => $s->suggestedBy->getName(),
             ] : null,
-            'reviewed_by'        => $s->reviewedBy ? [
-                'id'   => $s->reviewedBy->getId(),
+            'reviewed_by' => $s->reviewedBy ? [
+                'id' => $s->reviewedBy->getId(),
                 'name' => $s->reviewedBy->getName(),
             ] : null,
-            'review_note'        => $s->getReviewNote(),
+            'review_note' => $s->getReviewNote(),
             'resulting_category' => $s->resultingCategory ? [
-                'id'   => $s->resultingCategory->getId(),
+                'id' => $s->resultingCategory->getId(),
                 'name' => $s->resultingCategory->getName(),
             ] : null,
-            'services_count'     => $s->services_count ?? 0,
+            'services_count' => $s->services_count ?? 0,
             'job_requests_count' => $s->job_requests_count ?? 0,
-            'created_at'         => $s->getCreatedAt()?->toISOString(),
-            'reviewed_at'        => $s->getReviewedAt()?->toISOString(),
+            'created_at' => $s->getCreatedAt()?->toISOString(),
+            'reviewed_at' => $s->getReviewedAt()?->toISOString(),
         ];
     }
 }

@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private const TABLE            = 'complaints';
-    private const USERS_TABLE      = 'users';
-    private const REPORTER_ID      = 'reporter_id';
+    private const TABLE = 'complaints';
+    private const USERS_TABLE = 'users';
+    private const REPORTER_ID = 'reporter_id';
     private const REPORTED_USER_ID = 'reported_user_id';
-    private const ENTITY_TYPE      = 'reported_entity_type';
-    private const ENTITY_ID        = 'reported_entity_id';
-    private const REASON           = 'reason';
-    private const STATUS           = 'status';
-    private const RESOLVED_BY      = 'resolved_by';
-    private const RESOLUTION_NOTE  = 'resolution_note';
-    private const RESOLVED_AT      = 'resolved_at';
+    private const ENTITY_TYPE = 'reported_entity_type';
+    private const ENTITY_ID = 'reported_entity_id';
+    private const REASON = 'reason';
+    private const STATUS = 'status';
+    private const RESOLVED_BY = 'resolved_by';
+    private const RESOLUTION_NOTE = 'resolution_note';
+    private const RESOLVED_AT = 'resolved_at';
 
     public function up(): void
     {

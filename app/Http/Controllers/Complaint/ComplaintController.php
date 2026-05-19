@@ -17,17 +17,17 @@ class ComplaintController extends Controller
     public function store(StoreComplaintRequest $request): JsonResponse
     {
         $complaint = Complaint::create([
-            Complaint::REPORTER_ID          => auth()->id(),
-            Complaint::REPORTED_USER_ID     => $request->validated(Complaint::REPORTED_USER_ID),
+            Complaint::REPORTER_ID => auth()->id(),
+            Complaint::REPORTED_USER_ID => $request->validated(Complaint::REPORTED_USER_ID),
             Complaint::REPORTED_ENTITY_TYPE => $request->validated(Complaint::REPORTED_ENTITY_TYPE),
-            Complaint::REPORTED_ENTITY_ID   => $request->validated(Complaint::REPORTED_ENTITY_ID),
-            Complaint::REASON               => $request->validated(Complaint::REASON),
-            Complaint::STATUS               => ComplaintStatusEnum::PENDING->value,
+            Complaint::REPORTED_ENTITY_ID => $request->validated(Complaint::REPORTED_ENTITY_ID),
+            Complaint::REASON => $request->validated(Complaint::REASON),
+            Complaint::STATUS => ComplaintStatusEnum::PENDING->value,
         ]);
 
         return response()->json([
             'message' => self::MSG_STORED,
-            'data'    => $complaint,
+            'data' => $complaint,
         ], 201);
     }
 }

@@ -15,12 +15,12 @@ class PriceProposalRepository
     public function create(SubmitProposalDTO $dto): PriceProposal
     {
         return PriceProposal::create([
-            PriceProposal::JOB_APPLICATION_ID  => $dto->jobApplicationId,
+            PriceProposal::JOB_APPLICATION_ID => $dto->jobApplicationId,
             PriceProposal::PROPOSED_BY_USER_ID => $dto->proposedByUserId,
-            PriceProposal::AMOUNT              => $dto->amount,
-            PriceProposal::PRICE_TYPE          => 'fixed',
-            PriceProposal::NOTE                => $dto->note,
-            PriceProposal::STATUS              => PriceProposalStatusEnum::PENDING->value,
+            PriceProposal::AMOUNT => $dto->amount,
+            PriceProposal::PRICE_TYPE => 'fixed',
+            PriceProposal::NOTE => $dto->note,
+            PriceProposal::STATUS => PriceProposalStatusEnum::PENDING->value,
         ]);
     }
 
@@ -48,9 +48,9 @@ class PriceProposalRepository
     public function markStatus(int $id, PriceProposalStatusEnum $status, int $respondedByUserId): void
     {
         PriceProposal::where(PriceProposal::ID, $id)->update([
-            PriceProposal::STATUS               => $status->value,
+            PriceProposal::STATUS => $status->value,
             PriceProposal::RESPONDED_BY_USER_ID => $respondedByUserId,
-            PriceProposal::RESPONDED_AT         => Carbon::now(),
+            PriceProposal::RESPONDED_AT => Carbon::now(),
         ]);
     }
 }

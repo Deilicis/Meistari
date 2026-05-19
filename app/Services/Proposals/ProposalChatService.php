@@ -25,7 +25,7 @@ class ProposalChatService
     public function postEvent(PriceProposal $proposal, string $event, int $actorId): void
     {
         $application = $proposal->application ?? Application::find($proposal->getJobApplicationId());
-        $job         = $this->jobRequestRepo->findById($application->getJobRequestId());
+        $job = $this->jobRequestRepo->findById($application->getJobRequestId());
 
         $masterId = $application->getUserId();
         $seekerId = $job->getUserId();
@@ -62,12 +62,12 @@ class ProposalChatService
         $amount = '€' . number_format($proposal->getAmount(), 2);
 
         return match ($event) {
-            'submitted'  => "Jauns cenas piedāvājums: {$amount}",
-            'countered'  => "Pretpiedāvājums: {$amount}",
-            'accepted'   => "Pieņēma piedāvājumu {$amount}",
-            'rejected'   => 'Noraidīja piedāvājumu',
-            'withdrawn'  => 'Atsauca piedāvājumu',
-            default      => "Cenas piedāvājums: {$amount}",
+            'submitted' => "Jauns cenas piedāvājums: {$amount}",
+            'countered' => "Pretpiedāvājums: {$amount}",
+            'accepted' => "Pieņēma piedāvājumu {$amount}",
+            'rejected' => 'Noraidīja piedāvājumu',
+            'withdrawn' => 'Atsauca piedāvājumu',
+            default => "Cenas piedāvājums: {$amount}",
         };
     }
 }

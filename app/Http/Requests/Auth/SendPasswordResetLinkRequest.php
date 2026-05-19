@@ -29,7 +29,7 @@ class SendPasswordResetLinkRequest extends FormRequest
     {
         return [
             'email.required' => 'E-pasts ir obligāts.',
-            'email.email'    => 'Lūdzu ievadiet derīgu e-pasta adresi.',
+            'email.email' => 'Lūdzu ievadiet derīgu e-pasta adresi.',
         ];
     }
 

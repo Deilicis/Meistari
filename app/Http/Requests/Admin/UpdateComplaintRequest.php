@@ -21,7 +21,7 @@ class UpdateComplaintRequest extends FormRequest
         $resolvingStatuses = implode(',', [ComplaintStatusEnum::RESOLVED->value, ComplaintStatusEnum::DISMISSED->value]);
 
         return [
-            Complaint::STATUS          => [
+            Complaint::STATUS => [
                 ValidationRuleHelper::REQUIRED,
                 ValidationRuleHelper::STRING,
                 'in:' . implode(',', [

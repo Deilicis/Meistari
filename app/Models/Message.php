@@ -15,18 +15,18 @@ class Message extends Model
 {
     use SoftDeletes, HasFactory;
 
-    public const TABLE           = 'messages';
-    public const ID              = 'id';
+    public const TABLE = 'messages';
+    public const ID = 'id';
     public const CONVERSATION_ID = 'conversation_id';
-    public const SENDER_ID       = 'sender_id';
-    public const BODY            = 'body';
-    public const TYPE            = 'type';
-    public const PROPOSAL_ID     = 'proposal_id';
-    public const READ_AT         = 'read_at';
-    public const CREATED_AT      = 'created_at';
-    public const UPDATED_AT      = 'updated_at';
-    public const DELETED_AT      = 'deleted_at';
-    private const DATETIME       = 'datetime';
+    public const SENDER_ID = 'sender_id';
+    public const BODY = 'body';
+    public const TYPE = 'type';
+    public const PROPOSAL_ID = 'proposal_id';
+    public const READ_AT = 'read_at';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
+    private const DATETIME = 'datetime';
 
     protected $table = self::TABLE;
 
@@ -41,7 +41,7 @@ class Message extends Model
 
     protected $casts = [
         self::READ_AT => self::DATETIME,
-        self::TYPE    => MessageTypeEnum::class,
+        self::TYPE => MessageTypeEnum::class,
     ];
 
     public function getId(): int

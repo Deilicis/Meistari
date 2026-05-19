@@ -16,13 +16,13 @@ class ServiceApplicationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            ServiceApplication::ID           => $this->getId(),
-            ServiceApplication::SERVICE_ID   => $this->getServiceId(),
-            ServiceApplication::USER_ID      => $this->getUserId(),
-            ServiceApplication::MESSAGE      => $this->getMessage(),
+            ServiceApplication::ID => $this->getId(),
+            ServiceApplication::SERVICE_ID => $this->getServiceId(),
+            ServiceApplication::USER_ID => $this->getUserId(),
+            ServiceApplication::MESSAGE => $this->getMessage(),
             ServiceApplication::BUDGET_OFFER => $this->getBudgetOffer(),
-            ServiceApplication::STATUS       => $this->getStatus()->value,
-            ServiceApplication::CREATED_AT   => $this->getCreatedAt(),
+            ServiceApplication::STATUS => $this->getStatus()->value,
+            ServiceApplication::CREATED_AT => $this->getCreatedAt(),
         ];
     }
 }

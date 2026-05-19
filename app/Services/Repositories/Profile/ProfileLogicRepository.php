@@ -27,7 +27,7 @@ class ProfileLogicRepository
         DB::transaction(function () use ($user, $data) {
 
             $userUpdateData = [
-                User::NAME  => $data->name,
+                User::NAME => $data->name,
                 User::EMAIL => $data->email,
             ];
 
@@ -37,8 +37,8 @@ class ProfileLogicRepository
 
             $this->userDbRepository->update($user, $userUpdateData);
 
-            $profile         = $user->profile;
-            $avatarPath      = $profile->getAvatar();
+            $profile = $user->profile;
+            $avatarPath = $profile->getAvatar();
             $portfolioImages = $profile->getPortfolioImages();
 
             if ($data->avatar instanceof UploadedFile) {
@@ -68,17 +68,17 @@ class ProfileLogicRepository
             }
 
             $this->profileDbRepository->update($profile, [
-                Profile::TYPE             => $data->type->value,
-                Profile::FIRST_NAME       => $data->firstName,
-                Profile::LAST_NAME        => $data->lastName,
-                Profile::COMPANY_NAME     => $data->companyName,
-                Profile::REG_NUMBER       => $data->regNumber,
-                Profile::VAT_NUMBER       => $data->vatNumber,
-                Profile::CITY             => $data->city,
-                Profile::PHONE            => $data->phoneNumber,
-                Profile::BIO              => $data->description,
-                Profile::AVATAR           => $avatarPath,
-                Profile::EXPERIENCES      => $data->experiences,
+                Profile::TYPE => $data->type->value,
+                Profile::FIRST_NAME => $data->firstName,
+                Profile::LAST_NAME => $data->lastName,
+                Profile::COMPANY_NAME => $data->companyName,
+                Profile::REG_NUMBER => $data->regNumber,
+                Profile::VAT_NUMBER => $data->vatNumber,
+                Profile::CITY => $data->city,
+                Profile::PHONE => $data->phoneNumber,
+                Profile::BIO => $data->description,
+                Profile::AVATAR => $avatarPath,
+                Profile::EXPERIENCES => $data->experiences,
                 Profile::PORTFOLIO_IMAGES => $portfolioImages,
             ]);
         });

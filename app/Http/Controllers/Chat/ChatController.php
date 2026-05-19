@@ -42,18 +42,18 @@ class ChatController extends Controller
         }
 
         $conversation->load(['sender', 'receiver', 'messages' => fn ($q) => $q->latest()->limit(1)]);
-        $messages      = $this->chatRepository->getMessages($conversation->getId(), $authId);
+        $messages = $this->chatRepository->getMessages($conversation->getId(), $authId);
         $conversations = $this->chatRepository->getConversationsForUser($authId);
-        $relatedJob    = $this->conversationDb->findRelatedJobForConversation($conversation->getId());
+        $relatedJob = $this->conversationDb->findRelatedJobForConversation($conversation->getId());
 
         return Inertia::render('Chat/Show', [
-            'conversation'  => (new ConversationResource($conversation))->toArray($request),
-            'messages'      => MessageResource::collection($messages)->resolve($request),
+            'conversation' => (new ConversationResource($conversation))->toArray($request),
+            'messages' => MessageResource::collection($messages)->resolve($request),
             'conversations' => ConversationResource::collection($conversations)->resolve($request),
-            'auth_user_id'  => $authId,
-            'related_job'   => $relatedJob ? [
-                'id'     => $relatedJob->getId(),
-                'title'  => $relatedJob->getTitle(),
+            'auth_user_id' => $authId,
+            'related_job' => $relatedJob ? [
+                'id' => $relatedJob->getId(),
+                'title' => $relatedJob->getTitle(),
                 'status' => $relatedJob->getStatus()->value,
             ] : null,
         ]);

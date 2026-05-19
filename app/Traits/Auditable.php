@@ -16,13 +16,13 @@ trait Auditable
             }
 
             AuditLog::create([
-                AuditLog::USER_ID        => auth()->id(),
-                AuditLog::ACTION         => 'created',
+                AuditLog::USER_ID => auth()->id(),
+                AuditLog::ACTION => 'created',
                 AuditLog::AUDITABLE_TYPE => static::class,
-                AuditLog::AUDITABLE_ID   => $model->getKey(),
-                AuditLog::OLD_VALUES     => null,
-                AuditLog::NEW_VALUES     => $model->getAttributes(),
-                AuditLog::IP_ADDRESS     => request()?->ip(),
+                AuditLog::AUDITABLE_ID => $model->getKey(),
+                AuditLog::OLD_VALUES => null,
+                AuditLog::NEW_VALUES => $model->getAttributes(),
+                AuditLog::IP_ADDRESS => request()?->ip(),
             ]);
         });
 
@@ -32,13 +32,13 @@ trait Auditable
             }
 
             AuditLog::create([
-                AuditLog::USER_ID        => auth()->id(),
-                AuditLog::ACTION         => 'updated',
+                AuditLog::USER_ID => auth()->id(),
+                AuditLog::ACTION => 'updated',
                 AuditLog::AUDITABLE_TYPE => static::class,
-                AuditLog::AUDITABLE_ID   => $model->getKey(),
-                AuditLog::OLD_VALUES     => $model->getOriginal(),
-                AuditLog::NEW_VALUES     => $model->getDirty(),
-                AuditLog::IP_ADDRESS     => request()?->ip(),
+                AuditLog::AUDITABLE_ID => $model->getKey(),
+                AuditLog::OLD_VALUES => $model->getOriginal(),
+                AuditLog::NEW_VALUES => $model->getDirty(),
+                AuditLog::IP_ADDRESS => request()?->ip(),
             ]);
         });
 
@@ -48,13 +48,13 @@ trait Auditable
             }
 
             AuditLog::create([
-                AuditLog::USER_ID        => auth()->id(),
-                AuditLog::ACTION         => 'deleted',
+                AuditLog::USER_ID => auth()->id(),
+                AuditLog::ACTION => 'deleted',
                 AuditLog::AUDITABLE_TYPE => static::class,
-                AuditLog::AUDITABLE_ID   => $model->getKey(),
-                AuditLog::OLD_VALUES     => $model->getAttributes(),
-                AuditLog::NEW_VALUES     => null,
-                AuditLog::IP_ADDRESS     => request()?->ip(),
+                AuditLog::AUDITABLE_ID => $model->getKey(),
+                AuditLog::OLD_VALUES => $model->getAttributes(),
+                AuditLog::NEW_VALUES => null,
+                AuditLog::IP_ADDRESS => request()?->ip(),
             ]);
         });
     }

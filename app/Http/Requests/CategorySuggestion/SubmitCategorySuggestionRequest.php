@@ -18,13 +18,13 @@ class SubmitCategorySuggestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'               => ['required', 'string', 'min:2', 'max:100'],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
             'parent_category_id' => [
                 'nullable',
                 'integer',
                 'exists:' . Category::TABLE . ',' . Category::ID,
             ],
-            'note'               => ['nullable', 'string', 'max:300'],
+            'note' => ['nullable', 'string', 'max:300'],
         ];
     }
 

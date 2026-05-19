@@ -59,9 +59,9 @@ class CategoryAdminService
             throw new CategoryNotDeletableException('Sistēmas kategoriju nevar dzēst.');
         }
 
-        $services  = $this->repo->countActiveServices($id);
-        $jobs      = $this->repo->countActiveJobRequests($id);
-        $children  = $this->repo->countChildren($id);
+        $services = $this->repo->countActiveServices($id);
+        $jobs = $this->repo->countActiveJobRequests($id);
+        $children = $this->repo->countChildren($id);
 
         $reasons = [];
         if ($services > 0)  $reasons[] = "{$services} aktīvi pakalpojumi";
@@ -128,7 +128,7 @@ class CategoryAdminService
     {
         $base = Str::slug($name, '-', 'lv');
         $slug = $base;
-        $i    = 2;
+        $i = 2;
 
         while (!$this->repo->isSlugUnique($slug, $excludeId)) {
             $slug = "{$base}-{$i}";
@@ -140,22 +140,22 @@ class CategoryAdminService
 
     private function serializeNode(Category $cat, bool $withChildren = false): array
     {
-        $servicesCount   = $cat->services_count   ?? 0;
-        $jobsCount       = $cat->job_requests_count ?? 0;
-        $childrenCount   = $cat->children ? $cat->children->count() : 0;
+        $servicesCount = $cat->services_count   ?? 0;
+        $jobsCount = $cat->job_requests_count ?? 0;
+        $childrenCount = $cat->children ? $cat->children->count() : 0;
 
         $node = [
-            'id'               => $cat->getId(),
-            'name'             => $cat->getName(),
-            'slug'             => $cat->getSlug(),
-            'icon'             => $cat->getIcon(),
-            'parent_id'        => $cat->getParentId(),
-            'is_system'        => $cat->isSystem(),
-            'services_count'   => $servicesCount,
+            'id' => $cat->getId(),
+            'name' => $cat->getName(),
+            'slug' => $cat->getSlug(),
+            'icon' => $cat->getIcon(),
+            'parent_id' => $cat->getParentId(),
+            'is_system' => $cat->isSystem(),
+            'services_count' => $servicesCount,
             'job_requests_count' => $jobsCount,
-            'children_count'   => $childrenCount,
-            'can_delete'       => !$cat->isSystem() && $servicesCount === 0 && $jobsCount === 0 && $childrenCount === 0,
-            'created_at'       => $cat->getCreatedAt()?->toISOString(),
+            'children_count' => $childrenCount,
+            'can_delete' => !$cat->isSystem() && $servicesCount === 0 && $jobsCount === 0 && $childrenCount === 0,
+            'created_at' => $cat->getCreatedAt()?->toISOString(),
         ];
 
         if ($withChildren && $cat->children) {

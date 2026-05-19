@@ -6,12 +6,12 @@ namespace App\Enums\Job;
 
 enum ApplicationStatusEnum: string
 {
-    case PENDING     = 'pending';
+    case PENDING = 'pending';
     case SHORTLISTED = 'shortlisted';
-    case ACCEPTED    = 'accepted';
-    case REJECTED    = 'rejected';
-    case COMPLETED   = 'completed';
-    case CANCELLED   = 'cancelled';
+    case ACCEPTED = 'accepted';
+    case REJECTED = 'rejected';
+    case COMPLETED = 'completed';
+    case CANCELLED = 'cancelled';
 
     /**
      * @return array<string>
@@ -24,12 +24,12 @@ enum ApplicationStatusEnum: string
     public function label(): string
     {
         return match($this) {
-            self::PENDING     => 'Gaida apstiprinājumu',
+            self::PENDING => 'Gaida apstiprinājumu',
             self::SHORTLISTED => 'Apsvērts',
-            self::ACCEPTED    => 'Pieņemts',
-            self::REJECTED    => 'Noraidīts',
-            self::COMPLETED   => 'Pabeigts',
-            self::CANCELLED   => 'Atcelts',
+            self::ACCEPTED => 'Pieņemts',
+            self::REJECTED => 'Noraidīts',
+            self::COMPLETED => 'Pabeigts',
+            self::CANCELLED => 'Atcelts',
         };
     }
 }

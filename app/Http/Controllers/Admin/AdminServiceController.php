@@ -35,7 +35,7 @@ class AdminServiceController extends Controller
 
         return Inertia::render('Admin/Services/Index', [
             'services' => $query->latest()->paginate(20)->withQueryString(),
-            'filters'  => $request->only(['search', 'category_id', 'is_active']),
+            'filters' => $request->only(['search', 'category_id', 'is_active']),
         ]);
     }
 

@@ -19,10 +19,10 @@ class StaffController extends Controller
     private const MSG_CREATED = 'Darbinieks pievienots.';
     private const MSG_UPDATED = 'Darbinieks atjaunināts.';
     private const MSG_DELETED = 'Darbinieks dzēsts.';
-    private const MSG_SELF_DELETE  = 'Nevar dzēst savu kontu.';
+    private const MSG_SELF_DELETE = 'Nevar dzēst savu kontu.';
     private const MSG_ADMIN_DELETE = 'Administratora kontu nevar dzēst šeit.';
-    private const FLASH_SUCCESS    = 'success';
-    private const FLASH_ERROR      = 'error';
+    private const FLASH_SUCCESS = 'success';
+    private const FLASH_ERROR = 'error';
 
     public function index(): Response
     {
@@ -44,8 +44,8 @@ class StaffController extends Controller
         $role = Role::where(Role::NAME, $request->validated('role'))->firstOrFail();
 
         $user = User::create([
-            User::NAME     => $request->validated(User::NAME),
-            User::EMAIL    => $request->validated(User::EMAIL),
+            User::NAME => $request->validated(User::NAME),
+            User::EMAIL => $request->validated(User::EMAIL),
             User::PASSWORD => bcrypt($request->validated('password')),
         ]);
 

@@ -21,7 +21,7 @@ use Inertia\Response;
 
 class ComplaintController extends Controller
 {
-    private const MSG_UPDATED   = 'Sūdzība atjaunināta.';
+    private const MSG_UPDATED = 'Sūdzība atjaunināta.';
     private const FLASH_SUCCESS = 'success';
 
     public function __construct(
@@ -38,8 +38,8 @@ class ComplaintController extends Controller
 
         return Inertia::render('Admin/Complaints/Index', [
             'complaints' => $query->latest()->paginate(20)->withQueryString(),
-            'filters'    => $request->only(['status']),
-            'statuses'   => ComplaintStatusEnum::cases(),
+            'filters' => $request->only(['status']),
+            'statuses' => ComplaintStatusEnum::cases(),
         ]);
     }
 
@@ -57,7 +57,7 @@ class ComplaintController extends Controller
         $status = ComplaintStatusEnum::from($request->validated(Complaint::STATUS));
 
         $data = [
-            Complaint::STATUS          => $status->value,
+            Complaint::STATUS => $status->value,
             Complaint::RESOLUTION_NOTE => $request->validated(Complaint::RESOLUTION_NOTE),
         ];
 
@@ -90,18 +90,18 @@ class ComplaintController extends Controller
             return;
         }
 
-        $masterId  = $entity->getMasterId();
-        $clientId  = $entity->getUserId();
-        $jobTitle  = $entity->getTitle();
-        $jobId     = $entity->getId();
+        $masterId = $entity->getMasterId();
+        $clientId = $entity->getUserId();
+        $jobTitle = $entity->getTitle();
+        $jobId = $entity->getId();
 
         $entity->update([
-            JobRequest::STATUS                  => JobStatusEnum::OPEN->value,
-            JobRequest::MASTER_ID               => null,
+            JobRequest::STATUS => JobStatusEnum::OPEN->value,
+            JobRequest::MASTER_ID => null,
             JobRequest::ACCEPTED_APPLICATION_ID => null,
-            JobRequest::AGREED_PRICE            => null,
-            JobRequest::PRICE_TYPE              => null,
-            JobRequest::MASTER_COMPLETED_AT     => null,
+            JobRequest::AGREED_PRICE => null,
+            JobRequest::PRICE_TYPE => null,
+            JobRequest::MASTER_COMPLETED_AT => null,
         ]);
 
         $this->notificationService->create(new CreateNotificationDTO(

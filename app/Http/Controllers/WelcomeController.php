@@ -33,15 +33,15 @@ class WelcomeController extends Controller
             ->get();
 
         return Inertia::render('Welcome', [
-            'canLogin'    => Route::has('login'),
+            'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'stats'       => [
-                'masters'        => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MASTER->value))->count(),
+            'stats' => [
+                'masters' => User::whereHas('roles', fn ($q) => $q->where(Role::NAME, RoleNameEnum::MASTER->value))->count(),
                 'completed_jobs' => JobRequest::where(JobRequest::STATUS, JobStatusEnum::COMPLETED->value)->count(),
-                'categories'     => Category::count(),
+                'categories' => Category::count(),
             ],
             'popularCategories' => $this->categoryLogicRepo->getPopularCategories(8),
-            'featuredMasters'   => $featuredMasters,
+            'featuredMasters' => $featuredMasters,
         ]);
     }
 }

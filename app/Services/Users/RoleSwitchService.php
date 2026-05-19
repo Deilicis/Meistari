@@ -23,7 +23,7 @@ class RoleSwitchService
         match ($dto->targetRole) {
             RoleNameEnum::MASTER => $user->isMaster() ?: throw new RoleNotAvailableException(),
             RoleNameEnum::SEEKER => $user->isSeeker() ?: throw new RoleNotAvailableException(),
-            default              => throw new RoleNotAvailableException(),
+            default => throw new RoleNotAvailableException(),
         };
 
         return $this->userDbRepository->setActiveRole($user, $dto->targetRole);

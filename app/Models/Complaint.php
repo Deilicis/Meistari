@@ -12,19 +12,19 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Complaint extends Model
 {
-    public const TABLE              = 'complaints';
-    public const ID                 = 'id';
-    public const REPORTER_ID        = 'reporter_id';
-    public const REPORTED_USER_ID   = 'reported_user_id';
+    public const TABLE = 'complaints';
+    public const ID = 'id';
+    public const REPORTER_ID = 'reporter_id';
+    public const REPORTED_USER_ID = 'reported_user_id';
     public const REPORTED_ENTITY_TYPE = 'reported_entity_type';
     public const REPORTED_ENTITY_ID = 'reported_entity_id';
-    public const REASON             = 'reason';
-    public const STATUS             = 'status';
-    public const RESOLVED_BY        = 'resolved_by';
-    public const RESOLUTION_NOTE    = 'resolution_note';
-    public const RESOLVED_AT        = 'resolved_at';
-    public const CREATED_AT         = 'created_at';
-    public const UPDATED_AT         = 'updated_at';
+    public const REASON = 'reason';
+    public const STATUS = 'status';
+    public const RESOLVED_BY = 'resolved_by';
+    public const RESOLUTION_NOTE = 'resolution_note';
+    public const RESOLVED_AT = 'resolved_at';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
 
     protected $table = self::TABLE;
 
@@ -41,7 +41,7 @@ class Complaint extends Model
     ];
 
     protected $casts = [
-        self::STATUS      => ComplaintStatusEnum::class,
+        self::STATUS => ComplaintStatusEnum::class,
         self::RESOLVED_AT => 'datetime',
     ];
 

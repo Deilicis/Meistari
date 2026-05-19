@@ -10,13 +10,13 @@ use App\Exceptions\Jobs\InvalidJobTransitionException;
 final class JobStateMachine
 {
     private const TRANSITIONS = [
-        'open'                  => ['accepted', 'cancelled'],
-        'accepted'              => ['in_progress', 'cancelled'],
-        'in_progress'           => ['awaiting_confirmation'],
+        'open' => ['accepted', 'cancelled'],
+        'accepted' => ['in_progress', 'cancelled'],
+        'in_progress' => ['awaiting_confirmation'],
         'awaiting_confirmation' => ['completed', 'disputed'],
-        'disputed'              => ['completed', 'cancelled'],
-        'completed'             => [],
-        'cancelled'             => [],
+        'disputed' => ['completed', 'cancelled'],
+        'completed' => [],
+        'cancelled' => [],
     ];
 
     public function canTransition(JobStatusEnum $from, JobStatusEnum $to): bool

@@ -51,7 +51,7 @@ class PriceProposalService
     public function accept(RespondToProposalDTO $dto): PriceProposal
     {
         return DB::transaction(function () use ($dto): PriceProposal {
-            $proposal    = $this->loadProposal($dto->proposalId);
+            $proposal = $this->loadProposal($dto->proposalId);
             $application = $proposal->application;
 
             $this->assertNegotiable($application);
@@ -94,7 +94,7 @@ class PriceProposalService
     public function counter(CounterProposalDTO $dto): PriceProposal
     {
         return DB::transaction(function () use ($dto): PriceProposal {
-            $current     = $this->loadProposal($dto->currentProposalId);
+            $current = $this->loadProposal($dto->currentProposalId);
             $application = $current->application;
 
             $this->assertNegotiable($application);
@@ -130,7 +130,7 @@ class PriceProposalService
 
     public function reject(RespondToProposalDTO $dto): PriceProposal
     {
-        $proposal    = $this->loadProposal($dto->proposalId);
+        $proposal = $this->loadProposal($dto->proposalId);
         $application = $proposal->application;
 
         $this->assertNegotiable($application);
@@ -158,7 +158,7 @@ class PriceProposalService
 
     public function withdraw(RespondToProposalDTO $dto): PriceProposal
     {
-        $proposal    = $this->loadProposal($dto->proposalId);
+        $proposal = $this->loadProposal($dto->proposalId);
         $application = $proposal->application;
 
         $this->assertNegotiable($application);
@@ -170,8 +170,8 @@ class PriceProposalService
 
         $this->proposalRepo->markStatus($proposal->getId(), PriceProposalStatusEnum::WITHDRAWN, $dto->respondedByUserId);
 
-        $job           = $this->jobRequestRepo->findById($application->getJobRequestId());
-        $otherPartyId  = $this->getOtherPartyId($application, $dto->respondedByUserId);
+        $job = $this->jobRequestRepo->findById($application->getJobRequestId());
+        $otherPartyId = $this->getOtherPartyId($application, $dto->respondedByUserId);
 
         if ($otherPartyId !== null) {
             $this->notificationService->create(new CreateNotificationDTO(
@@ -209,7 +209,7 @@ class PriceProposalService
 
         $proposal = $this->proposalRepo->create($dto);
 
-        $job         = $this->jobRequestRepo->findById($application->getJobRequestId());
+        $job = $this->jobRequestRepo->findById($application->getJobRequestId());
         $otherPartyId = $this->getOtherPartyId($application, $dto->proposedByUserId);
 
         if ($otherPartyId !== null) {

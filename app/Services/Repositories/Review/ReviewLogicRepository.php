@@ -54,10 +54,10 @@ class ReviewLogicRepository
 
         $review = $this->dbRepository->create([
             Review::JOB_REQUEST_ID => $jobRequestId,
-            Review::REVIEWER_ID    => $reviewerId,
-            Review::REVIEWEE_ID    => $revieweeId,
-            Review::RATING         => $rating,
-            Review::COMMENT        => $comment,
+            Review::REVIEWER_ID => $reviewerId,
+            Review::REVIEWEE_ID => $revieweeId,
+            Review::RATING => $rating,
+            Review::COMMENT => $comment,
         ]);
 
         $this->notificationService->create(new CreateNotificationDTO(

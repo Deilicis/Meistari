@@ -26,9 +26,9 @@ class NewJobApplicationNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $jobTitle    = $this->application->jobRequest->getTitle();
-        $masterName  = $this->applicant->getName();
-        $priceOffer  = $this->application->getPriceOffer();
+        $jobTitle = $this->application->jobRequest->getTitle();
+        $masterName = $this->applicant->getName();
+        $priceOffer = $this->application->getPriceOffer();
 
         $message = (new MailMessage)
             ->subject('Jauns pieteikums jūsu sludinājumam')

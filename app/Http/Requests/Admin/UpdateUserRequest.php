@@ -22,9 +22,9 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('user')?->getId();
 
         return [
-            User::NAME            => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, ValidationRuleHelper::MAX_255],
-            User::EMAIL           => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::EMAIL, ValidationRuleHelper::MAX_255, Rule::unique(User::TABLE, User::EMAIL)->ignore($userId)],
-            Profile::IS_VERIFIED  => [ValidationRuleHelper::NULLABLE, ValidationRuleHelper::BOOLEAN],
+            User::NAME => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::STRING, ValidationRuleHelper::MAX_255],
+            User::EMAIL => [ValidationRuleHelper::REQUIRED, ValidationRuleHelper::EMAIL, ValidationRuleHelper::MAX_255, Rule::unique(User::TABLE, User::EMAIL)->ignore($userId)],
+            Profile::IS_VERIFIED => [ValidationRuleHelper::NULLABLE, ValidationRuleHelper::BOOLEAN],
         ];
     }
 }

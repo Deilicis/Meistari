@@ -29,20 +29,20 @@ class JobRequest extends Model
     public const DEADLINE = 'deadline';
     public const LOCATION = 'location';
     public const IMAGES = 'images';
-    public const STATUS                   = 'status';
+    public const STATUS = 'status';
     public const ACCEPTED_APPLICATION_ID = 'accepted_application_id';
-    public const MASTER_ID               = 'master_id';
-    public const AGREED_PRICE            = 'agreed_price';
-    public const PRICE_TYPE              = 'price_type';
-    public const COMPLETED_AT            = 'completed_at';
-    public const MASTER_COMPLETED_AT             = 'master_completed_at';
+    public const MASTER_ID = 'master_id';
+    public const AGREED_PRICE = 'agreed_price';
+    public const PRICE_TYPE = 'price_type';
+    public const COMPLETED_AT = 'completed_at';
+    public const MASTER_COMPLETED_AT = 'master_completed_at';
     public const PENDING_CATEGORY_SUGGESTION_ID = 'pending_category_suggestion_id';
-    public const CREATED_AT              = 'created_at';
-    public const UPDATED_AT              = 'updated_at';
-    public const DELETED_AT              = 'deleted_at';
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
+    public const DELETED_AT = 'deleted_at';
 
     public const STORAGE_DISK = 'public';
-    public const IMAGES_DIR   = 'job-requests';
+    public const IMAGES_DIR = 'job-requests';
 
     private const ARRAY_CAST = 'array';
 
@@ -69,13 +69,13 @@ class JobRequest extends Model
     ];
 
     protected $casts = [
-        self::STATUS              => JobStatusEnum::class,
-        self::AGREED_PRICE        => 'decimal:2',
-        self::DEADLINE            => 'datetime',
-        self::COMPLETED_AT        => 'datetime',
+        self::STATUS => JobStatusEnum::class,
+        self::AGREED_PRICE => 'decimal:2',
+        self::DEADLINE => 'datetime',
+        self::COMPLETED_AT => 'datetime',
         self::MASTER_COMPLETED_AT => 'datetime',
-        self::LOCATION            => self::ARRAY_CAST,
-        self::IMAGES              => self::ARRAY_CAST,
+        self::LOCATION => self::ARRAY_CAST,
+        self::IMAGES => self::ARRAY_CAST,
     ];
 
     public function getId(): int

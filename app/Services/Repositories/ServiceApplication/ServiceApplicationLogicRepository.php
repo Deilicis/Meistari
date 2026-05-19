@@ -48,9 +48,9 @@ class ServiceApplicationLogicRepository
             body: $applicant->getName() . ' pieteicās uz "' . $service->getTitle() . '"',
             actionUrl: route('master.service-applications.index'),
             metadata: [
-                'service_id'     => $service->getId(),
+                'service_id' => $service->getId(),
                 'application_id' => $application->getId(),
-                'applicant_id'   => $applicant->getId(),
+                'applicant_id' => $applicant->getId(),
             ],
         ));
 

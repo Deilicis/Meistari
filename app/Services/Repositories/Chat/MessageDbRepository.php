@@ -14,10 +14,10 @@ class MessageDbRepository
     {
         return Message::create([
             Message::CONVERSATION_ID => $dto->conversationId,
-            Message::SENDER_ID       => $dto->senderId,
-            Message::BODY            => $dto->body,
-            Message::TYPE            => $dto->type->value,
-            Message::PROPOSAL_ID     => $dto->proposalId,
+            Message::SENDER_ID => $dto->senderId,
+            Message::BODY => $dto->body,
+            Message::TYPE => $dto->type->value,
+            Message::PROPOSAL_ID => $dto->proposalId,
         ]);
     }
 

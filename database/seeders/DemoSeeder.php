@@ -64,17 +64,17 @@ class DemoSeeder extends Seeder
     {
         $hashed = Hash::make(self::PASSWORD);
 
-        $adminRole  = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->firstOrFail();
+        $adminRole = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->firstOrFail();
         $masterRole = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->firstOrFail();
         $seekerRole = Role::where(Role::NAME, RoleNameEnum::SEEKER->value)->firstOrFail();
 
         // Admin
         $this->admin = User::create([
-            User::NAME              => 'Demo Admins',
-            User::EMAIL             => 'admin@meistari.local',
-            User::PASSWORD          => $hashed,
+            User::NAME => 'Demo Admins',
+            User::EMAIL => 'admin@meistari.local',
+            User::PASSWORD => $hashed,
             User::EMAIL_VERIFIED_AT => now(),
-            User::ACTIVE_ROLE       => RoleNameEnum::ADMIN,
+            User::ACTIVE_ROLE => RoleNameEnum::ADMIN,
         ]);
         $this->admin->roles()->attach($adminRole->getId());
         $this->makeProfile($this->admin, 'Demo', 'Admins', 'Rīga', '+371 29000000',
@@ -84,11 +84,11 @@ class DemoSeeder extends Seeder
         foreach ($this->mastersData() as $key => $d) {
             Carbon::setTestNow(null);
             $user = User::create([
-                User::NAME              => $d['name'],
-                User::EMAIL             => "{$key}@meistari.local",
-                User::PASSWORD          => $hashed,
+                User::NAME => $d['name'],
+                User::EMAIL => "{$key}@meistari.local",
+                User::PASSWORD => $hashed,
                 User::EMAIL_VERIFIED_AT => now(),
-                User::ACTIVE_ROLE       => RoleNameEnum::MASTER,
+                User::ACTIVE_ROLE => RoleNameEnum::MASTER,
             ]);
             $user->roles()->attach($masterRole->getId());
             [$first, $last] = explode(' ', $d['name'], 2);
@@ -99,11 +99,11 @@ class DemoSeeder extends Seeder
 
         // Janis - dual role
         $janis = User::create([
-            User::NAME              => 'Jānis Auziņš',
-            User::EMAIL             => 'janis@meistari.local',
-            User::PASSWORD          => $hashed,
+            User::NAME => 'Jānis Auziņš',
+            User::EMAIL => 'janis@meistari.local',
+            User::PASSWORD => $hashed,
             User::EMAIL_VERIFIED_AT => now(),
-            User::ACTIVE_ROLE       => RoleNameEnum::MASTER,
+            User::ACTIVE_ROLE => RoleNameEnum::MASTER,
         ]);
         $janis->roles()->attach($masterRole->getId());
         $janis->roles()->attach($seekerRole->getId());
@@ -113,16 +113,16 @@ class DemoSeeder extends Seeder
             [['title' => 'Flīzētājs', 'years' => '9',
               'description' => 'Keramikas un akmens flīžu darbi virtuvēs, vannas istabās un gaitenī.']]);
         $this->masters['janis'] = $janis;
-        $this->seekers['janis']  = $janis;
+        $this->seekers['janis'] = $janis;
 
         // Seekers
         foreach ($this->seekersData() as $key => $d) {
             $user = User::create([
-                User::NAME              => $d['name'],
-                User::EMAIL             => "{$key}@meistari.local",
-                User::PASSWORD          => $hashed,
+                User::NAME => $d['name'],
+                User::EMAIL => "{$key}@meistari.local",
+                User::PASSWORD => $hashed,
                 User::EMAIL_VERIFIED_AT => now(),
-                User::ACTIVE_ROLE       => RoleNameEnum::SEEKER,
+                User::ACTIVE_ROLE => RoleNameEnum::SEEKER,
             ]);
             $user->roles()->attach($seekerRole->getId());
             [$first, $last] = explode(' ', $d['name'], 2);
@@ -135,15 +135,15 @@ class DemoSeeder extends Seeder
         string $phone, ?string $bio, bool $verified, array $exp): void
     {
         Profile::create([
-            Profile::USER_ID          => $user->getId(),
-            Profile::TYPE             => ProfileTypeEnum::INDIVIDUAL,
-            Profile::FIRST_NAME       => $first,
-            Profile::LAST_NAME        => $last,
-            Profile::CITY             => $city,
-            Profile::PHONE            => $phone,
-            Profile::BIO              => $bio,
-            Profile::IS_VERIFIED      => $verified,
-            Profile::EXPERIENCES      => $exp,
+            Profile::USER_ID => $user->getId(),
+            Profile::TYPE => ProfileTypeEnum::INDIVIDUAL,
+            Profile::FIRST_NAME => $first,
+            Profile::LAST_NAME => $last,
+            Profile::CITY => $city,
+            Profile::PHONE => $phone,
+            Profile::BIO => $bio,
+            Profile::IS_VERIFIED => $verified,
+            Profile::EXPERIENCES => $exp,
             Profile::PORTFOLIO_IMAGES => [],
         ]);
     }
@@ -151,46 +151,46 @@ class DemoSeeder extends Seeder
     private function mastersData(): array
     {
         return [
-            'andrejs'  => [
+            'andrejs' => [
                 'name' => 'Andrejs Bērziņš', 'city' => 'Rīga', 'phone' => '+371 29111111',
-                'bio'  => 'Sertificēts elektriķis ar 12 gadu pieredzi. Veicu dzīvokļu, privātmāju un komercobjektu elektroinstalāciju, rozešu un slēdžu montāžu, apgaismojuma sistēmu uzstādīšanu.',
-                'exp'  => [['title' => 'Elektriķis', 'years' => '12',
+                'bio' => 'Sertificēts elektriķis ar 12 gadu pieredzi. Veicu dzīvokļu, privātmāju un komercobjektu elektroinstalāciju, rozešu un slēdžu montāžu, apgaismojuma sistēmu uzstādīšanu.',
+                'exp' => [['title' => 'Elektriķis', 'years' => '12',
                             'description' => 'Elektroinstalācija dzīvokļos, privātmājās un komercobjektos. Rozetes, slēdži, apgaismojums, drošinātāji.']],
             ],
-            'peteris'  => [
+            'peteris' => [
                 'name' => 'Pēteris Kalniņš', 'city' => 'Daugavpils', 'phone' => '+371 29222222',
-                'bio'  => 'Santehniķis ar 8 gadu pieredzi. Specializējos cauruļvadu sistēmās, vannas istabu iekārtošanā un ūdens sildītāju uzstādīšanā.',
-                'exp'  => [['title' => 'Santehniķis', 'years' => '8',
+                'bio' => 'Santehniķis ar 8 gadu pieredzi. Specializējos cauruļvadu sistēmās, vannas istabu iekārtošanā un ūdens sildītāju uzstādīšanā.',
+                'exp' => [['title' => 'Santehniķis', 'years' => '8',
                             'description' => 'Cauruļvadi, sanitārtehnika, siltais grīdas, ūdens sildītāji.']],
             ],
-            'martins'  => [
+            'martins' => [
                 'name' => 'Mārtiņš Ozols', 'city' => 'Jelgava', 'phone' => '+371 29333333',
-                'bio'  => 'Profesionāls krāsotājs ar 10 gadu pieredzi gan iekštelpu, gan fasāžu krāsošanā. Strādāju ar augstvērtīgiem krāsu zīmoliem.',
-                'exp'  => [['title' => 'Krāsotājs', 'years' => '10',
+                'bio' => 'Profesionāls krāsotājs ar 10 gadu pieredzi gan iekštelpu, gan fasāžu krāsošanā. Strādāju ar augstvērtīgiem krāsu zīmoliem.',
+                'exp' => [['title' => 'Krāsotājs', 'years' => '10',
                             'description' => 'Iekštelpu un fasāžu krāsošana, špaktelēšana, tapešu līmēšana.']],
             ],
-            'ilze'     => [
+            'ilze' => [
                 'name' => 'Ilze Liepiņa', 'city' => 'Liepāja', 'phone' => '+371 29444444',
-                'bio'  => 'Profesionāla uzkopšanas pakalpojumu sniedzēja. Strādāju ar privātiem un komerciāliem klientiem jau 6 gadus. Liela uzmanība detaļām.',
-                'exp'  => [['title' => 'Tīrīšanas speciāliste', 'years' => '6',
+                'bio' => 'Profesionāla uzkopšanas pakalpojumu sniedzēja. Strādāju ar privātiem un komerciāliem klientiem jau 6 gadus. Liela uzmanība detaļām.',
+                'exp' => [['title' => 'Tīrīšanas speciāliste', 'years' => '6',
                             'description' => 'Dzīvokļi, biroji, pēcremonta tīrīšana.']],
             ],
-            'roberts'  => [
+            'roberts' => [
                 'name' => 'Roberts Krūmiņš', 'city' => 'Valmiera', 'phone' => '+371 29555555',
-                'bio'  => 'Galdnieks un būvnieks ar 15 gadu pieredzi. Izgatavoju mēbeles pēc pasūtījuma, uzstādu durvis un žogus, veicu kokapstrādes darbus.',
-                'exp'  => [['title' => 'Galdnieks', 'years' => '15',
+                'bio' => 'Galdnieks un būvnieks ar 15 gadu pieredzi. Izgatavoju mēbeles pēc pasūtījuma, uzstādu durvis un žogus, veicu kokapstrādes darbus.',
+                'exp' => [['title' => 'Galdnieks', 'years' => '15',
                             'description' => 'Mēbeļu izgatavošana, koka durvju montāža, žogi un terase.']],
             ],
-            'linda'    => [
+            'linda' => [
                 'name' => 'Linda Vītola', 'city' => 'Jūrmala', 'phone' => '+371 29666666',
-                'bio'  => 'Dārzkopības speciāliste ar 7 gadu pieredzi. Palīdzu veidot un uzturēt skaistus dārzus, veicu zāles pļaušanu, stādīšanu un sniega tīrīšanu.',
-                'exp'  => [['title' => 'Dārzkopja', 'years' => '7',
+                'bio' => 'Dārzkopības speciāliste ar 7 gadu pieredzi. Palīdzu veidot un uzturēt skaistus dārzus, veicu zāles pļaušanu, stādīšanu un sniega tīrīšanu.',
+                'exp' => [['title' => 'Dārzkopja', 'years' => '7',
                             'description' => 'Dārza kopšana un stādīšana, zāliena aprūpe, sniega tīrīšana.']],
             ],
             'kristine' => [
                 'name' => 'Kristīne Saulīte', 'city' => 'Rīga', 'phone' => '+371 29777777',
-                'bio'  => 'Profesionāla logu mazgātāja ar alpīnisma sertifikātu. Strādāju ar jebkura augstuma ēkām - no privātmājām līdz daudzstāvu birojiem.',
-                'exp'  => [['title' => 'Logu tīrīšanas speciāliste', 'years' => '5',
+                'bio' => 'Profesionāla logu mazgātāja ar alpīnisma sertifikātu. Strādāju ar jebkura augstuma ēkām - no privātmājām līdz daudzstāvu birojiem.',
+                'exp' => [['title' => 'Logu tīrīšanas speciāliste', 'years' => '5',
                             'description' => 'Logu un karkasu mazgāšana daudzdzīvokļu mājās un privātmājās.']],
             ],
         ];
@@ -200,7 +200,7 @@ class DemoSeeder extends Seeder
     {
         return [
             'tonijs' => ['name' => 'Tonijs Bāliņš',  'city' => 'Rīga',       'phone' => '+371 28111111'],
-            'anna'   => ['name' => 'Anna Riekstiņa',  'city' => 'Jūrmala',    'phone' => '+371 28222222'],
+            'anna' => ['name' => 'Anna Riekstiņa',  'city' => 'Jūrmala',    'phone' => '+371 28222222'],
             'karlis' => ['name' => 'Kārlis Dārziņš',  'city' => 'Liepāja',    'phone' => '+371 28333333'],
             'madara' => ['name' => 'Madara Egle',      'city' => 'Valmiera',   'phone' => '+371 28444444'],
             'gunars' => ['name' => 'Gunārs Bērziņš',  'city' => 'Daugavpils', 'phone' => '+371 28555555'],
@@ -293,7 +293,7 @@ class DemoSeeder extends Seeder
         foreach ($services as $i => [$masterKey, $title, $subCatName, $price, $desc]) {
             Service::create([
                 Service::USER_ID => $this->masters[$masterKey]->getId(),
-                Service::CATEGORY_ID  => $this->c($subCatName)->getId(),
+                Service::CATEGORY_ID => $this->c($subCatName)->getId(),
                 Service::TITLE => $title,
                 Service::SLUG => Str::slug($title) . '-' . ($i + 1),
                 Service::DESCRIPTION => $desc,
@@ -380,11 +380,11 @@ class DemoSeeder extends Seeder
             'Labi, 350 - iekļauts arī jauns uzgaļa komplekts.',
             Carbon::now()->subDays(8), $pp2b);
         $j2->update([
-            JobRequest::STATUS                  => JobStatusEnum::ACCEPTED,
+            JobRequest::STATUS => JobStatusEnum::ACCEPTED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a2_peteris->getId(),
-            JobRequest::MASTER_ID               => $m['peteris']->getId(),
-            JobRequest::AGREED_PRICE            => 350.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['peteris']->getId(),
+            JobRequest::AGREED_PRICE => 350.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         $conv2 = $this->makeConversation($s['tonijs'], $m['peteris']);
         $this->addMessages($conv2, $s['tonijs'], $m['peteris'], [
@@ -413,20 +413,20 @@ class DemoSeeder extends Seeder
             'Par 800 iekļauju materiālus un 2 slāņu krāsošanu.',
             Carbon::now()->subDays(10), $pp3b);
         $j3->update([
-            JobRequest::STATUS                  => JobStatusEnum::IN_PROGRESS,
+            JobRequest::STATUS => JobStatusEnum::IN_PROGRESS,
             JobRequest::ACCEPTED_APPLICATION_ID => $a3_martins->getId(),
-            JobRequest::MASTER_ID               => $m['martins']->getId(),
-            JobRequest::AGREED_PRICE            => 800.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['martins']->getId(),
+            JobRequest::AGREED_PRICE => 800.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j3->getId(),
-            EscrowHold::CLIENT_ID         => $s['tonijs']->getId(),
-            EscrowHold::MASTER_ID         => $m['martins']->getId(),
-            EscrowHold::AMOUNT            => 800.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j3->getId(),
+            EscrowHold::CLIENT_ID => $s['tonijs']->getId(),
+            EscrowHold::MASTER_ID => $m['martins']->getId(),
+            EscrowHold::AMOUNT => 800.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(9),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(9),
         ]);
         $conv3 = $this->makeConversation($s['tonijs'], $m['martins']);
         $this->addMessages($conv3, $s['tonijs'], $m['martins'], [
@@ -450,22 +450,22 @@ class DemoSeeder extends Seeder
             'Šajā cenā iekļauta pilna pēcremonta tīrīšana ar profesionālo aprīkojumu.',
             Carbon::now()->subDays(23));
         $j4->update([
-            JobRequest::STATUS                  => JobStatusEnum::AWAITING_CONFIRMATION,
+            JobRequest::STATUS => JobStatusEnum::AWAITING_CONFIRMATION,
             JobRequest::ACCEPTED_APPLICATION_ID => $a4_ilze->getId(),
-            JobRequest::MASTER_ID               => $m['ilze']->getId(),
-            JobRequest::AGREED_PRICE            => 200.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(2),
+            JobRequest::MASTER_ID => $m['ilze']->getId(),
+            JobRequest::AGREED_PRICE => 200.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(2),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j4->getId(),
-            EscrowHold::CLIENT_ID         => $s['tonijs']->getId(),
-            EscrowHold::MASTER_ID         => $m['ilze']->getId(),
-            EscrowHold::AMOUNT            => 200.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j4->getId(),
+            EscrowHold::CLIENT_ID => $s['tonijs']->getId(),
+            EscrowHold::MASTER_ID => $m['ilze']->getId(),
+            EscrowHold::AMOUNT => 200.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(20),
-            EscrowHold::AUTO_RELEASE_AT   => Carbon::now()->addDays(5),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(20),
+            EscrowHold::AUTO_RELEASE_AT => Carbon::now()->addDays(5),
         ]);
         $conv4 = $this->makeConversation($s['tonijs'], $m['ilze']);
         $this->addMessages($conv4, $s['tonijs'], $m['ilze'], [
@@ -485,30 +485,30 @@ class DemoSeeder extends Seeder
             'Iekļauj dēļu nomaiņu un divslāņu lakošanu ar Tikkurila produktiem.',
             Carbon::now()->subDays(38));
         $j5->update([
-            JobRequest::STATUS                  => JobStatusEnum::COMPLETED,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a5_roberts->getId(),
-            JobRequest::MASTER_ID               => $m['roberts']->getId(),
-            JobRequest::AGREED_PRICE            => 450.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(30),
-            JobRequest::COMPLETED_AT            => Carbon::now()->subDays(28),
+            JobRequest::MASTER_ID => $m['roberts']->getId(),
+            JobRequest::AGREED_PRICE => 450.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(30),
+            JobRequest::COMPLETED_AT => Carbon::now()->subDays(28),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j5->getId(),
-            EscrowHold::CLIENT_ID         => $s['tonijs']->getId(),
-            EscrowHold::MASTER_ID         => $m['roberts']->getId(),
-            EscrowHold::AMOUNT            => 450.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::RELEASED,
+            EscrowHold::JOB_REQUEST_ID => $j5->getId(),
+            EscrowHold::CLIENT_ID => $s['tonijs']->getId(),
+            EscrowHold::MASTER_ID => $m['roberts']->getId(),
+            EscrowHold::AMOUNT => 450.00,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(36),
-            EscrowHold::RELEASED_AT       => Carbon::now()->subDays(28),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(36),
+            EscrowHold::RELEASED_AT => Carbon::now()->subDays(28),
         ]);
         Review::create([
             Review::JOB_REQUEST_ID => $j5->getId(),
-            Review::REVIEWER_ID    => $s['tonijs']->getId(),
-            Review::REVIEWEE_ID    => $m['roberts']->getId(),
-            Review::RATING         => 5,
-            Review::COMMENT        => 'Lieliski darbi! Roberts strādāja ļoti rūpīgi, terase izskatās kā jauna. Iesaku.',
+            Review::REVIEWER_ID => $s['tonijs']->getId(),
+            Review::REVIEWEE_ID => $m['roberts']->getId(),
+            Review::RATING => 5,
+            Review::COMMENT => 'Lieliski darbi! Roberts strādāja ļoti rūpīgi, terase izskatās kā jauna. Iesaku.',
         ]);
 
         // ANNA (4 jobs)
@@ -566,20 +566,20 @@ class DemoSeeder extends Seeder
             'Iekļauj vecās vannas demontāžu un jaunās kabīnes pilnu uzstādīšanu.',
             Carbon::now()->subDays(16));
         $j8->update([
-            JobRequest::STATUS                  => JobStatusEnum::IN_PROGRESS,
+            JobRequest::STATUS => JobStatusEnum::IN_PROGRESS,
             JobRequest::ACCEPTED_APPLICATION_ID => $a8_peteris->getId(),
-            JobRequest::MASTER_ID               => $m['peteris']->getId(),
-            JobRequest::AGREED_PRICE            => 220.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['peteris']->getId(),
+            JobRequest::AGREED_PRICE => 220.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j8->getId(),
-            EscrowHold::CLIENT_ID         => $s['anna']->getId(),
-            EscrowHold::MASTER_ID         => $m['peteris']->getId(),
-            EscrowHold::AMOUNT            => 220.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j8->getId(),
+            EscrowHold::CLIENT_ID => $s['anna']->getId(),
+            EscrowHold::MASTER_ID => $m['peteris']->getId(),
+            EscrowHold::AMOUNT => 220.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(14),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(14),
         ]);
 
         // 9. COMPLETED - ilze
@@ -592,30 +592,30 @@ class DemoSeeder extends Seeder
             'Pilna ģenerāltīrīšana, ieskaitot logu mazgāšanu un sanitāros mezglus.',
             Carbon::now()->subDays(43));
         $j9->update([
-            JobRequest::STATUS                  => JobStatusEnum::COMPLETED,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a9_ilze->getId(),
-            JobRequest::MASTER_ID               => $m['ilze']->getId(),
-            JobRequest::AGREED_PRICE            => 270.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(35),
-            JobRequest::COMPLETED_AT            => Carbon::now()->subDays(33),
+            JobRequest::MASTER_ID => $m['ilze']->getId(),
+            JobRequest::AGREED_PRICE => 270.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(35),
+            JobRequest::COMPLETED_AT => Carbon::now()->subDays(33),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j9->getId(),
-            EscrowHold::CLIENT_ID         => $s['anna']->getId(),
-            EscrowHold::MASTER_ID         => $m['ilze']->getId(),
-            EscrowHold::AMOUNT            => 270.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::RELEASED,
+            EscrowHold::JOB_REQUEST_ID => $j9->getId(),
+            EscrowHold::CLIENT_ID => $s['anna']->getId(),
+            EscrowHold::MASTER_ID => $m['ilze']->getId(),
+            EscrowHold::AMOUNT => 270.00,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(41),
-            EscrowHold::RELEASED_AT       => Carbon::now()->subDays(33),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(41),
+            EscrowHold::RELEASED_AT => Carbon::now()->subDays(33),
         ]);
         Review::create([
             Review::JOB_REQUEST_ID => $j9->getId(),
-            Review::REVIEWER_ID    => $s['anna']->getId(),
-            Review::REVIEWEE_ID    => $m['ilze']->getId(),
-            Review::RATING         => 4,
-            Review::COMMENT        => 'Ilze strādāja ātri un rūpīgi. Birojs izskatās lieliski. Nelielas komentāri par loga stūriem, bet kopumā ļoti apmierināta.',
+            Review::REVIEWER_ID => $s['anna']->getId(),
+            Review::REVIEWEE_ID => $m['ilze']->getId(),
+            Review::RATING => 4,
+            Review::COMMENT => 'Ilze strādāja ātri un rūpīgi. Birojs izskatās lieliski. Nelielas komentāri par loga stūriem, bet kopumā ļoti apmierināta.',
         ]);
 
         // ── KARLIS (4 jobs) ──────────────────────────────────────────────────
@@ -636,20 +636,20 @@ class DemoSeeder extends Seeder
             'Par 540 iekļauts gruntojums un 2 krāsas slāņi ar Tikkurila.',
             Carbon::now()->subDays(8));
         $j11->update([
-            JobRequest::STATUS                  => JobStatusEnum::IN_PROGRESS,
+            JobRequest::STATUS => JobStatusEnum::IN_PROGRESS,
             JobRequest::ACCEPTED_APPLICATION_ID => $a11_martins->getId(),
-            JobRequest::MASTER_ID               => $m['martins']->getId(),
-            JobRequest::AGREED_PRICE            => 540.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['martins']->getId(),
+            JobRequest::AGREED_PRICE => 540.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j11->getId(),
-            EscrowHold::CLIENT_ID         => $s['karlis']->getId(),
-            EscrowHold::MASTER_ID         => $m['martins']->getId(),
-            EscrowHold::AMOUNT            => 540.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j11->getId(),
+            EscrowHold::CLIENT_ID => $s['karlis']->getId(),
+            EscrowHold::MASTER_ID => $m['martins']->getId(),
+            EscrowHold::AMOUNT => 540.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(7),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(7),
         ]);
 
         // 12. COMPLETED - peteris
@@ -661,30 +661,30 @@ class DemoSeeder extends Seeder
         $pp12 = $this->makeProposal($a12_peteris, $m['peteris'], PriceProposalStatusEnum::ACCEPTED, 750.00, null,
             Carbon::now()->subDays(48));
         $j12->update([
-            JobRequest::STATUS                  => JobStatusEnum::COMPLETED,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a12_peteris->getId(),
-            JobRequest::MASTER_ID               => $m['peteris']->getId(),
-            JobRequest::AGREED_PRICE            => 750.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(40),
-            JobRequest::COMPLETED_AT            => Carbon::now()->subDays(38),
+            JobRequest::MASTER_ID => $m['peteris']->getId(),
+            JobRequest::AGREED_PRICE => 750.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(40),
+            JobRequest::COMPLETED_AT => Carbon::now()->subDays(38),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j12->getId(),
-            EscrowHold::CLIENT_ID         => $s['karlis']->getId(),
-            EscrowHold::MASTER_ID         => $m['peteris']->getId(),
-            EscrowHold::AMOUNT            => 750.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::RELEASED,
+            EscrowHold::JOB_REQUEST_ID => $j12->getId(),
+            EscrowHold::CLIENT_ID => $s['karlis']->getId(),
+            EscrowHold::MASTER_ID => $m['peteris']->getId(),
+            EscrowHold::AMOUNT => 750.00,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(46),
-            EscrowHold::RELEASED_AT       => Carbon::now()->subDays(38),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(46),
+            EscrowHold::RELEASED_AT => Carbon::now()->subDays(38),
         ]);
         Review::create([
             Review::JOB_REQUEST_ID => $j12->getId(),
-            Review::REVIEWER_ID    => $s['karlis']->getId(),
-            Review::REVIEWEE_ID    => $m['peteris']->getId(),
-            Review::RATING         => 3,
-            Review::COMMENT        => 'Darbs izpildīts, taču ar nelielu kavēšanos. Kvalitāte laba, bet komunikācija varētu būt labāka.',
+            Review::REVIEWER_ID => $s['karlis']->getId(),
+            Review::REVIEWEE_ID => $m['peteris']->getId(),
+            Review::RATING => 3,
+            Review::COMMENT => 'Darbs izpildīts, taču ar nelielu kavēšanos. Kvalitāte laba, bet komunikācija varētu būt labāka.',
         ]);
 
         // 13. DISPUTED - linda
@@ -696,25 +696,25 @@ class DemoSeeder extends Seeder
         $pp13 = $this->makeProposal($a13_linda, $m['linda'], PriceProposalStatusEnum::ACCEPTED, 1100.00, null,
             Carbon::now()->subDays(28));
         $j13->update([
-            JobRequest::STATUS                  => JobStatusEnum::DISPUTED,
+            JobRequest::STATUS => JobStatusEnum::DISPUTED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a13_linda->getId(),
-            JobRequest::MASTER_ID               => $m['linda']->getId(),
-            JobRequest::AGREED_PRICE            => 1100.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['linda']->getId(),
+            JobRequest::AGREED_PRICE => 1100.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j13->getId(),
-            EscrowHold::CLIENT_ID         => $s['karlis']->getId(),
-            EscrowHold::MASTER_ID         => $m['linda']->getId(),
-            EscrowHold::AMOUNT            => 1100.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j13->getId(),
+            EscrowHold::CLIENT_ID => $s['karlis']->getId(),
+            EscrowHold::MASTER_ID => $m['linda']->getId(),
+            EscrowHold::AMOUNT => 1100.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(25),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(25),
         ]);
         JobDispute::create([
-            JobDispute::JOB_REQUEST_ID    => $j13->getId(),
+            JobDispute::JOB_REQUEST_ID => $j13->getId(),
             JobDispute::RAISED_BY_USER_ID => $s['karlis']->getId(),
-            JobDispute::REASON            => 'Meistare ir paveikusi tikai daļu no vienotajiem darbiem - dzīvžogs nav ierīkots un stādījumi ir nepareizas šķirnes. Lūdzu atgriezt daļu maksājuma.',
+            JobDispute::REASON => 'Meistare ir paveikusi tikai daļu no vienotajiem darbiem - dzīvžogs nav ierīkots un stādījumi ir nepareizas šķirnes. Lūdzu atgriezt daļu maksājuma.',
         ]);
 
         // ── MADARA (4 jobs) ──────────────────────────────────────────────────
@@ -738,11 +738,11 @@ class DemoSeeder extends Seeder
             'Iekļauj pilnu uzkopšanu ar logu un sadzīves tehnikas tīrīšanu.',
             Carbon::now()->subDays(6));
         $j15->update([
-            JobRequest::STATUS                  => JobStatusEnum::ACCEPTED,
+            JobRequest::STATUS => JobStatusEnum::ACCEPTED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a15_ilze->getId(),
-            JobRequest::MASTER_ID               => $m['ilze']->getId(),
-            JobRequest::AGREED_PRICE            => 130.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['ilze']->getId(),
+            JobRequest::AGREED_PRICE => 130.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
 
         // 16. IN_PROGRESS - roberts
@@ -759,20 +759,20 @@ class DemoSeeder extends Seeder
             'Par 1800 iekļauju laminātu, durvju montāžu un sienu krāsošanu.',
             Carbon::now()->subDays(16), $pp16b);
         $j16->update([
-            JobRequest::STATUS                  => JobStatusEnum::IN_PROGRESS,
+            JobRequest::STATUS => JobStatusEnum::IN_PROGRESS,
             JobRequest::ACCEPTED_APPLICATION_ID => $a16_roberts->getId(),
-            JobRequest::MASTER_ID               => $m['roberts']->getId(),
-            JobRequest::AGREED_PRICE            => 1800.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['roberts']->getId(),
+            JobRequest::AGREED_PRICE => 1800.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j16->getId(),
-            EscrowHold::CLIENT_ID         => $s['madara']->getId(),
-            EscrowHold::MASTER_ID         => $m['roberts']->getId(),
-            EscrowHold::AMOUNT            => 1800.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j16->getId(),
+            EscrowHold::CLIENT_ID => $s['madara']->getId(),
+            EscrowHold::MASTER_ID => $m['roberts']->getId(),
+            EscrowHold::AMOUNT => 1800.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(14),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(14),
         ]);
 
         // 17. COMPLETED - peteris
@@ -784,30 +784,30 @@ class DemoSeeder extends Seeder
         $pp17 = $this->makeProposal($a17_peteris, $m['peteris'], PriceProposalStatusEnum::ACCEPTED, 120.00, null,
             Carbon::now()->subDays(53));
         $j17->update([
-            JobRequest::STATUS                  => JobStatusEnum::COMPLETED,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a17_peteris->getId(),
-            JobRequest::MASTER_ID               => $m['peteris']->getId(),
-            JobRequest::AGREED_PRICE            => 120.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(46),
-            JobRequest::COMPLETED_AT            => Carbon::now()->subDays(44),
+            JobRequest::MASTER_ID => $m['peteris']->getId(),
+            JobRequest::AGREED_PRICE => 120.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(46),
+            JobRequest::COMPLETED_AT => Carbon::now()->subDays(44),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j17->getId(),
-            EscrowHold::CLIENT_ID         => $s['madara']->getId(),
-            EscrowHold::MASTER_ID         => $m['peteris']->getId(),
-            EscrowHold::AMOUNT            => 120.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::RELEASED,
+            EscrowHold::JOB_REQUEST_ID => $j17->getId(),
+            EscrowHold::CLIENT_ID => $s['madara']->getId(),
+            EscrowHold::MASTER_ID => $m['peteris']->getId(),
+            EscrowHold::AMOUNT => 120.00,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(50),
-            EscrowHold::RELEASED_AT       => Carbon::now()->subDays(44),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(50),
+            EscrowHold::RELEASED_AT => Carbon::now()->subDays(44),
         ]);
         Review::create([
             Review::JOB_REQUEST_ID => $j17->getId(),
-            Review::REVIEWER_ID    => $s['madara']->getId(),
-            Review::REVIEWEE_ID    => $m['peteris']->getId(),
-            Review::RATING         => 5,
-            Review::COMMENT        => 'Pēteris ieradās precīzi laikā un uzstādīja sildītāju ļoti ātri. Viss darbojas perfekti. Iesaku!',
+            Review::REVIEWER_ID => $s['madara']->getId(),
+            Review::REVIEWEE_ID => $m['peteris']->getId(),
+            Review::RATING => 5,
+            Review::COMMENT => 'Pēteris ieradās precīzi laikā un uzstādīja sildītāju ļoti ātri. Viss darbojas perfekti. Iesaku!',
         ]);
 
         // ── GUNARS (5 jobs) ──────────────────────────────────────────────────
@@ -819,7 +819,7 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(Carbon::now()->subDays(5));
         $a18_roberts = $this->makeApp($j18, $m['roberts'], ApplicationStatusEnum::SHORTLISTED, 1350.00);
         $a18_andrejs = $this->makeApp($j18, $m['andrejs'], ApplicationStatusEnum::PENDING, 1600.00);
-        $a18_janis   = $this->makeApp($j18, $m['janis'], ApplicationStatusEnum::PENDING, 1400.00);
+        $a18_janis = $this->makeApp($j18, $m['janis'], ApplicationStatusEnum::PENDING, 1400.00);
         $pp18a = $this->makeProposal($a18_roberts, $m['roberts'], PriceProposalStatusEnum::COUNTERED, 1500.00,
             'Iekļauj teraskoku un vārtus ar atslēgu.',
             Carbon::now()->subDays(4));
@@ -862,22 +862,22 @@ class DemoSeeder extends Seeder
         $pp20 = $this->makeProposal($a20_kristine, $m['kristine'], PriceProposalStatusEnum::ACCEPTED, 160.00, null,
             Carbon::now()->subDays(20));
         $j20->update([
-            JobRequest::STATUS                  => JobStatusEnum::AWAITING_CONFIRMATION,
+            JobRequest::STATUS => JobStatusEnum::AWAITING_CONFIRMATION,
             JobRequest::ACCEPTED_APPLICATION_ID => $a20_kristine->getId(),
-            JobRequest::MASTER_ID               => $m['kristine']->getId(),
-            JobRequest::AGREED_PRICE            => 160.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(3),
+            JobRequest::MASTER_ID => $m['kristine']->getId(),
+            JobRequest::AGREED_PRICE => 160.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(3),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j20->getId(),
-            EscrowHold::CLIENT_ID         => $s['gunars']->getId(),
-            EscrowHold::MASTER_ID         => $m['kristine']->getId(),
-            EscrowHold::AMOUNT            => 160.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j20->getId(),
+            EscrowHold::CLIENT_ID => $s['gunars']->getId(),
+            EscrowHold::MASTER_ID => $m['kristine']->getId(),
+            EscrowHold::AMOUNT => 160.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(18),
-            EscrowHold::AUTO_RELEASE_AT   => Carbon::now()->addDays(5),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(18),
+            EscrowHold::AUTO_RELEASE_AT => Carbon::now()->addDays(5),
         ]);
         $conv20 = $this->makeConversation($s['gunars'], $m['kristine']);
         $this->addMessages($conv20, $s['gunars'], $m['kristine'], [
@@ -895,30 +895,30 @@ class DemoSeeder extends Seeder
         $pp21 = $this->makeProposal($a21_linda, $m['linda'], PriceProposalStatusEnum::ACCEPTED, 380.00, null,
             Carbon::now()->subDays(58));
         $j21->update([
-            JobRequest::STATUS                  => JobStatusEnum::COMPLETED,
+            JobRequest::STATUS => JobStatusEnum::COMPLETED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a21_linda->getId(),
-            JobRequest::MASTER_ID               => $m['linda']->getId(),
-            JobRequest::AGREED_PRICE            => 380.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
-            JobRequest::MASTER_COMPLETED_AT     => Carbon::now()->subDays(50),
-            JobRequest::COMPLETED_AT            => Carbon::now()->subDays(48),
+            JobRequest::MASTER_ID => $m['linda']->getId(),
+            JobRequest::AGREED_PRICE => 380.00,
+            JobRequest::PRICE_TYPE => 'fixed',
+            JobRequest::MASTER_COMPLETED_AT => Carbon::now()->subDays(50),
+            JobRequest::COMPLETED_AT => Carbon::now()->subDays(48),
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j21->getId(),
-            EscrowHold::CLIENT_ID         => $s['gunars']->getId(),
-            EscrowHold::MASTER_ID         => $m['linda']->getId(),
-            EscrowHold::AMOUNT            => 380.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::RELEASED,
+            EscrowHold::JOB_REQUEST_ID => $j21->getId(),
+            EscrowHold::CLIENT_ID => $s['gunars']->getId(),
+            EscrowHold::MASTER_ID => $m['linda']->getId(),
+            EscrowHold::AMOUNT => 380.00,
+            EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(56),
-            EscrowHold::RELEASED_AT       => Carbon::now()->subDays(48),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(56),
+            EscrowHold::RELEASED_AT => Carbon::now()->subDays(48),
         ]);
         Review::create([
             Review::JOB_REQUEST_ID => $j21->getId(),
-            Review::REVIEWER_ID    => $s['gunars']->getId(),
-            Review::REVIEWEE_ID    => $m['linda']->getId(),
-            Review::RATING         => 5,
-            Review::COMMENT        => 'Linda ir lieliska! Dārzs izskatās brīnišķīgi pēc viņas darba. Noteikti uzaicināšu atkal.',
+            Review::REVIEWER_ID => $s['gunars']->getId(),
+            Review::REVIEWEE_ID => $m['linda']->getId(),
+            Review::RATING => 5,
+            Review::COMMENT => 'Linda ir lieliska! Dārzs izskatās brīnišķīgi pēc viņas darba. Noteikti uzaicināšu atkal.',
         ]);
 
         // 22. CANCELLED - gunars
@@ -952,11 +952,11 @@ class DemoSeeder extends Seeder
             'Iekļauj kabeļu vadu zemē, 6 gaismekļu montāžu un pieslēgšanu.',
             Carbon::now()->subDays(7));
         $j24->update([
-            JobRequest::STATUS                  => JobStatusEnum::ACCEPTED,
+            JobRequest::STATUS => JobStatusEnum::ACCEPTED,
             JobRequest::ACCEPTED_APPLICATION_ID => $a24_andrejs->getId(),
-            JobRequest::MASTER_ID               => $m['andrejs']->getId(),
-            JobRequest::AGREED_PRICE            => 280.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['andrejs']->getId(),
+            JobRequest::AGREED_PRICE => 280.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
 
         // 25. IN_PROGRESS - linda
@@ -969,20 +969,20 @@ class DemoSeeder extends Seeder
             'Iekļauj dizainu, materiālus un montāžu. Teraskoks ar tonēšanu.',
             Carbon::now()->subDays(14));
         $j25->update([
-            JobRequest::STATUS                  => JobStatusEnum::IN_PROGRESS,
+            JobRequest::STATUS => JobStatusEnum::IN_PROGRESS,
             JobRequest::ACCEPTED_APPLICATION_ID => $a25_linda->getId(),
-            JobRequest::MASTER_ID               => $m['linda']->getId(),
-            JobRequest::AGREED_PRICE            => 650.00,
-            JobRequest::PRICE_TYPE              => 'fixed',
+            JobRequest::MASTER_ID => $m['linda']->getId(),
+            JobRequest::AGREED_PRICE => 650.00,
+            JobRequest::PRICE_TYPE => 'fixed',
         ]);
         EscrowHold::create([
-            EscrowHold::JOB_REQUEST_ID    => $j25->getId(),
-            EscrowHold::CLIENT_ID         => $s['janis']->getId(),
-            EscrowHold::MASTER_ID         => $m['linda']->getId(),
-            EscrowHold::AMOUNT            => 650.00,
-            EscrowHold::STATUS            => EscrowStatusEnum::HELD,
+            EscrowHold::JOB_REQUEST_ID => $j25->getId(),
+            EscrowHold::CLIENT_ID => $s['janis']->getId(),
+            EscrowHold::MASTER_ID => $m['linda']->getId(),
+            EscrowHold::AMOUNT => 650.00,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD,
             EscrowHold::PAYMENT_REFERENCE => 'mock_' . Str::uuid(),
-            EscrowHold::HELD_AT           => Carbon::now()->subDays(12),
+            EscrowHold::HELD_AT => Carbon::now()->subDays(12),
         ]);
 
         Carbon::setTestNow(null);
@@ -994,16 +994,16 @@ class DemoSeeder extends Seeder
         array $location, string $description): JobRequest
     {
         return JobRequest::create([
-            JobRequest::USER_ID      => $seeker->getId(),
-            JobRequest::CATEGORY_ID  => $cat->getId(),
-            JobRequest::TITLE        => $title,
-            JobRequest::SLUG         => Str::slug($title) . '-' . Str::random(5),
-            JobRequest::DESCRIPTION  => $description,
-            JobRequest::BUDGET       => $budget,
-            JobRequest::LOCATION     => $location,
-            JobRequest::DEADLINE     => Carbon::now()->addDays(30)->toDateString(),
-            JobRequest::STATUS       => JobStatusEnum::OPEN,
-            JobRequest::IMAGES       => [],
+            JobRequest::USER_ID => $seeker->getId(),
+            JobRequest::CATEGORY_ID => $cat->getId(),
+            JobRequest::TITLE => $title,
+            JobRequest::SLUG => Str::slug($title) . '-' . Str::random(5),
+            JobRequest::DESCRIPTION => $description,
+            JobRequest::BUDGET => $budget,
+            JobRequest::LOCATION => $location,
+            JobRequest::DEADLINE => Carbon::now()->addDays(30)->toDateString(),
+            JobRequest::STATUS => JobStatusEnum::OPEN,
+            JobRequest::IMAGES => [],
         ]);
     }
 
@@ -1012,10 +1012,10 @@ class DemoSeeder extends Seeder
     {
         return Application::create([
             Application::JOB_REQUEST_ID => $job->getId(),
-            Application::USER_ID        => $master->getId(),
-            Application::COVER_LETTER   => 'Esmu ieinteresēts šajā darbā un varu to veikt kvalitatīvi un savlaicīgi.',
-            Application::PRICE_OFFER    => $priceOffer,
-            Application::STATUS         => $status,
+            Application::USER_ID => $master->getId(),
+            Application::COVER_LETTER => 'Esmu ieinteresēts šajā darbā un varu to veikt kvalitatīvi un savlaicīgi.',
+            Application::PRICE_OFFER => $priceOffer,
+            Application::STATUS => $status,
         ]);
     }
 
@@ -1028,17 +1028,17 @@ class DemoSeeder extends Seeder
         }
 
         $data = [
-            PriceProposal::JOB_APPLICATION_ID  => $app->getId(),
-            PriceProposal::PROPOSED_BY_USER_ID  => $proposedBy->getId(),
-            PriceProposal::AMOUNT               => $amount,
-            PriceProposal::PRICE_TYPE           => 'fixed',
-            PriceProposal::NOTE                 => $note,
-            PriceProposal::STATUS               => $status,
+            PriceProposal::JOB_APPLICATION_ID => $app->getId(),
+            PriceProposal::PROPOSED_BY_USER_ID => $proposedBy->getId(),
+            PriceProposal::AMOUNT => $amount,
+            PriceProposal::PRICE_TYPE => 'fixed',
+            PriceProposal::NOTE => $note,
+            PriceProposal::STATUS => $status,
         ];
 
         if ($responding && $status !== PriceProposalStatusEnum::PENDING) {
             $data[PriceProposal::RESPONDED_BY_USER_ID] = $proposedBy->getId();
-            $data[PriceProposal::RESPONDED_AT]         = now();
+            $data[PriceProposal::RESPONDED_AT] = now();
         }
 
         return PriceProposal::create($data);
@@ -1066,10 +1066,10 @@ class DemoSeeder extends Seeder
             Carbon::setTestNow($sentAt);
             Message::create([
                 Message::CONVERSATION_ID => $conv->getId(),
-                Message::SENDER_ID       => $sender->getId(),
-                Message::BODY            => $body,
-                Message::TYPE            => MessageTypeEnum::TEXT,
-                Message::READ_AT         => $unread ? null : $sentAt->copy()->addMinutes(5),
+                Message::SENDER_ID => $sender->getId(),
+                Message::BODY => $body,
+                Message::TYPE => MessageTypeEnum::TEXT,
+                Message::READ_AT => $unread ? null : $sentAt->copy()->addMinutes(5),
             ]);
         }
         Carbon::setTestNow(null);
@@ -1079,25 +1079,25 @@ class DemoSeeder extends Seeder
 
     private function createCategorySuggestions(): void
     {
-        $citsId    = $this->cats['Cits']->getId();
-        $apkureId  = $this->cats['Apkure un siltumtehnika']->getId();
-        $darzaId   = $this->cats['Dārza darbi']->getId();
+        $citsId = $this->cats['Cits']->getId();
+        $apkureId = $this->cats['Apkure un siltumtehnika']->getId();
+        $darzaId = $this->cats['Dārza darbi']->getId();
 
         // 3 pending suggestions
         Carbon::setTestNow(Carbon::now()->subDays(3));
         $s1 = CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['tonijs']->getId(),
-            CategorySuggestion::NAME                  => 'Sniega tīrīšana no jumtiem',
-            CategorySuggestion::PARENT_CATEGORY_ID    => null,
-            CategorySuggestion::NOTE                  => 'Bieži meklēju šo pakalpojumu ziemā, bet nav atbilstošas kategorijas.',
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::PENDING,
+            CategorySuggestion::NAME => 'Sniega tīrīšana no jumtiem',
+            CategorySuggestion::PARENT_CATEGORY_ID => null,
+            CategorySuggestion::NOTE => 'Bieži meklēju šo pakalpojumu ziemā, bet nav atbilstošas kategorijas.',
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING,
         ]);
         // Attach a job to this suggestion to show the pending banner
         $job = JobRequest::where(JobRequest::USER_ID, $this->seekers['tonijs']->getId())
             ->where(JobRequest::STATUS, JobStatusEnum::OPEN)->first();
         if ($job) {
             $job->update([
-                JobRequest::CATEGORY_ID                   => $citsId,
+                JobRequest::CATEGORY_ID => $citsId,
                 JobRequest::PENDING_CATEGORY_SUGGESTION_ID => $s1->getId(),
             ]);
         }
@@ -1105,67 +1105,67 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(Carbon::now()->subDays(2));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->masters['andrejs']->getId(),
-            CategorySuggestion::NAME                  => 'Termiskā kamīna uzstādīšana',
-            CategorySuggestion::PARENT_CATEGORY_ID    => $apkureId,
-            CategorySuggestion::NOTE                  => 'Šis ir bieži pieprasīts pakalpojums, kas neatbilst esošajām apakškategorijām.',
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::PENDING,
+            CategorySuggestion::NAME => 'Termiskā kamīna uzstādīšana',
+            CategorySuggestion::PARENT_CATEGORY_ID => $apkureId,
+            CategorySuggestion::NOTE => 'Šis ir bieži pieprasīts pakalpojums, kas neatbilst esošajām apakškategorijām.',
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING,
         ]);
 
         Carbon::setTestNow(Carbon::now()->subDays(1));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['anna']->getId(),
-            CategorySuggestion::NAME                  => 'Dārza laistīšanas sistēmas',
-            CategorySuggestion::PARENT_CATEGORY_ID    => $darzaId,
-            CategorySuggestion::NOTE                  => 'Meklēju laistīšanas sistēmu uzstādīšanu, bet nav piemērotas kategorijas.',
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::PENDING,
+            CategorySuggestion::NAME => 'Dārza laistīšanas sistēmas',
+            CategorySuggestion::PARENT_CATEGORY_ID => $darzaId,
+            CategorySuggestion::NOTE => 'Meklēju laistīšanas sistēmu uzstādīšanu, bet nav piemērotas kategorijas.',
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING,
         ]);
 
         // 2 approved suggestions
         Carbon::setTestNow(Carbon::now()->subDays(20));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['karlis']->getId(),
-            CategorySuggestion::NAME                  => 'Siltumsūkņu uzstādīšana',
-            CategorySuggestion::PARENT_CATEGORY_ID    => $apkureId,
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::APPROVED,
-            CategorySuggestion::REVIEWED_BY_USER_ID   => $this->admin->getId(),
-            CategorySuggestion::REVIEWED_AT           => Carbon::now()->subDays(15),
-            CategorySuggestion::REVIEW_NOTE           => 'Laba ideja - kategorija jau eksistē kā "Siltumsūkņi".',
+            CategorySuggestion::NAME => 'Siltumsūkņu uzstādīšana',
+            CategorySuggestion::PARENT_CATEGORY_ID => $apkureId,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::APPROVED,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $this->admin->getId(),
+            CategorySuggestion::REVIEWED_AT => Carbon::now()->subDays(15),
+            CategorySuggestion::REVIEW_NOTE => 'Laba ideja - kategorija jau eksistē kā "Siltumsūkņi".',
         ]);
 
         Carbon::setTestNow(Carbon::now()->subDays(30));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['madara']->getId(),
-            CategorySuggestion::NAME                  => 'Āra baseinu tīrīšana',
-            CategorySuggestion::PARENT_CATEGORY_ID    => null,
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::APPROVED,
-            CategorySuggestion::REVIEWED_BY_USER_ID   => $this->admin->getId(),
-            CategorySuggestion::REVIEWED_AT           => Carbon::now()->subDays(22),
-            CategorySuggestion::REVIEW_NOTE           => 'Izveidota kā jauna apakškategorija zem Tīrīšanas.',
+            CategorySuggestion::NAME => 'Āra baseinu tīrīšana',
+            CategorySuggestion::PARENT_CATEGORY_ID => null,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::APPROVED,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $this->admin->getId(),
+            CategorySuggestion::REVIEWED_AT => Carbon::now()->subDays(22),
+            CategorySuggestion::REVIEW_NOTE => 'Izveidota kā jauna apakškategorija zem Tīrīšanas.',
         ]);
 
         // 1 rejected suggestion
         Carbon::setTestNow(Carbon::now()->subDays(25));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['gunars']->getId(),
-            CategorySuggestion::NAME                  => 'Auto mazgāšana',
-            CategorySuggestion::PARENT_CATEGORY_ID    => null,
-            CategorySuggestion::STATUS                => CategorySuggestionStatusEnum::REJECTED,
-            CategorySuggestion::REVIEWED_BY_USER_ID   => $this->admin->getId(),
-            CategorySuggestion::REVIEWED_AT           => Carbon::now()->subDays(20),
-            CategorySuggestion::REVIEW_NOTE           => 'Platforma ir paredzēta mājas pakalpojumiem, auto mazgāšana nav mūsu fokusā.',
+            CategorySuggestion::NAME => 'Auto mazgāšana',
+            CategorySuggestion::PARENT_CATEGORY_ID => null,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::REJECTED,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $this->admin->getId(),
+            CategorySuggestion::REVIEWED_AT => Carbon::now()->subDays(20),
+            CategorySuggestion::REVIEW_NOTE => 'Platforma ir paredzēta mājas pakalpojumiem, auto mazgāšana nav mūsu fokusā.',
         ]);
 
         // 1 merged suggestion
         Carbon::setTestNow(Carbon::now()->subDays(35));
         CategorySuggestion::create([
-            CategorySuggestion::SUGGESTED_BY_USER_ID  => $this->masters['linda']->getId(),
-            CategorySuggestion::NAME                   => 'Dārza lapiņu tīrīšana',
-            CategorySuggestion::PARENT_CATEGORY_ID     => $darzaId,
-            CategorySuggestion::STATUS                 => CategorySuggestionStatusEnum::MERGED,
-            CategorySuggestion::REVIEWED_BY_USER_ID    => $this->admin->getId(),
-            CategorySuggestion::REVIEWED_AT            => Carbon::now()->subDays(28),
-            CategorySuggestion::REVIEW_NOTE            => 'Apvienota ar esošo "Zāles pļaušana" kategoriju, jo tās ir saistītas.',
-            CategorySuggestion::RESULTING_CATEGORY_ID  => $this->cats['Zāles pļaušana']->getId(),
+            CategorySuggestion::SUGGESTED_BY_USER_ID => $this->masters['linda']->getId(),
+            CategorySuggestion::NAME => 'Dārza lapiņu tīrīšana',
+            CategorySuggestion::PARENT_CATEGORY_ID => $darzaId,
+            CategorySuggestion::STATUS => CategorySuggestionStatusEnum::MERGED,
+            CategorySuggestion::REVIEWED_BY_USER_ID => $this->admin->getId(),
+            CategorySuggestion::REVIEWED_AT => Carbon::now()->subDays(28),
+            CategorySuggestion::REVIEW_NOTE => 'Apvienota ar esošo "Zāles pļaušana" kategoriju, jo tās ir saistītas.',
+            CategorySuggestion::RESULTING_CATEGORY_ID => $this->cats['Zāles pļaušana']->getId(),
         ]);
 
         Carbon::setTestNow(null);
@@ -1286,12 +1286,12 @@ class DemoSeeder extends Seeder
         ?string $body, ?string $url = null, ?Carbon $readAt = null): void
     {
         Notification::create([
-            Notification::USER_ID    => $user->getId(),
-            Notification::TYPE       => $type,
-            Notification::TITLE      => $title,
-            Notification::BODY       => $body,
+            Notification::USER_ID => $user->getId(),
+            Notification::TYPE => $type,
+            Notification::TITLE => $title,
+            Notification::BODY => $body,
             Notification::ACTION_URL => $url,
-            Notification::READ_AT    => $readAt,
+            Notification::READ_AT => $readAt,
         ]);
     }
 }

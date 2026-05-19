@@ -33,7 +33,7 @@ class MasterServiceApplicationController extends Controller
 
         return Inertia::render('Master/ServiceApplications/ForService', [
             'applications' => MasterServiceApplicationResource::collection($applications),
-            'serviceId'    => $serviceId,
+            'serviceId' => $serviceId,
         ]);
     }
 

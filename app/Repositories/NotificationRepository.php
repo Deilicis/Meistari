@@ -14,12 +14,12 @@ class NotificationRepository
     public function create(CreateNotificationDTO $dto): Notification
     {
         return Notification::create([
-            Notification::USER_ID    => $dto->userId,
-            Notification::TYPE       => $dto->type->value,
-            Notification::TITLE      => $dto->title,
-            Notification::BODY       => $dto->body,
+            Notification::USER_ID => $dto->userId,
+            Notification::TYPE => $dto->type->value,
+            Notification::TITLE => $dto->title,
+            Notification::BODY => $dto->body,
             Notification::ACTION_URL => $dto->actionUrl,
-            Notification::METADATA   => $dto->metadata,
+            Notification::METADATA => $dto->metadata,
         ]);
     }
 

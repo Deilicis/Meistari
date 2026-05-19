@@ -40,13 +40,13 @@ class JobPageService
         }
 
         return [
-            'job'             => $this->serializeJob($job),
-            'viewer_role'     => $viewerRole,
-            'applications'    => $this->getApplications($job, $user, $viewerRole),
+            'job' => $this->serializeJob($job),
+            'viewer_role' => $viewerRole,
+            'applications' => $this->getApplications($job, $user, $viewerRole),
             'own_application' => $this->getOwnApplication($job, $user, $viewerRole),
             'allowed_actions' => $this->computeAllowedActions($job, $user, $viewerRole),
-            'chat'            => $this->getChatInfo($job, $user, $viewerRole),
-            'proposals'       => $this->getProposals($job, $user, $viewerRole),
+            'chat' => $this->getChatInfo($job, $user, $viewerRole),
+            'proposals' => $this->getProposals($job, $user, $viewerRole),
         ];
     }
 
@@ -100,7 +100,7 @@ class JobPageService
     private function computeAllowedActions(JobRequest $job, User $user, string $viewerRole): array
     {
         $actions = [];
-        $status  = $job->getStatus();
+        $status = $job->getStatus();
 
         switch ($viewerRole) {
             case 'owner':
@@ -185,7 +185,7 @@ class JobPageService
         $conversation = $this->conversationRepo->findBetweenUsers($user->getId(), $otherUserId);
 
         return [
-            'other_user_id'   => $otherUserId,
+            'other_user_id' => $otherUserId,
             'conversation_id' => $conversation?->getId(),
         ];
     }
@@ -193,9 +193,9 @@ class JobPageService
     private function getProposals(JobRequest $job, User $user, string $viewerRole): ?array
     {
         $ownApp = match ($viewerRole) {
-            'applicant'       => $this->applicationRepo->findByJobRequestAndUser($job->getId(), $user->getId()),
+            'applicant' => $this->applicationRepo->findByJobRequestAndUser($job->getId(), $user->getId()),
             'accepted_master' => $this->applicationRepo->findAcceptedForJob($job->getId()),
-            default           => null,
+            default => null,
         };
 
         if ($ownApp === null) {
@@ -215,14 +215,14 @@ class JobPageService
             && $pending->getProposedByUserId() !== $user->getId();
 
         return [
-            'application_id'  => $ownApp->getId(),
-            'pending'         => $pending ? PriceProposalResource::make($pending->loadMissing(['proposedBy', 'respondedBy']))->resolve() : null,
-            'history'         => PriceProposalResource::collection($history)->resolve(),
+            'application_id' => $ownApp->getId(),
+            'pending' => $pending ? PriceProposalResource::make($pending->loadMissing(['proposedBy', 'respondedBy']))->resolve() : null,
+            'history' => PriceProposalResource::collection($history)->resolve(),
             'can_submit_fresh'=> $hasNegotiableStatus && $pending === null,
-            'can_counter'     => $canAct,
-            'can_accept'      => $canAct,
-            'can_reject'      => $canAct,
-            'can_withdraw'    => $pending !== null && $pending->getProposedByUserId() === $user->getId(),
+            'can_counter' => $canAct,
+            'can_accept' => $canAct,
+            'can_reject' => $canAct,
+            'can_withdraw' => $pending !== null && $pending->getProposedByUserId() === $user->getId(),
         ];
     }
 
@@ -231,38 +231,38 @@ class JobPageService
         $status = $job->getStatus();
 
         return [
-            'id'                  => $job->getId(),
-            'title'               => $job->getTitle(),
-            'description'         => $job->getDescription(),
-            'status'              => $status->value,
-            'status_label'        => $status->label(),
-            'budget'              => $job->getBudget(),
-            'agreed_price'        => $job->getAgreedPrice(),
-            'price_type'          => $job->getPriceType(),
-            'deadline'            => $job->getDeadline(),
-            'location'            => $job->getLocation(),
-            'images'              => $job->getImages(),
-            'created_at'          => $job->getCreatedAt()?->toISOString(),
+            'id' => $job->getId(),
+            'title' => $job->getTitle(),
+            'description' => $job->getDescription(),
+            'status' => $status->value,
+            'status_label' => $status->label(),
+            'budget' => $job->getBudget(),
+            'agreed_price' => $job->getAgreedPrice(),
+            'price_type' => $job->getPriceType(),
+            'deadline' => $job->getDeadline(),
+            'location' => $job->getLocation(),
+            'images' => $job->getImages(),
+            'created_at' => $job->getCreatedAt()?->toISOString(),
             'master_completed_at' => $job->getMasterCompletedAt()?->toISOString(),
-            'completed_at'        => $job->getCompletedAt()?->toISOString(),
-            'client'              => [
-                'id'   => $job->user->getId(),
+            'completed_at' => $job->getCompletedAt()?->toISOString(),
+            'client' => [
+                'id' => $job->user->getId(),
                 'name' => $job->user->getName(),
             ],
             'master' => $job->master ? [
-                'id'   => $job->master->getId(),
+                'id' => $job->master->getId(),
                 'name' => $job->master->getName(),
             ] : null,
             'escrow' => $job->escrowHold ? [
-                'status'          => $job->escrowHold->getStatus()->value,
-                'amount'          => $job->escrowHold->getAmount(),
-                'held_at'         => $job->escrowHold->getHeldAt()?->toISOString(),
+                'status' => $job->escrowHold->getStatus()->value,
+                'amount' => $job->escrowHold->getAmount(),
+                'held_at' => $job->escrowHold->getHeldAt()?->toISOString(),
                 'auto_release_at' => $job->escrowHold->getAutoReleaseAt()?->toISOString(),
             ] : null,
             'pending_category_suggestion' => $job->pendingCategorySuggestion ? [
-                'id'          => $job->pendingCategorySuggestion->getId(),
-                'name'        => $job->pendingCategorySuggestion->getName(),
-                'status'      => $job->pendingCategorySuggestion->getStatus()->value,
+                'id' => $job->pendingCategorySuggestion->getId(),
+                'name' => $job->pendingCategorySuggestion->getName(),
+                'status' => $job->pendingCategorySuggestion->getStatus()->value,
                 'review_note' => $job->pendingCategorySuggestion->getReviewNote(),
             ] : null,
         ];
@@ -270,28 +270,28 @@ class JobPageService
 
     private function serializeApplication(Application $app): array
     {
-        $profile        = $app->user?->profile;
+        $profile = $app->user?->profile;
         $pendingProposal = $this->proposalRepo->findPendingForApplication($app->getId());
 
         return [
-            'id'              => $app->getId(),
-            'cover_letter'    => $app->getCoverLetter(),
-            'price_offer'     => $app->getPriceOffer(),
-            'status'          => $app->getStatus()->value,
-            'created_at'      => $app->getCreatedAt()?->toISOString(),
+            'id' => $app->getId(),
+            'cover_letter' => $app->getCoverLetter(),
+            'price_offer' => $app->getPriceOffer(),
+            'status' => $app->getStatus()->value,
+            'created_at' => $app->getCreatedAt()?->toISOString(),
             'pending_proposal'=> $pendingProposal
                 ? PriceProposalResource::make($pendingProposal->loadMissing(['proposedBy', 'respondedBy']))->resolve()
                 : null,
-            'user'            => $app->user ? [
-                'id'   => $app->user->getId(),
+            'user' => $app->user ? [
+                'id' => $app->user->getId(),
                 'name' => $app->user->getName(),
                 'profile' => $profile ? [
-                    'first_name'   => $profile->getFirstName(),
-                    'last_name'    => $profile->getLastName(),
+                    'first_name' => $profile->getFirstName(),
+                    'last_name' => $profile->getLastName(),
                     'company_name' => $profile->getCompanyName(),
-                    'type'         => $profile->getType()?->value,
-                    'city'         => $profile->getCity(),
-                    'avatar'       => $profile->getAvatar(),
+                    'type' => $profile->getType()?->value,
+                    'city' => $profile->getCity(),
+                    'avatar' => $profile->getAvatar(),
                 ] : null,
             ] : null,
         ];

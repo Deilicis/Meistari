@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum EscrowStatusEnum: string
 {
-    case HELD     = 'held';
+    case HELD = 'held';
     case RELEASED = 'released';
     case REFUNDED = 'refunded';
 }

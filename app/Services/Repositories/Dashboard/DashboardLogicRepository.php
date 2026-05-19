@@ -34,10 +34,10 @@ class DashboardLogicRepository
         }
 
         return [
-            'stats'                      => $stats,
-            'recentServices'             => $recentServices,
-            'recentJobRequests'          => $recentJobRequests,
-            'recentApplications'         => $recentApplications,
+            'stats' => $stats,
+            'recentServices' => $recentServices,
+            'recentJobRequests' => $recentJobRequests,
+            'recentApplications' => $recentApplications,
             'recentApplicationsReceived' => $recentApplicationsReceived,
         ];
     }
@@ -45,10 +45,10 @@ class DashboardLogicRepository
     private function getMasterStats(User $user): array
     {
         return [
-            'total_services'       => $user->services()->count(),
-            'active_services'      => $user->services()->where('is_active', true)->count(),
+            'total_services' => $user->services()->count(),
+            'active_services' => $user->services()->where('is_active', true)->count(),
             'pending_applications' => $user->applications()->where(Application::STATUS, ApplicationStatusEnum::PENDING->value)->count(),
-            'total_applications'   => $user->applications()->count(),
+            'total_applications' => $user->applications()->count(),
         ];
     }
 
@@ -84,8 +84,8 @@ class DashboardLogicRepository
             ->count();
 
         return [
-            'active_job_requests'           => $user->jobRequests()->where('status', JobStatusEnum::OPEN->value)->count(),
-            'total_job_requests'            => $user->jobRequests()->count(),
+            'active_job_requests' => $user->jobRequests()->where('status', JobStatusEnum::OPEN->value)->count(),
+            'total_job_requests' => $user->jobRequests()->count(),
             'pending_applications_received' => $pendingReceived,
         ];
     }

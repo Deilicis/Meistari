@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private const TABLE          = 'audit_logs';
-    private const USERS_TABLE    = 'users';
-    private const USER_ID        = 'user_id';
-    private const ACTION         = 'action';
+    private const TABLE = 'audit_logs';
+    private const USERS_TABLE = 'users';
+    private const USER_ID = 'user_id';
+    private const ACTION = 'action';
     private const AUDITABLE_TYPE = 'auditable_type';
-    private const AUDITABLE_ID   = 'auditable_id';
-    private const OLD_VALUES     = 'old_values';
-    private const NEW_VALUES     = 'new_values';
-    private const IP_ADDRESS     = 'ip_address';
+    private const AUDITABLE_ID = 'auditable_id';
+    private const OLD_VALUES = 'old_values';
+    private const NEW_VALUES = 'new_values';
+    private const IP_ADDRESS = 'ip_address';
 
     public function up(): void
     {

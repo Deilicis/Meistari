@@ -32,8 +32,8 @@ final class StripeWebhookService
 
         match ($event->type) {
             'checkout.session.completed' => $this->handleCheckoutCompleted($event),
-            'checkout.session.expired'   => $this->handleCheckoutExpired($event),
-            default                      => null,
+            'checkout.session.expired' => $this->handleCheckoutExpired($event),
+            default => null,
         };
     }
 

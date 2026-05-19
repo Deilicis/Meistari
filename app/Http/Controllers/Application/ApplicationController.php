@@ -14,12 +14,12 @@ use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
 {
-    private const MSG_CREATED   = 'Pieteikums veiksmīgi iesniegts!';
+    private const MSG_CREATED = 'Pieteikums veiksmīgi iesniegts!';
     private const MSG_CANCELLED = 'Pieteikums atcelts.';
-    private const MSG_ACCEPTED  = 'Pieteikums pieņemts!';
-    private const MSG_REJECTED  = 'Pieteikums noraidīts.';
-    private const KEY_MESSAGE   = 'message';
-    private const KEY_DATA      = 'data';
+    private const MSG_ACCEPTED = 'Pieteikums pieņemts!';
+    private const MSG_REJECTED = 'Pieteikums noraidīts.';
+    private const KEY_MESSAGE = 'message';
+    private const KEY_DATA = 'data';
 
     public function __construct(
         private readonly ApplicationLogicRepository $logicRepository
@@ -42,7 +42,7 @@ class ApplicationController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_CREATED,
-            self::KEY_DATA    => new ApplicationResource($application),
+            self::KEY_DATA => new ApplicationResource($application),
         ], 201);
     }
 
@@ -52,7 +52,7 @@ class ApplicationController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => 'Pieteikums iekļauts īsajā sarakstā!',
-            self::KEY_DATA    => new JobApplicationResource($shortlisted),
+            self::KEY_DATA => new JobApplicationResource($shortlisted),
         ]);
     }
 
@@ -62,7 +62,7 @@ class ApplicationController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_ACCEPTED,
-            self::KEY_DATA    => new JobApplicationResource($accepted),
+            self::KEY_DATA => new JobApplicationResource($accepted),
         ]);
     }
 
@@ -72,7 +72,7 @@ class ApplicationController extends Controller
 
         return response()->json([
             self::KEY_MESSAGE => self::MSG_REJECTED,
-            self::KEY_DATA    => new JobApplicationResource($rejected),
+            self::KEY_DATA => new JobApplicationResource($rejected),
         ]);
     }
 

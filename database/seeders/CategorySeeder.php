@@ -43,8 +43,8 @@ class CategorySeeder extends Seeder
             $parent = Category::updateOrCreate(
                 [Category::SLUG => Str::slug($name)],
                 [
-                    Category::NAME      => $name,
-                    Category::ICON      => $config['icon'],
+                    Category::NAME => $name,
+                    Category::ICON => $config['icon'],
                     Category::PARENT_ID => null,
                     Category::IS_SYSTEM => false,
                 ]
@@ -54,8 +54,8 @@ class CategorySeeder extends Seeder
                 Category::updateOrCreate(
                     [Category::SLUG => Str::slug($childName)],
                     [
-                        Category::NAME      => $childName,
-                        Category::ICON      => null,
+                        Category::NAME => $childName,
+                        Category::ICON => null,
                         Category::PARENT_ID => $parent->getId(),
                         Category::IS_SYSTEM => false,
                     ]

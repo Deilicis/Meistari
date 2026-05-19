@@ -23,11 +23,11 @@ class EscrowService
     ): EscrowHold {
         return $this->repository->create([
             EscrowHold::JOB_REQUEST_ID => $jobRequestId,
-            EscrowHold::CLIENT_ID      => $clientId,
-            EscrowHold::MASTER_ID      => $masterId,
-            EscrowHold::AMOUNT         => $amount,
-            EscrowHold::STATUS         => EscrowStatusEnum::HELD->value,
-            EscrowHold::HELD_AT        => Carbon::now(),
+            EscrowHold::CLIENT_ID => $clientId,
+            EscrowHold::MASTER_ID => $masterId,
+            EscrowHold::AMOUNT => $amount,
+            EscrowHold::STATUS => EscrowStatusEnum::HELD->value,
+            EscrowHold::HELD_AT => Carbon::now(),
         ]);
     }
 
