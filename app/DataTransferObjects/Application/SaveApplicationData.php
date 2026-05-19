@@ -9,8 +9,8 @@ use App\Enums\Job\ApplicationStatusEnum;
 class SaveApplicationData
 {
     public function __construct(
-        public readonly int     $jobRequestId,
-        public readonly int     $userId,
+        public readonly int $jobRequestId,
+        public readonly int $userId,
         public readonly ?string $coverLetter,
         public readonly ?float  $priceOffer,
     ) {}

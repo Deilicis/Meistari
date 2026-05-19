@@ -7,9 +7,9 @@ namespace App\DTOs\Proposals;
 class SubmitProposalDTO
 {
     public function __construct(
-        public readonly int     $jobApplicationId,
-        public readonly int     $proposedByUserId,
-        public readonly float   $amount,
+        public readonly int $jobApplicationId,
+        public readonly int $proposedByUserId,
+        public readonly float $amount,
         public readonly ?string $note,
     ) {}
 }

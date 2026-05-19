@@ -7,8 +7,8 @@ namespace App\DTOs\CategorySuggestions;
 final class RejectSuggestionDTO
 {
     public function __construct(
-        public readonly int    $suggestionId,
-        public readonly int    $reviewedByUserId,
+        public readonly int $suggestionId,
+        public readonly int $reviewedByUserId,
         public readonly string $reviewNote,
     ) {}
 }

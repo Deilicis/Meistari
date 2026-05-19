@@ -58,7 +58,7 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(null);
     }
 
-    // ─── Users ────────────────────────────────────────────────────────────────
+    // --- Lietotāji ---
 
     private function createUsers(): void
     {
@@ -68,7 +68,7 @@ class DemoSeeder extends Seeder
         $masterRole = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->firstOrFail();
         $seekerRole = Role::where(Role::NAME, RoleNameEnum::SEEKER->value)->firstOrFail();
 
-        // Admin
+        // Administrators
         $this->admin = User::create([
             User::NAME => 'Demo Admins',
             User::EMAIL => 'admin@meistari.local',
@@ -80,7 +80,7 @@ class DemoSeeder extends Seeder
         $this->makeProfile($this->admin, 'Demo', 'Admins', 'Rīga', '+371 29000000',
             'Platformas administrators.', true, []);
 
-        // Masters
+        // Meistari
         foreach ($this->mastersData() as $key => $d) {
             Carbon::setTestNow(null);
             $user = User::create([
@@ -97,7 +97,7 @@ class DemoSeeder extends Seeder
             $this->masters[$key] = $user;
         }
 
-        // Janis - dual role
+        // Jānis - abas lomas
         $janis = User::create([
             User::NAME => 'Jānis Auziņš',
             User::EMAIL => 'janis@meistari.local',
@@ -115,7 +115,7 @@ class DemoSeeder extends Seeder
         $this->masters['janis'] = $janis;
         $this->seekers['janis'] = $janis;
 
-        // Seekers
+        // Darba meklētāji
         foreach ($this->seekersData() as $key => $d) {
             $user = User::create([
                 User::NAME => $d['name'],
@@ -207,7 +207,7 @@ class DemoSeeder extends Seeder
         ];
     }
 
-    // ─── Categories ───────────────────────────────────────────────────────────
+    // --- Kategorijas ---
 
     private function loadCategories(): void
     {
@@ -222,14 +222,14 @@ class DemoSeeder extends Seeder
             ?? throw new \RuntimeException("Category not found: {$name}");
     }
 
-    // ─── Services ─────────────────────────────────────────────────────────────
+    // --- Pakalpojumi ---
 
     private function createServices(): void
     {
         Carbon::setTestNow(Carbon::now()->subDays(60));
 
         $services = [
-            // Andrejs - electrical
+            // Andrejs - elektriķis
             ['andrejs', 'Elektroinstalācijas darbi dzīvokļos', 'Iekšējie darbi', 350.00,
              'Veicu pilnu dzīvokļu elektroinstalāciju - rozešu, slēdžu montāža, elektrisko sadaļu uzstādīšana, vadu vads grīdā un sienās. Garantija 2 gadi. Darbus veicu rūpīgi un tīri.'],
             ['andrejs', 'Apgaismojuma montāža un konfigurācija', 'Apgaismojums', 25.00,
@@ -237,7 +237,7 @@ class DemoSeeder extends Seeder
             ['andrejs', 'Ārējā elektroinstalācija privātmājām', 'Ārējie darbi', 800.00,
              'Pieslēgšanās tīklam, āra apgaismojums, dārza rozetes, drošinātāju kastes montāža ārpusē. Strādāju ar sertificētiem materiāliem.'],
 
-            // Peteris - plumbing
+            // Pēteris - santehniķis
             ['peteris', 'Cauruļvadu uzstādīšana un remonts', 'Cauruļvadi', 30.00,
              'Ūdens un kanalizācijas cauruļvadu montāža, noplūžu novēršana, caurules nomaiņa. Ātri reaģēju avārijas gadījumos. Strādāju ar PPR, vara un plastmasas caurulēm.'],
             ['peteris', 'Sanitārtehnikas montāža', 'Sanitārtehnika', 200.00,
@@ -245,13 +245,13 @@ class DemoSeeder extends Seeder
             ['peteris', 'Ūdens sildītāja uzstādīšana', 'Ūdens sildītāji', 120.00,
              'Dažādu ražotāju ūdens sildītāju uzstādīšana un pieslēgšana. Nodrošinu arī vecā sildītāja demontāžu un utilizāciju. Darbs ar garantiju.'],
 
-            // Martins - painting
+            // Mārtiņš - krāsotājs
             ['martins', 'Dzīvokļu iekštelpu krāsošana', 'Iekšējā krāsošana', 400.00,
              'Sienu un griestu krāsošana ar kvalitatīvām materiālām. Ietver virsmas sagatavošanu, špaktelēšanu un gruntēšanu. Darbu veicu ātri un tīri, aizsargājot mēbeles.'],
             ['martins', 'Fasāžu krāsošana un renovācija', 'Fasāžu krāsošana', 15.00,
              'Ēku fasāžu krāsošana ar speciāliem āra krāsojumiem. Nodrošinu sastatnes un visu nepieciešamo aprīkojumu. Darbu var veikt gan mazām, gan lielām ēkām.'],
 
-            // Ilze - cleaning
+            // Ilze - uzkopšana
             ['ilze', 'Pēcremonta tīrīšana dzīvokļos', 'Pēcremonta tīrīšana', 180.00,
              'Rūpīga telpu uzkopšana pēc remonta darbiem - putekļu, apmetuma un krāsas palieku savākšana, logu, durvju un grīdu mazgāšana. Izmantoju profesionālu aprīkojumu.'],
             ['ilze', 'Biroju regulārā tīrīšana', 'Biroju tīrīšana', 15.00,
@@ -259,7 +259,7 @@ class DemoSeeder extends Seeder
             ['ilze', 'Dzīvokļa ģenerāltīrīšana', 'Dzīvokļu uzkopšana', 130.00,
              'Pilna dzīvokļa ģenerāltīrīšana - ledusskapja mazgāšana iekšā, mikroviļņu krāsns, virtuves virsmas, vannas istaba, logu stikli, grīdas. Viss blizgst.'],
 
-            // Roberts - carpentry
+            // Roberts - galdniecība
             ['roberts', 'Mēbeļu izgatavošana pēc pasūtījuma', 'Iekšējais remonts', null,
              'Dizaina mēbeles pēc individuāla pasūtījuma - skapji, plaukti, virtuves mēbeles, galdi un krēsli. Strādāju ar dažādiem koku veidiem. Iespēja sniegt tāmi pēc rasējuma.'],
             ['roberts', 'Koka žogu izbūve', 'Ārējais remonts', 55.00,
@@ -267,7 +267,7 @@ class DemoSeeder extends Seeder
             ['roberts', 'Iekšdurvju uzstādīšana', 'Iekšējais remonts', 160.00,
              'Iekštelpu durvju montāža ar visu furnitūru - eņģes, slēdzenes, sliekšņi. Strādāju arī ar čuguna durvīm. Precīzs mērījums un perfekta montāža.'],
 
-            // Linda - landscaping
+            // Linda - dārzkopība
             ['linda', 'Dārza kopšana un zāles pļaušana', 'Zāles pļaušana', 20.00,
              'Regulāra dārza kopšana un zāliena pļaušana ar profesionālu aprīkojumu. Nodrošinu arī zāles savākšanu un utilizāciju. Pieejama regulāra apkalpošana visas vasaras garumā.'],
             ['linda', 'Dārza stādīšana un labiekārtošana', 'Stādīšana', 280.00,
@@ -275,13 +275,13 @@ class DemoSeeder extends Seeder
             ['linda', 'Sniega tīrīšana privātīpašumā', 'Sniega tīrīšana', 18.00,
              'Piebraucamā ceļa, dārza taciņu un terases tīrīšana no sniega. Arī apkaisīšana ar smiltīm/sāli. Ātrs atsaucības laiks - būšu pie jums 2 stundu laikā.'],
 
-            // Janis - tiling
+            // Jānis - flīzēšana
             ['janis', 'Flīžu klāšana virtuvēs un vannas istabās', 'Iekšējais remonts', 25.00,
              'Keramikas, akmens un mozaīkas flīžu klāšana. Precīzs darbs ar minimālu šuvju platumu. Iekļauj pamatnes sagatavošanu un hidroizolāciju. Liela pieredze sudrabainā un sarežģītā zīmējumā.'],
             ['janis', 'Grīdas flīžu klāšana lielās platībās', 'Iekšējais remonts', 18.00,
              'Lielu laukumu flīzēšana - priekšnami, gaiteņi, terases. Darbu veicu ātri un precīzi. Varu strādāt gan ar pieejamiem materiāliem, gan palīdzēt ar materiālu izvēli.'],
 
-            // Kristine - window cleaning
+            // Kristīne - logu mazgāšana
             ['kristine', 'Logu mazgāšana daudzdzīvokļu mājām', 'Stiklu pakalpojumi', 3.00,
              'Logu ārpuses un iekšpuses mazgāšana dzīvokļos un daudzdzīvokļu mājās. Cena norādīta par vienu logu vērtni. Izmantoju profesionālos tīrīšanas līdzekļus bez strīpām.'],
             ['kristine', 'Karkasu un rāmju mazgāšana', 'Karkasu mazgāšana', 15.00,
@@ -303,7 +303,7 @@ class DemoSeeder extends Seeder
             ]);
         }
 
-        // A few service applications (seekers contacting masters about services)
+        // Daži pakalpojumu pieteikumi
         Carbon::setTestNow(Carbon::now()->subDays(10));
         $andrejs1 = Service::where(Service::USER_ID, $this->masters['andrejs']->getId())->first();
         if ($andrejs1) {
@@ -330,14 +330,14 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(null);
     }
 
-    // Jobs, Applications, Proposals, Escrow
+    // --- Darbi, Pieteikumi, Piedāvājumi, Depozīts ---
 
     private function createJobsAndApplications(): void
     {
         $m = $this->masters;
         $s = $this->seekers;
 
-        // TONIJS (5 jobs)
+        // --- TONIJS (5 darba sludinājumi) ---
 
         // 1. OPEN - andrejs
         Carbon::setTestNow(Carbon::now()->subDays(4));
@@ -511,9 +511,9 @@ class DemoSeeder extends Seeder
             Review::COMMENT => 'Lieliski darbi! Roberts strādāja ļoti rūpīgi, terase izskatās kā jauna. Iesaku.',
         ]);
 
-        // ANNA (4 jobs)
+        // --- ANNA (4 darba sludinājumi) ---
 
-        // 6. OPEN - 2 pending apps
+        // 6. OPEN - 2 pieteikumi
         Carbon::setTestNow(Carbon::now()->subDays(2));
         $j6 = $this->makeJob($s['anna'], 'Vannas istabas flīžu nomaiņa', $this->c('Iekšējais remonts'), 600.00, ['Jūrmala'],
             'Vannas istabā (6 kv.m.) nepieciešams nomainīt vecās sienu flīzes ar jaunām. Flīzes un materiāli pieejami. Vajadzīgs tikai darbs.');
@@ -528,7 +528,7 @@ class DemoSeeder extends Seeder
             ->where(Application::USER_ID, $m['roberts']->getId())->first(),
             $m['roberts'], PriceProposalStatusEnum::PENDING, 620.00);
 
-        // 7. OPEN - shortlisted, martins negotiating
+        // 7. OPEN - shortlisted, martins sarunās
         Carbon::setTestNow(Carbon::now()->subDays(5));
         $j7 = $this->makeJob($s['anna'], 'Balkona krāsošana - 2 kārtas', $this->c('Iekšējā krāsošana'), 400.00, ['Jūrmala'],
             'Balkons ap 8 kv.m. Sienas un grīda jākrāso. Vēlamos krāsas toņus izvēlēšos kopā ar meistaru. Laiks nav steidzams.');
@@ -618,14 +618,14 @@ class DemoSeeder extends Seeder
             Review::COMMENT => 'Ilze strādāja ātri un rūpīgi. Birojs izskatās lieliski. Nelielas komentāri par loga stūriem, bet kopumā ļoti apmierināta.',
         ]);
 
-        // ── KARLIS (4 jobs) ──────────────────────────────────────────────────
+        // --- KĀRLIS (4 darba sludinājumi) ---
 
-        // 10. OPEN - 0 apps
+        // 10. OPEN - 0 pieteikumi
         Carbon::setTestNow(Carbon::now()->subDays(1));
         $this->makeJob($s['karlis'], 'Elektroinstalācija garāžā', $this->c('Iekšējie darbi'), 400.00, ['Liepāja'],
             'Garāžā nepieciešams izviest elektroinstalāciju - 3 rozetes, 2 lampu punkti un drošinātāju kaste. Garāža 24 kv.m., no nulles.');
 
-        // 11. IN_PROGRESS - martins (second conv with martins, same conv as anna->martins if same pair - actually different pair karlis+martins)
+        // 11. IN_PROGRESS - martins
         Carbon::setTestNow(Carbon::now()->subDays(10));
         $j11 = $this->makeJob($s['karlis'], 'Dzīvokļa sienu krāsošana', $this->c('Iekšējā krāsošana'), 600.00, ['Liepāja'],
             '3-istabu dzīvoklis, sienas un griesti jākrāso. Materiāli pieejami. Vēlos skaistu, tīru darbu bez strīpām un pilēšanas.');
@@ -717,9 +717,9 @@ class DemoSeeder extends Seeder
             JobDispute::REASON => 'Meistare ir paveikusi tikai daļu no vienotajiem darbiem - dzīvžogs nav ierīkots un stādījumi ir nepareizas šķirnes. Lūdzu atgriezt daļu maksājuma.',
         ]);
 
-        // ── MADARA (4 jobs) ──────────────────────────────────────────────────
+        // --- MADARA (4 darba sludinājumi) ---
 
-        // 14. OPEN - 1 pending (kristine)
+        // 14. OPEN - 1 pieteikums (kristine)
         Carbon::setTestNow(Carbon::now()->subDays(3));
         $j14 = $this->makeJob($s['madara'], 'Logu mazgāšana privātmājā', $this->c('Stiklu pakalpojumi'), 120.00, ['Valmiera'],
             'Privātmājā 14 logi jānomazgā iekšpusē un ārpusē. Māja 2 stāvi. Vēlams paveikt šajā nedēļā.');
@@ -810,9 +810,9 @@ class DemoSeeder extends Seeder
             Review::COMMENT => 'Pēteris ieradās precīzi laikā un uzstādīja sildītāju ļoti ātri. Viss darbojas perfekti. Iesaku!',
         ]);
 
-        // ── GUNARS (5 jobs) ──────────────────────────────────────────────────
+        // --- GUNĀRS (5 darba sludinājumi) ---
 
-        // 18. OPEN - roberts shortlisted with nego; andrejs, janis pending
+        // 18. OPEN - roberts shortlisted, sarunas; andrejs, janis gaida
         Carbon::setTestNow(Carbon::now()->subDays(6));
         $j18 = $this->makeJob($s['gunars'], 'Koka žogs apkārt dārzam', $this->c('Ārējais remonts'), 1500.00, ['Daugavpils'],
             'Nepieciešams uzbūvēt koka žogu ap 60 metru garumā. Žogam jābūt izturīgam, ar vārtiem. Impregnēts koks vai teraskoks - pēc meistara ieteikuma.');
@@ -844,7 +844,7 @@ class DemoSeeder extends Seeder
             [$s['gunars'], 'Labi, esmu nosūtījis pretpiedāvājumu 1300.', -6, true],
         ]);
 
-        // 19. OPEN - 1 pending (andrejs)
+        // 19. OPEN - 1 pieteikums (andrejs)
         Carbon::setTestNow(Carbon::now()->subDays(3));
         $j19 = $this->makeJob($s['gunars'], 'Ārējā apgaismojuma uzstādīšana mājai', $this->c('Ārējie darbi'), 350.00, ['Daugavpils'],
             'Nepieciešams uzstādīt 6 ārējās sienas lampu un 1 automātisko kustības sensoru. Kabeļi jāpavada mājas ārpusē.');
@@ -931,9 +931,9 @@ class DemoSeeder extends Seeder
             'Detalizēta tāme - varu nosūtīt pēc apskates.');
         $j22->update([JobRequest::STATUS => JobStatusEnum::CANCELLED]);
 
-        // ── JANIS AS SEEKER (3 jobs) ─────────────────────────────────────────
+        // --- JĀNIS KĀ DARBA MEKLĒTĀJS (3 darba sludinājumi) ---
 
-        // 23. OPEN - roberts pending
+        // 23. OPEN - roberts gaida
         Carbon::setTestNow(Carbon::now()->subDays(4));
         $j23 = $this->makeJob($s['janis'], 'Flīžu labošana vannas istabā', $this->c('Iekšējais remonts'), 150.00, ['Rīga'],
             'Vannas istabā 3 flīzes ir ieplaisājušas un viena ir atkritusi. Vajadzīga nomaiņa un fugas atjaunošana ap tām.');
@@ -988,7 +988,7 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(null);
     }
 
-    // ─── Helpers ──────────────────────────────────────────────────────────────
+    // --- Palīgfunkcijas ---
 
     private function makeJob(User $seeker, string $title, Category $cat, float $budget,
         array $location, string $description): JobRequest
@@ -1075,7 +1075,7 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(null);
     }
 
-    // ─── Category Suggestions ─────────────────────────────────────────────────
+    // --- Kategoriju ieteikumi ---
 
     private function createCategorySuggestions(): void
     {
@@ -1083,7 +1083,7 @@ class DemoSeeder extends Seeder
         $apkureId = $this->cats['Apkure un siltumtehnika']->getId();
         $darzaId = $this->cats['Dārza darbi']->getId();
 
-        // 3 pending suggestions
+        // 3 gaida apstiprināšanu
         Carbon::setTestNow(Carbon::now()->subDays(3));
         $s1 = CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['tonijs']->getId(),
@@ -1092,7 +1092,7 @@ class DemoSeeder extends Seeder
             CategorySuggestion::NOTE => 'Bieži meklēju šo pakalpojumu ziemā, bet nav atbilstošas kategorijas.',
             CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING,
         ]);
-        // Attach a job to this suggestion to show the pending banner
+        // Pievieno darbu, lai parādītu gaidīšanas joslu
         $job = JobRequest::where(JobRequest::USER_ID, $this->seekers['tonijs']->getId())
             ->where(JobRequest::STATUS, JobStatusEnum::OPEN)->first();
         if ($job) {
@@ -1120,7 +1120,7 @@ class DemoSeeder extends Seeder
             CategorySuggestion::STATUS => CategorySuggestionStatusEnum::PENDING,
         ]);
 
-        // 2 approved suggestions
+        // 2 apstiprināti ieteikumi
         Carbon::setTestNow(Carbon::now()->subDays(20));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['karlis']->getId(),
@@ -1143,7 +1143,7 @@ class DemoSeeder extends Seeder
             CategorySuggestion::REVIEW_NOTE => 'Izveidota kā jauna apakškategorija zem Tīrīšanas.',
         ]);
 
-        // 1 rejected suggestion
+        // 1 noraidīts ieteikums
         Carbon::setTestNow(Carbon::now()->subDays(25));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->seekers['gunars']->getId(),
@@ -1155,7 +1155,7 @@ class DemoSeeder extends Seeder
             CategorySuggestion::REVIEW_NOTE => 'Platforma ir paredzēta mājas pakalpojumiem, auto mazgāšana nav mūsu fokusā.',
         ]);
 
-        // 1 merged suggestion
+        // 1 sapludināts ieteikums
         Carbon::setTestNow(Carbon::now()->subDays(35));
         CategorySuggestion::create([
             CategorySuggestion::SUGGESTED_BY_USER_ID => $this->masters['linda']->getId(),
@@ -1171,13 +1171,13 @@ class DemoSeeder extends Seeder
         Carbon::setTestNow(null);
     }
 
-    // ─── Notifications ────────────────────────────────────────────────────────
+    // --- Paziņojumi ---
 
     private function createNotifications(): void
     {
         $now = Carbon::now();
 
-        // Admin - new category suggestions
+        // Administrators - jauni kategoriju ieteikumi
         $this->notify($this->admin, NotificationTypeEnum::NEW_CATEGORY_SUGGESTION,
             'Jauns kategorijas ieteikums', 'Tonijs Bāliņš ieteicis jaunu kategoriju: "Sniega tīrīšana no jumtiem".',
             '/admin/category-suggestions', $now->copy()->subDays(3));
@@ -1188,7 +1188,7 @@ class DemoSeeder extends Seeder
             'Jauns kategorijas ieteikums', 'Anna Riekstiņa ieteikusi apakškategoriju: "Dārza laistīšanas sistēmas".',
             '/admin/category-suggestions', null);
 
-        // Andrejs (master) - various events
+        // Andrejs (meistars) - dažādi notikumi
         $this->notify($this->masters['andrejs'], NotificationTypeEnum::APPLICATION_SHORTLISTED,
             'Jūsu pieteikums apsvērts', 'Tonijs Bāliņš apsvēra jūsu pieteikumu darbam "Elektroinstalācija viesistabā".',
             null, $now->copy()->subDays(3));
@@ -1202,7 +1202,7 @@ class DemoSeeder extends Seeder
             'Darba apmaksa saņemta', 'Jānis Auziņš ir apmaksājis darbu "Elektroapgaismojums mājas dārzā".',
             null, null);
 
-        // Peteris (master)
+        // Pēteris (meistars)
         $this->notify($this->masters['peteris'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Tonijs Bāliņš pieņēmis jūsu pieteikumu darbam "Kanalizācijas caurules noplūde".',
             null, $now->copy()->subDays(8));
@@ -1210,7 +1210,7 @@ class DemoSeeder extends Seeder
             'Piedāvājums pieņemts', 'Jūsu cenu piedāvājums 350 EUR ir pieņemts.',
             null, $now->copy()->subDays(8));
 
-        // Martins (master)
+        // Mārtiņš (meistars)
         $this->notify($this->masters['martins'], NotificationTypeEnum::APPLICATION_SHORTLISTED,
             'Jūsu pieteikums apsvērts', 'Anna Riekstiņa apsvēra jūsu pieteikumu "Balkona krāsošana".',
             null, $now->copy()->subDays(4));
@@ -1218,7 +1218,7 @@ class DemoSeeder extends Seeder
             'Jauns pretpiedāvājums', 'Anna Riekstiņa nosūtīja pretpiedāvājumu 370 EUR.',
             null, null);
 
-        // Ilze (master)
+        // Ilze (meistars)
         $this->notify($this->masters['ilze'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Tonijs Bāliņš pieņēmis jūsu pieteikumu "Pēcremonta tīrīšana".',
             null, $now->copy()->subDays(20));
@@ -1226,7 +1226,7 @@ class DemoSeeder extends Seeder
             'Darba apmaksa saņemta', 'Tonijs Bāliņš ir apmaksājis darbu.',
             null, $now->copy()->subDays(18));
 
-        // Roberts (master)
+        // Roberts (meistars)
         $this->notify($this->masters['roberts'], NotificationTypeEnum::NEW_REVIEW,
             'Jauna atsauksme!', 'Tonijs Bāliņš atstāja 5 zvaigžņu atsauksmi par jūsu darbu.',
             null, $now->copy()->subDays(28));
@@ -1234,7 +1234,7 @@ class DemoSeeder extends Seeder
             'Jūsu pieteikums apsvērts', 'Gunārs Bērziņš apsvēra jūsu pieteikumu "Koka žogs".',
             null, $now->copy()->subDays(5));
 
-        // Linda (master)
+        // Linda (meistars)
         $this->notify($this->masters['linda'], NotificationTypeEnum::NEW_REVIEW,
             'Jauna atsauksme!', 'Gunārs Bērziņš atstāja 5 zvaigžņu atsauksmi.',
             null, $now->copy()->subDays(48));
@@ -1246,7 +1246,7 @@ class DemoSeeder extends Seeder
             '/jobs/' . JobRequest::where(JobRequest::STATUS, JobStatusEnum::DISPUTED)->first()?->getId(),
             null);
 
-        // Tonijs (seeker)
+        // Tonijs (darba meklētājs)
         $this->notify($this->seekers['tonijs'], NotificationTypeEnum::NEW_APPLICATION,
             'Jauns pieteikums', 'Andrejs Bērziņš pieteicās jūsu darbam "Elektroinstalācija viesistabā".',
             null, $now->copy()->subDays(3));
@@ -1254,7 +1254,7 @@ class DemoSeeder extends Seeder
             'Darbs atzīmēts kā pabeigts', 'Ilze Liepiņa atzīmēja darbu "Pēcremonta tīrīšana" kā pabeigtu.',
             null, null);
 
-        // Anna (seeker)
+        // Anna (darba meklētāja)
         $this->notify($this->seekers['anna'], NotificationTypeEnum::NEW_APPLICATION,
             'Jauns pieteikums', 'Jānis Auziņš pieteicās jūsu darbam "Vannas istabas flīžu nomaiņa".',
             null, $now->copy()->subDays(1));
@@ -1265,7 +1265,7 @@ class DemoSeeder extends Seeder
             'Jūsu darbs novērtēts', 'Atsauksme pievienota par pabeigto biroja tīrīšanu.',
             null, $now->copy()->subDays(33));
 
-        // Karlis (seeker)
+        // Kārlis (darba meklētājs)
         $this->notify($this->seekers['karlis'], NotificationTypeEnum::JOB_DISPUTED,
             'Strīda pieteikums nosūtīts', 'Jūsu strīds par darbu ir iesniegts un tiek izskatīts.',
             null, $now->copy()->subDays(10));
@@ -1273,7 +1273,7 @@ class DemoSeeder extends Seeder
             'Kategorijas ieteikums noraidīts', 'Jūsu ieteikums "Auto mazgāšana" ir noraidīts.',
             null, $now->copy()->subDays(20));
 
-        // Gunars (seeker)
+        // Gunārs (darba meklētājs)
         $this->notify($this->seekers['gunars'], NotificationTypeEnum::JOB_MARKED_COMPLETE,
             'Darbs atzīmēts kā pabeigts', 'Kristīne Saulīte atzīmēja darbu "Logu mazgāšana" kā pabeigtu. Lūdzu apstipriniet.',
             null, null);
