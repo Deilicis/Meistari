@@ -24,12 +24,12 @@ const statusOrder: Record<JobStatus, number> = {
 };
 
 const currentIndex = computed(() => statusOrder[props.job.status] ?? -1);
-const accentColor  = computed(() => props.isClient ? 'bg-emerald-500' : 'bg-gold');
-const textAccent   = computed(() => props.isClient ? 'text-emerald-600' : 'text-yellow-600');
+const accentColor = computed(() => props.isClient ? 'bg-emerald-500' : 'bg-gold');
+const textAccent = computed(() => props.isClient ? 'text-emerald-600' : 'text-yellow-600');
 
 function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
     const stepIdx = i;
-    const curr    = currentIndex.value;
+    const curr = currentIndex.value;
     if (props.job.status === 'cancelled' || props.job.status === 'disputed') {
         return stepIdx < curr ? 'done' : 'future';
     }

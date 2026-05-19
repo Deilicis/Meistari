@@ -14,15 +14,15 @@ const emit = defineEmits<{
     submit: [data: { name: string; parent_id: number | null; icon: string | null }];
 }>();
 
-const name     = ref('');
+const name = ref('');
 const parentId = ref<number | null>(props.parentCategory?.id ?? null);
-const icon     = ref('');
+const icon = ref('');
 
 watch(() => props.show, (val) => {
     if (val) {
-        name.value     = '';
+        name.value = '';
         parentId.value = props.parentCategory?.id ?? null;
-        icon.value     = '';
+        icon.value = '';
     }
 });
 

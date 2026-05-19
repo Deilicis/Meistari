@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 defineProps<{ show: boolean }>();
-const emit  = defineEmits<{ close: []; submitted: [reason: string | null] }>();
+const emit = defineEmits<{ close: []; submitted: [reason: string | null] }>();
 const reason = ref('');
 const { t } = useI18n();
 

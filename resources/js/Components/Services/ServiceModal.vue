@@ -37,7 +37,7 @@ const form = ref({
 });
 
 const parentSelection = ref<PickerSelection | null>(null);
-const childSelection  = ref<PickerSelection | null>(null);
+const childSelection = ref<PickerSelection | null>(null);
 
 const selectedParentCategory = computed(() =>
     parentSelection.value?.type === 'category'
@@ -75,20 +75,20 @@ watch(() => props.show, (isOpen) => {
         if (cat) {
             if (cat.parent_id === null) {
                 parentSelection.value = { type: 'category', id: cat.id, name: cat.name };
-                childSelection.value  = null;
+                childSelection.value = null;
             } else {
                 const parent = props.categories.find(c => c.id === cat.parent_id);
                 parentSelection.value = parent ? { type: 'category', id: parent.id, name: parent.name } : null;
-                childSelection.value  = { type: 'category', id: cat.id, name: cat.name };
+                childSelection.value = { type: 'category', id: cat.id, name: cat.name };
             }
         } else {
             parentSelection.value = null;
-            childSelection.value  = null;
+            childSelection.value = null;
         }
     } else {
         form.value = { id: null, title: '', description: '', price: '', location: [], is_active: true };
         parentSelection.value = null;
-        childSelection.value  = null;
+        childSelection.value = null;
     }
 });
 

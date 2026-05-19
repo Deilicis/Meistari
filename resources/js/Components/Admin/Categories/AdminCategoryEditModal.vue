@@ -14,16 +14,16 @@ const emit = defineEmits<{
     submit: [data: { name: string; icon: string | null; parent_id: number | null; regenerate_slug: boolean }];
 }>();
 
-const name           = ref('');
-const icon           = ref('');
-const parentId       = ref<number | null>(null);
+const name = ref('');
+const icon = ref('');
+const parentId = ref<number | null>(null);
 const regenerateSlug = ref(false);
 
 watch(() => props.show, (val) => {
     if (val && props.category) {
-        name.value           = props.category.name;
-        icon.value           = props.category.icon ?? '';
-        parentId.value       = props.category.parent_id;
+        name.value = props.category.name;
+        icon.value = props.category.icon ?? '';
+        parentId.value = props.category.parent_id;
         regenerateSlug.value = false;
     }
 });

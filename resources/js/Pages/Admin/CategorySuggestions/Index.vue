@@ -50,22 +50,22 @@ const props = defineProps<{
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
-const activeTab  = ref<'pending' | 'resolved'>('pending');
+const activeTab = ref<'pending' | 'resolved'>('pending');
 const processing = ref(false);
 
 const actingSuggestion = ref<Suggestion | null>(null);
 const showApprove = ref(false);
-const showReject  = ref(false);
-const showMerge   = ref(false);
+const showReject = ref(false);
+const showMerge = ref(false);
 
-const approveIcon     = ref('');
-const rejectNote      = ref('');
-const mergeTargetId   = ref<number | null>(null);
+const approveIcon = ref('');
+const rejectNote = ref('');
+const mergeTargetId = ref<number | null>(null);
 
 // ─── Local list copies (so we can remove items on success without full page reload) ─
 
-const pendingList   = ref<Suggestion[]>([...props.pending]);
-const resolvedList  = ref<Suggestion[]>([...props.resolved]);
+const pendingList = ref<Suggestion[]>([...props.pending]);
+const resolvedList = ref<Suggestion[]>([...props.resolved]);
 
 // ─── Computed ─────────────────────────────────────────────────────────────────
 
@@ -84,26 +84,26 @@ const flatCategories = computed(() => {
 
 function openApprove(s: Suggestion) {
     actingSuggestion.value = s;
-    approveIcon.value      = '';
-    showApprove.value      = true;
+    approveIcon.value = '';
+    showApprove.value = true;
 }
 
 function openReject(s: Suggestion) {
     actingSuggestion.value = s;
-    rejectNote.value       = '';
-    showReject.value       = true;
+    rejectNote.value = '';
+    showReject.value = true;
 }
 
 function openMerge(s: Suggestion) {
     actingSuggestion.value = s;
-    mergeTargetId.value    = null;
-    showMerge.value        = true;
+    mergeTargetId.value = null;
+    showMerge.value = true;
 }
 
 function closeAll() {
     showApprove.value = false;
-    showReject.value  = false;
-    showMerge.value   = false;
+    showReject.value = false;
+    showMerge.value = false;
     actingSuggestion.value = null;
 }
 

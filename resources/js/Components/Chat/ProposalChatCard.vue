@@ -24,13 +24,13 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const loading       = ref<string | null>(null);
-const showAccept    = ref(false);
-const showReject    = ref(false);
-const showWithdraw  = ref(false);
-const showCounter   = ref(false);
+const loading = ref<string | null>(null);
+const showAccept = ref(false);
+const showReject = ref(false);
+const showWithdraw = ref(false);
+const showCounter = ref(false);
 
-const isOwn     = computed(() => props.proposal.proposed_by.id === props.currentUserId);
+const isOwn = computed(() => props.proposal.proposed_by.id === props.currentUserId);
 const isPending = computed(() => props.proposal.is_pending);
 
 const statusCls: Record<string, string> = {

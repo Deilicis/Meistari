@@ -24,18 +24,18 @@ const props = defineProps<{
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
-const expanded       = ref<Set<number>>(new Set());
-const loading        = ref<string | null>(null);
+const expanded = ref<Set<number>>(new Set());
+const loading = ref<string | null>(null);
 
-const showCreate  = ref(false);
-const showEdit    = ref(false);
-const showDelete  = ref(false);
-const showMerge   = ref(false);
+const showCreate = ref(false);
+const showEdit = ref(false);
+const showDelete = ref(false);
+const showMerge = ref(false);
 
-const createParent   = ref<AdminCategory | null>(null);
-const editingCat     = ref<AdminCategory | null>(null);
-const deletingCat    = ref<AdminCategory | null>(null);
-const mergingSource  = ref<AdminCategory | null>(null);
+const createParent = ref<AdminCategory | null>(null);
+const editingCat = ref<AdminCategory | null>(null);
+const deletingCat = ref<AdminCategory | null>(null);
+const mergingSource = ref<AdminCategory | null>(null);
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -58,22 +58,22 @@ function toggle(id: number) {
 
 function openCreate(parent?: AdminCategory) {
     createParent.value = parent ?? null;
-    showCreate.value   = true;
+    showCreate.value = true;
 }
 
 function openEdit(cat: AdminCategory) {
     editingCat.value = cat;
-    showEdit.value   = true;
+    showEdit.value = true;
 }
 
 function openDelete(cat: AdminCategory) {
     deletingCat.value = cat;
-    showDelete.value  = true;
+    showDelete.value = true;
 }
 
 function openMerge(cat: AdminCategory) {
     mergingSource.value = cat;
-    showMerge.value     = true;
+    showMerge.value = true;
 }
 
 function reload() {

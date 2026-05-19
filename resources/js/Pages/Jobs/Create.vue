@@ -40,7 +40,7 @@ const form = useForm({
 });
 
 const parentSelection = ref<PickerSelection | null>(null);
-const childSelection  = ref<PickerSelection | null>(null);
+const childSelection = ref<PickerSelection | null>(null);
 
 const selectedParentCategory = computed(() =>
     parentSelection.value?.type === 'category'
@@ -48,7 +48,7 @@ const selectedParentCategory = computed(() =>
         : null
 );
 const parentHasChildren = computed(() => (selectedParentCategory.value?.children?.length ?? 0) > 0);
-const showChildPicker   = computed(() => parentSelection.value?.type === 'category' && parentHasChildren.value);
+const showChildPicker = computed(() => parentSelection.value?.type === 'category' && parentHasChildren.value);
 
 watch(parentSelection, () => { childSelection.value = null; });
 

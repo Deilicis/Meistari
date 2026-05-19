@@ -19,12 +19,12 @@ const emit = defineEmits<{
 }>();
 
 const selectedParentId = ref<string | number>('');
-const selectedChildId  = ref<string | number>('');
+const selectedChildId = ref<string | number>('');
 
 function initFromValue(val: string | number) {
     if (val === '' || val === null || val === undefined) {
         selectedParentId.value = '';
-        selectedChildId.value  = '';
+        selectedChildId.value = '';
         return;
     }
 
@@ -33,7 +33,7 @@ function initFromValue(val: string | number) {
     // Is it a top-level category?
     if (props.categories.some(c => c.id === numVal)) {
         selectedParentId.value = numVal;
-        selectedChildId.value  = '';
+        selectedChildId.value = '';
         return;
     }
 
@@ -41,7 +41,7 @@ function initFromValue(val: string | number) {
     for (const parent of props.categories) {
         if (parent.children?.some(c => c.id === numVal)) {
             selectedParentId.value = parent.id;
-            selectedChildId.value  = numVal;
+            selectedChildId.value = numVal;
             return;
         }
     }
@@ -60,7 +60,7 @@ const selectClass = 'border-gray-300 focus:border-navy focus:ring-navy rounded-m
 function onParentChange(event: Event) {
     const val = (event.target as HTMLSelectElement).value;
     selectedParentId.value = val;
-    selectedChildId.value  = '';
+    selectedChildId.value = '';
 
     if (!val) {
         emit('update:modelValue', '');

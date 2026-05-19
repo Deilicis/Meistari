@@ -15,8 +15,8 @@ const emit = defineEmits<{
 }>();
 
 const amount = ref<string>('');
-const note   = ref<string>('');
-const error  = ref<string | null>(null);
+const note = ref<string>('');
+const error = ref<string | null>(null);
 
 function handleSubmit() {
     const n = parseFloat(amount.value);
@@ -27,13 +27,13 @@ function handleSubmit() {
     error.value = null;
     emit('submit', n, note.value.trim() || null);
     amount.value = '';
-    note.value   = '';
+    note.value = '';
 }
 
 function handleClose() {
     amount.value = '';
-    note.value   = '';
-    error.value  = null;
+    note.value = '';
+    error.value = null;
     emit('close');
 }
 </script>

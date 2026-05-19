@@ -107,25 +107,25 @@ const currentUserId = computed(() => page.props.auth.user.id);
 
 // ─── Reactive state ───────────────────────────────────────────────────────────
 
-const job     = ref<JobData>(props.job);
-const apps    = ref<PageApplication[]>(props.applications ?? []);
-const ownApp  = ref<PageApplication | null>(props.own_application);
+const job = ref<JobData>(props.job);
+const apps = ref<PageApplication[]>(props.applications ?? []);
+const ownApp = ref<PageApplication | null>(props.own_application);
 const actions = ref<PageAction[]>(props.allowed_actions);
 
-watch(() => props.job,              v => { job.value     = v; });
-watch(() => props.applications,     v => { apps.value    = v ?? []; });
-watch(() => props.own_application,  v => { ownApp.value  = v; });
+watch(() => props.job,              v => { job.value = v; });
+watch(() => props.applications,     v => { apps.value = v ?? []; });
+watch(() => props.own_application,  v => { ownApp.value = v; });
 watch(() => props.allowed_actions,  v => { actions.value = v; });
 
-const loading          = ref<string | null>(null);
+const loading = ref<string | null>(null);
 const showDisputeModal = ref(false);
-const showCancelModal  = ref(false);
+const showCancelModal = ref(false);
 
 // Per-application proposal modal state
-const counteringApp      = ref<PageApplication | null>(null);
-const freshProposalApp   = ref<PageApplication | null>(null);
-const acceptingProposal  = ref<PriceProposal | null>(null);
-const rejectingProposal  = ref<PriceProposal | null>(null);
+const counteringApp = ref<PageApplication | null>(null);
+const freshProposalApp = ref<PageApplication | null>(null);
+const acceptingProposal = ref<PriceProposal | null>(null);
+const rejectingProposal = ref<PriceProposal | null>(null);
 const withdrawingProposal = ref<PriceProposal | null>(null);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

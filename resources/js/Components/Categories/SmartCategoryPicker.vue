@@ -26,14 +26,14 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const containerRef = ref<HTMLElement | null>(null);
-const query        = ref('');
+const query = ref('');
 const showDropdown = ref(false);
-const results      = ref<CategorySearchResult>({ approved: [], pending: [] });
-const loading      = ref(false);
+const results = ref<CategorySearchResult>({ approved: [], pending: [] });
+const loading = ref(false);
 
-const showSuggestForm    = ref(false);
-const suggestionName     = ref('');
-const suggestionNote     = ref('');
+const showSuggestForm = ref(false);
+const suggestionName = ref('');
+const suggestionNote = ref('');
 const submittingSuggestion = ref(false);
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;

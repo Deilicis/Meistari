@@ -3,10 +3,10 @@ import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 defineProps<{ show: boolean; jobId: number }>();
-const emit  = defineEmits<{ close: []; submitted: [reason: string] }>();
+const emit = defineEmits<{ close: []; submitted: [reason: string] }>();
 
-const reason  = ref('');
-const error   = ref('');
+const reason = ref('');
+const error = ref('');
 const { t } = useI18n();
 
 function submit() {
@@ -16,12 +16,12 @@ function submit() {
     }
     emit('submitted', reason.value.trim());
     reason.value = '';
-    error.value  = '';
+    error.value = '';
 }
 
 function close() {
     reason.value = '';
-    error.value  = '';
+    error.value = '';
     emit('close');
 }
 </script>

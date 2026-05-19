@@ -21,13 +21,13 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const loading       = ref<string | null>(null);
-const showHistory   = ref(false);
-const showAcceptModal   = ref(false);
-const showRejectModal   = ref(false);
+const loading = ref<string | null>(null);
+const showHistory = ref(false);
+const showAcceptModal = ref(false);
+const showRejectModal = ref(false);
 const showWithdrawModal = ref(false);
-const showCounterModal  = ref(false);
-const showFreshModal    = ref(false);
+const showCounterModal = ref(false);
+const showFreshModal = ref(false);
 
 const pending = computed(() => props.proposals.pending);
 

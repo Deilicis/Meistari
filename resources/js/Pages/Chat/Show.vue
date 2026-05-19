@@ -63,11 +63,11 @@ const { t } = useI18n();
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
-const messageList   = ref<Message[]>([...props.messages]);
-const newMessage    = ref('');
-const sending       = ref(false);
-const messagesEnd   = ref<HTMLElement | null>(null);
-const textarea      = ref<HTMLTextAreaElement | null>(null);
+const messageList = ref<Message[]>([...props.messages]);
+const newMessage = ref('');
+const sending = ref(false);
+const messagesEnd = ref<HTMLElement | null>(null);
+const textarea = ref<HTMLTextAreaElement | null>(null);
 const sidebarSearch = ref('');
 
 const filteredConvs = computed(() => {
