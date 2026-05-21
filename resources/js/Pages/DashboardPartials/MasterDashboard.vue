@@ -55,7 +55,7 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
 <template>
     <div class="space-y-6">
 
-        <!-- Welcome banner -->
+        
         <div class="bg-navy rounded-2xl overflow-hidden">
             <div class="h-1 w-full bg-gold" />
             <div class="px-8 py-6">
@@ -81,10 +81,10 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
             </div>
         </div>
 
-        <!-- Stats -->
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-            <!-- Services stat -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
                 <div class="w-11 h-11 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
                     <BriefcaseIcon class="w-5 h-5 text-navy" />
@@ -106,7 +106,7 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
                 </div>
             </div>
 
-            <!-- Applications stat -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
                 <div class="w-11 h-11 rounded-xl bg-gold/10 flex items-center justify-center shrink-0">
                     <ClipboardDocumentListIcon class="w-5 h-5 text-gold" />
@@ -131,10 +131,10 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
 
         </div>
 
-        <!-- Two-column: services + applications -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- My services -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
                     <div>
@@ -189,7 +189,7 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
                 </ul>
             </div>
 
-            <!-- My applications -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
                     <div>

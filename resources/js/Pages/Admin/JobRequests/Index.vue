@@ -90,7 +90,7 @@ const formatDate = (d: string) =>
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -101,7 +101,7 @@ const formatDate = (d: string) =>
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Filters -->
+            
             <div class="flex flex-wrap items-center gap-3">
                 <div class="relative flex-1 max-w-sm">
                     <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -141,7 +141,7 @@ const formatDate = (d: string) =>
                 </button>
             </div>
 
-            <!-- Table -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
@@ -165,24 +165,24 @@ const formatDate = (d: string) =>
                             :key="job.id"
                             class="hover:bg-gray-50/60 transition-colors"
                         >
-                            <!-- Title + author -->
+                            
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-gray-900">{{ job.title }}</p>
                                 <p class="text-xs text-gray-400 mt-0.5">{{ job.user?.name }} · {{ job.user?.email }}</p>
                             </td>
 
-                            <!-- Category -->
+                            
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
                                 {{ job.category?.name ?? '-' }}
                             </td>
 
-                            <!-- Budget -->
+                            
                             <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
                                 <span v-if="job.budget">€{{ job.budget }}</span>
                                 <span v-else class="text-gray-400">-</span>
                             </td>
 
-                            <!-- Status -->
+                            
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
@@ -192,12 +192,12 @@ const formatDate = (d: string) =>
                                 </span>
                             </td>
 
-                            <!-- Date -->
+                            
                             <td class="px-6 py-4 text-gray-500 hidden lg:table-cell">
                                 {{ formatDate(job.created_at) }}
                             </td>
 
-                            <!-- Actions -->
+                            
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-1">
                                     <Link
@@ -221,7 +221,7 @@ const formatDate = (d: string) =>
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="jobRequests.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>Rāda {{ jobRequests.from }}-{{ jobRequests.to }} no {{ jobRequests.total }}</p>
                 <div class="flex items-center gap-1">
@@ -246,7 +246,7 @@ const formatDate = (d: string) =>
 
         </div>
 
-        <!-- Delete confirm -->
+        
         <ConfirmDialog
             :show="!!deleteTarget"
             title="Dzēst sludinājumu?"

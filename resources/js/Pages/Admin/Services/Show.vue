@@ -59,7 +59,7 @@ const masterLink = (service: Service) =>
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -97,7 +97,7 @@ const masterLink = (service: Service) =>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- Details -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Detaļas</h2>
@@ -133,7 +133,7 @@ const masterLink = (service: Service) =>
                     </div>
                 </div>
 
-                <!-- Master card -->
+                
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Meistars</h2>
@@ -182,7 +182,7 @@ const masterLink = (service: Service) =>
                 </div>
             </div>
 
-            <!-- Description -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">Apraksts</h2>
@@ -194,7 +194,7 @@ const masterLink = (service: Service) =>
 
         </div>
 
-        <!-- Delete confirm -->
+        
         <ConfirmDialog
             :show="showDeleteConfirm"
             title="Dzēst pakalpojumu?"

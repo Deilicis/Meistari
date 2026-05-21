@@ -85,7 +85,7 @@ const formatDate = (d: string) =>
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Status tabs -->
+            
             <div class="flex items-center gap-2 flex-wrap">
                 <button
                     v-for="tab in tabs"
@@ -100,7 +100,7 @@ const formatDate = (d: string) =>
                 </button>
             </div>
 
-            <!-- Table -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
@@ -166,7 +166,7 @@ const formatDate = (d: string) =>
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="complaints.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>Rāda {{ complaints.from }}-{{ complaints.to }} no {{ complaints.total }}</p>
                 <div class="flex items-center gap-1">

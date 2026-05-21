@@ -67,7 +67,7 @@ useClickOutside(container, () => { open.value = false; });
                 role="menu"
                 class="absolute right-0 top-full mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden"
             >
-                <!-- User header -->
+                
                 <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
                     <div class="flex items-center gap-2.5">
                         <img
@@ -97,10 +97,10 @@ useClickOutside(container, () => { open.value = false; });
                     </span>
                 </div>
 
-                <!-- Role switcher when user has both roles -->
+                
                 <RoleSwitcher v-if="hasBothRoles" @switched="open = false" />
 
-                <!-- Add-role links when user has only one role -->
+                
                 <div v-else class="px-4 py-3 border-t border-gray-100">
                     <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">{{ t('nav.add_role') }}</p>
                     <button
@@ -123,7 +123,7 @@ useClickOutside(container, () => { open.value = false; });
                     </button>
                 </div>
 
-                <!-- Nav links -->
+                
                 <div class="border-t border-gray-100 py-1">
                     <Link
                         :href="route('profile.edit')"
@@ -135,7 +135,7 @@ useClickOutside(container, () => { open.value = false; });
                     </Link>
                 </div>
 
-                <!-- Logout -->
+                
                 <div class="border-t border-gray-100 py-1">
                     <Link
                         :href="route('logout')"
@@ -151,7 +151,7 @@ useClickOutside(container, () => { open.value = false; });
         </Transition>
     </div>
 
-    <!-- Add-role modal (teleported outside dropdown) -->
+    
     <AddRoleModal
         v-if="addRoleModal"
         :show="addRoleModal !== null"

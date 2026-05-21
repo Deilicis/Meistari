@@ -15,8 +15,7 @@ import {
     ChatBubbleLeftIcon,
 } from '@heroicons/vue/24/outline';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
+// --- Tipi ---
 interface CategoryOption {
     id: number;
     name: string;
@@ -40,16 +39,14 @@ interface Suggestion {
     reviewed_at: string | null;
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// --- Props ---
 const props = defineProps<{
     pending:    Suggestion[];
     resolved:   Suggestion[];
     categories: CategoryOption[];
 }>();
 
-// ─── State ────────────────────────────────────────────────────────────────────
-
+// --- Stāvoklis ---
 const activeTab = ref<'pending' | 'resolved'>('pending');
 const processing = ref(false);
 
@@ -62,13 +59,11 @@ const approveIcon = ref('');
 const rejectNote = ref('');
 const mergeTargetId = ref<number | null>(null);
 
-// ─── Local list copies (so we can remove items on success without full page reload) ─
-
+// --- Lokālie sarakstu dublikāti (noņemšanai bez lapas pārlādes) ---
 const pendingList = ref<Suggestion[]>([...props.pending]);
 const resolvedList = ref<Suggestion[]>([...props.resolved]);
 
-// ─── Computed ─────────────────────────────────────────────────────────────────
-
+// --- Aprēķinātie ---
 const flatCategories = computed(() => {
     const out: { id: number; label: string }[] = [];
     for (const cat of props.categories) {
@@ -80,8 +75,7 @@ const flatCategories = computed(() => {
     return out;
 });
 
-// ─── Modal openers ────────────────────────────────────────────────────────────
-
+// --- Modālo logu atvēršana ---
 function openApprove(s: Suggestion) {
     actingSuggestion.value = s;
     approveIcon.value = '';
@@ -107,8 +101,7 @@ function closeAll() {
     actingSuggestion.value = null;
 }
 
-// ─── Actions ──────────────────────────────────────────────────────────────────
-
+// --- Darbības ---
 async function submitApprove() {
     if (!actingSuggestion.value || processing.value) return;
     processing.value = true;
@@ -164,8 +157,7 @@ async function submitMerge() {
     }
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
+// --- Palīgfunkcijas ---
 function formatDate(iso: string | null): string {
     if (!iso) return '-';
     return new Date(iso).toLocaleDateString('lv-LV', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -184,7 +176,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
     <AdminLayout>
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- Header -->
+            
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 rounded-xl bg-navy flex items-center justify-center">
                     <TagIcon class="w-5 h-5 text-white" />
@@ -195,7 +187,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                 </div>
             </div>
 
-            <!-- Tabs -->
+            
             <div class="flex gap-1 mb-6 border-b border-gray-200">
                 <button
                     @click="activeTab = 'pending'"
@@ -221,7 +213,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                 </button>
             </div>
 
-            <!-- ─── Pending tab ──────────────────────────────────────────────── -->
+            
             <div v-if="activeTab === 'pending'">
                 <div v-if="pendingList.length === 0" class="text-center py-16 text-gray-400">
                     <TagIcon class="w-10 h-10 mx-auto mb-3 text-gray-200" />
@@ -264,7 +256,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                                 </p>
                             </div>
 
-                            <!-- Actions -->
+                            
                             <div class="flex items-center gap-2 shrink-0">
                                 <button
                                     @click="openApprove(s)"
@@ -293,7 +285,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
                 </div>
             </div>
 
-            <!-- ─── Resolved tab ─────────────────────────────────────────────── -->
+            
             <div v-if="activeTab === 'resolved'">
                 <div v-if="resolvedList.length === 0" class="text-center py-16 text-gray-400">
                     <TagIcon class="w-10 h-10 mx-auto mb-3 text-gray-200" />
@@ -334,7 +326,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
             </div>
         </div>
 
-        <!-- ─── Approve modal ──────────────────────────────────────────────────── -->
+        
         <Teleport to="body">
             <div
                 v-if="showApprove && actingSuggestion"
@@ -383,7 +375,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
             </div>
         </Teleport>
 
-        <!-- ─── Reject modal ───────────────────────────────────────────────────── -->
+        
         <Teleport to="body">
             <div
                 v-if="showReject && actingSuggestion"
@@ -431,7 +423,7 @@ const statusBadge: Record<string, { label: string; cls: string }> = {
             </div>
         </Teleport>
 
-        <!-- ─── Merge modal ────────────────────────────────────────────────────── -->
+        
         <Teleport to="body">
             <div
                 v-if="showMerge && actingSuggestion"

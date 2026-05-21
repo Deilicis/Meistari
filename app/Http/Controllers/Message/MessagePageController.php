@@ -8,5 +8,4 @@ use App\Http\Controllers\Controller;
 
 class MessagePageController extends Controller
 {
-    //
 }

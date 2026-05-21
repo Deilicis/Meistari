@@ -147,15 +147,15 @@ function historyLabel(p: PriceProposal): string {
             <h2 class="text-sm font-bold text-navy">{{ t('proposals.title') }}</h2>
         </div>
 
-        <!-- Pending proposal exists -->
+        
         <template v-if="pending">
-            <!-- Accepted state -->
+            
             <div v-if="pending.status === 'accepted'" class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
                 <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">{{ t('proposals.accepted_header') }}</p>
                 <p class="text-2xl font-bold text-emerald-700">{{ formatMoney(pending.amount) }}</p>
             </div>
 
-            <!-- Active pending proposal -->
+            
             <template v-else>
                 <div class="mb-4">
                     <p class="text-2xl font-bold text-navy mb-1">{{ formatMoney(pending.amount) }}</p>
@@ -169,7 +169,7 @@ function historyLabel(p: PriceProposal): string {
                     </span>
                 </div>
 
-                <!-- Own proposal: only withdraw -->
+                
                 <div v-if="isOwn" class="space-y-2">
                     <p class="text-xs text-gray-500 font-medium">{{ t('proposals.own_awaiting') }}</p>
                     <button
@@ -182,7 +182,7 @@ function historyLabel(p: PriceProposal): string {
                     </button>
                 </div>
 
-                <!-- Recipient: accept / counter / reject -->
+                
                 <div v-else class="flex flex-col gap-2">
                     <button
                         v-if="proposals.can_accept"
@@ -212,7 +212,7 @@ function historyLabel(p: PriceProposal): string {
             </template>
         </template>
 
-        <!-- No pending proposal -->
+        
         <template v-else>
             <div class="text-center py-4">
                 <p v-if="proposals.history.length > 0" class="text-sm text-gray-500 mb-3">
@@ -232,7 +232,7 @@ function historyLabel(p: PriceProposal): string {
             </div>
         </template>
 
-        <!-- History accordion -->
+        
         <div v-if="proposals.history.length > 0" class="mt-4 border-t border-gray-100 pt-3">
             <button
                 @click="showHistory = !showHistory"
@@ -264,7 +264,7 @@ function historyLabel(p: PriceProposal): string {
         </div>
     </div>
 
-    <!-- Modals -->
+    
     <ConfirmAcceptProposalModal
         :show="showAcceptModal"
         :proposal="pending"

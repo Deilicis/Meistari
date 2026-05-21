@@ -41,10 +41,10 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
 
 <template>
     <div class="w-full">
-        <!-- Normal flow -->
+        
         <div v-if="job.status !== 'cancelled' && job.status !== 'disputed'" class="flex items-center gap-0">
             <template v-for="(step, i) in mainSteps" :key="step.key">
-                <!-- Step node -->
+                
                 <div class="flex flex-col items-center min-w-0">
                     <div
                         class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors"
@@ -68,7 +68,7 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
                         {{ step.label }}
                     </p>
                 </div>
-                <!-- Connector -->
+                
                 <div
                     v-if="i < mainSteps.length - 1"
                     class="h-0.5 flex-1 mx-1 mb-4 rounded transition-colors"
@@ -77,7 +77,7 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
             </template>
         </div>
 
-        <!-- Disputed branch -->
+        
         <div v-else-if="job.status === 'disputed'" class="flex items-center gap-3 py-2 px-4 bg-red-50 rounded-xl border border-red-200">
             <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center shrink-0">
                 <span class="text-white text-xs font-bold">!</span>
@@ -88,7 +88,7 @@ function stepState(step: Step, i: number): 'done' | 'active' | 'future' {
             </div>
         </div>
 
-        <!-- Cancelled -->
+        
         <div v-else class="flex items-center gap-3 py-2 px-4 bg-gray-50 rounded-xl border border-gray-200">
             <div class="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center shrink-0">
                 <span class="text-white text-xs font-bold">✕</span>

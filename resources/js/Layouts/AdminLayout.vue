@@ -62,14 +62,14 @@ const mobileNavLinkClass = (active: boolean) =>
 <template>
     <div class="min-h-screen bg-gray-100 font-sans">
         <nav class="bg-navy relative z-20" aria-label="Admin navigācija">
-            <!-- Accent line -->
+            
             <div class="h-0.5 w-full bg-red-500" />
 
-            <!-- Top row: logo + user controls -->
+            
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-14 items-center justify-between">
 
-                    <!-- Logo -->
+                    
                     <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari - sākumlapa">
                         <ApplicationLogo class="block h-8 w-auto object-contain brightness-0 invert" aria-hidden="true" />
                         <span class="text-lg font-extrabold tracking-widest uppercase text-white hidden sm:block">
@@ -77,7 +77,7 @@ const mobileNavLinkClass = (active: boolean) =>
                         </span>
                     </Link>
 
-                    <!-- Desktop right controls -->
+                    
                     <div class="hidden sm:flex items-center gap-3 shrink-0">
                         <span class="text-xs font-bold px-2.5 py-0.5 rounded-full" :class="roleBadgeClass">
                             {{ roleLabel }}
@@ -111,7 +111,7 @@ const mobileNavLinkClass = (active: boolean) =>
                         </Dropdown>
                     </div>
 
-                    <!-- Mobile hamburger -->
+                    
                     <div class="flex items-center sm:hidden">
                         <button
                             @click="mobileOpen = !mobileOpen"
@@ -126,7 +126,7 @@ const mobileNavLinkClass = (active: boolean) =>
                 </div>
             </div>
 
-            <!-- Bottom row: nav links (desktop) -->
+            
             <div class="hidden sm:block border-t border-white/10">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1">
                     <div class="flex items-center gap-0.5 overflow-x-auto">
@@ -185,7 +185,7 @@ const mobileNavLinkClass = (active: boolean) =>
                 </div>
             </div>
 
-            <!-- Mobile drawer -->
+            
             <div v-if="mobileOpen" class="sm:hidden border-t border-white/10">
                 <div class="px-3 py-2 space-y-1">
                     <Link :href="route('admin.dashboard')" :class="mobileNavLinkClass(route().current('admin.dashboard'))" @click="mobileOpen = false">
@@ -241,7 +241,7 @@ const mobileNavLinkClass = (active: boolean) =>
                     </template>
                 </div>
 
-                <!-- Mobile user section -->
+                
                 <div class="border-t border-white/10 px-4 py-3">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 bg-red-500 text-white">

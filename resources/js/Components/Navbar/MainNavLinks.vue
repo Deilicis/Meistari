@@ -40,7 +40,7 @@ function linkClass(active: boolean) {
             />
         </Link>
 
-        <!-- Master links -->
+        
         <template v-if="isMasterActive">
             <Link
                 :href="route('master.services.index')"
@@ -79,7 +79,7 @@ function linkClass(active: boolean) {
             </Link>
         </template>
 
-        <!-- Seeker links -->
+        
         <template v-if="isSeekerActive">
             <Link
                 :href="route('seeker.categories.index')"
@@ -118,7 +118,7 @@ function linkClass(active: boolean) {
             </Link>
         </template>
 
-        <!-- Always visible -->
+        
         <Link
             :href="route('chat.index')"
             :class="linkClass(route().current('chat.*'))"

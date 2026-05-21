@@ -30,7 +30,7 @@ const toggle = (i: number) => {
     <div class="min-h-screen flex flex-col font-sans bg-white">
         <WelcomeNav :isAuth="isAuth" />
 
-        <!-- Hero -->
+        
         <div class="bg-navy text-white py-14">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{{ t('static.contacts.hero_title') }}</h1>
@@ -38,11 +38,11 @@ const toggle = (i: number) => {
             </div>
         </div>
 
-        <!-- Content -->
+        
         <main class="flex-grow py-12">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                <!-- Contact cards -->
+                
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-12">
 
                     <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
@@ -74,7 +74,7 @@ const toggle = (i: number) => {
 
                 </div>
 
-                <!-- FAQ -->
+                
                 <div class="bg-navy rounded-2xl p-8">
                     <h2 class="text-xl font-bold text-white text-center mb-6">{{ t('static.contacts.faq_title') }}</h2>
 

@@ -80,7 +80,6 @@ const {
     errorMessage: t('jobs.delete_failed'),
 });
 
-// Applications modal
 const applicationsJob = ref<JobRequest | null>(null);
 const applicationsData = ref<JobApplication[]>([]);
 const loadingApplications = ref(false);
@@ -111,7 +110,6 @@ const onApplicationsUpdated = async () => {
     router.reload({ only: ['jobRequests'] });
 };
 
-// Review modal
 const reviewJobRequestId = ref<number | null>(null);
 const revieweeId = ref<number | null>(null);
 const revieweeName = ref('');
@@ -204,7 +202,7 @@ const categoryIcon = (job: JobRequest) => {
                         :key="job.id"
                         class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-stretch"
                     >
-                        <!-- Left: category icon -->
+                        
                         <div class="w-16 shrink-0 flex items-center justify-center px-3 border-r border-gray-100">
                             <div class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center">
                                 <component :is="categoryIcon(job)" v-if="categoryIcon(job)" class="w-5 h-5 text-navy/70" />
@@ -214,7 +212,7 @@ const categoryIcon = (job: JobRequest) => {
                             </div>
                         </div>
 
-                        <!-- Middle: category, status, title, description, chips -->
+                        
                         <div class="flex-1 min-w-0 px-4 py-4">
                             <div class="flex items-center gap-2 mb-1 flex-wrap">
                                 <span v-if="job.category" class="text-xs font-semibold text-gray-400 tracking-wide uppercase">
@@ -250,7 +248,7 @@ const categoryIcon = (job: JobRequest) => {
                             </div>
                         </div>
 
-                        <!-- Right: budget + app count + actions -->
+                        
                         <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[110px]">
                             <div class="text-right">
                                 <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatCurrency(job.budget) }}</span>

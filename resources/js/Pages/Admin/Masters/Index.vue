@@ -41,13 +41,11 @@ const props = defineProps<{
     filters: { search?: string };
 }>();
 
-// Search
 const search = ref(props.filters.search ?? '');
 const doSearch = () => {
     router.get(route('admin.masters.index'), { search: search.value || undefined }, { preserveState: true, replace: true });
 };
 
-// Edit modal
 const editModal = ref(false);
 const editTarget = ref<Master | null>(null);
 const editForm = useForm({ name: '', email: '', is_verified: false });
@@ -67,7 +65,6 @@ const submitEdit = () => {
     });
 };
 
-// Delete confirm
 const deleteTarget = ref<Master | null>(null);
 const deleteProcessing = ref(false);
 
@@ -93,7 +90,7 @@ const typeClass = (type: string | null) => type === 'company'
 
 <template>
     <AdminLayout>
-        <!-- Page header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -104,7 +101,7 @@ const typeClass = (type: string | null) => type === 'company'
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Search -->
+            
             <div class="flex items-center gap-3">
                 <div class="relative flex-1 max-w-sm">
                     <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -131,7 +128,7 @@ const typeClass = (type: string | null) => type === 'company'
                 </Link>
             </div>
 
-            <!-- Table -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
@@ -155,13 +152,13 @@ const typeClass = (type: string | null) => type === 'company'
                             :key="master.id"
                             class="hover:bg-gray-50/60 transition-colors"
                         >
-                            <!-- Name + email -->
+                            
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-gray-900">{{ master.name }}</p>
                                 <p class="text-xs text-gray-400 mt-0.5">{{ master.email }}</p>
                             </td>
 
-                            <!-- Type -->
+                            
                             <td class="px-6 py-4 hidden lg:table-cell">
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
@@ -171,17 +168,17 @@ const typeClass = (type: string | null) => type === 'company'
                                 </span>
                             </td>
 
-                            <!-- City -->
+                            
                             <td class="px-6 py-4 text-gray-600 hidden md:table-cell">
                                 {{ master.profile?.city ?? '-' }}
                             </td>
 
-                            <!-- Date -->
+                            
                             <td class="px-6 py-4 text-gray-500 hidden md:table-cell">
                                 {{ formatDate(master.created_at) }}
                             </td>
 
-                            <!-- Verified badge -->
+                            
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
@@ -195,7 +192,7 @@ const typeClass = (type: string | null) => type === 'company'
                                 </span>
                             </td>
 
-                            <!-- Actions -->
+                            
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-1">
                                     <Link
@@ -226,7 +223,7 @@ const typeClass = (type: string | null) => type === 'company'
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="masters.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>
                     Rāda {{ masters.from }}-{{ masters.to }} no {{ masters.total }}
@@ -253,7 +250,7 @@ const typeClass = (type: string | null) => type === 'company'
 
         </div>
 
-        <!-- Edit modal -->
+        
         <Modal :show="editModal" @close="editModal = false" maxWidth="md">
             <div class="bg-navy px-6 py-4 rounded-t-xl">
                 <h2 class="text-base font-bold text-white">Rediģēt meistaru</h2>
@@ -312,7 +309,7 @@ const typeClass = (type: string | null) => type === 'company'
             </form>
         </Modal>
 
-        <!-- Delete confirm -->
+        
         <ConfirmDialog
             :show="!!deleteTarget"
             title="Dzēst meistaru?"

@@ -63,7 +63,7 @@ watch(() => props.show, (newVal) => {
     <Modal :show="show" @close="emit('close')" maxWidth="3xl">
         <div v-if="service" class="flex flex-col max-h-[90vh]">
 
-            <!-- Header -->
+            
             <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div class="min-w-0">
                     <span v-if="service.category" class="inline-flex text-xs font-bold text-gold tracking-widest uppercase mb-1">
@@ -76,14 +76,14 @@ watch(() => props.show, (newVal) => {
                 </button>
             </div>
 
-            <!-- Scrollable body -->
+            
             <div class="overflow-y-auto flex-grow">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-0">
 
-                    <!-- Left: service details -->
+                    
                     <div class="md:col-span-2 p-6 border-r border-gray-100">
 
-                        <!-- Price info -->
+                        
                         <div class="flex items-center gap-3 mb-5 pb-5 border-b border-gray-100">
                             <div class="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
                                 <CurrencyEuroIcon class="w-5 h-5 text-gold" />
@@ -93,13 +93,13 @@ watch(() => props.show, (newVal) => {
                             </div>
                         </div>
 
-                        <!-- Description -->
+                        
                         <div class="mb-5">
                             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('services.detail_description') }}</h3>
                             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ service.description }}</p>
                         </div>
 
-                        <!-- Locations -->
+                        
                         <div v-if="service.location?.length">
                             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">{{ t('services.detail_locations') }}</h3>
                             <div class="flex flex-wrap gap-2">
@@ -115,11 +115,11 @@ watch(() => props.show, (newVal) => {
                         </div>
                     </div>
 
-                    <!-- Right: master profile -->
+                    
                     <div class="md:col-span-1 p-6 bg-gray-50/60">
                         <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-4">{{ t('services.detail_about_master') }}</h3>
 
-                        <!-- Avatar + name -->
+                        
                         <a :href="route('master.public-profile', service.user.id)" class="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity">
                             <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                                 <img
@@ -139,12 +139,12 @@ watch(() => props.show, (newVal) => {
                             </div>
                         </a>
 
-                        <!-- Bio -->
+                        
                         <p v-if="profile?.bio" class="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-4">
                             {{ profile.bio }}
                         </p>
 
-                        <!-- Experiences -->
+                        
                         <div v-if="profile?.experiences?.length" class="mb-4">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                                 <BriefcaseIcon class="w-3.5 h-3.5" />
@@ -162,7 +162,7 @@ watch(() => props.show, (newVal) => {
                             </ul>
                         </div>
 
-                        <!-- Portfolio thumbnails -->
+                        
                         <div v-if="profile?.portfolio_images?.length" class="mb-4">
                             <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                                 <PhotoIcon class="w-3.5 h-3.5" />
@@ -183,7 +183,7 @@ watch(() => props.show, (newVal) => {
                 </div>
             </div>
 
-            <!-- Footer -->
+            
             <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3 flex-shrink-0 bg-white">
                 <button
                     v-if="authUserId !== service.user?.id"

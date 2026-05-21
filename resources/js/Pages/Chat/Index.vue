@@ -89,7 +89,7 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
             </div>
 
             <template v-else>
-                <!-- Search -->
+                
                 <div class="relative mb-4">
                     <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                     <input
@@ -109,7 +109,7 @@ const initials = (name: string) => name.slice(0, 2).toUpperCase();
                     </button>
                 </div>
 
-                <!-- No search results -->
+                
                 <div v-if="filtered.length === 0" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
                     <p class="text-gray-500 text-sm" v-html="t('chat.no_search_results', { query: search.trim() })" />
                     <button

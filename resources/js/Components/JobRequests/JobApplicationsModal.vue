@@ -78,14 +78,13 @@ const reject = async (app: JobApplication) => {
     }
 };
 
-
 </script>
 
 <template>
     <Modal :show="show" @close="emit('close')" maxWidth="2xl">
         <div v-if="job" class="flex flex-col max-h-[85vh]">
 
-            <!-- Header -->
+            
             <div class="bg-navy px-6 py-4 flex items-start justify-between gap-4 flex-shrink-0">
                 <div class="min-w-0">
                     <p class="text-xs font-bold text-gold uppercase tracking-widest mb-0.5">{{ t('jobs.submitted_applications') }}</p>
@@ -104,17 +103,17 @@ const reject = async (app: JobApplication) => {
                 </div>
             </div>
 
-            <!-- Body -->
+            
             <div class="overflow-y-auto flex-grow p-5 space-y-3">
 
-                <!-- Empty state -->
+                
                 <div v-if="applications.length === 0" class="py-12 text-center">
                     <ClipboardDocumentListIcon class="w-10 h-10 text-gray-300 mx-auto mb-3" />
                     <p class="text-sm font-medium text-gray-500">{{ t('jobs.no_applications_msg') }}</p>
                     <p class="text-xs text-gray-400 mt-1">{{ t('jobs.applications_coming_msg') }}</p>
                 </div>
 
-                <!-- Application cards -->
+                
                 <div
                     v-for="app in applications"
                     :key="app.id"
@@ -126,7 +125,7 @@ const reject = async (app: JobApplication) => {
                             : 'border-gray-100 bg-white'"
                 >
                     <div class="flex items-start gap-3">
-                        <!-- Avatar -->
+                        
                         <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                             <img
                                 v-if="app.user.profile?.avatar"
@@ -161,20 +160,20 @@ const reject = async (app: JobApplication) => {
 
                             <p v-if="app.user.profile?.city" class="text-xs text-gray-400 mb-2">{{ app.user.profile.city }}</p>
 
-                            <!-- Price offer -->
+                            
                             <div v-if="app.price_offer !== null" class="flex items-center gap-1.5 text-sm font-semibold text-navy mb-2">
                                 <CurrencyEuroIcon class="w-4 h-4 text-gold" />
                                 {{ formatCurrency(app.price_offer) }}
                             </div>
 
-                            <!-- Cover letter -->
+                            
                             <p v-if="app.cover_letter" class="text-sm text-gray-600 leading-relaxed line-clamp-3">
                                 {{ app.cover_letter }}
                             </p>
                             <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                         </div>
 
-                        <!-- Actions (only for pending when job is open) -->
+                        
                         <div v-if="job.status === 'open' && app.status === 'pending'" class="flex flex-col gap-2 flex-shrink-0">
                             <button
                                 @click="accept(app)"
@@ -194,7 +193,7 @@ const reject = async (app: JobApplication) => {
                             </button>
                         </div>
 
-                        <!-- Review button for completed job -->
+                        
                         <div v-else-if="job.status === 'completed' && app.status === 'completed'" class="flex-shrink-0">
                             <button
                                 @click="emit('review', app.user.id, job.id)"
@@ -207,7 +206,7 @@ const reject = async (app: JobApplication) => {
                 </div>
             </div>
 
-            <!-- Footer -->
+            
             <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between gap-3 flex-shrink-0 bg-white">
                 <button
                     @click="emit('close')"

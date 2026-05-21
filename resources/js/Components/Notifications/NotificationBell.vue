@@ -118,7 +118,7 @@ onUnmounted(() => {
 
 <template>
     <div ref="container" class="relative">
-        <!-- Bell button -->
+        
         <button
             @click="open = !open"
             :aria-expanded="open"
@@ -137,7 +137,7 @@ onUnmounted(() => {
             </span>
         </button>
 
-        <!-- Dropdown -->
+        
         <div
             v-if="open"
             id="notification-dropdown"
@@ -147,7 +147,7 @@ onUnmounted(() => {
             @keydown="handleMenuKeydown"
             class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
         >
-            <!-- Header -->
+            
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                 <span class="text-sm font-bold text-navy">{{ t('notifications.ui.title') }}</span>
                 <button
@@ -159,7 +159,7 @@ onUnmounted(() => {
                 </button>
             </div>
 
-            <!-- List -->
+            
             <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-50">
                 <div
                     v-if="loading && notifications.length === 0"
@@ -188,7 +188,7 @@ onUnmounted(() => {
                     class="group relative flex gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors focus:outline-none focus-visible:bg-slate-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-navy"
                     :class="!n.is_read ? 'border-l-2 border-navy bg-navy/[0.02]' : 'border-l-2 border-transparent'"
                 >
-                    <!-- Icon -->
+                    
                     <div
                         class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                         :class="!n.is_read ? 'bg-navy/10' : 'bg-gray-100'"
@@ -201,7 +201,7 @@ onUnmounted(() => {
                         />
                     </div>
 
-                    <!-- Content -->
+                    
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-900 leading-tight" :class="!n.is_read ? 'text-navy' : ''">
                             {{ n.title }}
@@ -212,7 +212,7 @@ onUnmounted(() => {
                         <p class="text-[10px] text-gray-400 mt-1">{{ formatTime(n.created_at) }}</p>
                     </div>
 
-                    <!-- Delete -->
+                    
                     <button
                         @click="handleDelete($event, n.id)"
                         :aria-label="t('notifications.ui.delete')"

@@ -97,7 +97,7 @@ async function reject(app: SeekerJobApplication) {
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
-                <!-- Filter tabs -->
+                
                 <div class="flex flex-wrap gap-2 mb-5 px-4 sm:px-0">
                     <button
                         v-for="tab in tabs"
@@ -118,14 +118,14 @@ async function reject(app: SeekerJobApplication) {
                     </button>
                 </div>
 
-                <!-- Empty state -->
+                
                 <div v-if="filtered.length === 0" class="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-16 text-center">
                     <InboxArrowDownIcon class="w-10 h-10 text-gray-200 mx-auto mb-3" />
                     <h3 class="text-base font-semibold text-gray-900 mb-1">{{ t('applications.empty_job_title') }}</h3>
                     <p class="text-sm text-gray-400">{{ t('applications.empty_job_desc') }}</p>
                 </div>
 
-                <!-- Application cards -->
+                
                 <div v-else class="space-y-3">
                     <div
                         v-for="app in filtered"
@@ -134,7 +134,7 @@ async function reject(app: SeekerJobApplication) {
                         :class="statusClasses[app.status].borderClass"
                     >
                         <div class="flex items-start gap-4">
-                            <!-- Avatar -->
+                            
                             <div class="shrink-0">
                                 <img
                                     v-if="app.applicant?.avatar_url"
@@ -150,7 +150,7 @@ async function reject(app: SeekerJobApplication) {
                                 </div>
                             </div>
 
-                            <!-- Content -->
+                            
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-start justify-between gap-2 flex-wrap">
                                     <div>

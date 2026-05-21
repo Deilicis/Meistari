@@ -75,7 +75,7 @@ const startChat = async () => {
         <div class="py-8">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
 
-                <!-- Profile header -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <div class="flex items-start gap-5">
                         <div class="w-20 h-20 rounded-2xl bg-navy flex items-center justify-center text-white font-bold text-xl flex-shrink-0 overflow-hidden">
@@ -113,7 +113,7 @@ const startChat = async () => {
                                 </span>
                             </div>
 
-                            <!-- Rating summary -->
+                            
                             <div v-if="avg_rating !== null" class="flex items-center gap-2">
                                 <div class="flex items-center gap-0.5">
                                     <StarIconSolid
@@ -143,7 +143,7 @@ const startChat = async () => {
                     </div>
                 </div>
 
-                <!-- Experiences -->
+                
                 <div v-if="profile?.experiences?.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <BriefcaseIcon class="w-4 h-4" />
@@ -162,7 +162,7 @@ const startChat = async () => {
                     </ul>
                 </div>
 
-                <!-- Portfolio -->
+                
                 <div v-if="profile?.portfolio_images?.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <PhotoIcon class="w-4 h-4" />
@@ -180,7 +180,7 @@ const startChat = async () => {
                     </div>
                 </div>
 
-                <!-- Reviews -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">

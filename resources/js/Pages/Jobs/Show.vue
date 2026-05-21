@@ -34,8 +34,7 @@ import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 import type { JobStatus } from '@/types/jobLifecycle';
 import type { ProposalState, PriceProposal } from '@/types/proposal';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
+// --- Tipi ---
 type ViewerRole = 'owner' | 'applicant' | 'accepted_master' | 'admin';
 type AppStatus = 'pending' | 'shortlisted' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
 type PageAction =
@@ -86,8 +85,7 @@ interface JobData {
     pending_category_suggestion?: { id: number; name: string; status: string; review_note: string | null } | null;
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// --- Props ---
 const props = defineProps<{
     job: JobData;
     viewer_role: ViewerRole;
@@ -98,15 +96,13 @@ const props = defineProps<{
     proposals: ProposalState | null;
 }>();
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
-
+// --- Autorizācija ---
 const { t } = useI18n();
 
 const page = usePage<{ auth: { user: { id: number } } }>();
 const currentUserId = computed(() => page.props.auth.user.id);
 
-// ─── Reactive state ───────────────────────────────────────────────────────────
-
+// --- Reaktīvais stāvoklis ---
 const job = ref<JobData>(props.job);
 const apps = ref<PageApplication[]>(props.applications ?? []);
 const ownApp = ref<PageApplication | null>(props.own_application);
@@ -128,8 +124,7 @@ const acceptingProposal = ref<PriceProposal | null>(null);
 const rejectingProposal = ref<PriceProposal | null>(null);
 const withdrawingProposal = ref<PriceProposal | null>(null);
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
+// --- Palīgfunkcijas ---
 const has = (action: PageAction) => actions.value.includes(action);
 
 const showAppsSection = computed(
@@ -189,8 +184,7 @@ const appStatusBadgeClass: Record<AppStatus, string> = {
     cancelled:   'bg-red-100 text-red-600',
 };
 
-// ─── Lifecycle actions ────────────────────────────────────────────────────────
-
+// --- Dzīves cikla darbības ---
 async function postLifecycle(action: string, body: Record<string, unknown> = {}) {
     if (loading.value) return;
     loading.value = action;
@@ -241,8 +235,7 @@ async function handleDelete() {
     }
 }
 
-// ─── Application actions (owner) ─────────────────────────────────────────────
-
+// --- Pieteikuma darbības (īpašnieks) ---
 async function handleShortlist(app: PageApplication) {
     loading.value = `shortlist-${app.id}`;
     try {
@@ -326,8 +319,7 @@ async function handleFreshProposal(app: PageApplication, amount: number, note: s
     }
 }
 
-// ─── Own application (applicant / master) ────────────────────────────────────
-
+// --- Savs pieteikums (pieteicējs / meistars) ---
 async function handleWithdraw() {
     if (!ownApp.value) return;
     loading.value = 'withdraw';
@@ -342,8 +334,7 @@ async function handleWithdraw() {
     }
 }
 
-// ─── Chat ─────────────────────────────────────────────────────────────────────
-
+// --- Čats ---
 async function handleChat() {
     if (!props.chat) return;
     if (props.chat.conversation_id) {
@@ -367,7 +358,7 @@ async function handleChat() {
     <AuthenticatedLayout>
         <div class="max-w-3xl mx-auto px-4 py-8 space-y-5">
 
-            <!-- Header -->
+            
             <div class="flex items-start justify-between gap-4">
                 <div class="min-w-0">
                     <Link
@@ -388,7 +379,7 @@ async function handleChat() {
                 <JobStatusBadge :status="job.status" :label="job.status_label" class="shrink-0 mt-1" />
             </div>
 
-            <!-- Disputed banner -->
+            
             <div v-if="job.status === 'disputed'" class="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl">
                 <ShieldExclamationIcon class="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                 <div>
@@ -397,13 +388,13 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Cancelled banner -->
+            
             <div v-else-if="job.status === 'cancelled'" class="flex gap-3 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
                 <XCircleIcon class="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
                 <p class="text-sm text-gray-500">{{ t('jobs.cancelled_msg') }}</p>
             </div>
 
-            <!-- Category suggestion banner (owner only) -->
+            
             <template v-if="viewer_role === 'owner' && job.pending_category_suggestion">
                 <div
                     v-if="job.pending_category_suggestion.status === 'pending'"
@@ -430,7 +421,7 @@ async function handleChat() {
                 </div>
             </template>
 
-            <!-- Timeline -->
+            
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <JobLifecycleTimeline
                     :job="job"
@@ -438,7 +429,7 @@ async function handleChat() {
                 />
             </div>
 
-            <!-- Proposal sidebar (applicant / accepted_master) -->
+            
             <JobProposalSidebar
                 v-if="proposals && (viewer_role === 'applicant' || viewer_role === 'accepted_master')"
                 :proposals="proposals"
@@ -446,7 +437,7 @@ async function handleChat() {
                 :current-user-id="currentUserId"
             />
 
-            <!-- Actions panel -->
+            
             <div v-if="showActionPanel" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <h2 class="text-sm font-bold text-navy mb-3">{{ t('jobs.available_actions') }}</h2>
                 <div class="flex flex-wrap gap-2">
@@ -525,7 +516,7 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Chat -->
+            
             <div v-if="showChat" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between gap-4">
                     <div>
@@ -545,7 +536,7 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Applications list (owner / admin) -->
+            
             <div v-if="showAppsSection" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-sm font-bold text-navy flex items-center gap-2">
@@ -576,7 +567,7 @@ async function handleChat() {
                         }"
                     >
                         <div class="flex items-start gap-3">
-                            <!-- Avatar -->
+                            
                             <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
                                 <img
                                     v-if="app.user.profile?.avatar"
@@ -597,7 +588,7 @@ async function handleChat() {
                                         class="text-xs font-semibold px-2 py-0.5 rounded-full"
                                         :class="appStatusBadgeClass[app.status]"
                                     >{{ t('statuses.application.' + app.status) }}</span>
-                                    <!-- Pending proposal amount badge -->
+                                    
                                     <span
                                         v-if="app.pending_proposal"
                                         class="flex items-center gap-0.5 text-xs font-bold text-navy"
@@ -615,7 +606,7 @@ async function handleChat() {
                                 <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                             </div>
 
-                            <!-- Per-application buttons (pending / shortlisted, owner only, open jobs only) -->
+                            
                             <div
                                 v-if="(app.status === 'pending' || app.status === 'shortlisted') && viewer_role === 'owner' && job.status === 'open'"
                                 class="flex flex-col gap-1.5 shrink-0"
@@ -629,7 +620,7 @@ async function handleChat() {
                                     <StarIcon class="w-3.5 h-3.5" />
                                     {{ t('jobs.shortlist_btn') }}
                                 </button>
-                                <!-- Proposal-based accept (shows price inline) - only when master proposed -->
+                                
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="acceptingProposal = app.pending_proposal"
@@ -638,7 +629,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.accept_proposal_btn', { price: formatMoney(app.pending_proposal.amount) }) }}
                                 </button>
-                                <!-- Proposal-based counter - only when master proposed -->
+                                
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="counteringApp = app"
@@ -647,7 +638,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.counter_price_btn') }}
                                 </button>
-                                <!-- No proposal yet: submit fresh -->
+                                
                                 <button
                                     v-else-if="!app.pending_proposal"
                                     @click="freshProposalApp = app"
@@ -656,7 +647,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.propose_price_btn') }}
                                 </button>
-                                <!-- Reject proposal - only when master proposed -->
+                                
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id !== currentUserId"
                                     @click="rejectingProposal = app.pending_proposal"
@@ -665,7 +656,7 @@ async function handleChat() {
                                 >
                                     {{ t('jobs.reject_proposal_btn') }}
                                 </button>
-                                <!-- Withdraw - only when owner proposed it themselves -->
+                                
                                 <button
                                     v-if="app.pending_proposal && app.pending_proposal.proposed_by.id === currentUserId"
                                     @click="withdrawingProposal = app.pending_proposal"
@@ -680,7 +671,7 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Own application (applicant) -->
+            
             <div v-if="ownApp && viewer_role === 'applicant'" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.your_application') }}</h2>
                 <div class="space-y-3">
@@ -703,7 +694,7 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Assigned master card (owner) -->
+            
             <div v-if="job.master && (viewer_role === 'owner' || viewer_role === 'admin')" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <h2 class="text-sm font-bold text-navy mb-3">{{ t('jobs.accepted_master_card') }}</h2>
                 <div class="flex items-center gap-3">
@@ -720,7 +711,7 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Escrow info -->
+            
             <div v-if="job.escrow" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.escrow_title') }}</h2>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -748,13 +739,13 @@ async function handleChat() {
                 </div>
             </div>
 
-            <!-- Job details -->
+            
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
                 <h2 class="text-sm font-bold text-navy">{{ t('jobs.info_title') }}</h2>
                 <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{{ job.description }}</p>
 
                 <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
-                    <!-- Client (non-owner views) -->
+                    
                     <div v-if="viewer_role !== 'owner'" class="flex items-start gap-2">
                         <UserIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -766,7 +757,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Budget -->
+                    
                     <div v-if="job.budget" class="flex items-start gap-2">
                         <CurrencyEuroIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -775,7 +766,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Agreed price -->
+                    
                     <div v-if="job.agreed_price" class="flex items-start gap-2">
                         <BanknotesIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -784,7 +775,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Deadline -->
+                    
                     <div v-if="job.deadline" class="flex items-start gap-2">
                         <CalendarIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -793,7 +784,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Location -->
+                    
                     <div v-if="job.location?.length" class="flex items-start gap-2">
                         <MapPinIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -802,7 +793,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Created -->
+                    
                     <div class="flex items-start gap-2">
                         <ClockIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -811,7 +802,7 @@ async function handleChat() {
                         </div>
                     </div>
 
-                    <!-- Completed -->
+                    
                     <div v-if="job.completed_at" class="flex items-start gap-2">
                         <CheckCircleIcon class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                         <div>
@@ -821,7 +812,7 @@ async function handleChat() {
                     </div>
                 </div>
 
-                <!-- Images -->
+                
                 <div v-if="job.images?.length" class="pt-2 border-t border-gray-100">
                     <p class="text-xs text-gray-500 mb-2">{{ t('jobs.photos_label') }}</p>
                     <div class="grid grid-cols-3 gap-2">
@@ -849,7 +840,7 @@ async function handleChat() {
             @submitted="handleCancelSubmit"
         />
 
-        <!-- Per-application proposal modals (owner) -->
+        
         <ConfirmAcceptProposalModal
             :show="acceptingProposal !== null"
             :proposal="acceptingProposal"

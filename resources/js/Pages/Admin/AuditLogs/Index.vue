@@ -31,7 +31,6 @@ const props = defineProps<{
     filters: { action?: string; user_id?: string; type?: string };
 }>();
 
-// Filters
 const filterAction = ref(props.filters.action ?? '');
 const filterType = ref(props.filters.type ?? '');
 
@@ -50,13 +49,11 @@ const clearFilters = () => {
 
 const hasFilters = () => !!props.filters.action || !!props.filters.type;
 
-// Expanded rows
 const expandedId = ref<number | null>(null);
 const toggleExpand = (id: number) => {
     expandedId.value = expandedId.value === id ? null : id;
 };
 
-// Helpers
 const HIDDEN_FIELDS = new Set(['password', 'remember_token']);
 
 const modelName = (type: string) => type.split('\\').pop() ?? type;
@@ -101,7 +98,7 @@ const formatValue = (v: any): string => {
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -112,7 +109,7 @@ const formatValue = (v: any): string => {
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Filters -->
+            
             <div class="flex flex-wrap items-center gap-3">
                 <FunnelIcon class="w-4 h-4 text-gray-400 shrink-0" />
 
@@ -150,7 +147,7 @@ const formatValue = (v: any): string => {
                 </button>
             </div>
 
-            <!-- Table -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
@@ -172,23 +169,23 @@ const formatValue = (v: any): string => {
                         </tr>
 
                         <template v-for="log in auditLogs.data" :key="log.id">
-                            <!-- Main row -->
+                            
                             <tr
                                 class="border-t border-gray-50 hover:bg-gray-50/60 transition-colors cursor-pointer"
                                 @click="toggleExpand(log.id)"
                             >
-                                <!-- Expand chevron -->
+                                
                                 <td class="px-4 py-3 text-gray-300">
                                     <ChevronDownIcon v-if="expandedId === log.id" class="w-4 h-4 text-navy/40" />
                                     <ChevronRightIcon v-else class="w-4 h-4" />
                                 </td>
 
-                                <!-- User -->
+                                
                                 <td class="px-4 py-3">
                                     <span class="font-medium text-gray-900">{{ log.user?.name ?? 'Sistēma' }}</span>
                                 </td>
 
-                                <!-- Action badge -->
+                                
                                 <td class="px-4 py-3">
                                     <span
                                         class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
@@ -198,34 +195,34 @@ const formatValue = (v: any): string => {
                                     </span>
                                 </td>
 
-                                <!-- Object -->
+                                
                                 <td class="px-4 py-3 text-gray-700">
                                     <span class="font-medium">{{ modelName(log.auditable_type) }}</span>
                                     <span class="text-gray-400 text-xs ml-1">#{{ log.auditable_id }}</span>
                                 </td>
 
-                                <!-- Change count -->
+                                
                                 <td class="px-4 py-3 text-gray-500 hidden md:table-cell">
                                     {{ changeCount(log) }}
                                 </td>
 
-                                <!-- IP -->
+                                
                                 <td class="px-4 py-3 text-gray-400 font-mono text-xs hidden lg:table-cell">
                                     {{ log.ip_address ?? '-' }}
                                 </td>
 
-                                <!-- Time -->
+                                
                                 <td class="px-4 py-3 text-gray-400 text-xs hidden md:table-cell whitespace-nowrap">
                                     {{ formatDate(log.created_at) }}
                                 </td>
                             </tr>
 
-                            <!-- Expanded detail row -->
+                            
                             <tr v-if="expandedId === log.id" class="bg-gray-50/80 border-t border-gray-100">
                                 <td colspan="7" class="px-6 py-4">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                        <!-- Old values -->
+                                        
                                         <div v-if="log.action !== 'created' && log.old_values">
                                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Iepriekšējās vērtības</p>
                                             <div class="space-y-1">
@@ -240,7 +237,7 @@ const formatValue = (v: any): string => {
                                             </div>
                                         </div>
 
-                                        <!-- New values -->
+                                        
                                         <div v-if="log.action !== 'deleted' && log.new_values">
                                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                                                 {{ log.action === 'created' ? 'Vērtības' : 'Jaunās vērtības' }}
@@ -257,7 +254,7 @@ const formatValue = (v: any): string => {
                                             </div>
                                         </div>
 
-                                        <!-- Deleted values -->
+                                        
                                         <div v-if="log.action === 'deleted' && log.old_values">
                                             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Dzēstās vērtības</p>
                                             <div class="space-y-1">
@@ -280,7 +277,7 @@ const formatValue = (v: any): string => {
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="auditLogs.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>Rāda {{ auditLogs.from }}-{{ auditLogs.to }} no {{ auditLogs.total }}</p>
                 <div class="flex items-center gap-1">

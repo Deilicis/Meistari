@@ -109,7 +109,7 @@ const formatDateTime = (d: string) =>
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -147,7 +147,7 @@ const formatDateTime = (d: string) =>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- Details -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Detaļas</h2>
@@ -196,7 +196,7 @@ const formatDateTime = (d: string) =>
                     </div>
                 </div>
 
-                <!-- Seeker card -->
+                
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Pieteicējs</h2>
@@ -229,7 +229,7 @@ const formatDateTime = (d: string) =>
                 </div>
             </div>
 
-            <!-- Description -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">Apraksts</h2>
@@ -239,7 +239,7 @@ const formatDateTime = (d: string) =>
                 </div>
             </div>
 
-            <!-- Applications -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">
@@ -267,7 +267,7 @@ const formatDateTime = (d: string) =>
                             :key="app.id"
                             class="hover:bg-gray-50/60 transition-colors"
                         >
-                            <!-- Master -->
+                            
                             <td class="px-6 py-4">
                                 <Link
                                     :href="route('admin.masters.show', app.user.id)"
@@ -278,18 +278,18 @@ const formatDateTime = (d: string) =>
                                 <p class="text-xs text-gray-400 mt-0.5">{{ app.user.email }}</p>
                             </td>
 
-                            <!-- Price offer -->
+                            
                             <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
                                 <span v-if="app.price_offer">€{{ app.price_offer }}</span>
                                 <span v-else class="text-gray-400">-</span>
                             </td>
 
-                            <!-- Cover letter -->
+                            
                             <td class="px-6 py-4 text-gray-500 hidden lg:table-cell max-w-xs">
                                 {{ truncate(app.cover_letter) }}
                             </td>
 
-                            <!-- Status -->
+                            
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
@@ -299,7 +299,7 @@ const formatDateTime = (d: string) =>
                                 </span>
                             </td>
 
-                            <!-- Date -->
+                            
                             <td class="px-6 py-4 text-gray-500 hidden md:table-cell whitespace-nowrap">
                                 {{ formatDate(app.created_at) }}
                             </td>
@@ -310,7 +310,7 @@ const formatDateTime = (d: string) =>
 
         </div>
 
-        <!-- Delete confirm -->
+        
         <ConfirmDialog
             :show="showDeleteConfirm"
             title="Dzēst sludinājumu?"

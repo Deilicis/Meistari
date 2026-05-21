@@ -54,7 +54,7 @@ const jobStatusClasses: Record<JobStatus, string> = {
 <template>
     <div class="space-y-6">
 
-        <!-- Welcome banner -->
+        
         <div class="bg-navy rounded-2xl overflow-hidden">
             <div class="h-1 w-full bg-emerald-400" />
             <div class="px-8 py-6">
@@ -80,10 +80,10 @@ const jobStatusClasses: Record<JobStatus, string> = {
             </div>
         </div>
 
-        <!-- Stats -->
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-            <!-- Listings stat -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
                 <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
                     <ClipboardDocumentListIcon class="w-5 h-5 text-emerald-500" />
@@ -104,7 +104,7 @@ const jobStatusClasses: Record<JobStatus, string> = {
                 </div>
             </div>
 
-            <!-- New applications stat -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-start gap-4">
                 <div class="w-11 h-11 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
                     <UserGroupIcon class="w-5 h-5 text-navy/50" />
@@ -125,10 +125,10 @@ const jobStatusClasses: Record<JobStatus, string> = {
 
         </div>
 
-        <!-- Two-column: job requests + received applications -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- My listings -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
                     <div>
@@ -204,7 +204,7 @@ const jobStatusClasses: Record<JobStatus, string> = {
                 </ul>
             </div>
 
-            <!-- Received applications -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
                     <div>

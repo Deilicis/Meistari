@@ -81,7 +81,7 @@ const submit = () => {
 
         <form @submit.prevent="submit" class="space-y-4">
 
-            <!-- Lomas izvēle -->
+            
             <div>
                 <div class="grid grid-cols-2 gap-2 mb-3">
                     <button
@@ -121,7 +121,7 @@ const submit = () => {
                 <InputError class="mt-1" :message="form.errors.role" />
             </div>
 
-            <!-- Profila veida izvēle -->
+            
             <div>
                 <InputLabel :value="t('auth.register.register_as')" class="mb-2 text-xs text-gray-500 font-medium" />
                 <div class="flex items-center gap-6">
@@ -140,7 +140,7 @@ const submit = () => {
 
             <div class="border-t border-gray-100 pt-4 space-y-4">
 
-                <!-- Privātpersona: vārds un uzvārds -->
+                
                 <div v-if="isIndividual" class="grid grid-cols-2 gap-3">
                     <div>
                         <InputLabel for="first_name" :value="t('auth.register.first_name')" />
@@ -165,7 +165,7 @@ const submit = () => {
                     <InputError class="col-span-2 -mt-2" :message="form.errors.name" />
                 </div>
 
-                <!-- Uzņēmums: uzņēmuma nosaukums -->
+                
                 <div v-else>
                     <InputLabel for="company_name" :value="t('auth.register.company_name')" />
                     <input
@@ -178,7 +178,7 @@ const submit = () => {
                     <InputError class="mt-1" :message="form.errors.name" />
                 </div>
 
-                <!-- E-pasta lauks -->
+                
                 <FormField
                     id="email"
                     type="email"
@@ -187,7 +187,7 @@ const submit = () => {
                     :error="form.errors.email"
                 />
 
-                <!-- Paroles lauki -->
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <FormField id="password" type="password" :label="t('auth.register.password_label')" v-model="form.password" :error="form.errors.password" />
                     <FormField id="password_confirmation" type="password" :label="t('auth.register.confirm_password')" v-model="form.password_confirmation" :error="form.errors.password_confirmation" />
@@ -195,7 +195,7 @@ const submit = () => {
             </div>
 
             <div class="pt-2 space-y-3">
-                <!-- Reģistrācijas poga -->
+                
                 <PrimaryButton
                     class="w-full justify-center py-2.5"
                     :class="{ 'opacity-50': form.processing }"
@@ -211,7 +211,7 @@ const submit = () => {
                     <span v-else>{{ t('auth.register.submit') }}</span>
                 </PrimaryButton>
 
-                <!-- Saite uz autorizācijas lapu -->
+                
                 <p class="text-center text-sm text-gray-500">
                     {{ t('auth.register.has_account') }}
                     <Link :href="route('login')" class="font-semibold text-navy hover:text-navy-hover underline underline-offset-4 transition-colors">

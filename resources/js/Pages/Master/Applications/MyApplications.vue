@@ -63,7 +63,6 @@ const seekerName = (app: ApplicationWithJobRequest): string => {
     return parts.length ? parts.join(' ') : (user?.name ?? '-');
 };
 
-// Review modal
 const reviewJobRequestId = ref<number | null>(null);
 const revieweeId = ref<number | null>(null);
 const revieweeName = ref('');
@@ -87,7 +86,6 @@ const closeReview = () => {
     revieweeName.value = '';
 };
 
-// Cancel
 const cancelTarget = ref<ApplicationWithJobRequest | null>(null);
 const cancelling = ref(false);
 
@@ -115,7 +113,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
 
     <AuthenticatedLayout>
 
-        <!-- Page header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-gold" />
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
@@ -133,7 +131,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
 
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Filter tabs -->
+            
             <div class="flex gap-1 flex-wrap border-b border-gray-200">
                 <button
                     v-for="tab in tabs"
@@ -155,14 +153,14 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                 </button>
             </div>
 
-            <!-- Application cards -->
+            
             <div v-if="filteredApplications.length > 0" class="space-y-3">
                 <div
                     v-for="app in filteredApplications"
                     :key="app.id"
                     class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
                 >
-                    <!-- Top bar: title, category, status, date -->
+                    
                     <div
                         class="px-5 pt-5 pb-4 border-l-4"
                         :class="statusClasses[app.status].borderClass"
@@ -205,7 +203,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                         </div>
                     </div>
 
-                    <!-- Body: cover letter + price meta -->
+                    
                     <div class="px-5 pb-4 space-y-3">
                         <p v-if="app.cover_letter" class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {{ app.cover_letter }}
@@ -232,7 +230,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                         </div>
                     </div>
 
-                    <!-- Action bar -->
+                    
                     <div class="bg-gray-50 border-t border-gray-100 px-5 py-3 flex items-center justify-between gap-3">
                         <Link
                             v-if="canAccessJobPage(app)"
@@ -266,7 +264,7 @@ const canAccessJobPage = (app: ApplicationWithJobRequest) =>
                 </div>
             </div>
 
-            <!-- Empty state -->
+            
             <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-16 text-center">
                 <div class="mx-auto w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-4">
                     <ClipboardDocumentListIcon class="w-6 h-6 text-gold/60" />

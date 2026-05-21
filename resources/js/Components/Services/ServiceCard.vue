@@ -28,7 +28,7 @@ const formatPrice = (service: Service): string => {
 <template>
     <div class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-stretch">
 
-        <!-- Left: category icon -->
+        
         <div class="w-16 shrink-0 flex items-center justify-center px-3 border-r border-gray-100">
             <div class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center">
                 <component :is="iconComponent" v-if="iconComponent" class="w-5 h-5 text-navy/70" />
@@ -38,7 +38,7 @@ const formatPrice = (service: Service): string => {
             </div>
         </div>
 
-        <!-- Middle: category, status, title, description, location -->
+        
         <div class="flex-1 min-w-0 px-4 py-4">
             <div class="flex items-center gap-2 mb-1 flex-wrap">
                 <span v-if="service.category" class="text-xs font-semibold text-gray-400 tracking-wide uppercase">
@@ -70,7 +70,7 @@ const formatPrice = (service: Service): string => {
             </div>
         </div>
 
-        <!-- Right: price + edit/delete -->
+        
         <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[90px]">
             <span class="text-sm font-bold text-navy">{{ formatPrice(service) }}</span>
             <div class="flex items-center gap-1">

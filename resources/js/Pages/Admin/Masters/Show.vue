@@ -80,7 +80,7 @@ const typeClass = (type: string | null) => type === 'company'
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -131,7 +131,7 @@ const typeClass = (type: string | null) => type === 'company'
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- Profile info -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Profila informācija</h2>
@@ -181,7 +181,7 @@ const typeClass = (type: string | null) => type === 'company'
                             <p class="text-sm text-gray-700 leading-relaxed">{{ master.profile.bio }}</p>
                         </div>
 
-                        <!-- Experiences -->
+                        
                         <div v-if="master.profile?.experiences?.length" class="pt-2 border-t border-gray-50">
                             <p class="text-xs text-gray-400 mb-2 flex items-center gap-1">
                                 <BriefcaseIcon class="w-3.5 h-3.5" />
@@ -206,7 +206,7 @@ const typeClass = (type: string | null) => type === 'company'
                     </div>
                 </div>
 
-                <!-- Services -->
+                
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">
@@ -247,7 +247,7 @@ const typeClass = (type: string | null) => type === 'company'
                 </div>
             </div>
 
-            <!-- Reviews received -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">

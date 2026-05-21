@@ -40,10 +40,10 @@ watch(() => page.props.flash, () => displayToast(), { deep: true });
 <template>
     <div class="min-h-screen bg-gray-100 font-sans">
         <nav class="bg-navy relative z-20" aria-label="Galvenā navigācija">
-            <!-- Accent line -->
+            
             <div class="h-0.5 w-full" :class="accentDotClass" />
 
-            <!-- Top row: logo + right controls -->
+            
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-14 items-center justify-between">
                     <Link href="/" class="flex items-center gap-2.5 shrink-0" aria-label="Meistari - sākumlapa">
@@ -53,13 +53,13 @@ watch(() => page.props.flash, () => displayToast(), { deep: true });
                         </span>
                     </Link>
 
-                    <!-- Desktop right controls -->
+                    
                     <div class="hidden sm:flex items-center gap-2">
                         <NotificationBell :userId="user.id" />
                         <UserDropdown :user="user" />
                     </div>
 
-                    <!-- Mobile right controls -->
+                    
                     <div class="flex items-center gap-1 sm:hidden">
                         <NotificationBell :userId="user.id" />
                         <button
@@ -76,14 +76,14 @@ watch(() => page.props.flash, () => displayToast(), { deep: true });
                 </div>
             </div>
 
-            <!-- Bottom row: nav links (desktop only) -->
+            
             <div class="hidden sm:block border-t border-white/10">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1">
                     <MainNavLinks />
                 </div>
             </div>
 
-            <!-- Mobile drawer -->
+            
             <div
                 v-if="mobileOpen"
                 id="mobile-nav"

@@ -44,9 +44,11 @@ export function useNotifications() {
     }
 
     function subscribeToRealtime(userId: number) {
+        // Aizsardzība gadījumā, ja Echo nav pieejams (WebSocket atspējots vai vēl nav ielādēts).
         (window as any).Echo
             ?.private(`notifications.${userId}`)
             ?.listen('.NotificationCreated', (notification: Notification) => {
+                // Dublikātu novēršana: paziņojums var ierasties gan caur HTTP, gan WebSocket apraidi.
                 if (!notifications.value.find(n => n.id === notification.id)) {
                     notifications.value.unshift(notification);
                 }
@@ -57,6 +59,7 @@ export function useNotifications() {
             });
     }
 
+    // Jāizsauc onUnmounted, lai novērstu atstātos klausītājus komponenta atkārtotas izmantošanas gadījumā.
     function unsubscribe(userId: number) {
         (window as any).Echo?.leave(`notifications.${userId}`);
     }

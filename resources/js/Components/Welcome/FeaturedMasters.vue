@@ -45,7 +45,7 @@ const formatRating = (r: number | null): string =>
                     <div class="h-1 bg-gold" />
 
                     <div class="p-5 flex flex-col flex-grow">
-                        <!-- Avatar + verified -->
+                        
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                                 <img
@@ -68,13 +68,13 @@ const formatRating = (r: number | null): string =>
                             </div>
                         </div>
 
-                        <!-- Bio excerpt -->
+                        
                         <p v-if="master.profile?.bio" class="text-xs text-gray-500 leading-relaxed line-clamp-2 mb-4 flex-grow">
                             {{ master.profile.bio }}
                         </p>
                         <div v-else class="flex-grow" />
 
-                        <!-- Rating -->
+                        
                         <div class="flex items-center gap-1.5 mb-4">
                             <div class="flex items-center gap-0.5">
                                 <StarIcon
@@ -90,7 +90,7 @@ const formatRating = (r: number | null): string =>
                             <span class="text-xs text-gray-400">({{ master.reviews_received_count }})</span>
                         </div>
 
-                        <!-- CTA -->
+                        
                         <Link
                             v-if="isAuth"
                             :href="route('master.public-profile', master.id)"

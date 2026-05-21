@@ -136,14 +136,14 @@ const formatDate = (d: string | null) => {
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Details card -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/60">
                     <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Informācija</h2>
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <!-- Reporter -->
+                        
                         <div>
                             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Iesniedzējs</p>
                             <div class="flex items-center gap-3">
@@ -157,7 +157,7 @@ const formatDate = (d: string | null) => {
                             </div>
                         </div>
 
-                        <!-- Reported user -->
+                        
                         <div>
                             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Par lietotāju</p>
                             <div class="flex items-center gap-3">
@@ -172,7 +172,7 @@ const formatDate = (d: string | null) => {
                         </div>
                     </div>
 
-                    <!-- Entity -->
+                    
                     <div v-if="complaint.reported_entity_type" class="mb-6 pb-6 border-b border-gray-100">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Par ko</p>
                         <div>
@@ -191,7 +191,7 @@ const formatDate = (d: string | null) => {
                         </div>
                     </div>
 
-                    <!-- Reason -->
+                    
                     <div>
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Iemesls</p>
                         <div class="bg-gray-50 rounded-lg p-4">
@@ -201,13 +201,13 @@ const formatDate = (d: string | null) => {
                 </div>
             </div>
 
-            <!-- Resolution panel -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/60">
                     <h2 class="text-sm font-bold text-gray-700 uppercase tracking-wide">Atrisināšana</h2>
                 </div>
 
-                <!-- Already resolved: read-only -->
+                
                 <div v-if="isResolved()" class="p-6 space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -228,7 +228,7 @@ const formatDate = (d: string | null) => {
                     <p v-else class="text-sm text-gray-400 italic">Nav piezīmju.</p>
                 </div>
 
-                <!-- Pending or reviewed: form -->
+                
                 <div v-else class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-700 mb-1">Statuss</label>

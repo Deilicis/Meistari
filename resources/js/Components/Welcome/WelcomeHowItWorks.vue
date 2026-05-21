@@ -40,7 +40,7 @@ const masterSteps = computed(() => [
                 <p class="text-sm text-gray-500 mt-1">{{ t('welcome.how_it_works.subtitle') }}</p>
             </div>
 
-            <!-- Tabs -->
+            
             <div class="flex justify-center mb-8">
                 <div class="flex gap-1 bg-gray-100 rounded-xl p-1">
                     <button
@@ -74,7 +74,7 @@ const masterSteps = computed(() => [
                 </div>
             </div>
 
-            <!-- Seeker steps -->
+            
             <div v-show="active === 'seeker'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div
                     v-for="(step, i) in seekerSteps"
@@ -94,7 +94,7 @@ const masterSteps = computed(() => [
                 </div>
             </div>
 
-            <!-- Master steps -->
+            
             <div v-show="active === 'master'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div
                     v-for="(step, i) in masterSteps"

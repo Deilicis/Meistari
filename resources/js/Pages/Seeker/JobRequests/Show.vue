@@ -103,7 +103,7 @@ function formatMoney(amount: string | null, type: string | null): string {
     <AuthenticatedLayout>
         <div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
-            <!-- Back + header -->
+            
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <Link
@@ -118,12 +118,12 @@ function formatMoney(amount: string | null, type: string | null): string {
                 <JobStatusBadge :status="job.status" :label="job.status_label" />
             </div>
 
-            <!-- Timeline -->
+            
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <JobLifecycleTimeline :job="job" :is-client="true" />
             </div>
 
-            <!-- Applications (open job awaiting acceptance) -->
+            
             <div v-if="job.allowed_actions.includes('accept_application')" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-sm font-bold text-navy flex items-center gap-2">
@@ -135,19 +135,19 @@ function formatMoney(amount: string | null, type: string | null): string {
                     </span>
                 </div>
 
-                <!-- Loading -->
+                
                 <div v-if="loadingApps" class="py-8 text-center">
                     <div class="inline-block w-5 h-5 border-2 border-navy/20 border-t-navy rounded-full animate-spin" />
                 </div>
 
-                <!-- Empty -->
+                
                 <div v-else-if="applications.length === 0" class="py-8 text-center">
                     <ClipboardDocumentListIcon class="w-8 h-8 text-gray-200 mx-auto mb-2" />
                     <p class="text-sm text-gray-500">{{ t('jobs.no_applications_msg') }}</p>
                     <p class="text-xs text-gray-400 mt-1">{{ t('jobs.applications_coming_msg') }}</p>
                 </div>
 
-                <!-- Cards -->
+                
                 <div v-else class="space-y-3">
                     <div
                         v-for="app in applications"
@@ -160,7 +160,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                                 : 'border-gray-100 bg-white'"
                     >
                         <div class="flex items-start gap-3">
-                            <!-- Avatar -->
+                            
                             <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
                                 <img
                                     v-if="app.user.profile?.avatar"
@@ -200,7 +200,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                                 <p v-else class="text-xs text-gray-400 italic">{{ t('jobs.no_cover_letter') }}</p>
                             </div>
 
-                            <!-- Accept / Reject -->
+                            
                             <div v-if="app.status === 'pending'" class="flex flex-col gap-2 flex-shrink-0">
                                 <button
                                     @click="acceptApp(app)"
@@ -224,7 +224,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                 </div>
             </div>
 
-            <!-- Actions (lifecycle buttons - accept_application handled above) -->
+            
             <div
                 v-if="job.allowed_actions.filter(a => a !== 'accept_application').length > 0"
                 class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5"
@@ -233,7 +233,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                 <JobActionButtons :job="job" @updated="job = $event" />
             </div>
 
-            <!-- Escrow info -->
+            
             <div v-if="job.escrow" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
                 <h2 class="text-sm font-bold text-navy mb-4">{{ t('jobs.escrow_title') }}</h2>
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -258,14 +258,14 @@ function formatMoney(amount: string | null, type: string | null): string {
                 </div>
             </div>
 
-            <!-- Details card -->
+            
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 space-y-4">
                 <h2 class="text-sm font-bold text-navy">{{ t('jobs.info_title') }}</h2>
 
                 <p class="text-sm text-gray-700 leading-relaxed">{{ job.description }}</p>
 
                 <div class="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
-                    <!-- Master -->
+                    
                     <div class="flex items-start gap-2">
                         <UserIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -279,7 +279,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                         </div>
                     </div>
 
-                    <!-- Price -->
+                    
                     <div class="flex items-start gap-2">
                         <CurrencyEuroIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -289,7 +289,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                         </div>
                     </div>
 
-                    <!-- Created -->
+                    
                     <div class="flex items-start gap-2">
                         <ClockIcon class="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
                         <div>
@@ -298,7 +298,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                         </div>
                     </div>
 
-                    <!-- Completed -->
+                    
                     <div v-if="job.completed_at" class="flex items-start gap-2">
                         <CheckCircleIcon class="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                         <div>
@@ -309,7 +309,7 @@ function formatMoney(amount: string | null, type: string | null): string {
                 </div>
             </div>
 
-            <!-- Disputed notice -->
+            
             <div
                 v-if="job.status === 'disputed'"
                 class="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl"

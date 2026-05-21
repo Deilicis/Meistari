@@ -11,10 +11,8 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Change status column from ENUM to VARCHAR to support new state machine values
         DB::statement("ALTER TABLE job_requests MODIFY COLUMN status VARCHAR(30) NOT NULL DEFAULT 'open'");
 
-        // Map old values to new state machine values
         DB::table('job_requests')->where('status', 'active')->update(['status' => 'open']);
         DB::table('job_requests')->where('status', 'assigned')->update(['status' => 'in_progress']);
 

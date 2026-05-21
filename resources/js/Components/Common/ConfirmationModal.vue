@@ -115,7 +115,7 @@ const closeModal = () => {
 <template>
     <Modal :show="show" @close="closeModal" maxWidth="2xl">
 
-        <!-- Galvene -->
+        
         <div class="bg-navy px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-400/20 rounded-lg flex items-center justify-center">
@@ -130,12 +130,12 @@ const closeModal = () => {
             </button>
         </div>
 
-        <!-- Saturs -->
+        
         <div class="p-6">
             <form @submit.prevent="submit" class="space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    <!-- Virsraksts (pilnā platumā) -->
+                    
                     <div class="md:col-span-2">
                         <InputLabel for="title" :value="t('job_requests.field_title_label')" class="text-gray-700 font-medium" />
                         <TextInput
@@ -149,7 +149,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('title')" />
                     </div>
 
-                    <!-- Kategorija -->
+                    
                     <div>
                         <InputLabel for="category" :value="t('job_requests.field_category_label')" class="text-gray-700 font-medium" />
                         <select
@@ -164,7 +164,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('category_id')" />
                     </div>
 
-                    <!-- Budžets un termiņš -->
+                    
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel for="budget" :value="t('job_requests.field_budget_label')" class="text-gray-700 font-medium" />
@@ -199,7 +199,7 @@ const closeModal = () => {
                         </div>
                     </div>
 
-                    <!-- Apraksts (pilnā platumā) -->
+                    
                     <div class="md:col-span-2">
                         <InputLabel for="description" :value="t('job_requests.field_description_label')" class="text-gray-700 font-medium" />
                         <textarea
@@ -213,7 +213,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('description')" />
                     </div>
 
-                    <!-- Darba vietas (pilnā platumā) -->
+                    
                     <div class="md:col-span-2">
                         <InputLabel :value="t('job_requests.field_location_label')" class="text-gray-700 font-medium" />
                         <div class="mt-1 space-y-2">
@@ -246,7 +246,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('location')" />
                     </div>
 
-                    <!-- Attēli (pilnā platumā) -->
+                    
                     <div class="md:col-span-2">
                         <PortfolioUploader
                             v-model:newFiles="form.images"
@@ -257,7 +257,7 @@ const closeModal = () => {
                     </div>
                 </div>
 
-                <!-- Darbību pogas -->
+                
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
                     <button
                         type="button"

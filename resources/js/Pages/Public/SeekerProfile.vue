@@ -64,7 +64,7 @@ const authUserId = usePage().props.auth?.user?.id as number | undefined;
         <div class="py-8">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
 
-                <!-- Profile header -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <div class="flex items-start gap-5">
                         <div class="w-20 h-20 rounded-2xl bg-navy flex items-center justify-center text-white font-bold text-xl flex-shrink-0 overflow-hidden">
@@ -119,7 +119,7 @@ const authUserId = usePage().props.auth?.user?.id as number | undefined;
                     </div>
                 </div>
 
-                <!-- Active job requests -->
+                
                 <div v-if="job_requests.length" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <BriefcaseIcon class="w-4 h-4" />
@@ -143,7 +143,7 @@ const authUserId = usePage().props.auth?.user?.id as number | undefined;
                     </ul>
                 </div>
 
-                <!-- Reviews -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wide flex items-center gap-2">

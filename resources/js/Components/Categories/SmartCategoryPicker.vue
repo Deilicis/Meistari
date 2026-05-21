@@ -156,7 +156,7 @@ watch(() => props.modelValue, (val) => {
 
 <template>
     <div ref="containerRef" class="relative">
-        <!-- Pending suggestion pill -->
+        
         <template v-if="hasPendingSuggestion(modelValue)">
             <div class="flex flex-col gap-1 p-3 rounded-xl border border-amber-200 bg-amber-50">
                 <div class="flex items-center gap-2">
@@ -179,7 +179,7 @@ watch(() => props.modelValue, (val) => {
             </div>
         </template>
 
-        <!-- Normal typeahead input -->
+        
         <template v-else>
             <div class="relative">
                 <MagnifyingGlassIcon
@@ -205,16 +205,16 @@ watch(() => props.modelValue, (val) => {
                 </button>
             </div>
 
-            <!-- Dropdown -->
+            
             <div
                 v-if="showDropdown"
                 class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden"
             >
-                <!-- Loading -->
+                
                 <div v-if="loading" class="px-3 py-2 text-xs text-gray-400">{{ t('categories.picker.searching') }}</div>
 
                 <template v-else>
-                    <!-- Approved categories -->
+                    
                     <template v-if="results.approved.length > 0">
                         <div class="px-3 pt-2 pb-0.5 text-[10px] font-bold text-gray-400 uppercase tracking-wide">
                             {{ t('categories.picker.approved_section') }}
@@ -231,7 +231,7 @@ watch(() => props.modelValue, (val) => {
                         </button>
                     </template>
 
-                    <!-- Pending suggestions -->
+                    
                     <template v-if="results.pending.length > 0">
                         <div class="px-3 pt-2 pb-0.5 text-[10px] font-bold text-gray-400 uppercase tracking-wide">
                             {{ t('categories.picker.pending_section') }}
@@ -249,7 +249,7 @@ watch(() => props.modelValue, (val) => {
                         </button>
                     </template>
 
-                    <!-- No results message -->
+                    
                     <div
                         v-if="!hasResults() && query.trim().length > 0 && !showSuggestAction()"
                         class="px-3 py-2 text-sm text-gray-400"
@@ -257,7 +257,7 @@ watch(() => props.modelValue, (val) => {
                         {{ t('categories.picker.no_results') }}
                     </div>
 
-                    <!-- Suggest action -->
+                    
                     <button
                         v-if="showSuggestAction()"
                         type="button"
@@ -270,7 +270,7 @@ watch(() => props.modelValue, (val) => {
                 </template>
             </div>
 
-            <!-- Inline suggestion form -->
+            
             <div
                 v-if="showSuggestForm"
                 class="mt-2 p-4 border border-amber-200 bg-amber-50 rounded-xl space-y-3"

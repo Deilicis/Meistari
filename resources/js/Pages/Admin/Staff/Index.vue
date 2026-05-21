@@ -36,7 +36,6 @@ const props = defineProps<{
 const isAdminMember = (member: StaffMember) =>
     member.roles.some(r => r.name === 'admin');
 
-// Create modal
 const createModal = ref(false);
 const createForm = useForm({
     name: '',
@@ -54,7 +53,6 @@ const submitCreate = () => {
     });
 };
 
-// Edit modal
 const editModal = ref(false);
 const editTarget = ref<StaffMember | null>(null);
 const editForm = useForm({ name: '', email: '' });
@@ -73,7 +71,6 @@ const submitEdit = () => {
     });
 };
 
-// Delete confirm
 const deleteTarget = ref<StaffMember | null>(null);
 const deleteProcessing = ref(false);
 
@@ -94,7 +91,7 @@ const formatDate = (d: string) =>
 
 <template>
     <AdminLayout>
-        <!-- Page header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-between">
@@ -114,7 +111,7 @@ const formatDate = (d: string) =>
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <!-- Table -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead>
@@ -136,7 +133,7 @@ const formatDate = (d: string) =>
                             :key="member.id"
                             class="hover:bg-gray-50/60 transition-colors"
                         >
-                            <!-- Name + email -->
+                            
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
@@ -150,7 +147,7 @@ const formatDate = (d: string) =>
                                 </div>
                             </td>
 
-                            <!-- Role badge -->
+                            
                             <td class="px-6 py-4">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
@@ -162,12 +159,12 @@ const formatDate = (d: string) =>
                                 </span>
                             </td>
 
-                            <!-- Date -->
+                            
                             <td class="px-6 py-4 text-gray-500 hidden md:table-cell">
                                 {{ formatDate(member.created_at) }}
                             </td>
 
-                            <!-- Actions -->
+                            
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-1">
                                     <template v-if="!isAdminMember(member)">
@@ -194,7 +191,7 @@ const formatDate = (d: string) =>
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div v-if="staff.last_page > 1" class="flex items-center justify-between text-sm text-gray-500">
                 <p>Rāda {{ staff.from }}-{{ staff.to }} no {{ staff.total }}</p>
                 <div class="flex items-center gap-1">
@@ -219,7 +216,7 @@ const formatDate = (d: string) =>
 
         </div>
 
-        <!-- Create modal -->
+        
         <Modal :show="createModal" @close="createModal = false" maxWidth="md">
             <div class="bg-navy px-6 py-4 rounded-t-xl flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
@@ -290,7 +287,7 @@ const formatDate = (d: string) =>
             </form>
         </Modal>
 
-        <!-- Edit modal -->
+        
         <Modal :show="editModal" @close="editModal = false" maxWidth="md">
             <div class="bg-navy px-6 py-4 rounded-t-xl">
                 <h2 class="text-base font-bold text-white">Rediģēt moderatoru</h2>
@@ -334,7 +331,7 @@ const formatDate = (d: string) =>
             </form>
         </Modal>
 
-        <!-- Delete confirm -->
+        
         <ConfirmDialog
             :show="!!deleteTarget"
             title="Dzēst moderatoru?"

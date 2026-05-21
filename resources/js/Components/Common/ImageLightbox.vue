@@ -41,7 +41,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey));
             class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center"
             @click.self="emit('close')"
         >
-            <!-- Close -->
+            
             <button
                 @click="emit('close')"
                 class="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
@@ -49,7 +49,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey));
                 <XMarkIcon class="w-6 h-6" />
             </button>
 
-            <!-- Prev arrow -->
+            
             <button
                 v-if="images.length > 1"
                 @click="prev"
@@ -58,14 +58,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKey));
                 <ChevronLeftIcon class="w-6 h-6" />
             </button>
 
-            <!-- Image -->
+            
             <img
                 :src="`/storage/${images[current]}`"
                 class="max-h-[85vh] max-w-[90vw] object-contain rounded-lg select-none"
                 draggable="false"
             />
 
-            <!-- Next arrow -->
+            
             <button
                 v-if="images.length > 1"
                 @click="next"
@@ -74,7 +74,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey));
                 <ChevronRightIcon class="w-6 h-6" />
             </button>
 
-            <!-- Counter -->
+            
             <div
                 v-if="images.length > 1"
                 class="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/70 text-sm font-medium tabular-nums"

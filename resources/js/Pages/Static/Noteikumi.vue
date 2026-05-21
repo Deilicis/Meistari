@@ -16,7 +16,7 @@ const isAuth = computed(() => !!(page.props as any).auth?.user);
     <div class="min-h-screen flex flex-col font-sans bg-white">
         <WelcomeNav :isAuth="isAuth" />
 
-        <!-- Hero -->
+        
         <div class="bg-navy text-white py-14">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">{{ t('static.terms.hero_title') }}</h1>
@@ -24,7 +24,7 @@ const isAuth = computed(() => !!(page.props as any).auth?.user);
             </div>
         </div>
 
-        <!-- Content -->
+        
         <main class="flex-grow py-12">
             <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
 

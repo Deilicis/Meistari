@@ -36,7 +36,10 @@ use Illuminate\Support\Str;
 
 class DemoSeeder extends Seeder
 {
-    private const PASSWORD = 'Password1!';
+    private function getPassword(): string
+    {
+        return env('DEMO_USER_PASSWORD', 'Password1!');
+    }
 
     private User $admin;
     /** @var array<string, User> */
@@ -62,7 +65,7 @@ class DemoSeeder extends Seeder
 
     private function createUsers(): void
     {
-        $hashed = Hash::make(self::PASSWORD);
+        $hashed = Hash::make($this->getPassword());
 
         $adminRole = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->firstOrFail();
         $masterRole = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->firstOrFail();

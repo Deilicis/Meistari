@@ -113,7 +113,7 @@ const formatDate = (dateStr: string) =>
 
 <template>
     <AdminLayout>
-        <!-- Greeting bar -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -124,7 +124,7 @@ const formatDate = (dateStr: string) =>
 
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-            <!-- Stat cards -->
+            
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div
                     v-for="card in statCards"
@@ -143,7 +143,7 @@ const formatDate = (dateStr: string) =>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                <!-- Recent Complaints -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-50">
                         <h2 class="text-sm font-bold text-gray-900">Pēdējās sūdzības</h2>
@@ -181,7 +181,7 @@ const formatDate = (dateStr: string) =>
                     </ul>
                 </div>
 
-                <!-- Recent Audit Logs -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-50">
                         <h2 class="text-sm font-bold text-gray-900">Pēdējā aktivitāte</h2>

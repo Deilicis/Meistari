@@ -74,7 +74,7 @@ const formatDate = (d: string) =>
 
 <template>
     <AdminLayout>
-        <!-- Header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -107,7 +107,7 @@ const formatDate = (d: string) =>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- Profile info -->
+                
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">Profila informācija</h2>
@@ -159,7 +159,7 @@ const formatDate = (d: string) =>
                     </div>
                 </div>
 
-                <!-- Job requests -->
+                
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">
@@ -194,7 +194,7 @@ const formatDate = (d: string) =>
                 </div>
             </div>
 
-            <!-- Reviews received -->
+            
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">

@@ -114,9 +114,9 @@ async function counter(amount: number, note: string | null) {
 
 <template>
     <div class="w-full my-1">
-        <!-- Card: full-width, distinct from text bubbles -->
+        
         <div class="mx-auto max-w-sm border-l-4 border-navy bg-slate-50 rounded-xl shadow-sm overflow-hidden">
-            <!-- Header -->
+            
             <div class="flex items-center justify-between px-4 py-2 border-b border-slate-200 bg-white">
                 <div class="flex items-center gap-2">
                     <CurrencyEuroIcon class="w-4 h-4 text-gold flex-shrink-0" />
@@ -137,7 +137,7 @@ async function counter(amount: number, note: string | null) {
                 </div>
             </div>
 
-            <!-- Body -->
+            
             <div class="px-4 py-3">
                 <p class="text-2xl font-bold text-navy mb-1">{{ formatMoney(proposal.amount) }}</p>
                 <p class="text-xs text-gray-500 mb-2">
@@ -147,9 +147,9 @@ async function counter(amount: number, note: string | null) {
                 <p v-if="proposal.note" class="text-sm text-gray-600 italic leading-relaxed">"{{ proposal.note }}"</p>
             </div>
 
-            <!-- Action footer (pending only) -->
+            
             <div v-if="isPending" class="px-4 py-3 border-t border-slate-200 bg-white/60">
-                <!-- Own proposal: only withdraw -->
+                
                 <div v-if="isOwn" class="flex items-center justify-between">
                     <p class="text-xs text-gray-500">{{ t('proposals.awaiting') }}</p>
                     <button
@@ -161,7 +161,7 @@ async function counter(amount: number, note: string | null) {
                     </button>
                 </div>
 
-                <!-- Recipient: accept / counter / reject -->
+                
                 <div v-else class="flex flex-wrap gap-2">
                     <button
                         @click="showAccept = true"
@@ -189,7 +189,7 @@ async function counter(amount: number, note: string | null) {
         </div>
     </div>
 
-    <!-- Modals -->
+    
     <ConfirmAcceptProposalModal
         :show="showAccept"
         :proposal="proposal"

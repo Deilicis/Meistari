@@ -101,7 +101,7 @@ function iconComponent(icon: string | null) {
 
                 <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 
-                    <!-- All services card -->
+                    
                     <Link
                         :href="route('seeker.services.index')"
                         class="group flex flex-col items-center justify-center gap-3 rounded-2xl bg-navy border border-navy p-6 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
@@ -115,13 +115,13 @@ function iconComponent(icon: string | null) {
                         </div>
                     </Link>
 
-                    <!-- Parent category cards -->
+                    
                     <div
                         v-for="category in filtered"
                         :key="category.id"
                         class="relative"
                     >
-                        <!-- Card button -->
+                        
                         <button
                             type="button"
                             @click="toggle(category)"
@@ -149,7 +149,7 @@ function iconComponent(icon: string | null) {
                             />
                         </button>
 
-                        <!-- Dropdown -->
+                        
                         <div
                             v-if="openId === category.id"
                             class="absolute z-20 left-0 right-0 mt-1 bg-white border border-navy/20 rounded-xl shadow-lg overflow-hidden"

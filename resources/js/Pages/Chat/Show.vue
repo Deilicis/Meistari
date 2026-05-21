@@ -8,8 +8,7 @@ import ProposalChatCard from '@/Components/Chat/ProposalChatCard.vue';
 import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, MagnifyingGlassIcon, XMarkIcon, BriefcaseIcon } from '@heroicons/vue/24/outline';
 import type { PriceProposal } from '@/types/proposal';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
+// --- Tipi ---
 type MessageType = 'text' | 'proposal';
 
 interface MessageSender {
@@ -43,8 +42,7 @@ interface Conversation {
     unread_count?: number;
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
-
+// --- Props ---
 interface RelatedJob {
     id: number;
     title: string;
@@ -61,8 +59,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-// ─── State ────────────────────────────────────────────────────────────────────
-
+// --- Stāvoklis ---
 const messageList = ref<Message[]>([...props.messages]);
 const newMessage = ref('');
 const sending = ref(false);
@@ -76,8 +73,7 @@ const filteredConvs = computed(() => {
     return props.conversations.filter(c => c.other_user.name.toLowerCase().includes(q));
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
+// --- Palīgfunkcijas ---
 const scrollToBottom = (smooth = true) => {
     nextTick(() => {
         messagesEnd.value?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
@@ -97,8 +93,7 @@ const formatTime = (iso: string) => {
 
 const initials = (name: string) => name.slice(0, 2).toUpperCase();
 
-// ─── Message handling ─────────────────────────────────────────────────────────
-
+// --- Ziņojumu apstrāde ---
 const sendMessage = async () => {
     const body = newMessage.value.trim();
     if (!body || sending.value) return;
@@ -137,8 +132,7 @@ function handleProposalActed(proposalId: number) {
     });
 }
 
-// ─── Real-time ────────────────────────────────────────────────────────────────
-
+// --- Reāllaikā ---
 onMounted(() => {
     scrollToBottom(false);
     (window as any).Echo
@@ -170,7 +164,7 @@ onUnmounted(() => {
     <AuthenticatedLayout>
         <div class="flex h-[calc(100vh-64px)]">
 
-            <!-- Left sidebar: conversation list -->
+            
             <aside class="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 flex-shrink-0">
                 <div class="bg-navy px-4 py-3 flex-shrink-0">
                     <div class="h-0.5 bg-blue-400 -mx-4 -mt-3 mb-3" />
@@ -180,7 +174,7 @@ onUnmounted(() => {
                     </Link>
                 </div>
 
-                <!-- Sidebar search -->
+                
                 <div class="px-3 py-2 border-b border-gray-100 flex-shrink-0">
                     <div class="relative">
                         <MagnifyingGlassIcon class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -240,10 +234,10 @@ onUnmounted(() => {
                 </div>
             </aside>
 
-            <!-- Right: message thread -->
+            
             <div class="flex flex-col flex-1 min-w-0">
 
-                <!-- Chat header -->
+                
                 <div class="bg-white border-b border-gray-100 px-5 py-3 flex items-center gap-3 flex-shrink-0">
                     <Link :href="route('chat.index')" class="md:hidden text-gray-400 hover:text-navy transition-colors mr-1">
                         ←
@@ -257,7 +251,7 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <!-- Related job banner -->
+                
                 <div v-if="related_job" class="flex items-center gap-2 px-5 py-2 bg-navy/5 border-b border-navy/10 flex-shrink-0">
                     <BriefcaseIcon class="w-3.5 h-3.5 text-navy/50 flex-shrink-0" />
                     <span class="text-xs text-navy/70 truncate min-w-0">
@@ -271,14 +265,14 @@ onUnmounted(() => {
                     >{{ t('chat.view_job') }}</a>
                 </div>
 
-                <!-- Messages -->
+                
                 <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/40">
                     <div v-if="messageList.length === 0" class="flex items-center justify-center h-full">
                         <p class="text-sm text-gray-400">{{ t('chat.start_conversation') }}</p>
                     </div>
 
                     <template v-for="msg in messageList" :key="msg.id">
-                        <!-- Proposal card: full-width, centered -->
+                        
                         <div v-if="msg.type === 'proposal' && msg.proposal" class="flex justify-center px-2">
                             <ProposalChatCard
                                 :proposal="msg.proposal"
@@ -288,7 +282,7 @@ onUnmounted(() => {
                             />
                         </div>
 
-                        <!-- Regular text bubble -->
+                        
                         <div
                             v-else-if="msg.type === 'text'"
                             class="flex"
@@ -320,7 +314,7 @@ onUnmounted(() => {
                     <div ref="messagesEnd" />
                 </div>
 
-                <!-- Input area -->
+                
                 <div class="bg-white border-t border-gray-100 px-4 py-3 flex items-end gap-3 flex-shrink-0">
                     <textarea
                         ref="textarea"

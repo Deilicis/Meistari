@@ -22,8 +22,7 @@ const props = defineProps<{
     categories: AdminCategory[];
 }>();
 
-// ─── State ───────────────────────────────────────────────────────────────────
-
+// --- Stāvoklis ---
 const expanded = ref<Set<number>>(new Set());
 const loading = ref<string | null>(null);
 
@@ -37,8 +36,7 @@ const editingCat = ref<AdminCategory | null>(null);
 const deletingCat = ref<AdminCategory | null>(null);
 const mergingSource = ref<AdminCategory | null>(null);
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
+// --- Palīgfunkcijas ---
 const allCategories = computed((): AdminCategory[] => {
     const result: AdminCategory[] = [];
     for (const cat of props.categories) {
@@ -80,8 +78,7 @@ function reload() {
     router.reload({ only: ['categories'] });
 }
 
-// ─── Actions ─────────────────────────────────────────────────────────────────
-
+// --- Darbības ---
 async function handleCreate(data: { name: string; parent_id: number | null; icon: string | null }) {
     loading.value = 'create';
     try {
@@ -143,7 +140,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
 
 <template>
     <AdminLayout>
-        <!-- Page header -->
+        
         <div class="bg-navy">
             <div class="h-1 bg-red-500" />
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
@@ -173,12 +170,12 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
 
             <div v-else class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div v-for="cat in categories" :key="cat.id">
-                    <!-- Top-level row -->
+                    
                     <div
                         class="flex items-center gap-3 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                         :class="cat.is_system ? 'bg-slate-50/80' : ''"
                     >
-                        <!-- Expand toggle -->
+                        
                         <button
                             v-if="cat.children && cat.children.length > 0"
                             @click="toggle(cat.id)"
@@ -189,21 +186,21 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
                         </button>
                         <span v-else class="w-4 flex-shrink-0" />
 
-                        <!-- Name + badges -->
+                        
                         <div class="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-semibold text-gray-900">{{ cat.name }}</span>
                             <span v-if="cat.icon" class="text-xs text-gray-400">{{ cat.icon }}</span>
                             <span v-if="cat.is_system" class="text-[10px] font-bold px-1.5 py-0.5 bg-navy text-white rounded uppercase tracking-wide">Sistēmas</span>
                         </div>
 
-                        <!-- Usage counts -->
+                        
                         <div class="text-xs flex-shrink-0 text-gray-400">
                             <span :class="cat.services_count > 0 ? 'text-amber-600 font-semibold' : ''">{{ cat.services_count }} pak.</span>
                             <span class="mx-1">·</span>
                             <span :class="cat.job_requests_count > 0 ? 'text-amber-600 font-semibold' : ''">{{ cat.job_requests_count }} darbi</span>
                         </div>
 
-                        <!-- Actions -->
+                        
                         <div class="flex items-center gap-1 flex-shrink-0">
                             <button
                                 @click="openCreate(cat)"
@@ -239,7 +236,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
                         </div>
                     </div>
 
-                    <!-- Subcategory rows -->
+                    
                     <template v-if="expanded.has(cat.id) && cat.children && cat.children.length > 0">
                         <div
                             v-for="child in cat.children"
@@ -290,7 +287,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
             </div>
         </div>
 
-        <!-- Modals -->
+        
         <AdminCategoryCreateModal
             :show="showCreate"
             :parent-category="createParent"

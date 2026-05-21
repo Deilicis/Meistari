@@ -140,7 +140,7 @@ const save = async () => {
 
 <template>
     <Modal :show="show" @close="emit('close')">
-        <!-- Galvene -->
+        
         <div class="bg-navy px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-gold/20 rounded-lg flex items-center justify-center">
@@ -155,9 +155,9 @@ const save = async () => {
             </button>
         </div>
 
-        <!-- Saturs -->
+        
         <div class="p-6">
-            <!-- Suggestion banner (edit mode only) -->
+            
             <template v-if="service?.pending_category_suggestion">
                 <div
                     v-if="service.pending_category_suggestion.status === 'pending'"
@@ -184,7 +184,7 @@ const save = async () => {
 
             <form @submit.prevent="save" class="space-y-5">
 
-                <!-- Nosaukums -->
+                
                 <div>
                     <InputLabel for="title" :value="t('services.field_title_label')" class="text-gray-700 font-medium" />
                     <TextInput
@@ -197,7 +197,7 @@ const save = async () => {
                     <InputError class="mt-1.5" :message="validationErrors.title?.[0]" />
                 </div>
 
-                <!-- Kategorija -->
+                
                 <div>
                     <InputLabel :value="t('services.field_category_label')" class="text-gray-700 font-medium" />
                     <div class="mt-1">
@@ -220,7 +220,7 @@ const save = async () => {
                     />
                 </div>
 
-                <!-- Apraksts -->
+                
                 <div>
                     <InputLabel for="description" :value="t('services.field_description_label')" class="text-gray-700 font-medium" />
                     <textarea
@@ -233,7 +233,7 @@ const save = async () => {
                     <InputError class="mt-1.5" :message="validationErrors.description?.[0]" />
                 </div>
 
-                <!-- Cena -->
+                
                 <div>
                     <InputLabel for="price" :value="t('services.field_price_label')" class="text-gray-700 font-medium" />
                     <TextInput
@@ -247,7 +247,7 @@ const save = async () => {
                     <InputError class="mt-1.5" :message="validationErrors.price?.[0]" />
                 </div>
 
-                <!-- Lokācijas -->
+                
                 <div>
                     <InputLabel :value="t('services.field_locations_label')" class="text-gray-700 font-medium" />
                     <TagInput
@@ -258,7 +258,7 @@ const save = async () => {
                     <InputError class="mt-1.5" :message="validationErrors.location?.[0] || validationErrors['location.0']?.[0]" />
                 </div>
 
-                <!-- Redzamības izvēle -->
+                
                 <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
                     <Checkbox name="is_active" v-model:checked="form.is_active" />
                     <div>
@@ -267,7 +267,7 @@ const save = async () => {
                     </div>
                 </div>
 
-                <!-- Darbību pogas -->
+                
                 <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-100">
                     <button
                         type="button"

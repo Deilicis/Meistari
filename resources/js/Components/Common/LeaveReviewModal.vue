@@ -85,7 +85,7 @@ const submit = async () => {
         </div>
 
         <div class="p-6 space-y-5">
-            <!-- Star rating -->
+            
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('modals.review.rating_label') }}</label>
                 <div class="flex items-center gap-1">
@@ -111,7 +111,7 @@ const submit = async () => {
                 <InputError v-if="errors.rating" :message="errors.rating" class="mt-1" />
             </div>
 
-            <!-- Comment -->
+            
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">
                     {{ t('modals.review.comment_label') }}

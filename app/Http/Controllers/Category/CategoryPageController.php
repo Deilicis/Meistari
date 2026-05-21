@@ -8,5 +8,4 @@ use App\Http\Controllers\Controller;
 
 class CategoryPageController extends Controller
 {
-    //
 }

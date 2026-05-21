@@ -156,7 +156,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
         <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">
 
-            <!-- Progress steps -->
+            
             <div class="flex items-center mb-8">
                 <template v-for="(label, idx) in stepLabels" :key="idx">
                     <div class="flex flex-col items-center gap-1 flex-1">
@@ -181,7 +181,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
 
-                <!-- Step 1 -->
+                
                 <div v-if="step === 1" class="space-y-5">
                     <div>
                         <InputLabel :value="t('jobs.field_title_label')" class="text-gray-700 font-medium mb-1" />
@@ -224,7 +224,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                     </div>
                 </div>
 
-                <!-- Step 2 -->
+                
                 <div v-else-if="step === 2" class="space-y-5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
@@ -293,7 +293,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                     </div>
                 </div>
 
-                <!-- Step 3 -->
+                
                 <div v-else-if="step === 3" class="space-y-5">
                     <div>
                         <InputLabel :value="t('jobs.field_photos_label')" class="text-gray-700 font-medium mb-1" />
@@ -307,7 +307,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                     </div>
                 </div>
 
-                <!-- Navigation -->
+                
                 <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
                     <button
                         v-if="step > 1"
@@ -351,7 +351,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
             </div>
         </div>
 
-        <!-- Cancel confirmation overlay -->
+        
         <Teleport to="body">
             <div
                 v-if="showCancelConfirm"

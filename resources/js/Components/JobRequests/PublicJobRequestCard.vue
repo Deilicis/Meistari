@@ -47,7 +47,7 @@ const formatBudget = (): string => {
 <template>
     <div class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-stretch">
 
-        <!-- Left: avatar + seeker info -->
+        
         <a
             :href="route('seeker.public-profile', job.user.id)"
             class="w-28 shrink-0 flex flex-col items-center justify-center gap-1.5 px-3 py-4 border-r border-gray-100 hover:bg-gray-50 transition-colors"
@@ -71,7 +71,7 @@ const formatBudget = (): string => {
             </div>
         </a>
 
-        <!-- Middle: icon + category, title, description, location/deadline -->
+        
         <div class="flex-1 min-w-0 px-4 py-4">
             <div class="flex items-center gap-2.5 mb-2">
                 <div class="w-9 h-9 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
@@ -104,7 +104,7 @@ const formatBudget = (): string => {
             </div>
         </div>
 
-        <!-- Right: budget + applications count + action -->
+        
         <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[120px]">
             <div class="text-right">
                 <span class="text-base font-extrabold text-navy block">{{ formatBudget() }}</span>

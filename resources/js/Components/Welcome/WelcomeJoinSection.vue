@@ -16,7 +16,7 @@ defineProps<{ canRegister?: boolean }>();
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
-                <!-- Master card -->
+                
                 <div class="bg-navy rounded-2xl overflow-hidden flex flex-col">
                     <div class="h-1 bg-gold" />
                     <div class="p-8 flex-grow">
@@ -41,7 +41,7 @@ defineProps<{ canRegister?: boolean }>();
                     </div>
                 </div>
 
-                <!-- Seeker card -->
+                
                 <div class="bg-navy rounded-2xl overflow-hidden flex flex-col">
                     <div class="h-1 bg-emerald-400" />
                     <div class="p-8 flex-grow">
