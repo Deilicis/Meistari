@@ -10,6 +10,7 @@ import { useEscapeKey } from '@/composables/useEscapeKey';
 import { useClickOutside } from '@/composables/useClickOutside';
 import RoleSwitcher from '@/Components/Navbar/RoleSwitcher.vue';
 import AddRoleModal from '@/Components/Navbar/AddRoleModal.vue';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
 import type { AuthUser, Profile } from '@/types/models';
 
 type LayoutUser = AuthUser & { profile?: Profile };
@@ -135,7 +136,15 @@ useClickOutside(container, () => { open.value = false; });
                     </Link>
                 </div>
 
-                
+
+                <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-between">
+                    <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('nav.language') }}</span>
+                    <div class="text-gray-700">
+                        <LanguageSwitcher />
+                    </div>
+                </div>
+
+
                 <div class="border-t border-gray-100 py-1">
                     <Link
                         :href="route('logout')"

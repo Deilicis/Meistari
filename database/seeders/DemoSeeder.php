@@ -31,6 +31,7 @@ use App\Models\ServiceApplication;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -51,6 +52,7 @@ class DemoSeeder extends Seeder
 
     public function run(): void
     {
+        $this->cleanUp();
         $this->createUsers();
         $this->loadCategories();
         $this->createServices();
@@ -59,6 +61,22 @@ class DemoSeeder extends Seeder
         $this->createNotifications();
 
         Carbon::setTestNow(null);
+    }
+
+    private function cleanUp(): void
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        DB::table('role_user')->truncate();
+        foreach ([
+            Notification::class, JobDispute::class, EscrowHold::class,
+            Review::class, PriceProposal::class, Application::class,
+            ServiceApplication::class, CategorySuggestion::class,
+            Message::class, Conversation::class, Service::class,
+            JobRequest::class, Profile::class, User::class,
+        ] as $model) {
+            $model::truncate();
+        }
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 
     // --- Lietotāji ---

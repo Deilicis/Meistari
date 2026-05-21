@@ -144,7 +144,7 @@ const hasResults = () =>
 const showSuggestAction = () =>
     query.value.trim().length >= 3 && !showSuggestForm.value;
 
-// Keep input in sync when external modelValue changes to a category (e.g., editing)
+// Sinhronizē ievadi ar ārējo modelValue, ja tas mainās uz kategoriju (piem., rediģēšanas laikā).
 watch(() => props.modelValue, (val) => {
     if (val?.type === 'category' && query.value !== val.name) {
         query.value = val.name;

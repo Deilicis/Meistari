@@ -9,7 +9,7 @@ const { locale, setLocale } = useLocale();
         <button
             type="button"
             :class="[
-                'px-2 py-0.5 text-xs font-semibold rounded transition-colors',
+                'px-2 py-0.5 text-xs font-semibold rounded transition-colors text-white',
                 locale === 'lv'
                     ? 'bg-gold text-navy'
                     : 'text-current opacity-60 hover:opacity-100',
@@ -22,7 +22,7 @@ const { locale, setLocale } = useLocale();
         <button
             type="button"
             :class="[
-                'px-2 py-0.5 text-xs font-semibold rounded transition-colors',
+                'px-2 py-0.5 text-xs font-semibold rounded transition-colors text-white',
                 locale === 'en'
                     ? 'bg-gold text-navy'
                     : 'text-current opacity-60 hover:opacity-100',

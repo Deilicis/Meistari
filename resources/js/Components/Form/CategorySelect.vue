@@ -30,14 +30,12 @@ function initFromValue(val: string | number) {
 
     const numVal = Number(val);
 
-    // Is it a top-level category?
     if (props.categories.some(c => c.id === numVal)) {
         selectedParentId.value = numVal;
         selectedChildId.value = '';
         return;
     }
 
-    // Is it a child category?
     for (const parent of props.categories) {
         if (parent.children?.some(c => c.id === numVal)) {
             selectedParentId.value = parent.id;
@@ -70,10 +68,10 @@ function onParentChange(event: Event) {
     const parent = props.categories.find(c => c.id === Number(val));
 
     if (!parent?.children?.length) {
-        // Leaf parent - emit immediately
+        // Augstākā kategorija bez apakškategorijām — emit uzreiz.
         emit('update:modelValue', Number(val));
     } else {
-        // Has children - emit parent ID so filter shows parent + children results
+        // Ir apakškategorijas — emit vecākkategorijas ID, lai filtrs rādītu arī apakškategoriju rezultātus.
         emit('update:modelValue', Number(val));
     }
 }

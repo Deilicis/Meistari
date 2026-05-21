@@ -121,9 +121,9 @@ const handleKeydown = (e: KeyboardEvent) => {
     }
 };
 
-// When an action is taken on a proposal card, update that proposal's status
-// across all cards in the thread that reference the same proposal_id,
-// then wait for real-time broadcast to append the new event card.
+// Kad tiek veikta darbība uz piedāvājuma kartes, atjaunina tā statusu
+// visās kartēs, kas atsaucas uz to pašu proposal_id,
+// un gaida reāllaika apraidi, kas pievienotu jauno notikuma karti.
 function handleProposalActed(proposalId: number) {
     messageList.value.forEach(msg => {
         if (msg.proposal && msg.proposal.id === proposalId) {
@@ -142,7 +142,7 @@ onMounted(() => {
                 messageList.value.push(e);
                 scrollToBottom();
             }
-            // If this is a proposal event, mark prior cards for that proposal as non-pending
+            // Ja šis ir piedāvājuma notikums, atzīmē iepriekšējās kartes kā ne-gaidošas.
             if (e.type === 'proposal' && e.proposal_id) {
                 messageList.value.forEach(msg => {
                     if (msg.proposal && msg.proposal.id === e.proposal_id && msg.id !== e.id) {

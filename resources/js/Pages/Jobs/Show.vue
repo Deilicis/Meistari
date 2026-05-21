@@ -117,7 +117,7 @@ const loading = ref<string | null>(null);
 const showDisputeModal = ref(false);
 const showCancelModal = ref(false);
 
-// Per-application proposal modal state
+// Modālo logu stāvoklis katram pieteikumam.
 const counteringApp = ref<PageApplication | null>(null);
 const freshProposalApp = ref<PageApplication | null>(null);
 const acceptingProposal = ref<PriceProposal | null>(null);
