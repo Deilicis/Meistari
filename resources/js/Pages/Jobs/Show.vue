@@ -102,16 +102,16 @@ const { t } = useI18n();
 const page = usePage<{ auth: { user: { id: number } } }>();
 const currentUserId = computed(() => page.props.auth.user.id);
 
-// --- Reaktīvais stāvoklis ---
+// --- Reactive stāvoklis ---
 const job = ref<JobData>(props.job);
 const apps = ref<PageApplication[]>(props.applications ?? []);
 const ownApp = ref<PageApplication | null>(props.own_application);
 const actions = ref<PageAction[]>(props.allowed_actions);
 
-watch(() => props.job,              v => { job.value = v; });
-watch(() => props.applications,     v => { apps.value = v ?? []; });
-watch(() => props.own_application,  v => { ownApp.value = v; });
-watch(() => props.allowed_actions,  v => { actions.value = v; });
+watch(() => props.job, v => { job.value = v; });
+watch(() => props.applications, v => { apps.value = v ?? []; });
+watch(() => props.own_application, v => { ownApp.value = v; });
+watch(() => props.allowed_actions, v => { actions.value = v; });
 
 const loading = ref<string | null>(null);
 const showDisputeModal = ref(false);
@@ -143,19 +143,19 @@ const showChat = computed(() => has('chat_with_master') || has('chat_with_seeker
 
 const backHref = computed(() => {
     switch (props.viewer_role) {
-        case 'owner':           return route('seeker.job-requests.index');
+        case 'owner': return route('seeker.job-requests.index');
         case 'accepted_master':
-        case 'applicant':       return route('master.applications.index');
-        case 'admin':           return route('admin.job-requests.index');
+        case 'applicant': return route('master.applications.index');
+        case 'admin': return route('admin.job-requests.index');
     }
 });
 
 const backLabel = computed(() => {
     switch (props.viewer_role) {
-        case 'owner':           return t('jobs.back_my_jobs');
+        case 'owner': return t('jobs.back_my_jobs');
         case 'accepted_master':
-        case 'applicant':       return t('jobs.back_my_applications');
-        case 'admin':           return t('jobs.back_admin_jobs');
+        case 'applicant': return t('jobs.back_my_applications');
+        case 'admin': return t('jobs.back_admin_jobs');
     }
 });
 
@@ -176,12 +176,12 @@ function formatMoney(amount: string | number | null | undefined, type?: string |
 }
 
 const appStatusBadgeClass: Record<AppStatus, string> = {
-    pending:     'bg-amber-100 text-amber-700',
+    pending: 'bg-amber-100 text-amber-700',
     shortlisted: 'bg-blue-100 text-blue-700',
-    accepted:    'bg-emerald-100 text-emerald-700',
-    rejected:    'bg-gray-100 text-gray-500',
-    completed:   'bg-green-100 text-green-700',
-    cancelled:   'bg-red-100 text-red-600',
+    accepted:'bg-emerald-100 text-emerald-700',
+    rejected: 'bg-gray-100 text-gray-500',
+    completed: 'bg-green-100 text-green-700',
+    cancelled: 'bg-red-100 text-red-600',
 };
 
 // --- Dzīves cikla darbības ---
@@ -190,11 +190,11 @@ async function postLifecycle(action: string, body: Record<string, unknown> = {})
     loading.value = action;
     try {
         const urlMap: Record<string, string> = {
-            pay:             route('jobs.lifecycle.pay',          job.value.id),
-            mark_complete:   route('jobs.lifecycle.mark-complete', job.value.id),
-            confirm_complete:route('jobs.lifecycle.confirm',      job.value.id),
-            dispute:         route('jobs.lifecycle.dispute',      job.value.id),
-            cancel:          route('jobs.lifecycle.cancel',       job.value.id),
+            pay: route('jobs.lifecycle.pay', job.value.id),
+            mark_complete: route('jobs.lifecycle.mark-complete', job.value.id),
+            confirm_complete:route('jobs.lifecycle.confirm', job.value.id),
+            dispute: route('jobs.lifecycle.dispute', job.value.id),
+            cancel: route('jobs.lifecycle.cancel', job.value.id),
         };
         const url = urlMap[action];
         if (!url) { loading.value = null; return; }

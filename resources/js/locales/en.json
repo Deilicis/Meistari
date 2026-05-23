@@ -215,7 +215,7 @@
             "open": "Open",
             "accepted": "Accepted",
             "in_progress": "In Progress",
-            "awaiting_confirmation": "Awaiting Confirmation",
+            "awaiting_confirmation": "Confirm",
             "completed": "Completed",
             "disputed": "Disputed",
             "cancelled": "Cancelled"
@@ -331,7 +331,27 @@
         "saved_message": "Changes saved successfully!",
         "unsaved_message": "Don't forget to save your changes.",
         "saving_btn": "Saving...",
-        "save_changes_btn": "Save changes"
+        "save_changes_btn": "Save changes",
+        "tabs": {
+            "basic_info": "Basic information",
+            "master_profile": "Profile & experience",
+            "security": "Security",
+            "account": "Account"
+        },
+        "sections": {
+            "basic_data": "Basic data",
+            "personal_info": "Personal information",
+            "contact": "Contact",
+            "avatar": "Profile picture",
+            "bio": "Description",
+            "experience": "Experience",
+            "portfolio": "Portfolio"
+        },
+        "avatar": {
+            "change_button": "Change profile picture",
+            "helper": "Max size: 5MB. Formats: JPG, PNG, WEBP.",
+            "placeholder_alt": "{name} avatar placeholder"
+        }
     },
     "browse": {
         "services_title": "Services",

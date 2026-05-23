@@ -11,11 +11,11 @@ const { t } = useI18n();
 type Step = { key: JobStatus; label: string };
 
 const mainSteps = computed((): Step[] => [
-    { key: 'open',                  label: t('statuses.job.open') },
-    { key: 'accepted',              label: t('statuses.job.accepted') },
-    { key: 'in_progress',           label: t('statuses.job.in_progress') },
+    { key: 'open', label: t('statuses.job.open') },
+    { key: 'accepted', label: t('statuses.job.accepted') },
+    { key: 'in_progress', label: t('statuses.job.in_progress') },
     { key: 'awaiting_confirmation', label: t('statuses.job.awaiting_confirmation') },
-    { key: 'completed',             label: t('statuses.job.completed') },
+    { key: 'completed', label: t('statuses.job.completed') },
 ]);
 
 const statusOrder: Record<JobStatus, number> = {

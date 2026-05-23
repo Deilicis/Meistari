@@ -215,7 +215,7 @@
             "open": "Atvērts",
             "accepted": "Pieņemts",
             "in_progress": "Darbā",
-            "awaiting_confirmation": "Gaida apstiprinājumu",
+            "awaiting_confirmation": "Pieņem",
             "completed": "Pabeigts",
             "disputed": "Strīdā",
             "cancelled": "Atcelts"
@@ -331,7 +331,27 @@
         "saved_message": "Izmaiņas ir veiksmīgi saglabātas!",
         "unsaved_message": "Neaizmirstiet saglabāt veiktās izmaiņas.",
         "saving_btn": "Saglabā...",
-        "save_changes_btn": "Saglabāt izmaiņas"
+        "save_changes_btn": "Saglabāt izmaiņas",
+        "tabs": {
+            "basic_info": "Pamatinformācija",
+            "master_profile": "Profils un pieredze",
+            "security": "Drošība",
+            "account": "Konts"
+        },
+        "sections": {
+            "basic_data": "Pamata dati",
+            "personal_info": "Personiska informācija",
+            "contact": "Kontakti",
+            "avatar": "Profila bilde",
+            "bio": "Apraksts",
+            "experience": "Pieredze",
+            "portfolio": "Portfolio"
+        },
+        "avatar": {
+            "change_button": "Mainīt profila bildi",
+            "helper": "Maksimālais izmērs: 5MB. Formāti: JPG, PNG, WEBP.",
+            "placeholder_alt": "{name} bildes vietturis"
+        }
     },
     "browse": {
         "services_title": "Pakalpojumi",
@@ -767,7 +787,7 @@
             "placeholder": "Sāc rakstīt, lai meklētu kategorijas...",
             "searching": "Meklē...",
             "approved_section": "Kategorijas",
-            "pending_section": "Gaida apstiprinājumu",
+            "pending_section": "Pieņem",
             "no_results": "Nav atrastu kategoriju.",
             "suggest_action": "Ieteikt jaunu kategoriju: \"{name}\"",
             "suggest_title": "Ieteikt jaunu kategoriju",
