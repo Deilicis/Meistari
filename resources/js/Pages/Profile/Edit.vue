@@ -1,17 +1,110 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import { Head } from '@inertiajs/vue3';
+import { ref, computed, watch, onMounted } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { useActiveRole } from '@/composables/useActiveRole';
+import { toast } from 'vue-sonner';
+import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ProfileTabs from './Partials/ProfileTabs.vue';
+import BasicInformationTab from './Partials/BasicInformationTab.vue';
+import MasterProfileTab from './Partials/MasterProfileTab.vue';
+import SecurityTab from './Partials/SecurityTab.vue';
+import AccountTab from './Partials/AccountTab.vue';
+import type { AuthUser, Profile } from '@/types/models';
 
 const { t } = useI18n();
+const { isMasterActive } = useActiveRole();
+
+type ProfileUser = AuthUser & {
+    profile: Profile & {
+        experiences: object[];
+        portfolio_images: string[];
+        reg_number?: string;
+        vat_number?: string;
+    };
+};
+
+const page = usePage<{ auth: { user: ProfileUser } }>();
+const user = computed(() => page.props.auth.user);
+const profile = computed(() => user.value.profile || {});
 
 defineProps<{
     mustVerifyEmail: boolean;
     status?: string;
 }>();
+
+// --- Cilņu stāvoklis ---
+
+type TabKey = 'basic' | 'master-profile' | 'security' | 'account';
+
+const validTabs = computed((): TabKey[] => {
+    const tabs: TabKey[] = ['basic'];
+    if (isMasterActive.value) tabs.push('master-profile');
+    tabs.push('security', 'account');
+    return tabs;
+});
+
+const activeTab = ref<TabKey>('basic');
+
+onMounted(() => {
+    const hash = window.location.hash.replace('#', '') as TabKey;
+    if (hash && validTabs.value.includes(hash)) {
+        activeTab.value = hash;
+    }
+});
+
+watch(activeTab, (tab) => {
+    history.replaceState(null, '', `#${tab}`);
+});
+
+// Pagriezies uz 'basic', ja aktīvā loma mainās un pašreizējā cilne vairs nav pieejama.
+watch(isMasterActive, () => {
+    if (activeTab.value === 'master-profile' && !isMasterActive.value) {
+        activeTab.value = 'basic';
+    }
+});
+
+// --- Profila forma (kopīga starp 'basic' un 'master-profile' cilnēm) ---
+
+const existingPortfolio = ref<string[]>(profile.value.portfolio_images || []);
+
+watch(
+    () => profile.value.portfolio_images,
+    (newImages) => { existingPortfolio.value = newImages || []; },
+    { deep: true }
+);
+
+const form = useForm({
+    _method: 'patch',
+    name: user.value.name,
+    email: user.value.email,
+    type: profile.value.type || 'individual',
+    first_name: profile.value.first_name || '',
+    last_name: profile.value.last_name || '',
+    company_name: profile.value.company_name || '',
+    reg_number: profile.value.reg_number || '',
+    vat_number: profile.value.vat_number || '',
+    city: profile.value.city || '',
+    phone_number: profile.value.phone || '',
+    description: profile.value.bio || '',
+    avatar: null as File | string | null,
+    experiences: profile.value.experiences || [],
+    portfolio_images: [] as File[],
+    images_to_delete: [] as string[],
+});
+
+function submitProfile() {
+    form.post(route('profile.update'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.portfolio_images = [];
+            form.images_to_delete = [];
+            form.avatar = null;
+        },
+        onError: () => toast.error(t('profile.form_error_toast')),
+    });
+}
 </script>
 
 <template>
@@ -26,42 +119,52 @@ defineProps<{
         </template>
 
         <div class="py-8">
-            <div class="mx-auto max-w-5xl space-y-8 px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-4">
 
-                <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
+                <ProfileTabs
+                    v-model:activeTab="activeTab"
+                    :isMaster="isMasterActive"
+                />
+
+                <Transition name="tab-fade" mode="out-in">
+                    <BasicInformationTab
+                        v-if="activeTab === 'basic'"
+                        key="basic"
+                        :form="form"
+                        @submit="submitProfile"
                     />
-                </div>
 
-                <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
-                    <div class="bg-navy px-6 py-4 border-b border-navy-light">
-                        <h3 class="text-base font-semibold text-white">{{ t('profile.change_password_title') }}</h3>
-                        <p class="text-sm text-white/50 mt-0.5">{{ t('profile.change_password_desc') }}</p>
-                    </div>
-                    <div class="p-6">
-                        <UpdatePasswordForm />
-                    </div>
-                </div>
+                    <MasterProfileTab
+                        v-else-if="activeTab === 'master-profile' && isMasterActive"
+                        key="master-profile"
+                        :form="form"
+                        v-model:existingPortfolio="existingPortfolio"
+                        @submit="submitProfile"
+                    />
 
-                <div class="bg-white shadow-sm border border-red-100 rounded-2xl overflow-hidden">
-                    <div class="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center gap-3">
-                        <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <div>
-                            <h3 class="text-base font-semibold text-red-700">{{ t('profile.danger_zone_title') }}</h3>
-                            <p class="text-sm text-red-500 mt-0.5">{{ t('profile.danger_zone_desc') }}</p>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <DeleteUserForm />
-                    </div>
-                </div>
+                    <SecurityTab
+                        v-else-if="activeTab === 'security'"
+                        key="security"
+                    />
+
+                    <AccountTab
+                        v-else-if="activeTab === 'account'"
+                        key="account"
+                    />
+                </Transition>
 
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style>
+.tab-fade-enter-active,
+.tab-fade-leave-active {
+    transition: opacity 150ms ease;
+}
+.tab-fade-enter-from,
+.tab-fade-leave-to {
+    opacity: 0;
+}
+</style>

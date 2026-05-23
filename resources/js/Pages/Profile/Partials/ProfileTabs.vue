@@ -56,7 +56,7 @@ function onKeydown(e: KeyboardEvent, index: number) {
     <div
         role="tablist"
         :aria-label="t('profile.heading')"
-        class="flex items-end overflow-x-auto border-b border-gray-200 gap-1 scrollbar-hide"
+        class="flex items-end border-b border-gray-200 gap-1"
     >
         <button
             v-for="(tab, i) in allTabs"
