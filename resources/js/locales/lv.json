@@ -128,12 +128,14 @@
     "welcome": {
         "meta_title": "Meistari - Atrodi uzticamu meistaru",
         "hero": {
-            "tagline": "Latvijas meistaru platforma",
-            "title": "Atrodi uzticamu meistaru",
-            "title_accent": "tavam nākamajam projektam",
-            "subtitle": "Sertificēti un pārbaudīti meistari visā Latvijā. Publicē sludinājumu un saņem piedāvājumus, vai reģistrējies kā meistars un atrod darbu.",
+            "subtitle": "Sazinies tieši ar pārbaudītiem speciālistiem visā Latvijā. Bez slēptām maksām, bez riska.",
             "cta_find": "Atrast meistaru",
-            "cta_post": "Publicēt darbu"
+            "cta_post": "Publicēt darbu",
+            "title_line_1": "Tavs nākamais projekts.",
+            "title_line_2": "Mūsu meistari.",
+            "cta_find_subtitle": "Pārlūko meistaru profilus",
+            "cta_post_subtitle": "Saņem piedāvājumus 24h laikā",
+            "trust_indicator": "Bez maksas. Sākt 30 sekundēs."
         },
         "stats": {
             "active_masters": "Aktīvi meistari",

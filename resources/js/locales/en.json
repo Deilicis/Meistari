@@ -128,12 +128,14 @@
     "welcome": {
         "meta_title": "Meistari - Find a trusted craftsman",
         "hero": {
-            "tagline": "Latvia's craftsman platform",
-            "title": "Find a trusted Master",
-            "title_accent": "for your next project",
-            "subtitle": "Certified and vetted Masters across Latvia. Post a listing and receive offers, or register as a Master and find work.",
-            "cta_find": "Find a Master",
-            "cta_post": "Post a job"
+            "subtitle": "Connect directly with verified specialists across Latvia. No hidden fees, no risk.",
+            "cta_find": "Find a master",
+            "cta_post": "Post a job",
+            "title_line_1": "Your next project.",
+            "title_line_2": "Our masters.",
+            "cta_find_subtitle": "Browse master profiles",
+            "cta_post_subtitle": "Receive offers within 24h",
+            "trust_indicator": "Free. Get started in 30 seconds."
         },
         "stats": {
             "active_masters": "Active Masters",
