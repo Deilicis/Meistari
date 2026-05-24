@@ -46,6 +46,7 @@ export interface WelcomeJobRequestCard {
 export interface PopularCategory {
     id: number;
     name: string;
+    icon: string | null;
     services_count: number;
 }
 

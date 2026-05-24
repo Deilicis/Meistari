@@ -151,7 +151,8 @@
         "featured_masters": {
             "title": "Top-rated Masters",
             "subtitle": "Meet Masters with the highest client ratings",
-            "view_profile": "View profile"
+            "view_profile": "View profile",
+            "top_rated": "Top rated"
         },
         "how_it_works": {
             "title": "How does it work?",

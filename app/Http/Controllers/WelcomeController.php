@@ -29,7 +29,7 @@ class WelcomeController extends Controller
             ->withCount('reviewsReceived')
             ->withAvg('reviewsReceived', 'rating')
             ->orderByDesc('reviews_received_avg_rating')
-            ->limit(4)
+            ->limit(3)
             ->get();
 
         return Inertia::render('Welcome', [

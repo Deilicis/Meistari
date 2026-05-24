@@ -151,7 +151,8 @@
         "featured_masters": {
             "title": "Top novērtētie meistari",
             "subtitle": "Iepazīsti meistarus ar augstāko klientu vērtējumu",
-            "view_profile": "Skatīt profilu"
+            "view_profile": "Skatīt profilu",
+            "top_rated": "Top novērtēts"
         },
         "how_it_works": {
             "title": "Kā tas darbojas?",
