@@ -123,7 +123,8 @@
         "role_switch_error": "Neizdevās pārslēgt lomu.",
         "role_master": "Meistars",
         "role_seeker": "Meklētājs",
-        "language": "Valoda"
+        "language": "Valoda",
+        "toggle_menu": "Atvērt izvēlni"
     },
     "welcome": {
         "meta_title": "Meistari - Atrodi uzticamu meistaru",

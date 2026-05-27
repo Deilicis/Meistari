@@ -123,7 +123,8 @@
         "role_switch_error": "Failed to switch role.",
         "role_master": "Master",
         "role_seeker": "Seeker",
-        "language": "Language"
+        "language": "Language",
+        "toggle_menu": "Toggle menu"
     },
     "welcome": {
         "meta_title": "Meistari - Find a trusted craftsman",

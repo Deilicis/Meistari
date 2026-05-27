@@ -21,7 +21,7 @@ defineProps<{
                 <p class="text-sm text-gray-500 mt-1">{{ t('welcome.categories.subtitle') }}</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <component
                     :is="isAuth ? Link : 'button'"
                     v-for="cat in categories"
@@ -39,7 +39,7 @@ defineProps<{
                     </div>
                     <div class="min-w-0">
                         <p class="text-base font-semibold text-gray-900 truncate">{{ cat.name }}</p>
-                        <p class="text-sm text-gray-400 mt-0.5">
+                        <p class="text-sm text-gray-400 mt-0.5 truncate">
                             {{ cat.services_count }} {{ t('welcome.categories.services_label', cat.services_count) }}
                         </p>
                     </div>
