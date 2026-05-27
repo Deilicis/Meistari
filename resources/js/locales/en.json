@@ -155,23 +155,22 @@
             "top_rated": "Top rated"
         },
         "how_it_works": {
-            "title": "How does it work?",
-            "subtitle": "Three simple steps to get started",
-            "for_seekers": "For Clients",
-            "for_masters": "For Masters",
-            "step": "Step {n}",
+            "title": "Three steps to get the job done.",
+            "subtitle": "Whether you need help or offer services — the process is simple.",
+            "for_seekers": "Find a master",
+            "for_masters": "Be a master",
             "seeker_post_title": "Post a listing",
-            "seeker_post_desc": "Describe the work needed, set a budget and location.",
+            "seeker_post_desc": "Describe the job and set your budget. Two minutes for you — an invitation for masters.",
             "seeker_receive_title": "Receive offers",
-            "seeker_receive_desc": "Masters apply to your listing and send their proposals.",
+            "seeker_receive_desc": "Masters apply and message you directly in chat. Compare profiles and ratings.",
             "seeker_choose_title": "Choose and accept",
-            "seeker_choose_desc": "Compare offers, review profiles, and choose the best Master.",
+            "seeker_choose_desc": "Accept the offer. Payment is held securely in escrow until the job is done.",
             "master_profile_title": "Create your profile",
-            "master_profile_desc": "Add your experience, portfolio, and services that make you stand out.",
+            "master_profile_desc": "Fill in your details, add experience and a portfolio. Your profile is your calling card.",
             "master_find_title": "Find jobs",
-            "master_find_desc": "Browse job listings and apply to the ones that interest you.",
+            "master_find_desc": "Browse the latest jobs and apply directly to those matching your specialty.",
             "master_start_title": "Start working",
-            "master_start_desc": "Agree with the client through the platform chat and start the project."
+            "master_start_desc": "Agree with the client in chat, complete the work. Receive payment securely via escrow."
         },
         "join": {
             "title": "Join our community",

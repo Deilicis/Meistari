@@ -33,9 +33,6 @@ const features = computed(() => [
                 </Link>
 
                 <div class="mb-10">
-                    <span class="inline-block text-gold text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-gold/30 bg-gold/5 mb-5">
-                        {{ t('auth.side_tagline') }}
-                    </span>
                     <h2 class="text-3xl lg:text-4xl font-extrabold leading-tight text-white mb-4">
                         {{ t('auth.side_heading') }}
                     </h2>

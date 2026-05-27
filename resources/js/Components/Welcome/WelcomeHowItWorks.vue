@@ -1,117 +1,81 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
-type Tab = 'seeker' | 'master';
-const active = ref<Tab>('seeker');
-
-const seekerIcons = [
-    'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-    'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
-    'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
-];
-
-const masterIcons = [
-    'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-    'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
-    'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z',
-];
-
 const seekerSteps = computed(() => [
-    { icon: seekerIcons[0], title: t('welcome.how_it_works.seeker_post_title'),    desc: t('welcome.how_it_works.seeker_post_desc') },
-    { icon: seekerIcons[1], title: t('welcome.how_it_works.seeker_receive_title'), desc: t('welcome.how_it_works.seeker_receive_desc') },
-    { icon: seekerIcons[2], title: t('welcome.how_it_works.seeker_choose_title'),  desc: t('welcome.how_it_works.seeker_choose_desc') },
+    { n: '01', title: t('welcome.how_it_works.seeker_post_title'),    desc: t('welcome.how_it_works.seeker_post_desc') },
+    { n: '02', title: t('welcome.how_it_works.seeker_receive_title'), desc: t('welcome.how_it_works.seeker_receive_desc') },
+    { n: '03', title: t('welcome.how_it_works.seeker_choose_title'),  desc: t('welcome.how_it_works.seeker_choose_desc') },
 ]);
 
 const masterSteps = computed(() => [
-    { icon: masterIcons[0], title: t('welcome.how_it_works.master_profile_title'), desc: t('welcome.how_it_works.master_profile_desc') },
-    { icon: masterIcons[1], title: t('welcome.how_it_works.master_find_title'),    desc: t('welcome.how_it_works.master_find_desc') },
-    { icon: masterIcons[2], title: t('welcome.how_it_works.master_start_title'),   desc: t('welcome.how_it_works.master_start_desc') },
+    { n: '01', title: t('welcome.how_it_works.master_profile_title'), desc: t('welcome.how_it_works.master_profile_desc') },
+    { n: '02', title: t('welcome.how_it_works.master_find_title'),    desc: t('welcome.how_it_works.master_find_desc') },
+    { n: '03', title: t('welcome.how_it_works.master_start_title'),   desc: t('welcome.how_it_works.master_start_desc') },
 ]);
 </script>
 
 <template>
-    <section class="py-16 bg-white border-t border-gray-100">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-navy">{{ t('welcome.how_it_works.title') }}</h2>
-                <p class="text-sm text-gray-500 mt-1">{{ t('welcome.how_it_works.subtitle') }}</p>
+    <section class="py-20 md:py-24 bg-white border-t border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-14">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-navy leading-tight">
+                    {{ t('welcome.how_it_works.title') }}
+                </h2>
+                <p class="mt-3 text-base text-gray-500 max-w-xl">
+                    {{ t('welcome.how_it_works.subtitle') }}
+                </p>
             </div>
 
-            
-            <div class="flex justify-center mb-8">
-                <div class="flex gap-1 bg-gray-100 rounded-xl p-1">
-                    <button
-                        @click="active = 'seeker'"
-                        class="px-5 py-2 rounded-lg text-sm font-semibold transition-all"
-                        :class="active === 'seeker'
-                            ? 'bg-white text-navy shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'"
+            <div class="grid grid-cols-1 md:grid-cols-2">
+
+                <div class="md:pr-10 lg:pr-16">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-8">
+                        {{ t('welcome.how_it_works.for_seekers') }}
+                    </p>
+                    <div
+                        v-for="step in seekerSteps"
+                        :key="step.n"
+                        class="flex items-start gap-5 py-7 border-b border-gray-100 last:border-b-0"
                     >
-                        <span
-                            class="border-b-2 pb-0.5 transition-colors"
-                            :class="active === 'seeker' ? 'border-emerald-400' : 'border-transparent'"
+                        <div
+                            class="text-7xl md:text-8xl font-black text-emerald-200 leading-none shrink-0 select-none"
+                            aria-hidden="true"
                         >
-                            {{ t('welcome.how_it_works.for_seekers') }}
-                        </span>
-                    </button>
-                    <button
-                        @click="active = 'master'"
-                        class="px-5 py-2 rounded-lg text-sm font-semibold transition-all"
-                        :class="active === 'master'
-                            ? 'bg-white text-navy shadow-sm'
-                            : 'text-gray-500 hover:text-gray-700'"
+                            {{ step.n }}
+                        </div>
+                        <div class="pt-2 min-w-0">
+                            <h3 class="text-lg font-bold text-navy mb-2">{{ step.title }}</h3>
+                            <p class="text-sm text-gray-500 leading-relaxed">{{ step.desc }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-14 md:mt-0 md:pl-10 lg:pl-16 md:border-l border-gray-200">
+                    <p class="text-xs font-bold uppercase tracking-widest text-gold mb-8">
+                        {{ t('welcome.how_it_works.for_masters') }}
+                    </p>
+                    <div
+                        v-for="step in masterSteps"
+                        :key="step.n"
+                        class="flex items-start gap-5 py-7 border-b border-gray-100 last:border-b-0"
                     >
-                        <span
-                            class="border-b-2 pb-0.5 transition-colors"
-                            :class="active === 'master' ? 'border-gold' : 'border-transparent'"
+                        <div
+                            class="text-7xl md:text-8xl font-black text-yellow-200 leading-none shrink-0 select-none"
+                            aria-hidden="true"
                         >
-                            {{ t('welcome.how_it_works.for_masters') }}
-                        </span>
-                    </button>
+                            {{ step.n }}
+                        </div>
+                        <div class="pt-2 min-w-0">
+                            <h3 class="text-lg font-bold text-navy mb-2">{{ step.title }}</h3>
+                            <p class="text-sm text-gray-500 leading-relaxed">{{ step.desc }}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            
-            <div v-show="active === 'seeker'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                    v-for="(step, i) in seekerSteps"
-                    :key="i"
-                    class="bg-gray-50 rounded-2xl border border-gray-100 p-6 flex gap-4"
-                >
-                    <div class="w-10 h-10 rounded-xl bg-navy flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="step.icon" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="text-xs font-bold text-emerald-500 uppercase tracking-wide mb-1">{{ t('welcome.how_it_works.step', { n: i + 1 }) }}</div>
-                        <h3 class="text-sm font-bold text-navy mb-1">{{ step.title }}</h3>
-                        <p class="text-xs text-gray-500 leading-relaxed">{{ step.desc }}</p>
-                    </div>
-                </div>
-            </div>
-
-            
-            <div v-show="active === 'master'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div
-                    v-for="(step, i) in masterSteps"
-                    :key="i"
-                    class="bg-gray-50 rounded-2xl border border-gray-100 p-6 flex gap-4"
-                >
-                    <div class="w-10 h-10 rounded-xl bg-navy flex items-center justify-center shrink-0">
-                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :d="step.icon" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="text-xs font-bold text-gold uppercase tracking-wide mb-1">{{ t('welcome.how_it_works.step', { n: i + 1 }) }}</div>
-                        <h3 class="text-sm font-bold text-navy mb-1">{{ step.title }}</h3>
-                        <p class="text-xs text-gray-500 leading-relaxed">{{ step.desc }}</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>

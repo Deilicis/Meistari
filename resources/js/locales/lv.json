@@ -155,23 +155,22 @@
             "top_rated": "Top novērtēts"
         },
         "how_it_works": {
-            "title": "Kā tas darbojas?",
-            "subtitle": "Trīs vienkārši soļi, lai sāktu",
-            "for_seekers": "Meklētājiem",
-            "for_masters": "Meistariem",
-            "step": "{n}. solis",
+            "title": "Trīs soļi, lai darbs tiek paveikts.",
+            "subtitle": "Vienalga vai meklē palīdzību vai piedāvā pakalpojumus — process ir vienkāršs.",
+            "for_seekers": "Meklē meistaru",
+            "for_masters": "Esi meistars",
             "seeker_post_title": "Publicē sludinājumu",
-            "seeker_post_desc": "Apraksti nepieciešamo darbu, norādi budžetu un atrašanās vietu.",
+            "seeker_post_desc": "Apraksti darbu, norādi budžetu. Divas minūtes tev — uzaicinājums meistariem piedāvāt.",
             "seeker_receive_title": "Saņem piedāvājumus",
-            "seeker_receive_desc": "Meistari piesakās uz tava sludinājumu un nosūta savus piedāvājumus.",
+            "seeker_receive_desc": "Meistari piesakās un raksta tieši čatā. Salīdzini profilus un vērtējumus.",
             "seeker_choose_title": "Izvēlies un pieņem",
-            "seeker_choose_desc": "Salīdzini piedāvājumus, apskata profilus un izvēlies piemērotāko meistaru.",
+            "seeker_choose_desc": "Pieņem piedāvājumu. Nauda glabājas drošā eskrov sistēmā līdz darba pabeigšanai.",
             "master_profile_title": "Izveido profilu",
-            "master_profile_desc": "Pievieno savu pieredzi, portfeli un pakalpojumus, kas tevi padara izcilu.",
+            "master_profile_desc": "Aizpildi datus, pievieno pieredzi un portfeli. Profils ir tava darba vizītkarte.",
             "master_find_title": "Atrodi darbus",
-            "master_find_desc": "Pārlūko darba sludinājumus un piesakies tieši tiem, kas tevi interesē.",
+            "master_find_desc": "Pārlūko jaunākos darbus un piesakies tieši tiem, kas atbilst tavai specialitātei.",
             "master_start_title": "Sāc strādāt",
-            "master_start_desc": "Vienojies ar klientu caur platformas tērzēšanu un sāc projektu."
+            "master_start_desc": "Vienojies ar klientu čatā, paveic darbu. Saņem maksājumu drošā eskrov sistēmā."
         },
         "join": {
             "title": "Pievienojies mūsu kopienai",
