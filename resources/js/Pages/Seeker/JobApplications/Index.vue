@@ -95,7 +95,7 @@ async function reject(app: SeekerJobApplication) {
         </div>
 
         <div class="py-6">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 
                 <div class="flex flex-wrap gap-2 mb-5 px-4 sm:px-0">

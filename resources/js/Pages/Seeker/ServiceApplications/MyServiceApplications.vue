@@ -105,12 +105,12 @@ const confirmCancel = async () => {
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
             
-            <div class="flex gap-1 flex-wrap border-b border-gray-200">
+            <div class="-mx-4 px-4 sm:mx-0 sm:px-0 flex gap-1 overflow-x-auto border-b border-gray-200 pb-px">
                 <button
                     v-for="tab in tabs"
                     :key="tab.key"
                     @click="activeFilter = tab.key"
-                    class="px-3 py-2 text-sm font-medium rounded-t transition-colors relative -mb-px"
+                    class="shrink-0 whitespace-nowrap px-3 py-2 text-sm font-medium rounded-t transition-colors relative -mb-px"
                     :class="activeFilter === tab.key
                         ? 'text-navy border-b-2 border-navy bg-navy/5'
                         : 'text-gray-500 hover:text-navy hover:bg-gray-50'"
@@ -133,49 +133,44 @@ const confirmCancel = async () => {
                     :key="app.id"
                     class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
                 >
-                    
                     <div
-                        class="px-5 pt-5 pb-4 border-l-4"
+                        class="flex items-center justify-between px-4 sm:px-5 py-2.5 bg-gray-50/80 border-b border-gray-100 border-l-4"
                         :class="statusClasses[app.status].borderClass"
                     >
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2 flex-wrap mb-1.5">
-                                    <h3 class="font-bold text-navy text-base leading-snug">
-                                        {{ app.service.title }}
-                                    </h3>
-                                    <span
-                                        v-if="app.service.category"
-                                        class="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full"
-                                    >
-                                        {{ app.service.category.name }}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-1.5 text-sm text-gray-500">
-                                    <UserIcon class="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                                    <a
-                                        :href="route('master.public-profile', app.service.user.id)"
-                                        class="font-medium text-gray-700 hover:text-navy hover:underline transition-colors"
-                                    >{{ app.service.user.name }}</a>
-                                    <span v-if="app.service.user.profile?.city" class="text-gray-400">
-                                        · {{ app.service.user.profile.city }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="shrink-0 flex flex-col items-end gap-1.5">
-                                <span
-                                    class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                                    :class="statusClasses[app.status].badgeClass"
-                                >
-                                    {{ t('statuses.service_application.' + app.status) }}
-                                </span>
-                                <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
-                            </div>
+                        <span
+                            class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            :class="statusClasses[app.status].badgeClass"
+                        >
+                            {{ t('statuses.service_application.' + app.status) }}
+                        </span>
+                        <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
+                    </div>
+
+                    <div class="px-4 sm:px-5 pt-4 pb-3">
+                        <div class="flex items-center gap-2 flex-wrap mb-1.5">
+                            <h3 class="font-bold text-navy text-base leading-snug">
+                                {{ app.service.title }}
+                            </h3>
+                            <span
+                                v-if="app.service.category"
+                                class="text-xs font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full"
+                            >
+                                {{ app.service.category.name }}
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-sm text-gray-500">
+                            <UserIcon class="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                            <a
+                                :href="route('master.public-profile', app.service.user.id)"
+                                class="font-medium text-gray-700 hover:text-navy hover:underline transition-colors"
+                            >{{ app.service.user.name }}</a>
+                            <span v-if="app.service.user.profile?.city" class="text-gray-400">
+                                · {{ app.service.user.profile.city }}
+                            </span>
                         </div>
                     </div>
 
-                    
-                    <div class="px-5 pb-4 space-y-3">
+                    <div class="px-4 sm:px-5 pb-4 space-y-3">
                         <p v-if="app.message" class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {{ app.message }}
                         </p>
@@ -200,8 +195,7 @@ const confirmCancel = async () => {
                         </div>
                     </div>
 
-                    
-                    <div class="bg-gray-50 border-t border-gray-100 px-5 py-3 flex items-center justify-between gap-3">
+                    <div class="bg-gray-50 border-t border-gray-100 px-4 sm:px-5 py-3 flex items-center justify-between gap-3">
                         <button
                             @click="openDetail(app)"
                             class="inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:underline transition-colors"

@@ -75,7 +75,7 @@ function iconComponent(icon: string | null) {
         </div>
 
         <div class="py-6">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 <div class="relative mb-6 max-w-md">
                     <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">

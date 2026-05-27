@@ -163,7 +163,7 @@ const categoryIcon = (job: JobRequest) => {
         </div>
 
         <div class="py-6">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 <MyJobRequestsSearchBar v-model="filterForm" :categories="categories" />
 
@@ -196,14 +196,36 @@ const categoryIcon = (job: JobRequest) => {
                     </template>
                 </EmptyState>
 
-                <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div
                         v-for="job in jobRequests"
                         :key="job.id"
-                        class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-stretch"
+                        class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row sm:items-stretch"
                     >
                         
-                        <div class="w-16 shrink-0 flex items-center justify-center px-3 border-r border-gray-100">
+                        <!-- Ikona + kategorija + statuss: tikai mobilā augšējā rindā -->
+                        <div class="flex items-center gap-3 px-4 pt-4 pb-3 border-b border-gray-100 sm:hidden">
+                            <div class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center shrink-0">
+                                <component :is="categoryIcon(job)" v-if="categoryIcon(job)" class="w-5 h-5 text-navy/70" />
+                                <svg v-else class="w-5 h-5 text-navy/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap min-w-0">
+                                <span v-if="job.category" class="text-xs font-semibold text-gray-400 tracking-wide uppercase truncate">
+                                    {{ job.category.name }}
+                                </span>
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold shrink-0"
+                                    :class="statusClasses[job.status] ?? statusClasses.open"
+                                >
+                                    {{ t('statuses.job.' + job.status) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Ikona: tikai desktopā, vertikāla josla pa kreisi -->
+                        <div class="hidden sm:flex w-16 shrink-0 items-center justify-center px-3 border-r border-gray-100">
                             <div class="w-10 h-10 rounded-xl bg-navy/5 flex items-center justify-center">
                                 <component :is="categoryIcon(job)" v-if="categoryIcon(job)" class="w-5 h-5 text-navy/70" />
                                 <svg v-else class="w-5 h-5 text-navy/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -213,8 +235,9 @@ const categoryIcon = (job: JobRequest) => {
                         </div>
 
                         
-                        <div class="flex-1 min-w-0 px-4 py-4">
-                            <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <div class="flex-1 min-w-0 px-4 py-3 sm:py-4">
+                            <!-- Kategorija un statuss: tikai desktopā (mobilā rāda augšā) -->
+                            <div class="hidden sm:flex items-center gap-2 mb-1 flex-wrap">
                                 <span v-if="job.category" class="text-xs font-semibold text-gray-400 tracking-wide uppercase">
                                     {{ job.category.name }}
                                 </span>
@@ -227,9 +250,9 @@ const categoryIcon = (job: JobRequest) => {
                             </div>
                             <Link
                                 :href="route('jobs.show', job.id)"
-                                class="text-sm font-bold text-navy mb-1 line-clamp-1 hover:underline block"
+                                class="text-base sm:text-sm font-bold text-navy mb-1 line-clamp-1 hover:underline block"
                             >{{ job.title }}</Link>
-                            <p class="text-xs text-gray-500 line-clamp-2 mb-2">{{ job.description }}</p>
+                            <p class="text-sm sm:text-xs text-gray-500 line-clamp-2 mb-2">{{ job.description }}</p>
                             <div class="flex flex-wrap gap-1">
                                 <span
                                     v-if="job.location?.length"
@@ -249,13 +272,14 @@ const categoryIcon = (job: JobRequest) => {
                         </div>
 
                         
-                        <div class="shrink-0 flex flex-col items-end justify-between px-4 py-4 min-w-[110px]">
-                            <div class="text-right">
-                                <span v-if="job.budget" class="text-sm font-bold text-navy block">{{ formatCurrency(job.budget) }}</span>
+                        <!-- Darbības josla: horizontāla mobilā, vertikāla desktopā -->
+                        <div class="flex items-center justify-between gap-2 px-4 pb-4 pt-2 border-t border-gray-100 sm:flex-col sm:items-end sm:justify-between sm:border-t-0 sm:pt-0 sm:py-4 sm:min-w-[110px]">
+                            <div class="flex items-center gap-2 sm:block sm:text-right">
+                                <span v-if="job.budget" class="text-sm font-bold text-navy">{{ formatCurrency(job.budget) }}</span>
                                 <button
                                     v-if="job.status !== 'cancelled'"
                                     @click="openApplications(job)"
-                                    class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 transition-colors mt-0.5"
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1 transition-colors sm:mt-0.5"
                                     :class="(job.applications_count ?? 0) > 0
                                         ? 'bg-navy text-white hover:bg-navy-hover'
                                         : 'bg-gray-100 text-gray-500 hover:bg-gray-200'"
@@ -263,7 +287,7 @@ const categoryIcon = (job: JobRequest) => {
                                     <UsersIcon class="w-3.5 h-3.5" />
                                     {{ t('jobs.applications_count_label', { count: job.applications_count ?? 0 }) }}
                                 </button>
-                                <span v-else-if="job.status === 'cancelled'" class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 mt-0.5">
+                                <span v-else-if="job.status === 'cancelled'" class="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-100 text-gray-400 rounded-full px-3 py-1 sm:mt-0.5">
                                     <UsersIcon class="w-3.5 h-3.5" />
                                     {{ t('jobs.applications_count_label', { count: job.applications_count ?? 0 }) }}
                                 </span>
