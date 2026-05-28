@@ -75,6 +75,16 @@ function formatTime(iso: string): string {
     return t('notifications.ui.days_ago', { n: Math.floor(diff / 86400) });
 }
 
+function resolveUrl(n: Notification): string | null {
+    if (n.action_url) return n.action_url;
+    // Rezerves variants: URL no metadatiem, ja action_url nav iestatīts
+    const meta = n.metadata;
+    if (!meta) return null;
+    if (meta.job_request_id) return route('jobs.show', meta.job_request_id as number);
+    if (meta.conversation_id) return route('chat.show', meta.conversation_id as number);
+    return null;
+}
+
 async function handleClick(n: Notification) {
     open.value = false;
     if (!n.is_read) {
@@ -84,7 +94,8 @@ async function handleClick(n: Notification) {
             // Navigācija notiek pat ja atzīmēšana neizdevās
         }
     }
-    if (n.action_url) router.visit(n.action_url);
+    const url = resolveUrl(n);
+    if (url) router.visit(url);
 }
 
 async function handleDelete(e: Event, id: number) {
