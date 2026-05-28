@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useRouter } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -76,9 +76,15 @@ function formatTime(iso: string): string {
 }
 
 async function handleClick(n: Notification) {
-    if (!n.is_read) await markAsRead(n.id);
-    if (n.action_url) window.location.href = n.action_url;
     open.value = false;
+    if (!n.is_read) {
+        try {
+            await markAsRead(n.id);
+        } catch {
+            // Navigācija notiek pat ja atzīmēšana neizdevās
+        }
+    }
+    if (n.action_url) router.visit(n.action_url);
 }
 
 async function handleDelete(e: Event, id: number) {

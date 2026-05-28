@@ -98,12 +98,12 @@ async function reject(app: SeekerJobApplication) {
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 
-                <div class="flex flex-wrap gap-2 mb-5 px-4 sm:px-0">
+                <div class="-mx-4 px-4 sm:mx-0 sm:px-0 flex gap-2 mb-5 overflow-x-auto pb-1">
                     <button
                         v-for="tab in tabs"
                         :key="tab.key"
                         @click="activeFilter = tab.key"
-                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors"
+                        class="shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors"
                         :class="activeFilter === tab.key
                             ? 'bg-navy text-white'
                             : 'bg-white text-gray-500 border border-gray-200 hover:border-navy/30 hover:text-navy'"
@@ -130,10 +130,21 @@ async function reject(app: SeekerJobApplication) {
                     <div
                         v-for="app in filtered"
                         :key="app.id"
-                        class="bg-white rounded-xl border border-gray-100 shadow-sm border-l-4 px-5 py-4"
+                        class="bg-white rounded-xl border border-gray-100 shadow-sm border-l-4 overflow-hidden"
                         :class="statusClasses[app.status].borderClass"
                     >
-                        <div class="flex items-start gap-4">
+                        <!-- Statuss un datums: tikai mobilā augšā -->
+                        <div class="flex items-center justify-between gap-2 px-4 sm:px-5 py-2.5 bg-gray-50/80 border-b border-gray-100 sm:hidden">
+                            <span
+                                class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                                :class="statusClasses[app.status].badgeClass"
+                            >
+                                {{ t('statuses.application.' + app.status) }}
+                            </span>
+                            <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
+                        </div>
+
+                        <div class="flex items-start gap-4 px-4 sm:px-5 py-4">
                             
                             <div class="shrink-0">
                                 <img
@@ -159,7 +170,7 @@ async function reject(app: SeekerJobApplication) {
                                         <p class="text-sm font-bold text-navy">{{ app.applicant?.name ?? '-' }}</p>
                                     </div>
                                     <span
-                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"
+                                        class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0"
                                         :class="statusClasses[app.status].badgeClass"
                                     >
                                         {{ t('statuses.application.' + app.status) }}
@@ -175,10 +186,10 @@ async function reject(app: SeekerJobApplication) {
                                         <span v-if="app.price_offer" class="text-xs font-semibold text-navy bg-navy/5 px-2 py-0.5 rounded">
                                             {{ formatCurrency(parseFloat(app.price_offer)) }}
                                         </span>
-                                        <span class="text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
+                                        <span class="hidden sm:inline text-xs text-gray-400">{{ formatDate(app.created_at) }}</span>
                                     </div>
 
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex flex-wrap items-center gap-2">
                                         <Link
                                             v-if="app.job_request"
                                             :href="route('jobs.show', app.job_request.id)"
