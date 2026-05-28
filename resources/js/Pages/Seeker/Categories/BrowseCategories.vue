@@ -147,6 +147,7 @@ function iconComponent(icon: string | null) {
                                 class="w-4 h-4 text-gray-400 transition-transform duration-200"
                                 :class="openId === category.id ? 'rotate-180' : ''"
                             />
+                            <span v-else class="w-4 h-4" />
                         </button>
 
                         

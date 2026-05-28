@@ -8,7 +8,7 @@ defineProps<{ canRegister?: boolean }>();
 
 <template>
     <section class="py-12 bg-slate-50 border-t border-slate-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10">
                 <h2 class="text-2xl font-bold text-navy">{{ t('welcome.join.title') }}</h2>
                 <p class="text-sm text-gray-500 mt-1">{{ t('welcome.join.subtitle') }}</p>

@@ -157,11 +157,11 @@
         },
         "how_it_works": {
             "title": "Trīs soļi, lai darbs tiek paveikts.",
-            "subtitle": "Vienalga vai meklē palīdzību vai piedāvā pakalpojumus — process ir vienkāršs.",
+            "subtitle": "Vienalga vai meklē palīdzību vai piedāvā pakalpojumus - process ir vienkāršs.",
             "for_seekers": "Meklē meistaru",
             "for_masters": "Esi meistars",
             "seeker_post_title": "Publicē sludinājumu",
-            "seeker_post_desc": "Apraksti darbu, norādi budžetu. Divas minūtes tev — uzaicinājums meistariem piedāvāt.",
+            "seeker_post_desc": "Apraksti darbu, norādi budžetu. Divas minūtes tev - uzaicinājums meistariem piedāvāt.",
             "seeker_receive_title": "Saņem piedāvājumus",
             "seeker_receive_desc": "Meistari piesakās un raksta tieši čatā. Salīdzini profilus un vērtējumus.",
             "seeker_choose_title": "Izvēlies un pieņem",
@@ -205,6 +205,7 @@
             "mark_all_read": "Atzīmēt visus kā lasītus",
             "loading": "Ielādē...",
             "empty": "Nav jaunu paziņojumu",
+            "close": "Aizvērt paziņojumus",
             "delete": "Dzēst paziņojumu",
             "just_now": "tikko",
             "minutes_ago": "pirms {n} min",
@@ -780,7 +781,7 @@
             "faq_3_q": "Kā ziņot par problēmu ar meistaru?",
             "faq_3_a": "Atver attiecīgā meistara profilu un nospied \"Ziņot par problēmu\", vai raksti uz info{'@'}meistari.lv.",
             "faq_4_q": "Vai varu dzēst savu kontu?",
-            "faq_4_a": "Jā - Profila iestatījumos sadaļā \"Konta pārvaldība\" ir pieejama konta dzēšanas opcija.",
+            "faq_4_a": "Jā, Profila iestatījumos sadaļā \"Konta pārvaldība\" ir pieejama konta dzēšanas opcija.",
             "faq_5_q": "Cik ilgi profils paliek aktīvs?",
             "faq_5_a": "Profils paliek aktīvs, kamēr konts nav dzēsts vai deaktivizēts."
         }

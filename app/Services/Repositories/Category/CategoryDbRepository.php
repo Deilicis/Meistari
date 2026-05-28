@@ -8,6 +8,7 @@ use App\Enums\Job\JobStatusEnum;
 use App\Models\Category;
 use App\Models\JobRequest;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CategoryDbRepository
 {
@@ -40,9 +41,38 @@ class CategoryDbRepository
 
     public function getPopular(int $limit = 5): Collection
     {
-        return Category::withCount('services')
-            ->withCount(['jobRequests as job_requests_count' => fn ($q) =>
-                $q->where(JobRequest::STATUS, JobStatusEnum::OPEN->value)
+        $openStatus = JobStatusEnum::OPEN->value;
+
+        return Category::whereNull(Category::PARENT_ID)
+            ->addSelect([
+                'categories.*',
+                DB::raw("(
+                    SELECT COUNT(*)
+                    FROM services
+                    WHERE services.deleted_at IS NULL
+                    AND (
+                        services.category_id = categories.id
+                        OR services.category_id IN (
+                            SELECT id FROM categories AS ch
+                            WHERE ch.parent_id = categories.id
+                            AND ch.deleted_at IS NULL
+                        )
+                    )
+                ) AS services_count"),
+                DB::raw("(
+                    SELECT COUNT(*)
+                    FROM job_requests
+                    WHERE job_requests.deleted_at IS NULL
+                    AND job_requests.status = '{$openStatus}'
+                    AND (
+                        job_requests.category_id = categories.id
+                        OR job_requests.category_id IN (
+                            SELECT id FROM categories AS ch
+                            WHERE ch.parent_id = categories.id
+                            AND ch.deleted_at IS NULL
+                        )
+                    )
+                ) AS job_requests_count"),
             ])
             ->orderByRaw('(services_count + job_requests_count) DESC')
             ->limit($limit)
@@ -54,6 +84,7 @@ class CategoryDbRepository
         return Category::withCount('services')
             ->whereNull(Category::PARENT_ID)
             ->with(['children' => fn ($q) => $q->withCount('services')])
+            ->orderBy(Category::IS_SYSTEM)
             ->orderBy(Category::NAME)
             ->get();
     }

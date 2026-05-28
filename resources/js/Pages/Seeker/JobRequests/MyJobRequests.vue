@@ -275,7 +275,7 @@ const categoryIcon = (job: JobRequest) => {
                         <!-- Darbības josla: horizontāla mobilā, vertikāla desktopā -->
                         <div class="flex items-center justify-between gap-2 px-4 pb-4 pt-2 border-t border-gray-100 sm:flex-col sm:items-end sm:justify-between sm:border-t-0 sm:pt-0 sm:py-4 sm:min-w-[110px]">
                             <div class="flex items-center gap-2 sm:block sm:text-right">
-                                <span v-if="job.budget" class="text-sm font-bold text-navy">{{ formatCurrency(job.budget) }}</span>
+                                <span v-if="job.budget" class="text-sm font-bold text-navy sm:block">{{ formatCurrency(job.budget) }}</span>
                                 <button
                                     v-if="job.status !== 'cancelled'"
                                     @click="openApplications(job)"

@@ -162,11 +162,19 @@ onUnmounted(() => {
             role="menu"
             :aria-label="t('nav.notifications')"
             @keydown="handleMenuKeydown"
-            class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-1rem)] bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
+            class="fixed left-2 right-2 top-[3.75rem] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 bg-white border border-navy/10 rounded-xl shadow-xl z-50 overflow-hidden"
         >
-            
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                <span class="text-sm font-bold text-navy">{{ t('notifications.ui.title') }}</span>
+                <div class="flex items-center gap-2">
+                    <button
+                        @click="open = false"
+                        class="sm:hidden p-1 -ml-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                        :aria-label="t('notifications.ui.close')"
+                    >
+                        <XMarkIcon class="w-4 h-4" aria-hidden="true" />
+                    </button>
+                    <span class="text-sm font-bold text-navy">{{ t('notifications.ui.title') }}</span>
+                </div>
                 <button
                     v-if="unreadCount > 0"
                     @click="markAllAsRead"

@@ -18,7 +18,7 @@ const features = computed(() => [
 <template>
     <div class="min-h-screen flex flex-col md:flex-row bg-white">
 
-        <div class="md:w-[45%] lg:w-[40%] w-full bg-navy flex flex-col justify-between p-8 lg:p-14 text-white relative overflow-hidden">
+        <div class="hidden md:flex md:w-[45%] lg:w-[40%] bg-navy flex-col justify-between p-8 lg:p-14 text-white relative overflow-hidden">
             <div class="absolute top-0 left-0 right-0 h-1 bg-gold" />
 
             <div class="absolute inset-0 pointer-events-none overflow-hidden">

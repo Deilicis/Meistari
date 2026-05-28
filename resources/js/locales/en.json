@@ -205,6 +205,7 @@
             "mark_all_read": "Mark all as read",
             "loading": "Loading...",
             "empty": "No new notifications",
+            "close": "Close notifications",
             "delete": "Delete notification",
             "just_now": "just now",
             "minutes_ago": "{n} min ago",
