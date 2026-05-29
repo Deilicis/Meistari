@@ -8,6 +8,7 @@ import { useActiveRole } from '@/composables/useActiveRole';
 const { t } = useI18n();
 import AddRoleModal from '@/Components/Navbar/AddRoleModal.vue';
 import type { AuthUser, Profile } from '@/types/models';
+import LanguageSwitcher from '@/Components/LanguageSwitcher.vue';
 import {
     HomeIcon,
     BriefcaseIcon,
@@ -137,6 +138,13 @@ const activeLinkClass = 'flex items-center gap-2 px-3 py-2.5 rounded-md text-sm 
         </div>
 
         
+        <div class="border-t border-white/10 px-4 py-3">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[10px] font-semibold text-white/40 uppercase tracking-wider px-3">{{ t('nav.language') }}</p>
+                <LanguageSwitcher />
+            </div>
+        </div>
+
         <div class="border-t border-white/10 px-4 py-3">
             <div class="flex items-center gap-3 mb-3">
                 <img v-if="user.profile?.avatar" :src="`/storage/${user.profile.avatar}`" :alt="t('common.avatar_alt', { name: user.name })"

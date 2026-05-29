@@ -56,7 +56,7 @@ function onKeydown(e: KeyboardEvent, index: number) {
     <div
         role="tablist"
         :aria-label="t('profile.heading')"
-        class="flex items-end border-b border-gray-200 gap-1"
+        class="flex items-end border-b border-gray-200 gap-1 overflow-x-auto"
     >
         <button
             v-for="(tab, i) in allTabs"
@@ -67,16 +67,17 @@ function onKeydown(e: KeyboardEvent, index: number) {
             :aria-selected="activeTab === tab.key"
             :aria-controls="`tabpanel-${tab.key}`"
             :tabindex="activeTab === tab.key ? 0 : -1"
+            :title="t(tab.labelKey)"
             type="button"
             @click="emit('update:activeTab', tab.key)"
             @keydown="onKeydown($event, i)"
-            class="relative flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px focus:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-inset rounded-t-lg"
+            class="relative flex items-center gap-1.5 shrink-0 px-3 sm:px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px focus:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-inset rounded-t-lg"
             :class="activeTab === tab.key
                 ? 'text-navy border-navy'
                 : 'text-gray-400 border-transparent hover:text-gray-600 hover:border-gray-300'"
         >
             <component :is="tab.icon" class="w-4 h-4 shrink-0" aria-hidden="true" />
-            {{ t(tab.labelKey) }}
+            <span class="hidden sm:inline">{{ t(tab.labelKey) }}</span>
         </button>
     </div>
 </template>
