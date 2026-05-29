@@ -1198,6 +1198,12 @@ class DemoSeeder extends Seeder
     {
         $now = Carbon::now();
 
+        // Palīgfunkcija: atrod darbu pēc nosaukuma un atgriež tā URL
+        $jobUrl = function (string $title, string $fallback = '/dashboard'): string {
+            $j = JobRequest::where(JobRequest::TITLE, $title)->first();
+            return $j ? '/jobs/' . $j->getId() : $fallback;
+        };
+
         // Administrators - jauni kategoriju ieteikumi
         $this->notify($this->admin, NotificationTypeEnum::NEW_CATEGORY_SUGGESTION,
             'Jauns kategorijas ieteikums', 'Tonijs Bāliņš ieteicis jaunu kategoriju: "Sniega tīrīšana no jumtiem".',
@@ -1212,95 +1218,95 @@ class DemoSeeder extends Seeder
         // Andrejs (meistars) - dažādi notikumi
         $this->notify($this->masters['andrejs'], NotificationTypeEnum::APPLICATION_SHORTLISTED,
             'Jūsu pieteikums apsvērts', 'Tonijs Bāliņš apsvēra jūsu pieteikumu darbam "Elektroinstalācija viesistabā".',
-            null, $now->copy()->subDays(3));
+            $jobUrl('Elektroinstalācija viesistabā', '/master/my-applications'), $now->copy()->subDays(3));
         $this->notify($this->masters['andrejs'], NotificationTypeEnum::PROPOSAL_RECEIVED,
             'Jauns pretpiedāvājums', 'Tonijs Bāliņš nosūtīja pretpiedāvājumu 240 EUR.',
-            null, $now->copy()->subDays(2));
+            $jobUrl('Elektroinstalācija viesistabā', '/master/my-applications'), $now->copy()->subDays(2));
         $this->notify($this->masters['andrejs'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Jānis Auziņš pieņēmis jūsu pieteikumu darbam "Elektroapgaismojums mājas dārzā".',
-            null, $now->copy()->subDays(7));
+            $jobUrl('Elektroapgaismojums mājas dārzā', '/master/my-applications'), $now->copy()->subDays(7));
         $this->notify($this->masters['andrejs'], NotificationTypeEnum::JOB_PAID,
             'Darba apmaksa saņemta', 'Jānis Auziņš ir apmaksājis darbu "Elektroapgaismojums mājas dārzā".',
-            null, null);
+            $jobUrl('Elektroapgaismojums mājas dārzā', '/master/my-applications'), null);
 
         // Pēteris (meistars)
         $this->notify($this->masters['peteris'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Tonijs Bāliņš pieņēmis jūsu pieteikumu darbam "Kanalizācijas caurules noplūde".',
-            null, $now->copy()->subDays(8));
+            $jobUrl('Kanalizācijas caurules noplūde virtuvē', '/master/my-applications'), $now->copy()->subDays(8));
         $this->notify($this->masters['peteris'], NotificationTypeEnum::PROPOSAL_ACCEPTED,
             'Piedāvājums pieņemts', 'Jūsu cenu piedāvājums 350 EUR ir pieņemts.',
-            null, $now->copy()->subDays(8));
+            $jobUrl('Kanalizācijas caurules noplūde virtuvē', '/master/my-applications'), $now->copy()->subDays(8));
 
         // Mārtiņš (meistars)
         $this->notify($this->masters['martins'], NotificationTypeEnum::APPLICATION_SHORTLISTED,
             'Jūsu pieteikums apsvērts', 'Anna Riekstiņa apsvēra jūsu pieteikumu "Balkona krāsošana".',
-            null, $now->copy()->subDays(4));
+            $jobUrl('Balkona krāsošana - 2 kārtas', '/master/my-applications'), $now->copy()->subDays(4));
         $this->notify($this->masters['martins'], NotificationTypeEnum::PROPOSAL_RECEIVED,
             'Jauns pretpiedāvājums', 'Anna Riekstiņa nosūtīja pretpiedāvājumu 370 EUR.',
-            null, null);
+            $jobUrl('Balkona krāsošana - 2 kārtas', '/master/my-applications'), null);
 
         // Ilze (meistars)
         $this->notify($this->masters['ilze'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Tonijs Bāliņš pieņēmis jūsu pieteikumu "Pēcremonta tīrīšana".',
-            null, $now->copy()->subDays(20));
+            $jobUrl('Pēcremonta tīrīšana dzīvoklī', '/master/my-applications'), $now->copy()->subDays(20));
         $this->notify($this->masters['ilze'], NotificationTypeEnum::JOB_PAID,
             'Darba apmaksa saņemta', 'Tonijs Bāliņš ir apmaksājis darbu.',
-            null, $now->copy()->subDays(18));
+            $jobUrl('Pēcremonta tīrīšana dzīvoklī', '/master/my-applications'), $now->copy()->subDays(18));
 
         // Roberts (meistars)
         $this->notify($this->masters['roberts'], NotificationTypeEnum::NEW_REVIEW,
             'Jauna atsauksme!', 'Tonijs Bāliņš atstāja 5 zvaigžņu atsauksmi par jūsu darbu.',
-            null, $now->copy()->subDays(28));
+            '/meistars/' . $this->masters['roberts']->getId(), $now->copy()->subDays(28));
         $this->notify($this->masters['roberts'], NotificationTypeEnum::APPLICATION_SHORTLISTED,
             'Jūsu pieteikums apsvērts', 'Gunārs Bērziņš apsvēra jūsu pieteikumu "Koka žogs".',
-            null, $now->copy()->subDays(5));
+            $jobUrl('Koka žogs apkārt dārzam', '/master/my-applications'), $now->copy()->subDays(5));
 
         // Linda (meistars)
         $this->notify($this->masters['linda'], NotificationTypeEnum::NEW_REVIEW,
             'Jauna atsauksme!', 'Gunārs Bērziņš atstāja 5 zvaigžņu atsauksmi.',
-            null, $now->copy()->subDays(48));
+            '/meistars/' . $this->masters['linda']->getId(), $now->copy()->subDays(48));
         $this->notify($this->masters['linda'], NotificationTypeEnum::APPLICATION_ACCEPTED,
             'Pieteikums pieņemts!', 'Jānis Auziņš pieņēmis jūsu pieteikumu "Koka dekoratīvais žogs".',
-            null, $now->copy()->subDays(14));
+            $jobUrl('Koka dekoratīvais žogs terasei', '/master/my-applications'), $now->copy()->subDays(14));
         $this->notify($this->masters['linda'], NotificationTypeEnum::JOB_DISPUTED,
             'Strīds iesākts', 'Kārlis Dārziņš iesācis strīdu par darbu "Dārza labiekārtošana".',
-            '/jobs/' . JobRequest::where(JobRequest::STATUS, JobStatusEnum::DISPUTED)->first()?->getId(),
+            $jobUrl('Dārza labiekārtošana ar stādījumiem', '/seeker/my-requests'),
             null);
 
         // Tonijs (darba meklētājs)
         $this->notify($this->seekers['tonijs'], NotificationTypeEnum::NEW_APPLICATION,
             'Jauns pieteikums', 'Andrejs Bērziņš pieteicās jūsu darbam "Elektroinstalācija viesistabā".',
-            null, $now->copy()->subDays(3));
+            $jobUrl('Elektroinstalācija viesistabā', '/seeker/my-requests'), $now->copy()->subDays(3));
         $this->notify($this->seekers['tonijs'], NotificationTypeEnum::JOB_MARKED_COMPLETE,
             'Darbs atzīmēts kā pabeigts', 'Ilze Liepiņa atzīmēja darbu "Pēcremonta tīrīšana" kā pabeigtu.',
-            null, null);
+            $jobUrl('Pēcremonta tīrīšana dzīvoklī', '/seeker/my-requests'), null);
 
         // Anna (darba meklētāja)
         $this->notify($this->seekers['anna'], NotificationTypeEnum::NEW_APPLICATION,
             'Jauns pieteikums', 'Jānis Auziņš pieteicās jūsu darbam "Vannas istabas flīžu nomaiņa".',
-            null, $now->copy()->subDays(1));
+            $jobUrl('Vannas istabas flīžu nomaiņa', '/seeker/my-requests'), $now->copy()->subDays(1));
         $this->notify($this->seekers['anna'], NotificationTypeEnum::PROPOSAL_RECEIVED,
             'Jauns cenu piedāvājums', 'Mārtiņš Ozols nosūtīja pretpiedāvājumu 380 EUR.',
-            null, $now->copy()->subDays(1));
+            $jobUrl('Balkona krāsošana - 2 kārtas', '/seeker/my-requests'), $now->copy()->subDays(1));
         $this->notify($this->seekers['anna'], NotificationTypeEnum::NEW_REVIEW,
             'Jūsu darbs novērtēts', 'Atsauksme pievienota par pabeigto biroja tīrīšanu.',
-            null, $now->copy()->subDays(33));
+            '/seeker/my-requests', $now->copy()->subDays(33));
 
         // Kārlis (darba meklētājs)
         $this->notify($this->seekers['karlis'], NotificationTypeEnum::JOB_DISPUTED,
             'Strīda pieteikums nosūtīts', 'Jūsu strīds par darbu ir iesniegts un tiek izskatīts.',
-            null, $now->copy()->subDays(10));
+            $jobUrl('Dārza labiekārtošana ar stādījumiem', '/seeker/my-requests'), $now->copy()->subDays(10));
         $this->notify($this->seekers['karlis'], NotificationTypeEnum::CATEGORY_SUGGESTION_REJECTED,
             'Kategorijas ieteikums noraidīts', 'Jūsu ieteikums "Auto mazgāšana" ir noraidīts.',
-            null, $now->copy()->subDays(20));
+            '/seeker/categories', $now->copy()->subDays(20));
 
         // Gunārs (darba meklētājs)
         $this->notify($this->seekers['gunars'], NotificationTypeEnum::JOB_MARKED_COMPLETE,
             'Darbs atzīmēts kā pabeigts', 'Kristīne Saulīte atzīmēja darbu "Logu mazgāšana" kā pabeigtu. Lūdzu apstipriniet.',
-            null, null);
+            $jobUrl('Logu mazgāšana daudzdzīvokļu mājā', '/seeker/my-requests'), null);
         $this->notify($this->seekers['gunars'], NotificationTypeEnum::PROPOSAL_RECEIVED,
             'Jauns cenu piedāvājums', 'Roberts Krūmiņš nosūtīja pretpiedāvājumu 1350 EUR par žogu.',
-            null, null);
+            $jobUrl('Koka žogs apkārt dārzam', '/seeker/my-requests'), null);
     }
 
     private function notify(User $user, NotificationTypeEnum $type, string $title,
