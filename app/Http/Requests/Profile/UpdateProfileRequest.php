@@ -97,6 +97,7 @@ class UpdateProfileRequest extends FormRequest
             self::PHONE_NUMBER => [
                 ValidationRuleHelper::NULLABLE,
                 ValidationRuleHelper::STRING,
+                'regex:/^[0-9\s\+\-\(\)]+$/',
                 ValidationRuleHelper::MAX_255,
             ],
             self::DESCRIPTION => [
@@ -141,6 +142,13 @@ class UpdateProfileRequest extends FormRequest
             self::IMAGES_TO_DELETE . '.*' => [
                 ValidationRuleHelper::STRING,
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'phone_number.regex' => __('validation.custom.phone_number.regex'),
         ];
     }
 
