@@ -54,11 +54,15 @@ class DemoSeeder extends Seeder
     {
         $this->cleanUp();
         $this->createUsers();
+        $this->createExtraCategories();
         $this->loadCategories();
         $this->createServices();
         $this->createJobsAndApplications();
         $this->createCategorySuggestions();
         $this->createNotifications();
+        $this->createHistoryJobsAndReviews();
+        $this->createFillerServices();
+        $this->createFillerJobs();
 
         Carbon::setTestNow(null);
     }
@@ -1320,5 +1324,455 @@ class DemoSeeder extends Seeder
             Notification::ACTION_URL => $url,
             Notification::READ_AT => $readAt,
         ]);
+    }
+
+    // --- Papildu kategorijas ---
+
+    private function createExtraCategories(): void
+    {
+        $extra = [
+            'Mēbeļu montāža' => ['icon' => 'WrenchIcon', 'children' => [
+                'Virtuves mēbeles', 'Skapju montāža', 'Biroja mēbeles',
+            ]],
+            'Pārvākšanās un transports' => ['icon' => 'TruckIcon', 'children' => [
+                'Kravu pārvadājumi', 'Mēbeļu pārvietošana', 'Utilizācija',
+            ]],
+            'Mājas tehnikas remonts' => ['icon' => 'CogIcon', 'children' => [
+                'Veļasmašīnas', 'Ledusskapji', 'Plītis un cepeškrāsnis',
+            ]],
+            'Datortehnikas remonts' => ['icon' => 'ComputerDesktopIcon', 'children' => [
+                'Datoru remonts', 'Tīkla iestatīšana', 'Datu atjaunošana',
+            ]],
+            'Jumta darbi' => ['icon' => 'HomeIcon', 'children' => [
+                'Jumta seguma maiņa', 'Notekcauruļu tīrīšana', 'Jumta remonts',
+            ]],
+            'Grīdas segumi' => ['icon' => 'Square3Stack3DIcon', 'children' => [
+                'Parkets', 'Laminātais parkets', 'Grīdas flīzēšana',
+            ]],
+            'Apsardze un signalizācija' => ['icon' => 'ShieldCheckIcon', 'children' => [
+                'Videonovērošana', 'Signalizācija', 'Durvju slēdzenes',
+            ]],
+            'Skaistumkopšana mājās' => ['icon' => 'ScissorsIcon', 'children' => [
+                'Frizieris', 'Manikīrs', 'Kosmetologs',
+            ]],
+            'Stiklinieks' => ['icon' => 'RectangleGroupIcon', 'children' => [
+                'Logu stikli', 'Spoguļi', 'Dušas kabīnes',
+            ]],
+        ];
+
+        foreach ($extra as $name => $config) {
+            $parent = Category::updateOrCreate(
+                [Category::SLUG => \Illuminate\Support\Str::slug($name)],
+                [Category::NAME => $name, Category::ICON => $config['icon'], Category::PARENT_ID => null, Category::IS_SYSTEM => false]
+            );
+            foreach ($config['children'] as $child) {
+                Category::updateOrCreate(
+                    [Category::SLUG => \Illuminate\Support\Str::slug($child)],
+                    [Category::NAME => $child, Category::ICON => null, Category::PARENT_ID => $parent->getId(), Category::IS_SYSTEM => false]
+                );
+            }
+        }
+    }
+
+    // --- Vēsturiskie darbi un atsauksmes ---
+
+    private function weightedRating(): int
+    {
+        $r = random_int(1, 100);
+        if ($r <= 55) return 5;
+        if ($r <= 83) return 4;
+        if ($r <= 95) return 3;
+        return 2;
+    }
+
+    /** @return array<int, array<string>> */
+    private function reviewPhrases(): array
+    {
+        return [
+            5 => [
+                'Lieliski padarīts darbs, ļoti apmierināts!',
+                'Profesionāla attieksme un kvalitatīvs rezultāts.',
+                'Ieradās laikā, viss izdarīts perfekti. Noteikti iesaku.',
+                'Ātri, kārtīgi un par saprātīgu cenu. Paldies!',
+                'Pārsniedza manas gaidas. Meistars zina savu darbu.',
+                'Komunikācija bija lieliska, rezultāts vēl labāks.',
+                'Viss tīri un kārtīgi, aiz sevis sakopa. Teicami.',
+                'Godīgs un uzticams. Strādāšu ar viņu atkārtoti.',
+                'Precīzs darbs, nekādu sūdzību. Pilnībā apmierināts.',
+                'Ļoti zinošs speciālists, atbildēja uz visiem jautājumiem.',
+                'Darbs pabeigts ātrāk nekā solīts. Izcili!',
+                'Kvalitāte par naudu — tieši tā, kā vajadzēja.',
+            ],
+            4 => [
+                'Labs darbs, neliela aizkavēšanās, bet rezultāts labs.',
+                'Kopumā apmierināts, viss izdarīts kā vajag.',
+                'Kvalitatīvi padarīts, gan cena varēja būt mazliet zemāka.',
+                'Laba komunikācija, darbs paveikts solīdi.',
+                'Viss kārtībā, ieteiktu arī citiem.',
+                'Profesionāli, lai gan nedaudz aizkavējās sākums.',
+                'Darbs labs, tīrīšana aiz sevis varēja būt rūpīgāka.',
+                'Apmierinošs rezultāts, korekta attieksme.',
+                'Solīts — izdarīts. Maza piezīme par termiņiem.',
+                'Labs speciālists, strādāšu atkārtoti.',
+            ],
+            3 => [
+                'Darbs paveikts, bet aizkavējās par pāris dienām.',
+                'Rezultāts pieņemams, komunikācija varēja būt labāka.',
+                'Viduvēji. Darbs izdarīts, bet bez īpašas rūpības.',
+                'Cena bija augstāka nekā gaidīts par šādu rezultātu.',
+                'Pabeigts, taču nācās atgādināt par detaļām.',
+                'Normāli, bet nekas izcils.',
+                'Darbs okei, lai gan sākums stipri kavējās.',
+            ],
+            2 => [
+                'Darbs pabeigts, bet ar kļūdām, kas bija jālabo.',
+                'Aizkavējās ilgāk nekā solīts, rezultāts viduvējs.',
+                'Komunikācija slikta, nācās daudz atgādināt.',
+                'Negaidīju tādu kvalitāti par šo cenu.',
+            ],
+        ];
+    }
+
+    private function randomPhrase(int $rating): string
+    {
+        $pool = $this->reviewPhrases()[$rating];
+        return $pool[array_rand($pool)];
+    }
+
+    /** @return array<array{title: string, desc: string, price: float, subcat: string}> */
+    private function masterHistoryTemplates(): array
+    {
+        return [
+            'andrejs' => [
+                ['title' => 'Elektroinstalācija jaunā dzīvoklī', 'desc' => 'Pilna elektroinstalācija jaunizbūvētā dzīvoklī. Vadu vads, rozetes, slēdži, drošinātāju kaste. Darbs veikts atbilstoši normām.', 'price' => 420.0, 'subcat' => 'Iekšējie darbi'],
+                ['title' => 'Apgaismojuma sistēmas uzstādīšana', 'desc' => 'LED apgaismojuma montāža visās telpās. Downlight, lustras un sienas gaismekļi. Iestatīts gaismošanas zonas regulators.', 'price' => 280.0, 'subcat' => 'Apgaismojums'],
+                ['title' => 'Drošinātāju kastes nomaiņa', 'desc' => 'Vecās drošinātāju kastes demontāža un jauna automatizētā paneļa uzstādīšana. Visi vadi marķēti un sakārtoti.', 'price' => 180.0, 'subcat' => 'Iekšējie darbi'],
+                ['title' => 'Ārējā apgaismojuma montāža', 'desc' => 'Dārza celiņu apgaismojums un fasādes gaismekļi privātmājā. Ūdensizturīga instalācija. Iezemēšana atbilstoši standartam.', 'price' => 320.0, 'subcat' => 'Ārējie darbi'],
+                ['title' => 'Rozešu un slēdžu maiņa', 'desc' => 'Veco rozešu un slēdžu nomaiņa pret moderniem ar zemējumu. 12 rozetes, 8 slēdži. Darbs vienā dienā.', 'price' => 120.0, 'subcat' => 'Iekšējie darbi'],
+                ['title' => 'Elektriskā apkures sistēma', 'desc' => 'Elektrisko siltuma ķermeņu un termoregulātoru uzstādīšana 3 istabās. Atsevišķi ķēdes katrai telpai.', 'price' => 380.0, 'subcat' => 'Iekšējie darbi'],
+                ['title' => 'Interneta un TV kabeļu instalācija', 'desc' => 'Strukturētu kabeļu instalācija dzīvoklī. Optiskā šķiedra, HDMI un Cat6 kabeļi. Viss paslēpts sienās.', 'price' => 160.0, 'subcat' => 'Iekšējie darbi'],
+                ['title' => 'Ārējā rozetes uzstādīšana dārzam', 'desc' => 'Ūdensizturīgu rozešu uzstādīšana terases un dārza zonā. Aizsargātas pret lietu ar vāciņiem.', 'price' => 95.0, 'subcat' => 'Ārējie darbi'],
+            ],
+            'peteris' => [
+                ['title' => 'Vannas istabas pilna renovācija — santehnika', 'desc' => 'Visu santehnikas elementu nomaiņa vannas istabā. Vanna, izlietne, tualete, dušas jaucējkrāns. Darbs ar garantiju.', 'price' => 550.0, 'subcat' => 'Sanitārtehnika'],
+                ['title' => 'Kanalizācijas cauruļvadu nomaiņa', 'desc' => 'Vecā kanalizācija demontēta, uzstādīta jauna PVC sistēma. Noplūžu pārbaude, skalošana. Darbs virtuves un vannas zonā.', 'price' => 310.0, 'subcat' => 'Cauruļvadi'],
+                ['title' => 'Ūdens sildītāja uzstādīšana', 'desc' => '80L boilera montāža un pieslēgšana. Vecs sildītājs demontēts un utilizēts. Temperatūra iestatīta, pārbaudīta.', 'price' => 140.0, 'subcat' => 'Ūdens sildītāji'],
+                ['title' => 'Siltā grīda vannas istabā', 'desc' => 'Elektriskā siltā grīda vannas istabā ar termoregulātoru. Instalācija un iestatīšana. Darbs bez iedomājamiem defektiem.', 'price' => 290.0, 'subcat' => 'Sanitārtehnika'],
+                ['title' => 'Jaucējkrānu nomaiņa virtuvē', 'desc' => 'Virtuves jaucējkrāna un izlietnes pieslēguma cauruļu nomaiņa. Uzstādīts filtrs aukstajam ūdenim.', 'price' => 90.0, 'subcat' => 'Cauruļvadi'],
+                ['title' => 'Noplūdes novēršana ūdensvadā', 'desc' => 'Noplūdes atrašana un novēršana ūdensvada sistēmā. Ātrs atsaucības laiks. Remonts bez sienu atvēršanas.', 'price' => 75.0, 'subcat' => 'Cauruļvadi'],
+                ['title' => 'Dušas kabīnes uzstādīšana', 'desc' => 'Dušas kabīnes montāža vannas istabā. Cauruļvadi pieslēgti, hidroizolācija pārbaudīta. Darbs vienas dienas laikā.', 'price' => 200.0, 'subcat' => 'Sanitārtehnika'],
+                ['title' => 'Ūdens skaitītāju nomaiņa', 'desc' => 'Karstā un aukstā ūdens skaitītāju nomaiņa ar jaunajiem verifikētiem modeļiem. Pieslēgumu pārbaude.', 'price' => 60.0, 'subcat' => 'Cauruļvadi'],
+            ],
+            'martins' => [
+                ['title' => 'Dzīvokļa pilna krāsošana', 'desc' => 'Visu sienu un griestu krāsošana 3 istabu dzīvoklī. Ietver virsmas sagatavošanu, špaktelēšanu un divas kārtas krāsas.', 'price' => 850.0, 'subcat' => 'Iekšējā krāsošana'],
+                ['title' => 'Istabas sienu krāsošana', 'desc' => 'Guļamistabas sienu krāsošana ar jaunu krāsu. Mēbeles aizsargātas. Darbs bez pilieniem uz grīdas. Bezmaksas krāsas konsultācija.', 'price' => 180.0, 'subcat' => 'Iekšējā krāsošana'],
+                ['title' => 'Kāpņu telpas krāsošana', 'desc' => 'Daudzdzīvokļu mājas kāpņu telpas sienu un griestu krāsošana. Sastatnes nodrošinātas. Tīra darba metode.', 'price' => 420.0, 'subcat' => 'Iekšējā krāsošana'],
+                ['title' => 'Fasādes krāsošana privātmājai', 'desc' => 'Privātmājas fasādes sagatavošana un krāsošana ar izturīgiem āra krāsojumiem. Sastatnes nodrošinātas.', 'price' => 1100.0, 'subcat' => 'Fasāžu krāsošana'],
+                ['title' => 'Balkona krāsošana un remonts', 'desc' => 'Balkona betona sienu krāsošana ar hidroizolāciju. Rūsas tīrīšana uz metāla daļām un antikorozijas pārklājums.', 'price' => 230.0, 'subcat' => 'Fasāžu krāsošana'],
+                ['title' => 'Tapešu noņemšana un sienu sagatavošana', 'desc' => 'Veco tapešu noņemšana, sienu izmērcēšana, špaktelēšana un grunts uzklāšana krāsošanas vai tapešu gatavošanai.', 'price' => 160.0, 'subcat' => 'Iekšējā krāsošana'],
+                ['title' => 'Griestu krāsošana ar dekoratīvo efektu', 'desc' => 'Viesistabas griestu krāsošana ar dziļa perlamutra efektu. Rūpīga virsmas sagatavošana. Izcili rezultāti.', 'price' => 210.0, 'subcat' => 'Iekšējā krāsošana'],
+                ['title' => 'Žogu krāsošana', 'desc' => 'Koka žoga tīrīšana, slīpēšana un krāsošana ar divas kārtas eļļas krāsu. 40m garš žogs. Krāsa klienta izvēle.', 'price' => 280.0, 'subcat' => 'Fasāžu krāsošana'],
+            ],
+            'ilze' => [
+                ['title' => 'Pēcremonta tīrīšana 4 istabu dzīvoklī', 'desc' => 'Rūpīga tīrīšana pēc remonta. Putekļu savākšana no visām virsmām, logu mazgāšana, grīdu tīrīšana. Profesionāls aprīkojums.', 'price' => 280.0, 'subcat' => 'Pēcremonta tīrīšana'],
+                ['title' => 'Biroja ikdienas uzkopšana', 'desc' => 'Regulāra biroja tīrīšana 5 dienas nedēļā. Putekļu slaucīšana, grīdas, virtuves zona, sanitārie mezgli. Diskrēti un uzticami.', 'price' => 350.0, 'subcat' => 'Biroju tīrīšana'],
+                ['title' => 'Dzīvokļa ģenerāltīrīšana', 'desc' => 'Pilna dzīvokļa ģenerāltīrīšana iekšā un ārā no mēbelēm. Ledusskapis, cepeškrāsns, vannas istaba, visi logi. Viss blizgst.', 'price' => 160.0, 'subcat' => 'Dzīvokļu uzkopšana'],
+                ['title' => 'Restorāna virtuvē tīrīšana', 'desc' => 'Profesionāla rūpnieciskās virtuves tīrīšana. Tauku noņemšana no ventilācijas, cepeškrāsnīm un grīdas. Dezinfekcija.', 'price' => 480.0, 'subcat' => 'Biroju tīrīšana'],
+                ['title' => 'Mājas tīrīšana pirms izīrēšanas', 'desc' => 'Pilnīga mājas tīrīšana pirms jauno īrnieku iebraukšanas. Visi logs, grīdas, sienas, vannas istaba un virtuve. Garantija.', 'price' => 220.0, 'subcat' => 'Dzīvokļu uzkopšana'],
+                ['title' => 'Pagraba tīrīšana un dezinfekcija', 'desc' => 'Pagraba telpu tīrīšana, pelējuma noņemšana un dezinfekcija. Utilizācija nodrošināta. Sezonas darbs.', 'price' => 130.0, 'subcat' => 'Pēcremonta tīrīšana'],
+                ['title' => 'Logu mazgāšana dzīvoklī', 'desc' => 'Visu logu iekšpuses un ārpuses mazgāšana 2 istabu dzīvoklī. Palodzes un rāmji iztīrīti. Bez strīpām.', 'price' => 60.0, 'subcat' => 'Dzīvokļu uzkopšana'],
+                ['title' => 'Veikala tīrīšana pēc renovācijas', 'desc' => 'Mazumtirdzniecības telpas tīrīšana pēc remonta. Putekļi, cementa pēdas uz grīdas, logu mazgāšana. Strādājam naktī.', 'price' => 350.0, 'subcat' => 'Pēcremonta tīrīšana'],
+            ],
+            'roberts' => [
+                ['title' => 'Virtuves mēbeļu izgatavošana', 'desc' => 'Pielāgotu virtuves mēbeļu izgatavošana un montāža. MDF ar plēves pārklājumu, metāla furnitūra. Pēc individuāla projekta.', 'price' => 1800.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Koka terase un kāpnes', 'desc' => 'Terases klāja un kāpņu izbūve no teraskoka. Impregnēts materiāls, 5 gadu garantija. Ietver balstu ieguldīšanu.', 'price' => 2200.0, 'subcat' => 'Ārējais remonts'],
+                ['title' => 'Iekšdurvju bloku uzstādīšana', 'desc' => 'Trīs iekšdurvju bloku uzstādīšana ar furnitūru. Miera slēdzenes, eņģes, slieksnis. Atlikušā sprauga aizpildīta.', 'price' => 350.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Dekoratīvā koka siena', 'desc' => 'Dekoratīvas koka dēļu sienas izbūve viesistabā. Kaltēts koks, eļļotas virsmas. Integrēti elektrības vadi.', 'price' => 680.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Žogs no dēļiem apkārt privātīpašumam', 'desc' => '50m žoga izbūve no impregnētiem dēļiem. Betons stabiem. Vārti iekļauti. Krāsošana pēc vēlēšanās.', 'price' => 1400.0, 'subcat' => 'Ārējais remonts'],
+                ['title' => 'Skapja izgatavošana guļamistabai', 'desc' => 'Iebūvēta skapis-kupeja ar bīdāmām durvīm un spoguli. Pilna augstuma. Interjeram atbilstoša furnitūra.', 'price' => 950.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Palodžu uzstādīšana', 'desc' => 'Koka palodžu uzstādīšana 6 logos. Materiāls — lakots koks. Montāža ar siltumizolāciju. Tīrs darbs.', 'price' => 180.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Bērnu istabas mēbeles pēc pasūtījuma', 'desc' => 'Gulta ar skapīti, rakstāmgalds un grāmatu plaukts bērnu istabai. Drošas ekoloģiskas virsmas. Krāsa pēc vēlmes.', 'price' => 1100.0, 'subcat' => 'Iekšējais remonts'],
+            ],
+            'linda' => [
+                ['title' => 'Dārza sezonas sagatavošana', 'desc' => 'Pavasara dārza sakopšana — koku un krūmu apgriešana, zāliena pirmā pļaušana, dzeloņaugu noņemšana. Pilns sezonas starts.', 'price' => 180.0, 'subcat' => 'Zāles pļaušana'],
+                ['title' => 'Dzīvžogs stādīšana', 'desc' => 'Priede un thujas stādīšana 30m dzīvžogam. Augsnes sagatavošana, mēslošana. Laistīšanas instrukcija.', 'price' => 420.0, 'subcat' => 'Stādīšana'],
+                ['title' => 'Sniega tīrīšana ziemā — sezonas līgums', 'desc' => 'Regulāra sniega tīrīšana privātmājai visā ziemas sezonā. Piebraucamais ceļš, taciņas un auto novietne.', 'price' => 350.0, 'subcat' => 'Sniega tīrīšana'],
+                ['title' => 'Dārza apstādījumu atjaunošana', 'desc' => 'Veco krūmu izrakšana, augsnes atjaunošana un jaunu dekoratīvo augu stādīšana. Projekts iekļauts cenā.', 'price' => 580.0, 'subcat' => 'Stādīšana'],
+                ['title' => 'Zāliena ierīkošana', 'desc' => 'Zāliena seguma novietošana 200m² laukumā. Augsnes sagatavošana, mēslošana, seguma uzstādīšana. Rezultāts tūlīt.', 'price' => 650.0, 'subcat' => 'Zāles pļaušana'],
+                ['title' => 'Augļu koku apgriešana', 'desc' => 'Ābolu, bumbieru un plūmju koku sanitārā apgriešana. Pareiza forma, laba gaisma. 8 koki apkārtmērā.', 'price' => 140.0, 'subcat' => 'Stādīšana'],
+                ['title' => 'Regulārā dārza kopšana — vasara', 'desc' => 'Iknedēļas dārza kopšana 4 mēnešu laikā. Zāles pļaušana, laistīšana, ravēšana, fertilizēšana. Pilns serviss.', 'price' => 480.0, 'subcat' => 'Zāles pļaušana'],
+                ['title' => 'Kompostēšanas vietas ierīkošana', 'desc' => 'Kompostēšanas kastes uzstādīšana un augsnes sagatavošana. Instrukcija par kompostēšanu iekļauta.', 'price' => 95.0, 'subcat' => 'Stādīšana'],
+            ],
+            'kristine' => [
+                ['title' => 'Logu mazgāšana 5 stāvu mājai', 'desc' => 'Daudzdzīvokļu mājas logu ārpuses mazgāšana ar profesionālu aprīkojumu. Alpīnisma metode. 40 logi.', 'price' => 320.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Biroja logu mazgāšana', 'desc' => 'Biroja ēkas 3 stāvu logu tīrīšana iekšpusē un ārpusē. Rāmji un palodzes iekļautas. Darbs nedēļas nogalē.', 'price' => 280.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Karkasu un rāmju tīrīšana', 'desc' => 'PVC logu karkasu un rāmju rūpīga tīrīšana un atjaunošana. Sāls, kalkakmens un putekļu noņemšana.', 'price' => 120.0, 'subcat' => 'Karkasu mazgāšana'],
+                ['title' => 'Dušas kabīnes stikla tīrīšana', 'desc' => 'Stikla dušas kabīnes tīrīšana no kalkakmens nogulšņiem. Hidrofobu pārklājums uzklāts. Garas ielas garantija.', 'price' => 55.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Logu mazgāšana privātmājā', 'desc' => 'Privātmājas 18 logu mazgāšana iekšpusē un ārpusē. Žalūzijas nosusinātas. Darbs vienā dienā.', 'price' => 90.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Flīžu virsmu tīrīšana', 'desc' => 'Vannas istabas un virtuves flīžu rūpīga tīrīšana, šuvju balināšana. Antifungāla apstrāde.', 'price' => 80.0, 'subcat' => 'Karkasu mazgāšana'],
+                ['title' => 'Jumta lūku un velux logu tīrīšana', 'desc' => 'Velux skajlajtu un jumta logu stiklu un karkasu tīrīšana iekšpusē un ārpusē. Drošas darba metodes.', 'price' => 45.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Biroja logu sezonālā tīrīšana — kvartāls', 'desc' => 'Kvartālā logu tīrīšana 200m² birojam. Ietver stiklus, rāmjus, palodzes. Fiksēta gada cena.', 'price' => 380.0, 'subcat' => 'Stiklu pakalpojumi'],
+            ],
+            'janis' => [
+                ['title' => 'Vannas istabas pilna flīzēšana', 'desc' => 'Sienu un grīdas flīzēšana vannas istabā 8m². Hidroizolācija, līmēšana, fugošana. Flīzes klienta izvēle.', 'price' => 480.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Virtuves priekšsienas flīzēšana', 'desc' => 'Virtuves darba virsmas priekšsienas mozaīkas flīžu klāšana. Precīzs darbs ar minimālu šuvju platumu.', 'price' => 180.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Priekšnama grīdas flīzēšana', 'desc' => 'Priekšnama un gaiteņa grīdas flīzēšana ar porcelāna granītu 20m². Pamatne izlīdzināta. Ātrs darbs.', 'price' => 320.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Terases flīzēšana ar salnas izturīgām flīzēm', 'desc' => 'Terases grīdas flīzēšana ar salnas izturīgām keramikas flīzēm 30m². Hidroizolācija veikta. Novadgriķi.', 'price' => 580.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Flīžu remonts — atsevišķas flīzes', 'desc' => 'Ieplaisājušo un atspiedušo flīžu nomaiņa vannas istabā. 8 flīzes nomainītas, fuga atjaunota.', 'price' => 90.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Sauna flīzēšana', 'desc' => 'Saunas griešanās zonas un dušas flīzēšana ar speciālām karsta apstākļa flīzēm. Siltumizolācija nodrošināta.', 'price' => 420.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Baseina apkārtnes flīzēšana', 'desc' => 'Āra baseiniem apkārtējai zonai klātas flīzes 45m². Pretslīdes virsma, salnas izturīgs materiāls.', 'price' => 760.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Grīdas izlīdzināšana un flīzēšana', 'desc' => 'Grīdas izlīdzināšana ar sausinošu masu, tad keramikas flīžu klāšana 25m². Darbs 2 dienās.', 'price' => 440.0, 'subcat' => 'Iekšējais remonts'],
+            ],
+        ];
+    }
+
+    private function createHistoryJobsAndReviews(): void
+    {
+        $seekerList = array_values($this->seekers);
+        $templates = $this->masterHistoryTemplates();
+
+        foreach ($this->masters as $key => $master) {
+            if (!isset($templates[$key])) {
+                continue;
+            }
+
+            $pool = $templates[$key];
+            $count = random_int(6, min(8, count($pool)));
+            shuffle($pool);
+            $selected = array_slice($pool, 0, $count);
+
+            foreach ($selected as $i => $tpl) {
+                $daysAgo = random_int(30, 180) + $i * 7;
+                $createdAt = Carbon::now()->subDays($daysAgo);
+                $completedAt = $createdAt->copy()->addDays(random_int(2, 10));
+
+                Carbon::setTestNow($createdAt);
+
+                $seeker = $seekerList[array_rand($seekerList)];
+                if ($seeker->getId() === $master->getId()) {
+                    $seeker = $seekerList[0]->getId() === $master->getId()
+                        ? $seekerList[1]
+                        : $seekerList[0];
+                }
+
+                $cat = $this->cats[$tpl['subcat']]
+                    ?? $this->cats['Iekšējais remonts'];
+
+                $job = JobRequest::create([
+                    JobRequest::USER_ID => $seeker->getId(),
+                    JobRequest::CATEGORY_ID => $cat->getId(),
+                    JobRequest::TITLE => $tpl['title'],
+                    JobRequest::SLUG => Str::slug($tpl['title']) . '-h' . Str::random(4),
+                    JobRequest::DESCRIPTION => $tpl['desc'],
+                    JobRequest::BUDGET => $tpl['price'],
+                    JobRequest::LOCATION => [$master->profile->getCity()],
+                    JobRequest::DEADLINE => $completedAt->copy()->addDays(5)->toDateString(),
+                    JobRequest::STATUS => JobStatusEnum::COMPLETED,
+                    JobRequest::MASTER_ID => $master->getId(),
+                    JobRequest::AGREED_PRICE => $tpl['price'],
+                    JobRequest::MASTER_COMPLETED_AT => $completedAt,
+                    JobRequest::COMPLETED_AT => $completedAt->copy()->addDays(1),
+                    JobRequest::IMAGES => [],
+                ]);
+
+                EscrowHold::create([
+                    EscrowHold::JOB_REQUEST_ID => $job->getId(),
+                    EscrowHold::CLIENT_ID => $seeker->getId(),
+                    EscrowHold::MASTER_ID => $master->getId(),
+                    EscrowHold::AMOUNT => $tpl['price'],
+                    EscrowHold::STATUS => EscrowStatusEnum::RELEASED,
+                    EscrowHold::HELD_AT => $createdAt,
+                    EscrowHold::RELEASED_AT => $completedAt->copy()->addDays(1),
+                ]);
+
+                Carbon::setTestNow($completedAt->copy()->addDays(2));
+
+                $rating = $this->weightedRating();
+                Review::create([
+                    Review::JOB_REQUEST_ID => $job->getId(),
+                    Review::REVIEWER_ID => $seeker->getId(),
+                    Review::REVIEWEE_ID => $master->getId(),
+                    Review::RATING => $rating,
+                    Review::COMMENT => $this->randomPhrase($rating),
+                ]);
+            }
+        }
+
+        Carbon::setTestNow(null);
+    }
+
+    // --- Papildu pakalpojumi ---
+
+    private function createFillerServices(): void
+    {
+        $cities = ['Rīga', 'Daugavpils', 'Liepāja', 'Jelgava', 'Jūrmala', 'Ventspils', 'Valmiera'];
+
+        $fillers = [
+            'andrejs' => [
+                ['Viedmājas sistēmu uzstādīšana', 'Iekšējie darbi', 450.0, 'Viedmājas automatizācija — apgaismojums, roletes, termostati ar viedtālruņa vadību. Darbu veicu ar Zigbee un Z-Wave protokoliem.'],
+                ['Saules paneļu elektropievienošana', 'Ārējie darbi', 600.0, 'Saules paneļu sistēmas pieslēgšana tīklam un invertora konfigurācija. Sertificēts darbs ar garantiju.'],
+            ],
+            'peteris' => [
+                ['Baseinā filtrācijas sistēma', 'Cauruļvadi', 380.0, 'Āra baseina filtrācijas un sūkņa sistēmas uzstādīšana. Ķīmiskā līdzsvarošana iekļauta cenā.'],
+                ['Lietus ūdens savākšanas sistēma', 'Cauruļvadi', 290.0, 'Lietus ūdens savākšanas sistēmas uzstādīšana dārza laistīšanai. Cisternas savienošana ar notekcauruļu sistēmu.'],
+            ],
+            'martins' => [
+                ['Bērnistabas dekoratīvā krāsošana', 'Iekšējā krāsošana', 220.0, 'Bērnistabas sienu krāsošana ar dekoratīviem motīviem un tematiskiem zīmējumiem pēc pasūtījuma.'],
+                ['Metāla vārtu krāsošana', 'Fasāžu krāsošana', 120.0, 'Metāla vārtu un žoga krāsošana ar pretkorozijas krāsu. Rūsas tīrīšana iekļauta. Jebkurš krāsas tonis.'],
+            ],
+            'ilze' => [
+                ['Mājas dezinfekcija', 'Dzīvokļu uzkopšana', 180.0, 'Pilnīga mājas dezinfekcija ar profesionāliem līdzekļiem. Piemērota pēc slimības, ēkas atjaunošanas vai jauna mājdzīvnieka.'],
+                ['Noliktavas tīrīšana', 'Biroju tīrīšana', 250.0, 'Noliktavas telpu tīrīšana un dezinfekcija. Putekļu savākšana no plauktiem, grīdas mazgāšana. Industriāls aprīkojums.'],
+            ],
+            'roberts' => [
+                ['Pirts izbūve un apdare', 'Iekšējais remonts', 3500.0, 'Koka pirts iekštelpu izbūve ar lāvām, apšuvumu un apgaismojumu. Zelta koka materiāls. Termopārbaude.'],
+                ['Dārza mājiņas celtniecība', 'Ārējais remonts', 2800.0, 'Koka dārza mājiņas konstruēšana no impregnētiem materiāliem. 15m². Durvis, logs, elektrifikācija iekļauta.'],
+            ],
+            'linda' => [
+                ['Apdobju un florbedžu ierīkošana', 'Stādīšana', 320.0, 'Dekoratīvu puķu dobju un apmales ierīkošana dārzam. Augsnes sagatavošana, izvēle un stādīšana.'],
+                ['Koku izciršana un celmu frēzēšana', 'Stādīšana', 250.0, 'Apdraudošu vai nevajadzīgu koku nozāģēšana drošā veidā. Celma frēzēšana. Materiāla izvešana.'],
+            ],
+            'kristine' => [
+                ['Fasādes mazgāšana ar spiediena aparātu', 'Karkasu mazgāšana', 280.0, 'Mājas fasādes, pagraba un garāžas mazgāšana ar augstspiediena ūdens smidzinātāju. Nogulsnes un sūnas iet prom.'],
+                ['Jumta tīrīšana no ķērpjiem', 'Karkasu mazgāšana', 340.0, 'Šīfera vai metāla jumta tīrīšana no ķērpjiem, sūnām un netīrumiem. Antibiotisku pārklājumu uzklāšana.'],
+            ],
+            'janis' => [
+                ['Mozaīkas paneļa izveide', 'Iekšējais remonts', 380.0, 'Individuāla mozaīkas paneļa izveide un uzstādīšana. Māksliniecisks darbs ar augstu precizitāti. Dizains pēc vēlmes.'],
+                ['Keramikas plākšņu grīda ar apsildi', 'Iekšējais remonts', 640.0, 'Grīdas flīzēšana ar integrētu elektrisko apkuri. Termoregulāors iekļauts. Optimāla efektivitāte.'],
+            ],
+        ];
+
+        $existingCounts = [];
+        foreach ($this->masters as $key => $master) {
+            $existingCounts[$key] = Service::where(Service::USER_ID, $master->getId())->count();
+        }
+
+        Carbon::setTestNow(Carbon::now()->subDays(45));
+
+        $serviceIdx = Service::max(Service::ID) ?? 100;
+
+        foreach ($fillers as $masterKey => $services) {
+            if (!isset($this->masters[$masterKey])) {
+                continue;
+            }
+            $master = $this->masters[$masterKey];
+            foreach ($services as $svc) {
+                $cat = $this->cats[$svc[1]] ?? $this->cats['Iekšējais remonts'];
+                $serviceIdx++;
+                Service::create([
+                    Service::USER_ID => $master->getId(),
+                    Service::CATEGORY_ID => $cat->getId(),
+                    Service::TITLE => $svc[0],
+                    Service::SLUG => Str::slug($svc[0]) . '-' . $serviceIdx,
+                    Service::DESCRIPTION => $svc[3],
+                    Service::PRICE => $svc[2],
+                    Service::LOCATION => [$master->profile->getCity()],
+                    Service::IS_ACTIVE => true,
+                ]);
+            }
+        }
+
+        Carbon::setTestNow(null);
+    }
+
+    // --- Papildu atvērtie darbi ---
+
+    private function createFillerJobs(): void
+    {
+        $cities = ['Rīga', 'Daugavpils', 'Liepāja', 'Jelgava', 'Jūrmala', 'Ventspils', 'Valmiera', 'Rēzekne', 'Ogre', 'Cēsis'];
+        $seekerList = array_values($this->seekers);
+
+        $jobs = [
+            // Elektroinstalācija
+            ['Elektroinstalācija dzīvokļa renovācijā', 'Iekšējie darbi', 400.0, 'Nepieciešama pilna elektroinstalācija 3 istabu dzīvoklī pēc sienu noplēšanas. Jaunas rozetes, slēdži un drošinātāju kaste. Lūdzu sazināties ar piedāvājumu.'],
+            ['Āra apgaismojums privātmājai', 'Ārējie darbi', 250.0, 'Nepieciešams uzstādīt āra apgaismojumu gar piebraucamo ceļu un dārza taciņām. Aptuveni 15 gaismekļi. Darbs steidzams.'],
+            ['Elektriskas plīts pieslēgšana', 'Iekšējie darbi', 80.0, 'Nepieciešams pieslēgt jaunu elektrisko plīti. Darbs ietver jaudas pārbaudi un atsevišķa ķēdes nodrošinājumu.'],
+            ['Viedās mājas apgaismojums', 'Apgaismojums', 350.0, 'Meklēju speciālistu viedmājas apgaismojuma sistēmas uzstādīšanai. 4 istabu dzīvoklis. Vēlamā sistēma — Philips Hue vai līdzīga.'],
+
+            // Santehnika
+            ['Cauruļvadu montāža jaunbūvē', 'Cauruļvadi', 600.0, 'Jaunbūvējamas privātmājas ūdensvada un kanalizācijas sistēmas izbūve. Materiāli pieejami. Nepieciešams pieredzējis santehniķis.'],
+            ['Vannas istabas pārbūve', 'Sanitārtehnika', 450.0, 'Pilna vannas istabas santehnikas nomaiņa — vanna pret dušas kabīni, jauna izlietne un tualete. Lūdzu sniegt tāmi.'],
+            ['Tērauda cauruļu nomaiņa', 'Cauruļvadi', 320.0, 'Vecās tērauda cauruļu sistēmas nomaiņa pret plastmasu dzīvoklī. Aptuveni 15m cauruļu. Darbs jāveic tuvāko nedēļu laikā.'],
+            ['Ūdens filtru sistēma', 'Ūdens sildītāji', 180.0, 'Nepieciešams uzstādīt ūdens attīrīšanas sistēmu pie ieejas mājai. Filtri pieejami, nepieciešama tikai montāža.'],
+
+            // Krāsošana
+            ['Balkona sienu krāsošana', 'Iekšējā krāsošana', 150.0, 'Balkona iekštelpu sienu krāsošana 2 kārtās. Laukums aptuveni 12m². Jābūt izturīgai āra krāsai. Balkons atvērts.'],
+            ['Biroja telpu krāsošana', 'Iekšējā krāsošana', 680.0, 'Biroja 6 telpu krāsošana. Kopējais laukums aptuveni 200m². Darbs jāveic nedēļas nogalēs, lai netraucētu darbu.'],
+            ['Fasādes renovācija', 'Fasāžu krāsošana', 1200.0, 'Privātmājas fasādes sagatavošana un krāsošana. Aptuveni 180m² virsmas. Nepieciešams materiāls un darbs.'],
+            ['Gaiteņa sienas krāsošana', 'Iekšējā krāsošana', 120.0, 'Gaiteņa sienu un griestu krāsošana baltā krāsā. Aptuveni 30m². Darbs steidzams — pārdodam dzīvokli.'],
+
+            // Tīrīšana
+            ['Vasarnīcas sezonas uzkopšana', 'Dzīvokļu uzkopšana', 140.0, 'Pēc ziemas vasarnīcas ģenerāltīrīšana. Iztīrīt visu māju, izmazgāt logus, sakopt terasi. Lūdzu piedāvājumu.'],
+            ['Biroja un virtuves tīrīšana', 'Biroju tīrīšana', 200.0, 'Regulāra biroja tīrīšana 2 reizes nedēļā. Biroja laukums 80m². Virtuves zona un sanitārie mezgli iekļauti.'],
+            ['Noliktavas ikgadējā tīrīšana', 'Biroju tīrīšana', 350.0, 'Noliktavas telpu ikgadējā ģenerāltīrīšana. 300m². Augstie plaukti, grīda un jumts. Industriāls sūknis pieejams.'],
+            ['Mājas pēcremonta sakopšana', 'Pēcremonta tīrīšana', 260.0, 'Pēc mājas renovācijas nepieciešama pilna tīrīšana. 4 istabas, 2 vannas istabas, virtuve. Lūdzu sazināties.'],
+
+            // Dārza darbi
+            ['Dārza apgriešana rudenī', 'Stādīšana', 130.0, 'Nepieciešams apgriezt augļu kokus, krūmus un tuvināt dārzu ziemai. 10 āboli, 5 plūmes, krūmi. Rīgā.'],
+            ['Zāliena uzstādīšana jaunmājai', 'Zāles pļaušana', 580.0, 'Jaunbūves apkārtnes zāliena ierīkošana aptuveni 300m². Augsne jāsagatavo. Vēlamais — rullī uzstādāms zāliens.'],
+            ['Ūdens dīķa ierīkošana', 'Stādīšana', 650.0, 'Dekoratīva ūdens dīķa izbūve dārzā ar filtrāciju un ūdensaugiem. Laukums aptuveni 8m². Lūdzu tāmi.'],
+            ['Pikas un sniega tīrīšana', 'Sniega tīrīšana', 90.0, 'Nepieciešams tīrīt sniegu un pikas pēc nokrišņiem no piebraucamā ceļa (40m) un ieejas. Daugavpilī.'],
+
+            // Logu tīrīšana
+            ['Jaunmājas logu mazgāšana', 'Stiklu pakalpojumi', 160.0, 'Pēc būvniecības nepieciešams izmazgāt visus logus privātmājā. 22 logi. Cementa un krāsas pēdas jānoņem.'],
+            ['Augstceltnes logu mazgāšana', 'Stiklu pakalpojumi', 800.0, 'Daudzdzīvokļu mājas (9 stāvi) logu ārpuses mazgāšana. Nepieciešamas alpīnisma iemaņas vai celtāmā platforma.'],
+            ['Dušas stikla tīrīšana', 'Stiklu pakalpojumi', 40.0, 'Kaļķakmens noklājuma tīrīšana no dušas kabīnes stikla un metāla rāmjiem. Jānodrošina spīdīga virsma.'],
+
+            // Būvniecība un remonts
+            ['Ģipškartoņa sienas montāža', 'Iekšējais remonts', 380.0, 'Nepieciešama ģipškartoņa starpsiena 3 istabu dzīvoklī (8m² sienas). Siltumizolācija iekļauta.'],
+            ['Durvis un logs — remonts un regulēšana', 'Iekšējais remonts', 120.0, 'PVC durvju un logu regulēšana — aizduras, atplūst. 4 durvis un 6 logi nepieciešama regulēšana.'],
+            ['Terases plātņu klāšana', 'Ārējais remonts', 490.0, 'Betona plātņu klāšana terases zonā 35m². Smilšu-grants pamatne jāveido. Lūdzu atsūtīt cenas piedāvājumu.'],
+            ['Bēniņu iekārtošana kā guļamistaba', 'Jaunbūves', 2200.0, 'Bēniņu telpas pārbūve par guļamistabu — grīda, siltumizolācija, apšuvums, logs un kāpnes. Lūdzu tāmi.'],
+
+            // Flīzēšana / Grīdas segumi
+            ['Vannas istabas sienu flīzēšana', 'Iekšējais remonts', 340.0, 'Vannas istabas (6m²) sienu flīzēšana. Flīzes jau iegādātas, nepieciešams tikai darbs un palīgmateriāli.'],
+            ['Grīdas parkets lieldzīvoklī', 'Parkets', 1100.0, 'Parkets lielā dzīvoklī 3 istabās, kopā 60m². Nepieciešamas izlīdzināšana, pamatnes sagatavošana un parketa klāšana.'],
+            ['Lamināts bērnistabā un guļamistabā', 'Laminātais parkets', 280.0, 'Laminātā grīdas seguma klāšana 2 istabās kopā 35m². Pamats ir lygts. Materiāls pieejams.'],
+
+            // Mēbeļu montāža / Citas jaunas kat.
+            ['Virtuves mēbeļu montāža', 'Virtuves mēbeles', 220.0, 'Nepieciešama jaunu virtuves mēbeļu montāža dzīvoklī. IKEA komplekts gatavs. Vajadzīgs pieredzējis meistars.'],
+            ['Garderobe — montāža un iestatīšana', 'Skapju montāža', 160.0, 'Iebūvētas garderobes komplekta montāža guļamistabā. Izmēri 3m x 0.6m. Bīdāmās durvis.'],
+            ['Biroja mēbeļu montāža jaunā birojā', 'Biroja mēbeles', 300.0, 'Jauna biroja iekārtošana — galdi, krēsli, plaukti, aizslietņi. 15 darba vietas. Steidzami.'],
+            ['Mēbeļu pārvietošana', 'Mēbeļu pārvietošana', 180.0, 'Dzīvokļa pārvākšanās — nepieciešams palīgs mēbeļu nešanai. Rīgā, 3 stāvs bez lifta. 2 cilvēki vēlami.'],
+
+            // Mājas tehnika
+            ['Veļasmašīna — remonts', 'Veļasmašīnas', 90.0, 'Veļasmašīna Bosch rada troksni centrifūgas laikā. Nepieciešams diagnosticēt un labot. Grozs vai gultenis.'],
+            ['Ledusskapja apkalpošana', 'Ledusskapji', 70.0, 'Ledusskapim darbojas kompresors, bet nedziesa gaisma un gumotas durvis noplūst. Nepieciešama apkalpošana.'],
+            ['Cepeškrāsns remonts', 'Plītis un cepeškrāsnis', 80.0, 'Iebūvētai cepeškrāsnij nedarbojas viens sildīšanas elements. Nepieciešama diagnostika un daļu maiņa.'],
+
+            // Jumta darbi
+            ['Jumta noplūdes novēršana', 'Jumta remonts', 280.0, 'Pēc lietus notekas un vairākas vietas jumtā noplūst. Nepieciešama inspekcija un remonts pirms ziemas.'],
+            ['Notekcauruļu tīrīšana', 'Notekcauruļu tīrīšana', 95.0, 'Notekcauruļu un attekas tīrīšana no lapām un netīrumiem. 3 stāvu māja. Darbs rudenī pirms lietus sezonas.'],
+        ];
+
+        $jobIdx = JobRequest::max(JobRequest::ID) ?? 0;
+
+        foreach ($jobs as $i => [$title, $subcatName, $budget, $desc]) {
+            $daysAgo = random_int(1, 20);
+            Carbon::setTestNow(Carbon::now()->subDays($daysAgo)->subHours(random_int(0, 23)));
+
+            $seeker = $seekerList[$i % count($seekerList)];
+            $cat = $this->cats[$subcatName] ?? null;
+            if (!$cat) {
+                continue;
+            }
+            $city = $cities[array_rand($cities)];
+            $jobIdx++;
+
+            JobRequest::create([
+                JobRequest::USER_ID => $seeker->getId(),
+                JobRequest::CATEGORY_ID => $cat->getId(),
+                JobRequest::TITLE => $title,
+                JobRequest::SLUG => Str::slug($title) . '-f' . Str::random(4),
+                JobRequest::DESCRIPTION => $desc . ' Objekts atrodas ' . $city . '.',
+                JobRequest::BUDGET => $budget,
+                JobRequest::LOCATION => [$city],
+                JobRequest::DEADLINE => Carbon::now()->addDays(random_int(14, 60))->toDateString(),
+                JobRequest::STATUS => JobStatusEnum::OPEN,
+                JobRequest::IMAGES => [],
+            ]);
+        }
+
+        Carbon::setTestNow(null);
     }
 }
