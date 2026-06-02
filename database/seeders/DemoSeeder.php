@@ -1365,7 +1365,7 @@ class DemoSeeder extends Seeder
             'Sludinājums satur maldinošu informāciju.',
             'Neatbilstoša uzvedība objektā.',
             'Profils izliekas par citu personu.',
-            'Spams — lietotājs sūta nevēlamus piedāvājumus.',
+            'Spams! Lietotājs sūta nevēlamus piedāvājumus.',
         ];
 
         $firstService = Service::first();
@@ -1624,7 +1624,7 @@ class DemoSeeder extends Seeder
                 'Precīzs darbs, nekādu sūdzību. Pilnībā apmierināts.',
                 'Ļoti zinošs speciālists, atbildēja uz visiem jautājumiem.',
                 'Darbs pabeigts ātrāk nekā solīts. Izcili!',
-                'Kvalitāte par naudu — tieši tā, kā vajadzēja.',
+                'Kvalitāte par naudu - tieši tā, kā vajadzēja.',
             ],
             4 => [
                 'Labs darbs, neliela aizkavēšanās, bet rezultāts labs.',
@@ -1635,7 +1635,7 @@ class DemoSeeder extends Seeder
                 'Profesionāli, lai gan nedaudz aizkavējās sākums.',
                 'Darbs labs, tīrīšana aiz sevis varēja būt rūpīgāka.',
                 'Apmierinošs rezultāts, korekta attieksme.',
-                'Solīts — izdarīts. Maza piezīme par termiņiem.',
+                'Solīts - izdarīts. Maza piezīme par termiņiem.',
                 'Labs speciālists, strādāšu atkārtoti.',
             ],
             3 => [
@@ -1677,7 +1677,7 @@ class DemoSeeder extends Seeder
                 ['title' => 'Ārējā rozetes uzstādīšana dārzam', 'desc' => 'Ūdensizturīgu rozešu uzstādīšana terases un dārza zonā. Aizsargātas pret lietu ar vāciņiem.', 'price' => 95.0, 'subcat' => 'Ārējie darbi'],
             ],
             'peteris' => [
-                ['title' => 'Vannas istabas pilna renovācija — santehnika', 'desc' => 'Visu santehnikas elementu nomaiņa vannas istabā. Vanna, izlietne, tualete, dušas jaucējkrāns. Darbs ar garantiju.', 'price' => 550.0, 'subcat' => 'Sanitārtehnika'],
+                ['title' => 'Vannas istabas pilna renovācija - santehnika', 'desc' => 'Visu santehnikas elementu nomaiņa vannas istabā. Vanna, izlietne, tualete, dušas jaucējkrāns. Darbs ar garantiju.', 'price' => 550.0, 'subcat' => 'Sanitārtehnika'],
                 ['title' => 'Kanalizācijas cauruļvadu nomaiņa', 'desc' => 'Vecā kanalizācija demontēta, uzstādīta jauna PVC sistēma. Noplūžu pārbaude, skalošana. Darbs virtuves un vannas zonā.', 'price' => 310.0, 'subcat' => 'Cauruļvadi'],
                 ['title' => 'Ūdens sildītāja uzstādīšana', 'desc' => '80L boilera montāža un pieslēgšana. Vecs sildītājs demontēts un utilizēts. Temperatūra iestatīta, pārbaudīta.', 'price' => 140.0, 'subcat' => 'Ūdens sildītāji'],
                 ['title' => 'Siltā grīda vannas istabā', 'desc' => 'Elektriskā siltā grīda vannas istabā ar termoregulātoru. Instalācija un iestatīšana. Darbs bez iedomājamiem defektiem.', 'price' => 290.0, 'subcat' => 'Sanitārtehnika'],
@@ -1713,17 +1713,17 @@ class DemoSeeder extends Seeder
                 ['title' => 'Dekoratīvā koka siena', 'desc' => 'Dekoratīvas koka dēļu sienas izbūve viesistabā. Kaltēts koks, eļļotas virsmas. Integrēti elektrības vadi.', 'price' => 680.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Žogs no dēļiem apkārt privātīpašumam', 'desc' => '50m žoga izbūve no impregnētiem dēļiem. Betons stabiem. Vārti iekļauti. Krāsošana pēc vēlēšanās.', 'price' => 1400.0, 'subcat' => 'Ārējais remonts'],
                 ['title' => 'Skapja izgatavošana guļamistabai', 'desc' => 'Iebūvēta skapis-kupeja ar bīdāmām durvīm un spoguli. Pilna augstuma. Interjeram atbilstoša furnitūra.', 'price' => 950.0, 'subcat' => 'Iekšējais remonts'],
-                ['title' => 'Palodžu uzstādīšana', 'desc' => 'Koka palodžu uzstādīšana 6 logos. Materiāls — lakots koks. Montāža ar siltumizolāciju. Tīrs darbs.', 'price' => 180.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Palodžu uzstādīšana', 'desc' => 'Koka palodžu uzstādīšana 6 logos. Materiāls - lakots koks. Montāža ar siltumizolāciju. Tīrs darbs.', 'price' => 180.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Bērnu istabas mēbeles pēc pasūtījuma', 'desc' => 'Gulta ar skapīti, rakstāmgalds un grāmatu plaukts bērnu istabai. Drošas ekoloģiskas virsmas. Krāsa pēc vēlmes.', 'price' => 1100.0, 'subcat' => 'Iekšējais remonts'],
             ],
             'linda' => [
-                ['title' => 'Dārza sezonas sagatavošana', 'desc' => 'Pavasara dārza sakopšana — koku un krūmu apgriešana, zāliena pirmā pļaušana, dzeloņaugu noņemšana. Pilns sezonas starts.', 'price' => 180.0, 'subcat' => 'Zāles pļaušana'],
+                ['title' => 'Dārza sezonas sagatavošana', 'desc' => 'Pavasara dārza sakopšana - koku un krūmu apgriešana, zāliena pirmā pļaušana, dzeloņaugu noņemšana. Pilns sezonas starts.', 'price' => 180.0, 'subcat' => 'Zāles pļaušana'],
                 ['title' => 'Dzīvžogs stādīšana', 'desc' => 'Priede un thujas stādīšana 30m dzīvžogam. Augsnes sagatavošana, mēslošana. Laistīšanas instrukcija.', 'price' => 420.0, 'subcat' => 'Stādīšana'],
-                ['title' => 'Sniega tīrīšana ziemā — sezonas līgums', 'desc' => 'Regulāra sniega tīrīšana privātmājai visā ziemas sezonā. Piebraucamais ceļš, taciņas un auto novietne.', 'price' => 350.0, 'subcat' => 'Sniega tīrīšana'],
+                ['title' => 'Sniega tīrīšana ziemā - sezonas līgums', 'desc' => 'Regulāra sniega tīrīšana privātmājai visā ziemas sezonā. Piebraucamais ceļš, taciņas un auto novietne.', 'price' => 350.0, 'subcat' => 'Sniega tīrīšana'],
                 ['title' => 'Dārza apstādījumu atjaunošana', 'desc' => 'Veco krūmu izrakšana, augsnes atjaunošana un jaunu dekoratīvo augu stādīšana. Projekts iekļauts cenā.', 'price' => 580.0, 'subcat' => 'Stādīšana'],
                 ['title' => 'Zāliena ierīkošana', 'desc' => 'Zāliena seguma novietošana 200m² laukumā. Augsnes sagatavošana, mēslošana, seguma uzstādīšana. Rezultāts tūlīt.', 'price' => 650.0, 'subcat' => 'Zāles pļaušana'],
                 ['title' => 'Augļu koku apgriešana', 'desc' => 'Ābolu, bumbieru un plūmju koku sanitārā apgriešana. Pareiza forma, laba gaisma. 8 koki apkārtmērā.', 'price' => 140.0, 'subcat' => 'Stādīšana'],
-                ['title' => 'Regulārā dārza kopšana — vasara', 'desc' => 'Iknedēļas dārza kopšana 4 mēnešu laikā. Zāles pļaušana, laistīšana, ravēšana, fertilizēšana. Pilns serviss.', 'price' => 480.0, 'subcat' => 'Zāles pļaušana'],
+                ['title' => 'Regulārā dārza kopšana - vasara', 'desc' => 'Iknedēļas dārza kopšana 4 mēnešu laikā. Zāles pļaušana, laistīšana, ravēšana, fertilizēšana. Pilns serviss.', 'price' => 480.0, 'subcat' => 'Zāles pļaušana'],
                 ['title' => 'Kompostēšanas vietas ierīkošana', 'desc' => 'Kompostēšanas kastes uzstādīšana un augsnes sagatavošana. Instrukcija par kompostēšanu iekļauta.', 'price' => 95.0, 'subcat' => 'Stādīšana'],
             ],
             'kristine' => [
@@ -1734,14 +1734,14 @@ class DemoSeeder extends Seeder
                 ['title' => 'Logu mazgāšana privātmājā', 'desc' => 'Privātmājas 18 logu mazgāšana iekšpusē un ārpusē. Žalūzijas nosusinātas. Darbs vienā dienā.', 'price' => 90.0, 'subcat' => 'Stiklu pakalpojumi'],
                 ['title' => 'Flīžu virsmu tīrīšana', 'desc' => 'Vannas istabas un virtuves flīžu rūpīga tīrīšana, šuvju balināšana. Antifungāla apstrāde.', 'price' => 80.0, 'subcat' => 'Karkasu mazgāšana'],
                 ['title' => 'Jumta lūku un velux logu tīrīšana', 'desc' => 'Velux skajlajtu un jumta logu stiklu un karkasu tīrīšana iekšpusē un ārpusē. Drošas darba metodes.', 'price' => 45.0, 'subcat' => 'Stiklu pakalpojumi'],
-                ['title' => 'Biroja logu sezonālā tīrīšana — kvartāls', 'desc' => 'Kvartālā logu tīrīšana 200m² birojam. Ietver stiklus, rāmjus, palodzes. Fiksēta gada cena.', 'price' => 380.0, 'subcat' => 'Stiklu pakalpojumi'],
+                ['title' => 'Biroja logu sezonālā tīrīšana - kvartāls', 'desc' => 'Kvartālā logu tīrīšana 200m² birojam. Ietver stiklus, rāmjus, palodzes. Fiksēta gada cena.', 'price' => 380.0, 'subcat' => 'Stiklu pakalpojumi'],
             ],
             'janis' => [
                 ['title' => 'Vannas istabas pilna flīzēšana', 'desc' => 'Sienu un grīdas flīzēšana vannas istabā 8m². Hidroizolācija, līmēšana, fugošana. Flīzes klienta izvēle.', 'price' => 480.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Virtuves priekšsienas flīzēšana', 'desc' => 'Virtuves darba virsmas priekšsienas mozaīkas flīžu klāšana. Precīzs darbs ar minimālu šuvju platumu.', 'price' => 180.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Priekšnama grīdas flīzēšana', 'desc' => 'Priekšnama un gaiteņa grīdas flīzēšana ar porcelāna granītu 20m². Pamatne izlīdzināta. Ātrs darbs.', 'price' => 320.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Terases flīzēšana ar salnas izturīgām flīzēm', 'desc' => 'Terases grīdas flīzēšana ar salnas izturīgām keramikas flīzēm 30m². Hidroizolācija veikta. Novadgriķi.', 'price' => 580.0, 'subcat' => 'Iekšējais remonts'],
-                ['title' => 'Flīžu remonts — atsevišķas flīzes', 'desc' => 'Ieplaisājušo un atspiedušo flīžu nomaiņa vannas istabā. 8 flīzes nomainītas, fuga atjaunota.', 'price' => 90.0, 'subcat' => 'Iekšējais remonts'],
+                ['title' => 'Flīžu remonts - atsevišķas flīzes', 'desc' => 'Ieplaisājušo un atspiedušo flīžu nomaiņa vannas istabā. 8 flīzes nomainītas, fuga atjaunota.', 'price' => 90.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Sauna flīzēšana', 'desc' => 'Saunas griešanās zonas un dušas flīzēšana ar speciālām karsta apstākļa flīzēm. Siltumizolācija nodrošināta.', 'price' => 420.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Baseina apkārtnes flīzēšana', 'desc' => 'Āra baseiniem apkārtējai zonai klātas flīzes 45m². Pretslīdes virsma, salnas izturīgs materiāls.', 'price' => 760.0, 'subcat' => 'Iekšējais remonts'],
                 ['title' => 'Grīdas izlīdzināšana un flīzēšana', 'desc' => 'Grīdas izlīdzināšana ar sausinošu masu, tad keramikas flīžu klāšana 25m². Darbs 2 dienās.', 'price' => 440.0, 'subcat' => 'Iekšējais remonts'],
@@ -1832,7 +1832,7 @@ class DemoSeeder extends Seeder
 
         $fillers = [
             'andrejs' => [
-                ['Viedmājas sistēmu uzstādīšana', 'Iekšējie darbi', 450.0, 'Viedmājas automatizācija — apgaismojums, roletes, termostati ar viedtālruņa vadību. Darbu veicu ar Zigbee un Z-Wave protokoliem.'],
+                ['Viedmājas sistēmu uzstādīšana', 'Iekšējie darbi', 450.0, 'Viedmājas automatizācija - apgaismojums, roletes, termostati ar viedtālruņa vadību. Darbu veicu ar Zigbee un Z-Wave protokoliem.'],
                 ['Saules paneļu elektropievienošana', 'Ārējie darbi', 600.0, 'Saules paneļu sistēmas pieslēgšana tīklam un invertora konfigurācija. Sertificēts darbs ar garantiju.'],
             ],
             'peteris' => [
@@ -1910,11 +1910,11 @@ class DemoSeeder extends Seeder
             ['Elektroinstalācija dzīvokļa renovācijā', 'Iekšējie darbi', 400.0, 'Nepieciešama pilna elektroinstalācija 3 istabu dzīvoklī pēc sienu noplēšanas. Jaunas rozetes, slēdži un drošinātāju kaste. Lūdzu sazināties ar piedāvājumu.'],
             ['Āra apgaismojums privātmājai', 'Ārējie darbi', 250.0, 'Nepieciešams uzstādīt āra apgaismojumu gar piebraucamo ceļu un dārza taciņām. Aptuveni 15 gaismekļi. Darbs steidzams.'],
             ['Elektriskas plīts pieslēgšana', 'Iekšējie darbi', 80.0, 'Nepieciešams pieslēgt jaunu elektrisko plīti. Darbs ietver jaudas pārbaudi un atsevišķa ķēdes nodrošinājumu.'],
-            ['Viedās mājas apgaismojums', 'Apgaismojums', 350.0, 'Meklēju speciālistu viedmājas apgaismojuma sistēmas uzstādīšanai. 4 istabu dzīvoklis. Vēlamā sistēma — Philips Hue vai līdzīga.'],
+            ['Viedās mājas apgaismojums', 'Apgaismojums', 350.0, 'Meklēju speciālistu viedmājas apgaismojuma sistēmas uzstādīšanai. 4 istabu dzīvoklis. Vēlamā sistēma - Philips Hue vai līdzīga.'],
 
             // Santehnika
             ['Cauruļvadu montāža jaunbūvē', 'Cauruļvadi', 600.0, 'Jaunbūvējamas privātmājas ūdensvada un kanalizācijas sistēmas izbūve. Materiāli pieejami. Nepieciešams pieredzējis santehniķis.'],
-            ['Vannas istabas pārbūve', 'Sanitārtehnika', 450.0, 'Pilna vannas istabas santehnikas nomaiņa — vanna pret dušas kabīni, jauna izlietne un tualete. Lūdzu sniegt tāmi.'],
+            ['Vannas istabas pārbūve', 'Sanitārtehnika', 450.0, 'Pilna vannas istabas santehnikas nomaiņa - vanna pret dušas kabīni, jauna izlietne un tualete. Lūdzu sniegt tāmi.'],
             ['Tērauda cauruļu nomaiņa', 'Cauruļvadi', 320.0, 'Vecās tērauda cauruļu sistēmas nomaiņa pret plastmasu dzīvoklī. Aptuveni 15m cauruļu. Darbs jāveic tuvāko nedēļu laikā.'],
             ['Ūdens filtru sistēma', 'Ūdens sildītāji', 180.0, 'Nepieciešams uzstādīt ūdens attīrīšanas sistēmu pie ieejas mājai. Filtri pieejami, nepieciešama tikai montāža.'],
 
@@ -1922,7 +1922,7 @@ class DemoSeeder extends Seeder
             ['Balkona sienu krāsošana', 'Iekšējā krāsošana', 150.0, 'Balkona iekštelpu sienu krāsošana 2 kārtās. Laukums aptuveni 12m². Jābūt izturīgai āra krāsai. Balkons atvērts.'],
             ['Biroja telpu krāsošana', 'Iekšējā krāsošana', 680.0, 'Biroja 6 telpu krāsošana. Kopējais laukums aptuveni 200m². Darbs jāveic nedēļas nogalēs, lai netraucētu darbu.'],
             ['Fasādes renovācija', 'Fasāžu krāsošana', 1200.0, 'Privātmājas fasādes sagatavošana un krāsošana. Aptuveni 180m² virsmas. Nepieciešams materiāls un darbs.'],
-            ['Gaiteņa sienas krāsošana', 'Iekšējā krāsošana', 120.0, 'Gaiteņa sienu un griestu krāsošana baltā krāsā. Aptuveni 30m². Darbs steidzams — pārdodam dzīvokli.'],
+            ['Gaiteņa sienas krāsošana', 'Iekšējā krāsošana', 120.0, 'Gaiteņa sienu un griestu krāsošana baltā krāsā. Aptuveni 30m². Darbs steidzams - pārdodam dzīvokli.'],
 
             // Tīrīšana
             ['Vasarnīcas sezonas uzkopšana', 'Dzīvokļu uzkopšana', 140.0, 'Pēc ziemas vasarnīcas ģenerāltīrīšana. Iztīrīt visu māju, izmazgāt logus, sakopt terasi. Lūdzu piedāvājumu.'],
@@ -1932,7 +1932,7 @@ class DemoSeeder extends Seeder
 
             // Dārza darbi
             ['Dārza apgriešana rudenī', 'Stādīšana', 130.0, 'Nepieciešams apgriezt augļu kokus, krūmus un tuvināt dārzu ziemai. 10 āboli, 5 plūmes, krūmi. Rīgā.'],
-            ['Zāliena uzstādīšana jaunmājai', 'Zāles pļaušana', 580.0, 'Jaunbūves apkārtnes zāliena ierīkošana aptuveni 300m². Augsne jāsagatavo. Vēlamais — rullī uzstādāms zāliens.'],
+            ['Zāliena uzstādīšana jaunmājai', 'Zāles pļaušana', 580.0, 'Jaunbūves apkārtnes zāliena ierīkošana aptuveni 300m². Augsne jāsagatavo. Vēlamais - rullī uzstādāms zāliens.'],
             ['Ūdens dīķa ierīkošana', 'Stādīšana', 650.0, 'Dekoratīva ūdens dīķa izbūve dārzā ar filtrāciju un ūdensaugiem. Laukums aptuveni 8m². Lūdzu tāmi.'],
             ['Pikas un sniega tīrīšana', 'Sniega tīrīšana', 90.0, 'Nepieciešams tīrīt sniegu un pikas pēc nokrišņiem no piebraucamā ceļa (40m) un ieejas. Daugavpilī.'],
 
@@ -1943,9 +1943,9 @@ class DemoSeeder extends Seeder
 
             // Būvniecība un remonts
             ['Ģipškartoņa sienas montāža', 'Iekšējais remonts', 380.0, 'Nepieciešama ģipškartoņa starpsiena 3 istabu dzīvoklī (8m² sienas). Siltumizolācija iekļauta.'],
-            ['Durvis un logs — remonts un regulēšana', 'Iekšējais remonts', 120.0, 'PVC durvju un logu regulēšana — aizduras, atplūst. 4 durvis un 6 logi nepieciešama regulēšana.'],
+            ['Durvis un logs - remonts un regulēšana', 'Iekšējais remonts', 120.0, 'PVC durvju un logu regulēšana - aizduras, atplūst. 4 durvis un 6 logi nepieciešama regulēšana.'],
             ['Terases plātņu klāšana', 'Ārējais remonts', 490.0, 'Betona plātņu klāšana terases zonā 35m². Smilšu-grants pamatne jāveido. Lūdzu atsūtīt cenas piedāvājumu.'],
-            ['Bēniņu iekārtošana kā guļamistaba', 'Jaunbūves', 2200.0, 'Bēniņu telpas pārbūve par guļamistabu — grīda, siltumizolācija, apšuvums, logs un kāpnes. Lūdzu tāmi.'],
+            ['Bēniņu iekārtošana kā guļamistaba', 'Jaunbūves', 2200.0, 'Bēniņu telpas pārbūve par guļamistabu - grīda, siltumizolācija, apšuvums, logs un kāpnes. Lūdzu tāmi.'],
 
             // Flīzēšana / Grīdas segumi
             ['Vannas istabas sienu flīzēšana', 'Iekšējais remonts', 340.0, 'Vannas istabas (6m²) sienu flīzēšana. Flīzes jau iegādātas, nepieciešams tikai darbs un palīgmateriāli.'],
@@ -1954,12 +1954,12 @@ class DemoSeeder extends Seeder
 
             // Mēbeļu montāža / Citas jaunas kat.
             ['Virtuves mēbeļu montāža', 'Virtuves mēbeles', 220.0, 'Nepieciešama jaunu virtuves mēbeļu montāža dzīvoklī. IKEA komplekts gatavs. Vajadzīgs pieredzējis meistars.'],
-            ['Garderobe — montāža un iestatīšana', 'Skapju montāža', 160.0, 'Iebūvētas garderobes komplekta montāža guļamistabā. Izmēri 3m x 0.6m. Bīdāmās durvis.'],
-            ['Biroja mēbeļu montāža jaunā birojā', 'Biroja mēbeles', 300.0, 'Jauna biroja iekārtošana — galdi, krēsli, plaukti, aizslietņi. 15 darba vietas. Steidzami.'],
-            ['Mēbeļu pārvietošana', 'Mēbeļu pārvietošana', 180.0, 'Dzīvokļa pārvākšanās — nepieciešams palīgs mēbeļu nešanai. Rīgā, 3 stāvs bez lifta. 2 cilvēki vēlami.'],
+            ['Garderobe - montāža un iestatīšana', 'Skapju montāža', 160.0, 'Iebūvētas garderobes komplekta montāža guļamistabā. Izmēri 3m x 0.6m. Bīdāmās durvis.'],
+            ['Biroja mēbeļu montāža jaunā birojā', 'Biroja mēbeles', 300.0, 'Jauna biroja iekārtošana - galdi, krēsli, plaukti, aizslietņi. 15 darba vietas. Steidzami.'],
+            ['Mēbeļu pārvietošana', 'Mēbeļu pārvietošana', 180.0, 'Dzīvokļa pārvākšanās - nepieciešams palīgs mēbeļu nešanai. Rīgā, 3 stāvs bez lifta. 2 cilvēki vēlami.'],
 
             // Mājas tehnika
-            ['Veļasmašīna — remonts', 'Veļasmašīnas', 90.0, 'Veļasmašīna Bosch rada troksni centrifūgas laikā. Nepieciešams diagnosticēt un labot. Grozs vai gultenis.'],
+            ['Veļasmašīna - remonts', 'Veļasmašīnas', 90.0, 'Veļasmašīna Bosch rada troksni centrifūgas laikā. Nepieciešams diagnosticēt un labot. Grozs vai gultenis.'],
             ['Ledusskapja apkalpošana', 'Ledusskapji', 70.0, 'Ledusskapim darbojas kompresors, bet nedziesa gaisma un gumotas durvis noplūst. Nepieciešama apkalpošana.'],
             ['Cepeškrāsns remonts', 'Plītis un cepeškrāsnis', 80.0, 'Iebūvētai cepeškrāsnij nedarbojas viens sildīšanas elements. Nepieciešama diagnostika un daļu maiņa.'],
 

@@ -111,11 +111,10 @@ const formatValue = (v: any): string => {
 
             
             <div class="flex flex-wrap items-center gap-3">
-                <FunnelIcon class="w-4 h-4 text-gray-400 shrink-0" />
 
                 <select
                     v-model="filterAction"
-                    class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+                    class="pl-6 text-left py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
                 >
                     <option value="">Visas darbības</option>
                     <option value="created">Izveidots</option>
