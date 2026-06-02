@@ -7,6 +7,8 @@
         "confirm": "Confirm",
         "back": "Back",
         "next": "Next",
+        "prev_page": "Previous page",
+        "next_page": "Next page",
         "close": "Close",
         "loading": "Loading...",
         "email": "Email",

@@ -26,7 +26,7 @@ const { t } = useI18n();
                 <TextInput
                     v-model="filterForm.search"
                     type="text"
-                    class="w-full"
+                    class="w-full text-sm"
                     :placeholder="t('search.browse_services_placeholder')"
                 />
             </div>
@@ -40,9 +40,9 @@ const { t } = useI18n();
             </div>
 
             <div class="md:col-span-2 flex items-center gap-2">
-                <TextInput v-model="filterForm.price_min" type="number" class="w-full" :placeholder="t('search.price_from')" />
+                <TextInput v-model="filterForm.price_min" type="number" class="w-full text-sm" :placeholder="t('search.price_from')" />
                 <span class="text-gray-400 flex-shrink-0">-</span>
-                <TextInput v-model="filterForm.price_max" type="number" class="w-full" :placeholder="t('search.price_to')" />
+                <TextInput v-model="filterForm.price_max" type="number" class="w-full text-sm" :placeholder="t('search.price_to')" />
             </div>
 
         </div>
