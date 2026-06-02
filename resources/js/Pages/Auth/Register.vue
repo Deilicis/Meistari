@@ -74,7 +74,7 @@ const submit = () => {
     <AuthLayout>
         <Head :title="t('auth.register.title')" />
 
-        <div class="mb-6">
+        <div class="mb-3">
             <h2 class="text-2xl font-bold text-navy">{{ t('auth.register.title') }}</h2>
             <p class="text-sm text-gray-500 mt-1">{{ t('auth.register.subtitle') }}</p>
         </div>
