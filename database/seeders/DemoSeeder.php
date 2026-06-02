@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\CategorySuggestionStatusEnum;
+use App\Enums\Complaint\ComplaintStatusEnum;
 use App\Enums\EscrowStatusEnum;
 use App\Enums\Job\ApplicationStatusEnum;
 use App\Enums\Job\JobStatusEnum;
@@ -14,8 +15,10 @@ use App\Enums\PriceProposalStatusEnum;
 use App\Enums\Profile\ProfileTypeEnum;
 use App\Enums\Role\RoleNameEnum;
 use App\Models\Application;
+use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\CategorySuggestion;
+use App\Models\Complaint;
 use App\Models\Conversation;
 use App\Models\EscrowHold;
 use App\Models\JobDispute;
@@ -43,6 +46,7 @@ class DemoSeeder extends Seeder
     }
 
     private User $admin;
+    private User $moderator;
     /** @var array<string, User> */
     private array $masters = [];
     /** @var array<string, User> */
@@ -63,6 +67,8 @@ class DemoSeeder extends Seeder
         $this->createHistoryJobsAndReviews();
         $this->createFillerServices();
         $this->createFillerJobs();
+        $this->createComplaints();
+        $this->createAuditLogs();
 
         Carbon::setTestNow(null);
     }
@@ -72,6 +78,7 @@ class DemoSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         DB::table('role_user')->truncate();
         foreach ([
+            AuditLog::class, Complaint::class,
             Notification::class, JobDispute::class, EscrowHold::class,
             Review::class, PriceProposal::class, Application::class,
             ServiceApplication::class, CategorySuggestion::class,
@@ -92,6 +99,7 @@ class DemoSeeder extends Seeder
         $adminRole = Role::where(Role::NAME, RoleNameEnum::ADMIN->value)->firstOrFail();
         $masterRole = Role::where(Role::NAME, RoleNameEnum::MASTER->value)->firstOrFail();
         $seekerRole = Role::where(Role::NAME, RoleNameEnum::SEEKER->value)->firstOrFail();
+        $moderatorRole = Role::where(Role::NAME, RoleNameEnum::MODERATOR->value)->firstOrFail();
 
         // Administrators
         $this->admin = User::create([
@@ -104,6 +112,18 @@ class DemoSeeder extends Seeder
         $this->admin->roles()->attach($adminRole->getId());
         $this->makeProfile($this->admin, 'Demo', 'Admins', 'Rīga', '+371 29000000',
             'Platformas administrators.', true, []);
+
+        // Moderators
+        $this->moderator = User::create([
+            User::NAME => 'Moderators Modris',
+            User::EMAIL => 'moderators@meistari.local',
+            User::PASSWORD => $hashed,
+            User::EMAIL_VERIFIED_AT => now(),
+            User::ACTIVE_ROLE => RoleNameEnum::ADMIN,
+        ]);
+        $this->moderator->roles()->attach($moderatorRole->getId());
+        $this->makeProfile($this->moderator, 'Moderators', 'Modris', 'Rīga', '+371 29000001',
+            'Platformas moderators.', true, []);
 
         // Meistari
         foreach ($this->mastersData() as $key => $d) {
@@ -151,7 +171,7 @@ class DemoSeeder extends Seeder
             ]);
             $user->roles()->attach($seekerRole->getId());
             [$first, $last] = explode(' ', $d['name'], 2);
-            $this->makeProfile($user, $first, $last, $d['city'], $d['phone'], null, false, []);
+            $this->makeProfile($user, $first, $last, $d['city'], $d['phone'], null, true, []);
             $this->seekers[$key] = $user;
         }
     }
@@ -1324,6 +1344,209 @@ class DemoSeeder extends Seeder
             Notification::ACTION_URL => $url,
             Notification::READ_AT => $readAt,
         ]);
+    }
+
+    // --- Sūdzības ---
+
+    private function createComplaints(): void
+    {
+        $now = Carbon::now();
+        $allUsers = array_merge(array_values($this->masters), array_values($this->seekers));
+
+        $reasons = [
+            'Meistars neieradās norunātajā laikā un neatbild uz ziņām.',
+            'Pakalpojuma apraksts neatbilst reālajam piedāvājumam.',
+            'Lietotājs izmanto aizskarošu valodu sarakstē.',
+            'Darbs tika pamests nepabeigts, nauda neatdota.',
+            'Aizdomas par viltus atsauksmēm šim profilam.',
+            'Cena tika mainīta pēc vienošanās bez paskaidrojuma.',
+            'Lietotājs pieprasa maksājumu ārpus platformas.',
+            'Nekvalitatīvs darbs, meistars atsakās labot.',
+            'Sludinājums satur maldinošu informāciju.',
+            'Neatbilstoša uzvedība objektā.',
+            'Profils izliekas par citu personu.',
+            'Spams — lietotājs sūta nevēlamus piedāvājumus.',
+        ];
+
+        $firstService = Service::first();
+        $firstJob = JobRequest::whereNull(JobRequest::MASTER_ID)->where(JobRequest::STATUS, JobStatusEnum::OPEN)->first();
+
+        $data = [
+            // Gaidošās (majority)
+            [
+                'reporter' => $this->seekers['tonijs'],
+                'reported' => $this->masters['andrejs'],
+                'reason' => $reasons[0],
+                'status' => ComplaintStatusEnum::PENDING,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 1,
+            ],
+            [
+                'reporter' => $this->seekers['anna'],
+                'reported' => $this->masters['martins'],
+                'reason' => $reasons[5],
+                'status' => ComplaintStatusEnum::PENDING,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 2,
+            ],
+            [
+                'reporter' => $this->seekers['karlis'],
+                'reported' => $this->masters['roberts'],
+                'reason' => $reasons[7],
+                'status' => ComplaintStatusEnum::PENDING,
+                'entity_type' => $firstJob ? JobRequest::class : null,
+                'entity_id' => $firstJob?->getId(),
+                'days' => 3,
+            ],
+            [
+                'reporter' => $this->seekers['gunars'],
+                'reported' => $this->masters['linda'],
+                'reason' => $reasons[2],
+                'status' => ComplaintStatusEnum::PENDING,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 4,
+            ],
+            [
+                'reporter' => $this->masters['peteris'],
+                'reported' => $this->seekers['madara'],
+                'reason' => $reasons[11],
+                'status' => ComplaintStatusEnum::PENDING,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 5,
+            ],
+            // Izskatītas
+            [
+                'reporter' => $this->seekers['tonijs'],
+                'reported' => $this->masters['kristine'],
+                'reason' => $reasons[6],
+                'status' => ComplaintStatusEnum::REVIEWED,
+                'entity_type' => $firstService ? Service::class : null,
+                'entity_id' => $firstService?->getId(),
+                'days' => 8,
+            ],
+            [
+                'reporter' => $this->seekers['anna'],
+                'reported' => $this->masters['ilze'],
+                'reason' => $reasons[1],
+                'status' => ComplaintStatusEnum::REVIEWED,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 12,
+            ],
+            // Atrisinātas
+            [
+                'reporter' => $this->seekers['karlis'],
+                'reported' => $this->masters['janis'],
+                'reason' => $reasons[3],
+                'status' => ComplaintStatusEnum::RESOLVED,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 20,
+                'resolution' => 'Sazinājāmies ar abām pusēm. Meistars atlīdzināja daļu no samaksas.',
+            ],
+            [
+                'reporter' => $this->seekers['gunars'],
+                'reported' => $this->masters['andrejs'],
+                'reason' => $reasons[4],
+                'status' => ComplaintStatusEnum::RESOLVED,
+                'entity_type' => $firstService ? Service::class : null,
+                'entity_id' => $firstService?->getId(),
+                'days' => 30,
+                'resolution' => 'Izskatīts. Atsauksmes autentiskas, sūdzība noraidīta pēc pārbaudes.',
+            ],
+            // Noraidītas
+            [
+                'reporter' => $this->masters['roberts'],
+                'reported' => $this->seekers['tonijs'],
+                'reason' => $reasons[10],
+                'status' => ComplaintStatusEnum::DISMISSED,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 25,
+                'resolution' => 'Nepietiekams pamatojums. Sūdzība noraidīta.',
+            ],
+            [
+                'reporter' => $this->masters['linda'],
+                'reported' => $this->seekers['anna'],
+                'reason' => $reasons[9],
+                'status' => ComplaintStatusEnum::DISMISSED,
+                'entity_type' => null, 'entity_id' => null,
+                'days' => 35,
+                'resolution' => 'Nav pierādījumu. Sūdzība noraidīta.',
+            ],
+        ];
+
+        foreach ($data as $entry) {
+            Carbon::setTestNow($now->copy()->subDays($entry['days']));
+
+            $complaint = Complaint::create([
+                Complaint::REPORTER_ID => $entry['reporter']->getId(),
+                Complaint::REPORTED_USER_ID => $entry['reported']->getId(),
+                Complaint::REPORTED_ENTITY_TYPE => $entry['entity_type'],
+                Complaint::REPORTED_ENTITY_ID => $entry['entity_id'],
+                Complaint::REASON => $entry['reason'],
+                Complaint::STATUS => $entry['status'],
+                Complaint::RESOLVED_BY => in_array($entry['status'], [ComplaintStatusEnum::RESOLVED, ComplaintStatusEnum::DISMISSED])
+                    ? $this->admin->getId() : null,
+                Complaint::RESOLUTION_NOTE => $entry['resolution'] ?? null,
+                Complaint::RESOLVED_AT => in_array($entry['status'], [ComplaintStatusEnum::RESOLVED, ComplaintStatusEnum::DISMISSED])
+                    ? $now->copy()->subDays(max(1, $entry['days'] - 5)) : null,
+            ]);
+        }
+
+        Carbon::setTestNow(null);
+    }
+
+    // --- Audita žurnāls ---
+
+    private function createAuditLogs(): void
+    {
+        $now = Carbon::now();
+        $adminId = $this->admin->getId();
+        $modId = $this->moderator->getId();
+
+        $categoryIds = Category::whereNull(Category::PARENT_ID)->pluck('id')->toArray();
+        $serviceIds = Service::limit(6)->pluck('id')->toArray();
+        $jobIds = JobRequest::limit(6)->pluck('id')->toArray();
+        $userIds = User::limit(5)->pluck('id')->toArray();
+
+        $entries = [
+            [$adminId, 'created', Category::class, $categoryIds[0] ?? 1, null, ['name' => 'Mēbeļu montāža'], 14],
+            [$modId, 'updated', Category::class, $categoryIds[1] ?? 2, ['name' => 'Veco nosaukums'], ['name' => 'Elektroinstalācija'], 13],
+            [$adminId, 'updated', User::class, $userIds[0] ?? 1, ['is_verified' => false], ['is_verified' => true], 12],
+            [$modId, 'deleted', Service::class, $serviceIds[0] ?? 1, ['title' => 'Novecojis pakalpojums'], null, 11],
+            [$adminId, 'updated', Category::class, $categoryIds[2] ?? 3, ['icon' => null], ['icon' => 'WrenchIcon'], 10],
+            [$modId, 'updated', User::class, $userIds[1] ?? 2, ['is_verified' => false], ['is_verified' => true], 10],
+            [$adminId, 'created', Category::class, $categoryIds[3] ?? 4, null, ['name' => 'Jumta darbi'], 9],
+            [$modId, 'updated', JobRequest::class, $jobIds[0] ?? 1, ['status' => 'disputed'], ['status' => 'completed'], 8],
+            [$adminId, 'deleted', User::class, $userIds[2] ?? 3, ['email' => 'spam@example.com'], null, 8],
+            [$modId, 'updated', Service::class, $serviceIds[1] ?? 2, ['is_active' => true], ['is_active' => false], 7],
+            [$adminId, 'updated', Category::class, $categoryIds[0] ?? 1, ['icon' => 'WrenchIcon'], ['icon' => 'HomeIcon'], 7],
+            [$modId, 'updated', User::class, $userIds[3] ?? 4, ['name' => 'Vecs vārds'], ['name' => 'Jauns vārds'], 6],
+            [$adminId, 'created', Category::class, $categoryIds[4] ?? 5, null, ['name' => 'Grīdas segumi'], 6],
+            [$modId, 'updated', JobRequest::class, $jobIds[1] ?? 2, ['status' => 'open'], ['status' => 'cancelled'], 5],
+            [$adminId, 'updated', Service::class, $serviceIds[2] ?? 3, ['price' => 100], ['price' => 120], 5],
+            [$modId, 'deleted', Service::class, $serviceIds[3] ?? 4, ['title' => 'Maldinošs pakalpojums'], null, 4],
+            [$adminId, 'updated', User::class, $userIds[4] ?? 5, ['email' => 'old@test.lv'], ['email' => 'new@test.lv'], 4],
+            [$modId, 'updated', Category::class, $categoryIds[1] ?? 2, ['is_system' => false], ['is_system' => true], 3],
+            [$adminId, 'updated', JobRequest::class, $jobIds[2] ?? 3, ['budget' => 200], ['budget' => 250], 3],
+            [$modId, 'updated', User::class, $userIds[0] ?? 1, ['active_role' => 'seeker'], ['active_role' => 'master'], 2],
+            [$adminId, 'created', Category::class, $categoryIds[5] ?? 6, null, ['name' => 'Stiklinieks'], 2],
+            [$modId, 'updated', Service::class, $serviceIds[4] ?? 5, ['description' => 'vecs'], ['description' => 'jauns'], 1],
+            [$adminId, 'updated', JobRequest::class, $jobIds[3] ?? 4, ['status' => 'open'], ['status' => 'open'], 1],
+            [$modId, 'deleted', User::class, $userIds[1] ?? 2, ['email' => 'delete@me.lv'], null, 0],
+            [$adminId, 'updated', Category::class, $categoryIds[2] ?? 3, ['slug' => 'old-slug'], ['slug' => 'new-slug'], 0],
+        ];
+
+        foreach ($entries as [$userId, $action, $type, $id, $old, $new, $daysAgo]) {
+            DB::table('audit_logs')->insert([
+                AuditLog::USER_ID => $userId,
+                AuditLog::ACTION => $action,
+                AuditLog::AUDITABLE_TYPE => $type,
+                AuditLog::AUDITABLE_ID => $id,
+                AuditLog::OLD_VALUES => $old ? json_encode($old) : null,
+                AuditLog::NEW_VALUES => $new ? json_encode($new) : null,
+                AuditLog::IP_ADDRESS => '127.0.0.1',
+                AuditLog::CREATED_AT => $now->copy()->subDays($daysAgo)->subHours(rand(0, 8))->toDateTimeString(),
+            ]);
+        }
     }
 
     // --- Papildu kategorijas ---

@@ -139,9 +139,22 @@ class CategoryAdminService
 
     private function serializeNode(Category $cat, bool $withChildren = false): array
     {
-        $servicesCount = $cat->services_count   ?? 0;
-        $jobsCount = $cat->job_requests_count ?? 0;
+        $ownServices = $cat->services_count ?? 0;
+        $ownJobs = $cat->job_requests_count ?? 0;
         $childrenCount = $cat->children ? $cat->children->count() : 0;
+
+        // Aprēķina kopējos skaitļus, iekļaujot apakškategoriju vērtības
+        $childServices = 0;
+        $childJobs = 0;
+        if ($cat->children) {
+            foreach ($cat->children as $child) {
+                $childServices += $child->services_count ?? 0;
+                $childJobs += $child->job_requests_count ?? 0;
+            }
+        }
+
+        $totalServices = $ownServices + $childServices;
+        $totalJobs = $ownJobs + $childJobs;
 
         $node = [
             'id' => $cat->getId(),
@@ -150,10 +163,10 @@ class CategoryAdminService
             'icon' => $cat->getIcon(),
             'parent_id' => $cat->getParentId(),
             'is_system' => $cat->isSystem(),
-            'services_count' => $servicesCount,
-            'job_requests_count' => $jobsCount,
+            'services_count' => $totalServices,
+            'job_requests_count' => $totalJobs,
             'children_count' => $childrenCount,
-            'can_delete' => !$cat->isSystem() && $servicesCount === 0 && $jobsCount === 0 && $childrenCount === 0,
+            'can_delete' => !$cat->isSystem() && $ownServices === 0 && $ownJobs === 0 && $childrenCount === 0,
             'created_at' => $cat->getCreatedAt()?->toISOString(),
         ];
 
