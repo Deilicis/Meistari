@@ -32,6 +32,7 @@ class UserLogicRepository
 
             $role = $this->userDbRepository->findRoleByName($data->role->value);
             $this->userDbRepository->assignRole($user, $role);
+            $this->userDbRepository->setActiveRole($user, $data->role);
 
             $this->userDbRepository->createProfile([
                 Profile::USER_ID => $user->getId(),
