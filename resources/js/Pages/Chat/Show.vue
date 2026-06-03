@@ -162,11 +162,11 @@ onUnmounted(() => {
     <Head :title="t('chat.conversation_title', { name: conversation.other_user.name })" />
 
     <AuthenticatedLayout>
-        <div class="flex h-[calc(100vh-64px)]">
+        <div class="flex h-[calc(100vh-100px)]">
 
             
             <aside class="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 flex-shrink-0">
-                <div class="bg-navy px-4 py-3 flex-shrink-0">
+                <div class="bg-navy px-3 py-3 flex-shrink-0">
                     <div class="h-0.5 bg-blue-400 -mx-4 -mt-3 mb-3" />
                     <Link :href="route('chat.index')" class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
                         <ChatBubbleLeftRightIcon class="w-4 h-4 text-blue-400" />
