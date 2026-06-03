@@ -6,12 +6,11 @@ import { toast } from 'vue-sonner';
 import { useI18n } from 'vue-i18n';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
-import TagInput from '@/Components/Tag/TagInput.vue';
 import Checkbox from '@/Components/Form/Checkbox.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
 import InputError from '@/Components/Form/InputError.vue';
-import { BriefcaseIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { BriefcaseIcon, ArrowLeftIcon, ArrowRightIcon, CheckIcon, XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { Category } from '@/types/models';
 import type { PickerSelection } from '@/types/categorysuggestion';
 
@@ -32,7 +31,7 @@ const form = ref({
     title: '',
     description: '',
     price: '' as number | string,
-    location: [] as string[],
+    location: [''] as string[],
     is_active: true,
 });
 
@@ -56,7 +55,7 @@ const isDirty = computed(() =>
     form.value.title.trim() !== '' ||
     form.value.description.trim() !== '' ||
     !!parentSelection.value ||
-    form.value.location.length > 0
+    form.value.location.some(l => l.trim() !== '')
 );
 
 const stepLabels = computed(() => [t('services.step_basic'), t('services.step_details')]);
@@ -72,7 +71,8 @@ const validateStep1 = (): boolean => {
 
 const validateStep2 = (): boolean => {
     stepErrors.value = {};
-    if (form.value.location.length === 0) stepErrors.value.location = t('services.validate_location_msg');
+    const filled = form.value.location.filter(l => l.trim());
+    if (filled.length === 0) stepErrors.value.location = t('services.validate_location_msg');
     return Object.keys(stepErrors.value).length === 0;
 };
 
@@ -87,11 +87,17 @@ const prevStep = () => {
     step.value--;
 };
 
+const addLocation = () => form.value.location.push('');
+const removeLocation = (i: number) => form.value.location.splice(i, 1);
+
 const submit = async () => {
     if (!validateStep2()) return;
 
     const finalSel = childSelection.value ?? parentSelection.value;
-    const payload: Record<string, any> = { ...form.value };
+    const payload: Record<string, any> = {
+        ...form.value,
+        location: form.value.location.filter(l => l.trim()),
+    };
 
     if (finalSel?.type === 'category') {
         payload.category_id = finalSel.id;
@@ -240,11 +246,32 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
 
                     <div>
                         <InputLabel :value="t('services.field_locations_label')" class="text-gray-700 font-medium mb-1" />
-                        <TagInput
-                            v-model="form.location"
-                            :placeholder="t('services.field_locations_placeholder')"
-                            :maxTags="10"
-                        />
+                        <div class="space-y-2">
+                            <div v-for="(_, i) in form.location" :key="i" class="flex items-center gap-2">
+                                <TextInput
+                                    type="text"
+                                    class="flex-1 focus:border-navy focus:ring-navy"
+                                    v-model="form.location[i]"
+                                    :placeholder="t('services.field_locations_placeholder')"
+                                />
+                                <button
+                                    v-if="form.location.length > 1"
+                                    type="button"
+                                    @click="removeLocation(i)"
+                                    class="flex-shrink-0 w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
+                                >
+                                    <TrashIcon class="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            @click="addLocation"
+                            class="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-navy hover:text-navy/70 transition-colors"
+                        >
+                            <PlusIcon class="w-3.5 h-3.5" stroke-width="2.5" />
+                            {{ t('services.add_location') }}
+                        </button>
                         <InputError class="mt-1" :message="getError('location') || getError('location.0')" />
                     </div>
 

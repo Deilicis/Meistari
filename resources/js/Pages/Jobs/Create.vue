@@ -251,6 +251,7 @@ onUnmounted(() => window.removeEventListener('beforeunload', handleBeforeUnload)
                                 auto-apply
                                 :clearable="true"
                                 :teleport="true"
+                                :min-date="new Date()"
                                 input-class-name="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-navy focus:ring-1 focus:ring-navy outline-none"
                             />
                             <InputError class="mt-1" :message="getError('deadline')" />

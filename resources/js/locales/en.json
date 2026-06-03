@@ -572,6 +572,7 @@
         "field_price_placeholder": "50.00",
         "field_locations_label": "Locations (Cities or 'Remote')",
         "field_locations_placeholder": "E.g., Riga, all Latvia...",
+        "add_location": "Add location",
         "field_visible_label": "Publicly visible",
         "field_visible_desc": "Service will be available in search",
         "saving_btn": "Saving...",

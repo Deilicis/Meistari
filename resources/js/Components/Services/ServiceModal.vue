@@ -8,9 +8,8 @@ import TextInput from '@/Components/Form/TextInput.vue';
 import InputLabel from '@/Components/Form/InputLabel.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import Checkbox from '@/Components/Form/Checkbox.vue';
-import TagInput from '@/Components/Tag/TagInput.vue';
 import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
-import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon, WrenchScrewdriverIcon, ClockIcon, XCircleIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import type { Service, Category } from '@/types/models';
 import type { PickerSelection } from '@/types/categorysuggestion';
 
@@ -67,7 +66,7 @@ watch(() => props.show, (isOpen) => {
             title: props.service.title,
             description: props.service.description,
             price: props.service.price || '',
-            location: Array.isArray(props.service.location) ? props.service.location : [],
+            location: Array.isArray(props.service.location) && props.service.location.length > 0 ? props.service.location : [''],
             is_active: props.service.is_active,
         };
 
@@ -86,11 +85,14 @@ watch(() => props.show, (isOpen) => {
             childSelection.value = null;
         }
     } else {
-        form.value = { id: null, title: '', description: '', price: '', location: [], is_active: true };
+        form.value = { id: null, title: '', description: '', price: '', location: [''], is_active: true };
         parentSelection.value = null;
         childSelection.value = null;
     }
 });
+
+const addLocation = () => form.value.location.push('');
+const removeLocation = (index: number) => form.value.location.splice(index, 1);
 
 const save = async () => {
     processing.value = true;
@@ -103,7 +105,8 @@ const save = async () => {
         return;
     }
 
-    const payload: Record<string, any> = { ...form.value };
+    const cleanLocations = form.value.location.filter(l => l.trim() !== '');
+    const payload: Record<string, any> = { ...form.value, location: cleanLocations };
 
     if (finalSel.type === 'category') {
         payload.category_id = finalSel.id;
@@ -250,11 +253,32 @@ const save = async () => {
                 
                 <div>
                     <InputLabel :value="t('services.field_locations_label')" class="text-gray-700 font-medium" />
-                    <TagInput
-                        v-model="form.location"
-                        :placeholder="t('services.field_locations_placeholder')"
-                        :maxTags="10"
-                    />
+                    <div class="mt-1 space-y-2">
+                        <div v-for="(_loc, index) in form.location" :key="index" class="flex gap-2">
+                            <TextInput
+                                type="text"
+                                class="block w-full focus:border-navy focus:ring-navy"
+                                v-model="form.location[index]"
+                                :placeholder="t('services.field_locations_placeholder')"
+                            />
+                            <button
+                                v-if="form.location.length > 1"
+                                type="button"
+                                @click="removeLocation(index)"
+                                class="flex-shrink-0 w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors border border-red-200"
+                            >
+                                <TrashIcon class="w-4 h-4" />
+                            </button>
+                        </div>
+                        <button
+                            type="button"
+                            @click="addLocation"
+                            class="inline-flex items-center gap-1.5 text-sm font-medium text-navy hover:text-navy-hover transition-colors"
+                        >
+                            <PlusIcon class="w-4 h-4" />
+                            {{ t('services.add_location') }}
+                        </button>
+                    </div>
                     <InputError class="mt-1.5" :message="validationErrors.location?.[0] || validationErrors['location.0']?.[0]" />
                 </div>
 

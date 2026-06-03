@@ -572,6 +572,7 @@
         "field_price_placeholder": "50.00",
         "field_locations_label": "Lokācijas (Pilsētas vai 'Attālināti')",
         "field_locations_placeholder": "Piem., Rīga, visa Latvija...",
+        "add_location": "Pievienot vietu",
         "field_visible_label": "Publiski redzams",
         "field_visible_desc": "Pakalpojums būs pieejams meklēšanā",
         "saving_btn": "Saglabā...",
