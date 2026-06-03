@@ -42,7 +42,7 @@ class DemoSeeder extends Seeder
 {
     private function getPassword(): string
     {
-        return env('DEMO_USER_PASSWORD', 'Password1!');
+        return env('DEMO_USER_PASSWORD');
     }
 
     private User $admin;
