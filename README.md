@@ -1,6 +1,7 @@
 # Meistari
+Hostēts: meistari.online
 
-<!-- BILDE: Projekta logo vai galvenā bannera bilde -->
+<img width="1462" height="629" alt="image" src="https://github.com/user-attachments/assets/9b381489-ea5b-4557-a463-5501590a5d60" />
 
 Tiessaistes platforma, kas savieno Latvijas pakalpojumu sniedzejus (meistarus) ar klientiem (mekletajiem). Platforma nodrosina ertu vidi, kur meistari var publicet savus pakalpojumus un veidot profesionalu profilu, bet klienti var meklet specialistus, iesniegt darba pieprasijumus un novertēt sadarbibas kvalitati.
 
@@ -11,6 +12,8 @@ Tiessaistes platforma, kas savieno Latvijas pakalpojumu sniedzejus (meistarus) a
 Meistari ir tīmekļa platforma, kas veidota ka starpnieks starp pakalpojumu sniedzeju un klientu. Latvijas tirgū trūkst universāla risinājuma, kas aptvertu dažādu nozaru speciālistus vienuviet.
 
 Šī platforma ļauj jebkuras jomas profesionālim - IT, dizains, tulkošana, reklāma, būvniecība un citi - atrast klientus un demonstrēt savu darbu, savukārt klientiem - ātri atrast uzticamu meistaru un vienoties par sadarbību.
+
+<img width="1405" height="800" alt="image" src="https://github.com/user-attachments/assets/5e929f86-1078-40b3-ade3-7022754e4c0e" />
 
 ### Galvenās iespējas
 
@@ -54,34 +57,6 @@ Meistari ir tīmekļa platforma, kas veidota ka starpnieks starp pakalpojumu sni
 
 ---
 
-## Projekta struktūra
-
-```
-meistari/
-├── app/
-│   ├── Enums/              # PHP enum klases (lomas, statusi, tipi)
-│   ├── Http/
-│   │   ├── Controllers/    # Kontrolieri, sadalīti pa jomām
-│   │   ├── Middleware/     # CheckRole un citi middleware
-│   │   └── Requests/       # FormRequest validācijas klases
-│   └── Models/             # Eloquent modeļi
-├── database/
-│   ├── factories/          # Model factories testēšanai un seedošanai
-│   ├── migrations/         # Datubāzes migrācijas
-│   └── seeders/            # Datu iesēšana
-├── resources/
-│   ├── js/
-│   │   ├── Components/     # Vue komponentes
-│   │   ├── Layouts/        # Izkārtojumu komponentes
-│   │   └── Pages/          # Inertia lapu komponentes
-│   └── css/                # Tailwind stili
-├── routes/
-│   └── web.php             # Visi maršruti
-└── docker-compose.yml      # Sail konfigurācija
-```
-
----
-
 ## Priekšnosacījumi
 
 Pirms projekta palaišanas pārliecinies, ka tavā datorā ir uzstādīts:
@@ -98,7 +73,7 @@ Sail izmanto Docker, tāpēc nav nepieciešams lokāli instalēt PHP, Composer, 
 ### 1. Klonē repozitoriju
 
 ```bash
-git clone https://github.com/TAVS_LIETOTAJVARDS/meistari.git
+git clone [https://github.com/TAVS_LIETOTAJVARDS/meistari.git](https://github.com/Deilicis/Meistari)
 cd meistari
 ```
 
@@ -121,7 +96,7 @@ docker run --rm \
     composer install --ignore-platform-reqs
 ```
 
-### 4. Palaid Sail konteinerus
+### 4. Palaid Sail konteinerus iekš projekta mapes.
 
 ```bash
 ./vendor/bin/sail up -d
@@ -160,10 +135,12 @@ Pēc `migrate --seed` izpildes ir pieejami šādi testa konti:
 
 | Loma | E-pasts | Parole |
 |---|---|---|
-| Administrators | `admin@meistari.lv` | `password` |
-| Moderators | `moderator@meistari.lv` | `password` |
-| Meistars | `meistars@meistari.lv` | `password` |
-| Meklētājs | `mekletajs@meistari.lv` | `password` |
+| Administrators | `admin@meistari.lv` | `Password1!` |
+| Moderators | `moderator@meistari.lv` | `Password1!` |
+| Meistars | `meistars@meistari.lv` | `Password1!` |
+| Meklētājs | `mekletajs@meistari.lv` | `Password1!` |
+
+meistari.online šīs paroles nestrādā :)
 
 ---
 
