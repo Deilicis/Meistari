@@ -6,6 +6,7 @@ import { useActiveRole } from '@/composables/useActiveRole';
 import { toast } from 'vue-sonner';
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { UserCircleIcon } from '@heroicons/vue/24/outline';
 import ProfileTabs from './Partials/ProfileTabs.vue';
 import BasicInformationTab from './Partials/BasicInformationTab.vue';
 import MasterProfileTab from './Partials/MasterProfileTab.vue';
@@ -111,12 +112,18 @@ function submitProfile() {
     <Head :title="t('profile.title')" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div>
-                <h2 class="text-xl font-bold text-navy">{{ t('profile.heading') }}</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ t('profile.subtitle') }}</p>
+        <div class="bg-navy">
+            <div class="h-1" :class="isMasterActive ? 'bg-gold' : 'bg-emerald-400'" />
+            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex items-center gap-3">
+                    <UserCircleIcon class="w-6 h-6" :class="isMasterActive ? 'text-gold' : 'text-emerald-400'" />
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('profile.heading') }}</h1>
+                        <p class="text-white/50 text-sm mt-0.5">{{ t('profile.subtitle') }}</p>
+                    </div>
+                </div>
             </div>
-        </template>
+        </div>
 
         <div class="py-8">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-4">
