@@ -34,7 +34,7 @@ defineProps<{
                 <div class="md:col-span-5 flex flex-col gap-4">
                     <Link
                         v-if="canRegister"
-                        :href="route('register')"
+                        :href="route('register') + '?role=seeker'"
                         class="group flex flex-col items-start bg-gold hover:bg-yellow-400 text-navy px-8 py-5 rounded-2xl transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] w-full"
                     >
                         <span class="flex items-center gap-2 text-base md:text-lg font-bold">
@@ -55,7 +55,7 @@ defineProps<{
 
                     <Link
                         v-if="canRegister"
-                        :href="route('register')"
+                        :href="route('register') + '?role=master'"
                         class="flex flex-col items-start bg-transparent border-2 border-white/30 hover:border-white hover:bg-white/10 text-white px-8 py-5 rounded-2xl transition-all duration-200 w-full"
                     >
                         <span class="text-base md:text-lg font-bold">{{ t('welcome.hero.cta_post') }}</span>

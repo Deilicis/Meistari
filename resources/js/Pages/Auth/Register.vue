@@ -15,6 +15,7 @@ type EnumOption = string | { name: string; value: string };
 const props = defineProps<{
     roles: EnumOption[];
     profileTypes: EnumOption[];
+    initialRole?: string;
 }>();
 
 const getOptionValue = (option: EnumOption): string => {
@@ -49,7 +50,7 @@ const form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
-    role: getRoleValue('seeker'),
+    role: getRoleValue(props.initialRole ?? 'seeker'),
     profile_type: props.profileTypes && props.profileTypes.length > 0
         ? getOptionValue(props.profileTypes[0])
         : 'individual',
