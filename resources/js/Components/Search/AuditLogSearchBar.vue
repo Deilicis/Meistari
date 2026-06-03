@@ -6,7 +6,7 @@ const props = defineProps<{
     filters: { action?: string; type?: string };
 }>();
 
-const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
+const { filterForm, clearFilters, hasActiveFilters, triggerFilter } = useDebouncedFilter(
     'admin.audit-logs.index',
     { action: props.filters.action ?? '', type: props.filters.type ?? '' },
     { action: '', type: '' },
@@ -14,17 +14,10 @@ const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
 </script>
 
 <template>
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm px-4 py-3 flex flex-wrap items-center gap-3">
-        <div class="flex items-center gap-1.5 text-gray-400 shrink-0">
-            <FunnelIcon class="w-4 h-4" />
-            <span class="text-xs font-semibold uppercase tracking-widest">Filtri</span>
-        </div>
-
-        <div class="w-px h-5 bg-gray-200 shrink-0" />
-
+    <div class="flex flex-wrap items-center gap-3">
         <select
             v-model="filterForm.action"
-            class="w-48 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy transition"
+            class="w-56 px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy transition"
         >
             <option value="">Visas darbības</option>
             <option value="created">Izveidots</option>
@@ -38,6 +31,14 @@ const { filterForm, clearFilters, hasActiveFilters } = useDebouncedFilter(
             placeholder="Objekta tips (piem. Service)"
             class="w-56 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy transition"
         />
+
+        <button
+            @click="triggerFilter"
+            class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy/90 transition-colors"
+        >
+            <FunnelIcon class="w-4 h-4" />
+            Filtrēt
+        </button>
 
         <button
             v-if="hasActiveFilters()"

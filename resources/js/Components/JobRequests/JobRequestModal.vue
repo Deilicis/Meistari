@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useForm } from '@inertiajs/vue3';
 import Modal from '@/Components/Common/Modal.vue';
@@ -7,12 +7,13 @@ import InputLabel from '@/Components/Form/InputLabel.vue';
 import TextInput from '@/Components/Form/TextInput.vue';
 import InputError from '@/Components/Form/InputError.vue';
 import PortfolioUploader from '@/Components/Form/PortfolioUploader.vue';
-import CategorySelect from '@/Components/Form/CategorySelect.vue';
+import SmartCategoryPicker from '@/Components/Categories/SmartCategoryPicker.vue';
 import { VueDatePicker } from '@vuepic/vue-datepicker';
 import { lv } from 'date-fns/locale';
 import { toast } from 'vue-sonner';
-import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon, ClipboardDocumentListIcon, PlusIcon, TrashIcon, ClockIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import type { JobRequest, Category } from '@/types/models';
+import type { PickerSelection } from '@/types/categorysuggestion';
 
 const { t } = useI18n();
 
@@ -30,12 +31,34 @@ const form = useForm({
     _method: 'post',
     title: '',
     description: '',
-    category_id: '',
+    category_id: null as number | null,
+    pending_category_suggestion_id: null as number | null,
     budget: '',
     deadline: null as string | null,
     location: [''],
     images: [] as File[],
     images_to_delete: [] as string[],
+});
+
+const parentSelection = ref<PickerSelection | null>(null);
+const childSelection = ref<PickerSelection | null>(null);
+
+const selectedParentCategory = computed(() =>
+    parentSelection.value?.type === 'category'
+        ? props.categories.find(c => c.id === parentSelection.value!.id) ?? null
+        : null
+);
+
+const parentHasChildren = computed(() =>
+    (selectedParentCategory.value?.children?.length ?? 0) > 0
+);
+
+const showChildPicker = computed(() =>
+    parentSelection.value?.type === 'category' && parentHasChildren.value
+);
+
+watch(parentSelection, () => {
+    childSelection.value = null;
 });
 
 const getError = (key: string): string | undefined => {
@@ -48,16 +71,33 @@ watch(() => props.show, (isOpen) => {
             form._method = 'put';
             form.title = props.jobRequest.title;
             form.description = props.jobRequest.description;
-            form.category_id = props.jobRequest.category_id.toString();
             form.budget = props.jobRequest.budget ? props.jobRequest.budget.toString() : '';
             form.deadline = props.jobRequest.deadline ?? null;
             form.location = props.jobRequest.location?.length > 0 ? [...props.jobRequest.location] : [''];
             existingImages.value = props.jobRequest.images ? [...props.jobRequest.images] : [];
+
+            const cat = props.jobRequest.category;
+            if (cat) {
+                if (cat.parent_id === null) {
+                    parentSelection.value = { type: 'category', id: cat.id, name: cat.name };
+                    childSelection.value = null;
+                } else {
+                    const parent = props.categories.find(c => c.id === cat.parent_id);
+                    parentSelection.value = parent ? { type: 'category', id: parent.id, name: parent.name } : null;
+                    childSelection.value = { type: 'category', id: cat.id, name: cat.name };
+                }
+            } else {
+                const parent = props.categories.find(c => c.id === props.jobRequest!.category_id);
+                parentSelection.value = parent ? { type: 'category', id: parent.id, name: parent.name } : null;
+                childSelection.value = null;
+            }
         } else {
             form._method = 'post';
             form.reset();
             form.location = [''];
             existingImages.value = [];
+            parentSelection.value = null;
+            childSelection.value = null;
         }
         form.clearErrors();
         form.images = [];
@@ -69,10 +109,24 @@ const addLocation = () => form.location.push('');
 const removeLocation = (index: number) => form.location.splice(index, 1);
 
 const submit = () => {
+    const finalSel = childSelection.value ?? parentSelection.value;
+    if (!finalSel) {
+        form.setError('category_id', t('job_requests.category_required_error'));
+        return;
+    }
+
     const cleanLocations = form.location.filter(loc => loc.trim() !== '');
     if (cleanLocations.length === 0) {
         form.setError('location', t('job_requests.location_required_error'));
         return;
+    }
+
+    if (finalSel.type === 'category') {
+        form.category_id = finalSel.id;
+        form.pending_category_suggestion_id = null;
+    } else {
+        form.category_id = null;
+        form.pending_category_suggestion_id = finalSel.id;
     }
 
     const originalLocations = [...form.location];
@@ -115,7 +169,7 @@ const closeModal = () => {
 
 <template>
     <Modal :show="show" @close="closeModal" maxWidth="2xl">
-        
+
         <div class="bg-navy px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-emerald-400/20 rounded-lg flex items-center justify-center">
@@ -130,12 +184,38 @@ const closeModal = () => {
             </button>
         </div>
 
-        
+
         <div class="p-6">
+
+
+            <template v-if="jobRequest?.pending_category_suggestion">
+                <div
+                    v-if="jobRequest.pending_category_suggestion.status === 'pending'"
+                    class="mb-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800"
+                >
+                    <ClockIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-600" />
+                    <span>{{ t('job_requests.suggestion_pending_banner', { name: jobRequest.pending_category_suggestion.name }) }}</span>
+                </div>
+                <div
+                    v-else-if="jobRequest.pending_category_suggestion.status === 'rejected'"
+                    class="mb-4 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-sm"
+                >
+                    <XCircleIcon class="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
+                    <div>
+                        <p class="font-semibold text-red-700">
+                            {{ t('job_requests.suggestion_rejected_title', { name: jobRequest.pending_category_suggestion.name }) }}
+                        </p>
+                        <p v-if="jobRequest.pending_category_suggestion.review_note" class="text-red-600 mt-0.5">
+                            {{ jobRequest.pending_category_suggestion.review_note }}
+                        </p>
+                    </div>
+                </div>
+            </template>
+
             <form @submit.prevent="submit" class="space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    
+
                     <div class="md:col-span-2">
                         <InputLabel for="title" :value="t('job_requests.field_title_label')" class="text-gray-700 font-medium" />
                         <TextInput
@@ -149,21 +229,30 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('title')" />
                     </div>
 
-                    
+
                     <div>
-                        <InputLabel for="category" :value="t('job_requests.field_category_label')" class="text-gray-700 font-medium" />
+                        <InputLabel :value="t('job_requests.field_category_label')" class="text-gray-700 font-medium" />
                         <div class="mt-1">
-                            <CategorySelect
-                                v-model="form.category_id"
-                                :categories="categories"
-                                :show-all-option="false"
-                                :required="true"
+                            <SmartCategoryPicker
+                                v-model="parentSelection"
+                                :parent-category-id="null"
+                                :placeholder="t('job_requests.field_category_placeholder')"
                             />
                         </div>
-                        <InputError class="mt-1.5" :message="getError('category_id')" />
+                        <div v-if="showChildPicker" class="mt-2">
+                            <SmartCategoryPicker
+                                v-model="childSelection"
+                                :parent-category-id="selectedParentCategory!.id"
+                                :placeholder="t('job_requests.field_subcategory_placeholder')"
+                            />
+                        </div>
+                        <InputError
+                            class="mt-1.5"
+                            :message="getError('category_id') || getError('pending_category_suggestion_id')"
+                        />
                     </div>
 
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel for="budget" :value="t('job_requests.field_budget_label')" class="text-gray-700 font-medium" />
@@ -198,7 +287,7 @@ const closeModal = () => {
                         </div>
                     </div>
 
-                    
+
                     <div class="md:col-span-2">
                         <InputLabel for="description" :value="t('job_requests.field_description_label')" class="text-gray-700 font-medium" />
                         <textarea
@@ -212,7 +301,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('description')" />
                     </div>
 
-                    
+
                     <div class="md:col-span-2">
                         <InputLabel :value="t('job_requests.field_location_label')" class="text-gray-700 font-medium" />
                         <div class="mt-1 space-y-2">
@@ -245,7 +334,7 @@ const closeModal = () => {
                         <InputError class="mt-1.5" :message="getError('location')" />
                     </div>
 
-                    
+
                     <div class="md:col-span-2">
                         <PortfolioUploader
                             v-model:newFiles="form.images"
@@ -256,7 +345,7 @@ const closeModal = () => {
                     </div>
                 </div>
 
-                
+
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
                     <button
                         type="button"

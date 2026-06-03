@@ -10,7 +10,6 @@ import {
     MapPinIcon,
     CalendarIcon,
     UserGroupIcon,
-    ArrowRightIcon,
     UserIcon,
 } from '@heroicons/vue/24/outline';
 
@@ -54,33 +53,6 @@ const jobStatusClasses: Record<JobStatus, string> = {
 <template>
     <div class="space-y-6">
 
-        
-        <div class="bg-navy rounded-2xl overflow-hidden">
-            <div class="h-1 w-full bg-emerald-400" />
-            <div class="px-8 py-6">
-                <p class="text-emerald-400 text-xs font-bold tracking-widest uppercase mb-1">{{ t('dashboard.seeker.panel_label') }}</p>
-                <h2 class="text-2xl font-extrabold text-white">{{ t('dashboard.seeker.greeting', { name: user.name }) }}</h2>
-                <p class="text-white/50 text-sm mt-1 mb-5">{{ t('dashboard.seeker.subtitle') }}</p>
-                <div class="flex flex-wrap gap-3">
-                    <Link
-                        :href="route('seeker.job-requests.index')"
-                        class="inline-flex items-center gap-2 bg-emerald-400 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-emerald-500 transition-colors"
-                    >
-                        <PlusIcon class="w-4 h-4" stroke-width="2.5" />
-                        {{ t('dashboard.seeker.create_listing') }}
-                    </Link>
-                    <Link
-                        :href="route('seeker.services.index')"
-                        class="inline-flex items-center gap-2 bg-white/10 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-white/20 transition-colors"
-                    >
-                        {{ t('dashboard.seeker.find_masters') }}
-                        <ArrowRightIcon class="w-4 h-4" />
-                    </Link>
-                </div>
-            </div>
-        </div>
-
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             

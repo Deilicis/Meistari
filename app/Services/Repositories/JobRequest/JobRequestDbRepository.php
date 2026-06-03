@@ -53,7 +53,7 @@ class JobRequestDbRepository
 
     public function getByUserId(int $userId, array $filters = []): Collection
     {
-        $query = JobRequest::with(['category'])
+        $query = JobRequest::with(['category', 'pendingCategorySuggestion'])
             ->withCount('applications')
             ->where(JobRequest::USER_ID, $userId);
 

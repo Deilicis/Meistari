@@ -24,5 +24,14 @@ export function useDebouncedFilter<T extends Record<string, string>>(
     const clearFilters = () => { filterForm.value = { ...emptyFilters }; };
     const hasActiveFilters = () => Object.values(filterForm.value).some(v => v !== '');
 
-    return { filterForm, clearFilters, hasActiveFilters };
+    const triggerFilter = () => {
+        clearTimeout(searchTimeout);
+        router.get(route(routeName), filterForm.value as Record<string, string>, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
+
+    return { filterForm, clearFilters, hasActiveFilters, triggerFilter };
 }

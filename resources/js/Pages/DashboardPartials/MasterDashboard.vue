@@ -2,7 +2,7 @@
 import { Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import type { AuthUser, Service, ApplicationStatus, JobStatus } from '@/types/models';
+import type { Service, ApplicationStatus, JobStatus } from '@/types/models';
 import {
     BriefcaseIcon,
     ClipboardDocumentListIcon,
@@ -11,7 +11,6 @@ import {
     CheckCircleIcon,
     XCircleIcon,
     ClockIcon,
-    ArrowRightIcon,
 } from '@heroicons/vue/24/outline';
 
 const { t } = useI18n();
@@ -32,7 +31,6 @@ interface RecentApplication {
 
 defineProps<{
     stats: Record<string, number>;
-    user: AuthUser;
     recentServices: Service[];
     recentApplications: RecentApplication[];
 }>();
@@ -55,33 +53,6 @@ const appStatusClasses: Record<ApplicationStatus, string> = {
 <template>
     <div class="space-y-6">
 
-        
-        <div class="bg-navy rounded-2xl overflow-hidden">
-            <div class="h-1 w-full bg-gold" />
-            <div class="px-8 py-6">
-                <p class="text-gold text-xs font-bold tracking-widest uppercase mb-1">{{ t('dashboard.master.panel_label') }}</p>
-                <h2 class="text-2xl font-extrabold text-white">{{ t('dashboard.master.greeting', { name: user.name }) }}</h2>
-                <p class="text-white/50 text-sm mt-1 mb-5">{{ t('dashboard.master.subtitle') }}</p>
-                <div class="flex flex-wrap gap-3">
-                    <Link
-                        :href="route('master.services.index')"
-                        class="inline-flex items-center gap-2 bg-gold text-navy text-sm font-bold px-4 py-2 rounded-xl hover:bg-yellow-400 transition-colors"
-                    >
-                        <PlusIcon class="w-4 h-4" stroke-width="2.5" />
-                        {{ t('dashboard.master.add_service') }}
-                    </Link>
-                    <Link
-                        :href="route('master.job-requests.categories')"
-                        class="inline-flex items-center gap-2 bg-white/10 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-white/20 transition-colors"
-                    >
-                        {{ t('dashboard.master.find_jobs') }}
-                        <ArrowRightIcon class="w-4 h-4" />
-                    </Link>
-                </div>
-            </div>
-        </div>
-
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             

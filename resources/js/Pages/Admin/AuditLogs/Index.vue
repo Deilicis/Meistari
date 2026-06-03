@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { FunnelIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
+import AuditLogSearchBar from '@/Components/Search/AuditLogSearchBar.vue';
 
 interface AuditLog {
     id: number;
@@ -30,24 +31,6 @@ const props = defineProps<{
     auditLogs: PaginatedLogs;
     filters: { action?: string; user_id?: string; type?: string };
 }>();
-
-const filterAction = ref(props.filters.action ?? '');
-const filterType = ref(props.filters.type ?? '');
-
-const applyFilters = () => {
-    router.get(route('admin.audit-logs.index'), {
-        action: filterAction.value || undefined,
-        type: filterType.value || undefined,
-    }, { preserveState: true, replace: true });
-};
-
-const clearFilters = () => {
-    filterAction.value = '';
-    filterType.value = '';
-    router.get(route('admin.audit-logs.index'), {}, { preserveState: true, replace: true });
-};
-
-const hasFilters = () => !!props.filters.action || !!props.filters.type;
 
 const expandedId = ref<number | null>(null);
 const toggleExpand = (id: number) => {
@@ -110,41 +93,7 @@ const formatValue = (v: any): string => {
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
             
-            <div class="flex flex-wrap items-center gap-3">
-
-                <select
-                    v-model="filterAction"
-                    class="pl-6 text-left py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                >
-                    <option value="">Visas darbības</option>
-                    <option value="created">Izveidots</option>
-                    <option value="updated">Atjaunināts</option>
-                    <option value="deleted">Dzēsts</option>
-                </select>
-
-                <input
-                    v-model="filterType"
-                    type="text"
-                    placeholder="Objekta tips (piem. Service)"
-                    class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy w-56"
-                    @keydown.enter="applyFilters"
-                />
-
-                <button
-                    @click="applyFilters"
-                    class="px-4 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy/90 transition-colors"
-                >
-                    Filtrēt
-                </button>
-
-                <button
-                    v-if="hasFilters()"
-                    @click="clearFilters"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    Notīrīt
-                </button>
-            </div>
+            <AuditLogSearchBar :filters="filters" />
 
             
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

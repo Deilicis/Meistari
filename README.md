@@ -140,7 +140,7 @@ Pēc `migrate --seed` izpildes ir pieejami šādi testa konti:
 | Meistars | `meistars@meistari.lv` | `Password1!` |
 | Meklētājs | `mekletajs@meistari.lv` | `Password1!` |
 
-meistari.online šīs paroles nestrādā :)
+meistari.online šīs paroles nestrādā.
 
 ---
 
