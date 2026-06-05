@@ -10,6 +10,7 @@ use App\Models\Message;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class MessageSent implements ShouldBroadcastNow
 
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel('conversation.' . $this->message->getConversationId());
+        return new PresenceChannel('conversation.' . $this->message->getConversationId());
     }
 
     public function broadcastWith(): array

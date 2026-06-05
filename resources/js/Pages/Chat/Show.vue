@@ -132,11 +132,20 @@ function handleProposalActed(proposalId: number) {
     });
 }
 
-// --- Reāllaikā ---
+// --- Reāllaikā + heartbeat ---
+let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+
+const pingHeartbeat = () =>
+    axios.post(route('chat.heartbeat', props.conversation.id)).catch(() => {});
+
 onMounted(() => {
     scrollToBottom(false);
+
     (window as any).Echo
-        .private(`conversation.${props.conversation.id}`)
+        .join(`conversation.${props.conversation.id}`)
+        .here((_users: Array<{ id: number; name: string }>) => {})
+        .joining((_user: { id: number; name: string }) => {})
+        .leaving((_user: { id: number; name: string }) => {})
         .listen('.MessageSent', (e: Message) => {
             if (!messageList.value.find(m => m.id === e.id)) {
                 messageList.value.push(e);
@@ -151,9 +160,13 @@ onMounted(() => {
                 });
             }
         });
+
+    pingHeartbeat();
+    heartbeatInterval = setInterval(pingHeartbeat, 30000);
 });
 
 onUnmounted(() => {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
     (window as any).Echo.leave(`conversation.${props.conversation.id}`);
 });
 </script>

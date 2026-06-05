@@ -188,6 +188,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [ChatController::class, 'index'])->name('index');
         Route::get('/{conversation}', [ChatController::class, 'show'])->name('show');
         Route::post('/{conversation}/messages', [ChatController::class, 'store'])->name('store');
+        Route::post('/{conversation}/heartbeat', [ChatController::class, 'heartbeat'])->name('heartbeat');
     });
 
     // Publiskie profili (pieejami abām lomām)

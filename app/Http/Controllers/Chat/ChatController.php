@@ -14,6 +14,7 @@ use App\Services\Repositories\Chat\ChatLogicRepository;
 use App\Services\Repositories\Chat\ConversationDbRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -70,6 +71,19 @@ class ChatController extends Controller
         $message = $this->chatRepository->sendMessage($request->toDTO($conversation->getId()));
 
         return response()->json(new MessageResource($message), 201);
+    }
+
+    public function heartbeat(Request $request, Conversation $conversation): JsonResponse
+    {
+        $authId = $request->user()->getId();
+
+        if ($conversation->getSenderId() !== $authId && $conversation->getReceiverId() !== $authId) {
+            abort(403);
+        }
+
+        Cache::put("user:{$authId}:active_conversation", $conversation->getId(), now()->addSeconds(60));
+
+        return response()->json(['ok' => true]);
     }
 
     public function startConversation(Request $request): JsonResponse

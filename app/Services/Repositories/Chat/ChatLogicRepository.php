@@ -13,6 +13,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\NotificationService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ChatLogicRepository
 {
@@ -58,14 +59,18 @@ class ChatLogicRepository
                     ? $conversation->getReceiverId()
                     : $conversation->getSenderId();
 
-                $this->notificationService->create(new CreateNotificationDTO(
-                    userId: $receiverId,
-                    type: NotificationTypeEnum::NEW_MESSAGE,
-                    title: 'Jauna ziņa no ' . $message->sender->getName(),
-                    body: mb_strimwidth($dto->body, 0, 80, '...'),
-                    actionUrl: route('chat.show', $dto->conversationId),
-                    metadata: ['conversation_id' => $dto->conversationId, 'sender_id' => $dto->senderId],
-                ));
+                $recipientActiveConversation = Cache::get("user:{$receiverId}:active_conversation");
+
+                if ($recipientActiveConversation !== $dto->conversationId) {
+                    $this->notificationService->create(new CreateNotificationDTO(
+                        userId: $receiverId,
+                        type: NotificationTypeEnum::NEW_MESSAGE,
+                        title: 'Jauna ziņa no ' . $message->sender->getName(),
+                        body: mb_strimwidth($dto->body, 0, 80, '...'),
+                        actionUrl: route('chat.show', $dto->conversationId),
+                        metadata: ['conversation_id' => $dto->conversationId, 'sender_id' => $dto->senderId],
+                    ));
+                }
             }
         }
 

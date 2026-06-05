@@ -13,11 +13,14 @@ Broadcast::channel('notifications.{userId}', function ($user, int $userId) {
     return $user->getId() === $userId;
 });
 
-Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
+Broadcast::channel('conversation.{conversationId}', function ($user, int $conversationId) {
     $conversation = Conversation::find($conversationId);
-
-    return $conversation && (
-        $conversation->getSenderId() === $user->getId() ||
-        $conversation->getReceiverId() === $user->getId()
-    );
+    if (!$conversation) {
+        return false;
+    }
+    if ($conversation->getSenderId() !== $user->getId()
+        && $conversation->getReceiverId() !== $user->getId()) {
+        return false;
+    }
+    return ['id' => $user->getId(), 'name' => $user->getName()];
 });

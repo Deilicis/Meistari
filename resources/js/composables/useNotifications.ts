@@ -44,14 +44,16 @@ export function useNotifications() {
     }
 
     function subscribeToRealtime(userId: number) {
-        // Aizsardzība gadījumā, ja Echo nav pieejams (WebSocket atspējots vai vēl nav ielādēts).
-        (window as any).Echo
-            ?.private(`notifications.${userId}`)
-            ?.listen('.NotificationCreated', (notification: Notification) => {
-                // Dublikātu novēršana: paziņojums var ierasties gan caur HTTP, gan WebSocket apraidi.
-                if (!notifications.value.find(n => n.id === notification.id)) {
-                    notifications.value.unshift(notification);
-                }
+        const echo = (window as any).Echo;
+        if (!echo) return;
+
+        // Drop any existing listener before re-subscribing so remounts don't stack listeners.
+        echo.leaveChannel(`private-notifications.${userId}`);
+
+        echo.private(`notifications.${userId}`)
+            .listen('.NotificationCreated', (notification: Notification) => {
+                if (notifications.value.find(n => n.id === notification.id)) return;
+                notifications.value.unshift(notification);
                 toast.info(notification.title, {
                     description: notification.body ?? undefined,
                     duration: 4000,
