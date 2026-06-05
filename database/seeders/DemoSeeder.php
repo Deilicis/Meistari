@@ -69,6 +69,7 @@ class DemoSeeder extends Seeder
         $this->createFillerJobs();
         $this->createComplaints();
         $this->createAuditLogs();
+        $this->seedImages();
 
         Carbon::setTestNow(null);
     }
@@ -1997,5 +1998,137 @@ class DemoSeeder extends Seeder
         }
 
         Carbon::setTestNow(null);
+    }
+
+    // --- Attēli ---
+
+    private function seedImages(): void
+    {
+        if (!extension_loaded('gd')) {
+            $this->command?->warn('GD extension not loaded — skipping avatar generation.');
+        }
+
+        foreach (['avatars', 'portfolio', 'job-requests'] as $dir) {
+            $full = storage_path('app/public/' . $dir);
+            if (!is_dir($full)) {
+                mkdir($full, 0755, true);
+            }
+        }
+
+        // Clear previously seeded images so reruns don't accumulate orphans.
+        foreach (['avatars', 'portfolio', 'job-requests'] as $dir) {
+            foreach (glob(storage_path('app/public/' . $dir . '/*')) ?: [] as $f) {
+                if (is_file($f)) {
+                    unlink($f);
+                }
+            }
+        }
+
+        $allUsers = array_merge(
+            [$this->admin, $this->moderator],
+            array_values($this->masters),
+            array_values($this->seekers),
+        );
+
+        if (extension_loaded('gd')) {
+            foreach ($allUsers as $user) {
+                $path = $this->generateAvatar($user);
+                $user->profile->update([Profile::AVATAR => $path]);
+            }
+        }
+
+        $workImages = glob(database_path('seeders/assets/work/*.jpg')) ?: [];
+        if (empty($workImages)) {
+            $this->command?->warn(
+                'No work photos found in database/seeders/assets/work/ — skipping portfolio and job-request images.'
+            );
+            return;
+        }
+
+        foreach (array_values($this->masters) as $master) {
+            $count = rand(2, 5);
+            $picks = collect($workImages)->shuffle()->take($count);
+            $stored = [];
+            foreach ($picks as $src) {
+                $filename = 'portfolio/' . Str::random(40) . '.jpg';
+                copy($src, storage_path('app/public/' . $filename));
+                $stored[] = $filename;
+            }
+            $master->profile->update([Profile::PORTFOLIO_IMAGES => $stored]);
+        }
+
+        $allJobs = JobRequest::all();
+        foreach ($allJobs as $job) {
+            if (rand(1, 100) > 65) {
+                continue;
+            }
+            $count = rand(1, 3);
+            $picks = collect($workImages)->shuffle()->take($count);
+            $stored = [];
+            foreach ($picks as $src) {
+                $filename = 'job-requests/' . Str::random(40) . '.jpg';
+                copy($src, storage_path('app/public/' . $filename));
+                $stored[] = $filename;
+            }
+            $job->update([JobRequest::IMAGES => $stored]);
+        }
+    }
+
+    private function generateAvatar(User $user): string
+    {
+        $initials = $this->initialsFromName($user->getName());
+        $size = 256;
+        $img = imagecreatetruecolor($size, $size);
+        imageantialias($img, true);
+
+        $palette = [
+            [27, 42, 74],
+            [46, 158, 107],
+            [200, 150, 30],
+            [155, 89, 182],
+            [192, 86, 75],
+            [52, 152, 219],
+        ];
+        $c = $palette[$user->getId() % count($palette)];
+        $bg    = imagecolorallocate($img, $c[0], $c[1], $c[2]);
+        $white = imagecolorallocate($img, 255, 255, 255);
+
+        imagefilledrectangle($img, 0, 0, $size, $size, $bg);
+
+        $fontPath = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf';
+        if (is_file($fontPath)) {
+            $fontSize = 90;
+            $bbox = imagettfbbox($fontSize, 0, $fontPath, $initials);
+            $textW = $bbox[2] - $bbox[0];
+            $textH = $bbox[1] - $bbox[7];
+            $x = (int) (($size - $textW) / 2 - $bbox[0]);
+            $y = (int) (($size - $textH) / 2 - $bbox[7]);
+            imagettftext($img, $fontSize, 0, $x, $y, $white, $fontPath, $initials);
+        } else {
+            $font  = 5;
+            $textW = imagefontwidth($font) * mb_strlen($initials);
+            $textH = imagefontheight($font);
+            imagestring($img, $font, (int) (($size - $textW) / 2), (int) (($size - $textH) / 2), $initials, $white);
+        }
+
+        $filename = 'avatars/' . Str::random(40) . '.png';
+        imagepng($img, storage_path('app/public/' . $filename));
+        imagedestroy($img);
+
+        return $filename;
+    }
+
+    private function initialsFromName(string $name): string
+    {
+        $parts = preg_split('/\s+/u', trim($name));
+        if (empty($parts)) {
+            return '?';
+        }
+        $first = mb_strtoupper(mb_substr($parts[0], 0, 1, 'UTF-8'), 'UTF-8');
+        if (count($parts) === 1) {
+            return $first;
+        }
+        $second = mb_strtoupper(mb_substr($parts[1], 0, 1, 'UTF-8'), 'UTF-8');
+        return $first . $second;
     }
 }
