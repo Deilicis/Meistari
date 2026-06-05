@@ -25,17 +25,8 @@ use App\Services\NotificationService;
 use App\Services\Repositories\Application\ApplicationDbRepository;
 use App\Services\Stripe\StripeCheckoutService;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB; 
 
-/**
- * Darba dzīves cikla servis - Pārvalda
- * darba sludinājuma pāreju starp stāvokļiem.
- *
- * Klase neuztur biznesa logiku pati. Tā paļaujas uz JobStateMachine,
- * kas validē, vai pāreja no viena stāvokļa uz otru ir atļauta. Datu
- * izmaiņas notiek caur repozitorijiem, paziņojumi caur NotificationService,
- * maksājumi caur Stripe servisu.
- */
 class JobLifecycleService
 {
     public function __construct(

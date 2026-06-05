@@ -6,6 +6,7 @@ namespace App\Events;
 
 use App\Http\Resources\NotificationResource;
 use App\Models\Notification;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -14,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 
 class NotificationCreated implements ShouldBroadcastNow
 {
-    use InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
         public readonly Notification $notification,

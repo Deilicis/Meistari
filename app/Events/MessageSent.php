@@ -7,6 +7,7 @@ namespace App\Events;
 use App\Enums\MessageTypeEnum;
 use App\Http\Resources\MessageResource;
 use App\Models\Message;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -16,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MessageSent implements ShouldBroadcastNow
 {
-    use InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
         public readonly Message $message
