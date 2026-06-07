@@ -53,7 +53,7 @@ type TabKey = 'basic' | 'master-profile' | 'security' | 'account';
 
 const validTabs = computed((): TabKey[] => {
     const tabs: TabKey[] = ['basic'];
-    if (isMasterActive.value) tabs.push('master-profile');
+    if (isMasterActive.value && !isStaff.value) tabs.push('master-profile');
     tabs.push('security', 'account');
     return tabs;
 });
@@ -123,12 +123,12 @@ function submitProfile() {
 <template>
     <Head :title="t('profile.title')" />
 
-    <AuthenticatedLayout>
+    <component :is="LayoutComponent">
         <div class="bg-navy">
-            <div class="h-1" :class="isMasterActive ? 'bg-gold' : 'bg-emerald-400'" />
+            <div class="h-1" :class="headerAccentClass" />
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
                 <div class="flex items-center gap-3">
-                    <UserCircleIcon class="w-6 h-6" :class="isMasterActive ? 'text-gold' : 'text-emerald-400'" />
+                    <UserCircleIcon class="w-6 h-6" :class="headerAccentTextClass" />
                     <div>
                         <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ t('profile.heading') }}</h1>
                         <p class="text-white/50 text-sm mt-0.5">{{ t('profile.subtitle') }}</p>
@@ -174,7 +174,7 @@ function submitProfile() {
 
             </div>
         </div>
-    </AuthenticatedLayout>
+    </component>
 </template>
 
 <style>
