@@ -44,13 +44,13 @@ class MasterController extends Controller
         $user->load(['profile']);
 
         return Inertia::render('Admin/Masters/Show', [
-            'master'   => $user,
+            'master' => $user,
             'services' => $user->services()
                 ->with('category')
                 ->latest()
                 ->paginate(10, ['*'], 'services_page')
                 ->withQueryString(),
-            'reviews'  => $user->reviewsReceived()
+            'reviews' => $user->reviewsReceived()
                 ->with('reviewer.profile')
                 ->latest()
                 ->paginate(10, ['*'], 'reviews_page')

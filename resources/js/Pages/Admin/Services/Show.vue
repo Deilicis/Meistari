@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
+import AdminPagination from '@/Components/Common/AdminPagination.vue';
 import {
     ArrowLeftIcon,
     EnvelopeIcon,
@@ -33,7 +34,36 @@ interface Service {
     };
 }
 
-defineProps<{ service: Service }>();
+interface ServiceApplication {
+    id: number;
+    message: string | null;
+    budget_offer: number | null;
+    status: string;
+    created_at: string;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        profile: { city: string | null; avatar: string | null } | null;
+    };
+}
+
+interface Paginator<T> {
+    data: T[];
+    total: number;
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    links: { url: string | null; label: string; active: boolean }[];
+    from: number | null;
+    to: number | null;
+}
+
+defineProps<{
+    service: Service;
+    applications: Paginator<ServiceApplication>;
+}>();
 
 const showDeleteConfirm = ref(false);
 const deleteProcessing = ref(false);
@@ -55,6 +85,27 @@ const formatDate = (d: string) =>
 
 const masterLink = (service: Service) =>
     route('admin.masters.show', service.user.id) + '?from_service_id=' + service.id;
+
+const appStatusLabel = (s: string) => ({
+    pending:   'Gaida',
+    accepted:  'Pieņemts',
+    rejected:  'Noraidīts',
+    completed: 'Pabeigts',
+    cancelled: 'Atcelts',
+}[s] ?? s);
+
+const appStatusClass = (s: string) => ({
+    pending:   'bg-amber-100 text-amber-700',
+    accepted:  'bg-emerald-100 text-emerald-700',
+    rejected:  'bg-red-100 text-red-600',
+    completed: 'bg-blue-100 text-blue-700',
+    cancelled: 'bg-gray-100 text-gray-500',
+}[s] ?? 'bg-gray-100 text-gray-600');
+
+const truncate = (text: string | null, len = 100) => {
+    if (!text) return '-';
+    return text.length > len ? text.slice(0, len) + '...' : text;
+};
 </script>
 
 <template>
@@ -183,7 +234,7 @@ const masterLink = (service: Service) =>
                 </div>
             </div>
 
-            
+
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">Apraksts</h2>
@@ -191,6 +242,67 @@ const masterLink = (service: Service) =>
                 <div class="p-6">
                     <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ service.description }}</p>
                 </div>
+            </div>
+
+
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div class="bg-navy px-6 py-4">
+                    <h2 class="text-sm font-bold text-white">
+                        Pieteikumi ({{ applications.total }})
+                    </h2>
+                </div>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-100 bg-gray-50/60">
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Pieteicējs</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Piedāvājums</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden lg:table-cell">Ziņa</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Statuss</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell">Datums</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <tr v-if="applications.data.length === 0">
+                            <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
+                                Nav pieteikumu.
+                            </td>
+                        </tr>
+                        <tr
+                            v-for="app in applications.data"
+                            :key="app.id"
+                            class="hover:bg-gray-50/60 transition-colors"
+                        >
+                            <td class="px-6 py-4">
+                                <Link
+                                    :href="route('admin.seekers.show', app.user.id)"
+                                    class="font-semibold text-navy hover:underline"
+                                >
+                                    {{ app.user.name }}
+                                </Link>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ app.user.email }}</p>
+                            </td>
+                            <td class="px-6 py-4 text-gray-700 hidden md:table-cell">
+                                <span v-if="app.budget_offer">€{{ app.budget_offer }}</span>
+                                <span v-else class="text-gray-400">-</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-500 hidden lg:table-cell max-w-xs">
+                                {{ truncate(app.message) }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold"
+                                    :class="appStatusClass(app.status)"
+                                >
+                                    {{ appStatusLabel(app.status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-500 hidden md:table-cell whitespace-nowrap">
+                                {{ formatDate(app.created_at) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <AdminPagination v-if="applications.last_page > 1" :links="applications.links" />
             </div>
 
         </div>

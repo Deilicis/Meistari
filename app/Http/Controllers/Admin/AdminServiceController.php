@@ -44,7 +44,12 @@ class AdminServiceController extends Controller
         $service->load(['user.profile', 'category']);
 
         return Inertia::render('Admin/Services/Show', [
-            'service' => $service,
+            'service'      => $service,
+            'applications' => $service->applications()
+                ->with('user.profile')
+                ->latest()
+                ->paginate(10, ['*'], 'applications_page')
+                ->withQueryString(),
         ]);
     }
 
