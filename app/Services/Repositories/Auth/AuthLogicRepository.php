@@ -39,7 +39,15 @@ class AuthLogicRepository
         }
 
         RateLimiter::clear($this->throttleKey($data->email, $ipAddress));
-        
+
+        $user = Auth::user();
+        if ($user instanceof User && $user->isSuspended()) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                User::EMAIL => 'Šis konts ir apturēts. Sazinies ar administrāciju.',
+            ]);
+        }
+
         session()->regenerate();
     }
 
