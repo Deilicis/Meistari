@@ -3,11 +3,11 @@ import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminIndexFilters from '@/Components/Common/AdminIndexFilters.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
     EyeIcon,
     TrashIcon,
-    MagnifyingGlassIcon,
 } from '@heroicons/vue/24/outline';
 
 interface JobRequest {
@@ -74,23 +74,23 @@ const doDelete = () => {
 const { t } = useI18n();
 
 const statusLabel = (s: string) => ({
-    open:                  t('admin.dashboard.status_open'),
-    accepted:              t('admin.dashboard.status_accepted'),
-    in_progress:           t('admin.dashboard.status_in_progress'),
+    open: t('admin.dashboard.status_open'),
+    accepted: t('admin.dashboard.status_accepted'),
+    in_progress: t('admin.dashboard.status_in_progress'),
     awaiting_confirmation: t('admin.dashboard.status_awaiting'),
-    completed:             t('admin.dashboard.status_completed'),
-    disputed:              t('admin.dashboard.status_disputed'),
-    cancelled:             t('admin.dashboard.status_cancelled'),
+    completed: t('admin.dashboard.status_completed'),
+    disputed: t('admin.dashboard.status_disputed'),
+    cancelled: t('admin.dashboard.status_cancelled'),
 }[s] ?? s);
 
 const statusClass = (s: string) => ({
-    open:                  'bg-emerald-100 text-emerald-700',
-    accepted:              'bg-blue-100 text-blue-700',
-    in_progress:           'bg-amber-100 text-amber-700',
+    open: 'bg-emerald-100 text-emerald-700',
+    accepted: 'bg-blue-100 text-blue-700',
+    in_progress: 'bg-amber-100 text-amber-700',
     awaiting_confirmation: 'bg-orange-100 text-orange-700',
-    completed:             'bg-indigo-100 text-indigo-700',
-    disputed:              'bg-red-100 text-red-700',
-    cancelled:             'bg-gray-100 text-gray-500',
+    completed: 'bg-indigo-100 text-indigo-700',
+    disputed: 'bg-red-100 text-red-700',
+    cancelled: 'bg-gray-100 text-gray-500',
 }[s] ?? 'bg-gray-100 text-gray-500');
 
 const formatDate = (d: string) =>
@@ -112,44 +112,22 @@ const formatDate = (d: string) =>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
             
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="relative flex-1 max-w-sm">
-                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        v-model="search"
-                        @keydown.enter="doSearch"
-                        type="text"
-                        placeholder="Meklēt pēc nosaukuma..."
-                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                    />
-                </div>
-
-                <select
-                    v-model="status"
-                    class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                >
+            <AdminIndexFilters
+                v-model:search="search"
+                v-model:filter="status"
+                searchPlaceholder="Meklēt pēc nosaukuma..."
+                :hasActiveFilters="hasFilters()"
+                @search="doSearch"
+                @clear="clearFilters"
+            >
+                <template #filter-options>
                     <option value="">Visi statusi</option>
                     <option value="active">Aktīvs</option>
                     <option value="assigned">Piešķirts</option>
                     <option value="completed">Pabeigts</option>
                     <option value="cancelled">Atcelts</option>
-                </select>
-
-                <button
-                    @click="doSearch"
-                    class="px-4 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy/90 transition-colors"
-                >
-                    Meklēt
-                </button>
-
-                <button
-                    v-if="hasFilters()"
-                    @click="clearFilters"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    Notīrīt
-                </button>
-            </div>
+                </template>
+            </AdminIndexFilters>
 
             
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

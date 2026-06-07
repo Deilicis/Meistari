@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminIndexFilters from '@/Components/Common/AdminIndexFilters.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import Modal from '@/Components/Common/Modal.vue';
 import {
     EyeIcon,
     PencilSquareIcon,
     TrashIcon,
-    MagnifyingGlassIcon,
     CheckBadgeIcon,
     XCircleIcon,
 } from '@heroicons/vue/24/outline';
@@ -49,6 +49,11 @@ const doSearch = () => {
         search: search.value || undefined,
         status: statusFilter.value || undefined,
     }, { preserveState: true, replace: true });
+};
+const clearFilters = () => {
+    search.value = '';
+    statusFilter.value = '';
+    doSearch();
 };
 const hasFilters = () => !!props.filters.search || !!props.filters.status;
 
@@ -109,39 +114,20 @@ const typeClass = (type: string | null) => type === 'company'
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
             
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="relative flex-1 max-w-sm">
-                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        v-model="search"
-                        @keydown.enter="doSearch"
-                        type="text"
-                        placeholder="Meklēt pēc vārda vai e-pasta..."
-                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                    />
-                </div>
-                <select
-                    v-model="statusFilter"
-                    class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                >
+            <AdminIndexFilters
+                v-model:search="search"
+                v-model:filter="statusFilter"
+                searchPlaceholder="Meklēt pēc vārda vai e-pasta..."
+                :hasActiveFilters="hasFilters()"
+                @search="doSearch"
+                @clear="clearFilters"
+            >
+                <template #filter-options>
                     <option value="">Visi statusi</option>
                     <option value="active">Aktīvi</option>
                     <option value="suspended">Apturēti</option>
-                </select>
-                <button
-                    @click="doSearch"
-                    class="px-4 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy/90 transition-colors"
-                >
-                    Meklēt
-                </button>
-                <Link
-                    v-if="hasFilters()"
-                    :href="route('admin.masters.index')"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    Notīrīt
-                </Link>
-            </div>
+                </template>
+            </AdminIndexFilters>
 
             
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">

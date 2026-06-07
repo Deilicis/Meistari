@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminIndexFilters from '@/Components/Common/AdminIndexFilters.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
     EyeIcon,
     TrashIcon,
-    MagnifyingGlassIcon,
 } from '@heroicons/vue/24/outline';
 
 interface Service {
@@ -90,42 +90,20 @@ const formatDate = (d: string) =>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
             
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="relative flex-1 max-w-sm">
-                    <MagnifyingGlassIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                        v-model="search"
-                        @keydown.enter="doSearch"
-                        type="text"
-                        placeholder="Meklēt pēc nosaukuma..."
-                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                    />
-                </div>
-
-                <select
-                    v-model="isActive"
-                    class="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                >
+            <AdminIndexFilters
+                v-model:search="search"
+                v-model:filter="isActive"
+                searchPlaceholder="Meklēt pēc nosaukuma..."
+                :hasActiveFilters="hasFilters()"
+                @search="doSearch"
+                @clear="clearFilters"
+            >
+                <template #filter-options>
                     <option value="">Visi statusi</option>
                     <option value="1">Aktīvs</option>
                     <option value="0">Neaktīvs</option>
-                </select>
-
-                <button
-                    @click="doSearch"
-                    class="px-4 py-2 text-sm font-semibold text-white bg-navy rounded-lg hover:bg-navy/90 transition-colors"
-                >
-                    Meklēt
-                </button>
-
-                <button
-                    v-if="hasFilters()"
-                    @click="clearFilters"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    Notīrīt
-                </button>
-            </div>
+                </template>
+            </AdminIndexFilters>
 
             
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
