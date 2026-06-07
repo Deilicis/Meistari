@@ -41,10 +41,15 @@ class AdminJobRequestController extends Controller
 
     public function show(JobRequest $jobRequest): Response
     {
-        $jobRequest->load(['user.profile', 'category', 'applications.user.profile']);
+        $jobRequest->load(['user.profile', 'category']);
 
         return Inertia::render('Admin/JobRequests/Show', [
-            'jobRequest' => $jobRequest,
+            'jobRequest'   => $jobRequest,
+            'applications' => $jobRequest->applications()
+                ->with('user.profile')
+                ->latest()
+                ->paginate(10, ['*'], 'applications_page')
+                ->withQueryString(),
         ]);
     }
 

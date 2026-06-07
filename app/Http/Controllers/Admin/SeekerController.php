@@ -41,10 +41,20 @@ class SeekerController extends Controller
 
     public function show(User $user): Response
     {
-        $user->load(['profile', 'jobRequests.category', 'reviewsReceived.reviewer.profile']);
+        $user->load(['profile']);
 
         return Inertia::render('Admin/Seekers/Show', [
-            'seeker' => $user,
+            'seeker'      => $user,
+            'jobRequests' => $user->jobRequests()
+                ->with('category')
+                ->latest()
+                ->paginate(10, ['*'], 'jobs_page')
+                ->withQueryString(),
+            'reviews'     => $user->reviewsReceived()
+                ->with('reviewer.profile')
+                ->latest()
+                ->paginate(10, ['*'], 'reviews_page')
+                ->withQueryString(),
         ]);
     }
 

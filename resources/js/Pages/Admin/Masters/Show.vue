@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminPagination from '@/Components/Common/AdminPagination.vue';
 import {
     ArrowLeftIcon,
     EnvelopeIcon,
