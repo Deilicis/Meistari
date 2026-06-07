@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {
     ArrowLeftIcon,
@@ -50,20 +51,30 @@ interface Seeker {
 
 defineProps<{ seeker: Seeker }>();
 
+const { t } = useI18n();
+
 const jobStatusLabel = (status: string) => {
     const map: Record<string, string> = {
-        active: 'Aktīvs',
-        completed: 'Pabeigts',
-        cancelled: 'Atcelts',
+        open:                  t('admin.dashboard.status_open'),
+        accepted:              t('admin.dashboard.status_accepted'),
+        in_progress:           t('admin.dashboard.status_in_progress'),
+        awaiting_confirmation: t('admin.dashboard.status_awaiting'),
+        completed:             t('admin.dashboard.status_completed'),
+        disputed:              t('admin.dashboard.status_disputed'),
+        cancelled:             t('admin.dashboard.status_cancelled'),
     };
     return map[status] ?? status;
 };
 
 const jobStatusClass = (status: string) => {
     const map: Record<string, string> = {
-        active: 'bg-emerald-100 text-emerald-700',
-        completed: 'bg-blue-100 text-blue-700',
-        cancelled: 'bg-gray-100 text-gray-500',
+        open:                  'bg-emerald-100 text-emerald-700',
+        accepted:              'bg-blue-100 text-blue-700',
+        in_progress:           'bg-amber-100 text-amber-700',
+        awaiting_confirmation: 'bg-orange-100 text-orange-700',
+        completed:             'bg-indigo-100 text-indigo-700',
+        disputed:              'bg-red-100 text-red-700',
+        cancelled:             'bg-gray-100 text-gray-500',
     };
     return map[status] ?? 'bg-gray-100 text-gray-500';
 };

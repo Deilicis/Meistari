@@ -87,13 +87,13 @@ function formatCurrency(n: number): string {
 }
 
 const jobStatusConfig: Record<string, { label: string; color: string }> = {
-    open:                  { label: t('admin.dashboard.status_open'),         color: '#10b981' },
-    accepted:              { label: t('admin.dashboard.status_accepted'),      color: '#3b82f6' },
-    in_progress:           { label: t('admin.dashboard.status_in_progress'),   color: '#f59e0b' },
-    awaiting_confirmation: { label: t('admin.dashboard.status_awaiting'),      color: '#f97316' },
-    completed:             { label: t('admin.dashboard.status_completed'),     color: '#6366f1' },
-    disputed:              { label: t('admin.dashboard.status_disputed'),      color: '#ef4444' },
-    cancelled:             { label: t('admin.dashboard.status_cancelled'),     color: '#9ca3af' },
+    open:  { label: t('admin.dashboard.status_open'), color: '#10b981' },
+    accepted: { label: t('admin.dashboard.status_accepted'), color: '#3b82f6' },
+    in_progress: { label: t('admin.dashboard.status_in_progress'), color: '#f59e0b' },
+    awaiting_confirmation: { label: t('admin.dashboard.status_awaiting'), color: '#f97316' },
+    completed: { label: t('admin.dashboard.status_completed'), color: '#6366f1' },
+    disputed: { label: t('admin.dashboard.status_disputed'), color: '#ef4444' },
+    cancelled: { label: t('admin.dashboard.status_cancelled'), color: '#9ca3af' },
 };
 
 const totalJobs = computed(() => Object.values(props.jobsByStatus).reduce((s, c) => s + c, 0) || 1);
@@ -160,7 +160,19 @@ const auditActionBadge = (action: string) => {
     return map[action] ?? 'text-gray-600 bg-gray-50';
 };
 
-const formatModelType = (type: string) => type.replace('App\\Models\\', '');
+const auditActionLabel = (action: string) => {
+    const map: Record<string, string> = {
+        created: t('admin.dashboard.audit_action_created'),
+        updated: t('admin.dashboard.audit_action_updated'),
+        deleted: t('admin.dashboard.audit_action_deleted'),
+    };
+    return map[action] ?? action;
+};
+
+const formatModelType = (type: string) => {
+    const model = type.replace('App\\Models\\', '');
+    return t(`admin.dashboard.audit_model_${model}`, model);
+};
 
 const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -234,7 +246,7 @@ const formatDate = (dateStr: string) =>
                         </div>
                     </div>
 
-                    <!-- Darbu dinamika — pēdējās 8 nedēļas -->
+                    <!-- Darbu dinamika - pēdējās 8 nedēļas -->
                     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                         <h3 class="text-sm font-bold text-gray-900 mb-5">{{ t('admin.dashboard.chart_jobs_over_time') }}</h3>
                         <div class="flex items-end gap-2 h-32">
@@ -365,8 +377,8 @@ const formatDate = (dateStr: string) =>
                                 :key="log.id"
                                 class="px-6 py-3 flex items-center gap-3 hover:bg-gray-50/60 transition-colors"
                             >
-                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold capitalize shrink-0" :class="auditActionBadge(log.action)">
-                                    {{ log.action }}
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold shrink-0" :class="auditActionBadge(log.action)">
+                                    {{ auditActionLabel(log.action) }}
                                 </span>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm text-gray-700 truncate">
