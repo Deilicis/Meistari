@@ -136,29 +136,61 @@ const typeClass = (type: string | null) => type === 'company'
                         {{ fromServiceId ? 'Meistari' : 'Atpakaļ uz meistariem' }}
                     </Link>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl font-extrabold text-white shrink-0 overflow-hidden">
-                        <img
-                            v-if="master.profile?.avatar"
-                            :src="`/storage/${master.profile.avatar}`"
-                            class="w-14 h-14 rounded-full object-cover"
-                            :alt="master.name"
-                        />
-                        <span v-else>{{ master.name.charAt(0).toUpperCase() }}</span>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ master.name }}</h1>
-                            <span
-                                class="text-xs font-semibold px-2 py-0.5 rounded-full"
-                                :class="typeClass(master.profile?.type ?? null)"
-                            >
-                                {{ typeLabel(master.profile?.type ?? null) }}
-                            </span>
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl font-extrabold text-white shrink-0 overflow-hidden">
+                            <img
+                                v-if="master.profile?.avatar"
+                                :src="`/storage/${master.profile.avatar}`"
+                                class="w-14 h-14 rounded-full object-cover"
+                                :alt="master.name"
+                            />
+                            <span v-else>{{ master.name.charAt(0).toUpperCase() }}</span>
                         </div>
-                        <p class="text-white/50 text-sm mt-0.5">Reģistrēts: {{ formatDate(master.created_at) }}</p>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ master.name }}</h1>
+                                <span
+                                    v-if="master.suspended_at"
+                                    class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/20 text-red-300"
+                                >
+                                    Apturēts
+                                </span>
+                                <span
+                                    class="text-xs font-semibold px-2 py-0.5 rounded-full"
+                                    :class="typeClass(master.profile?.type ?? null)"
+                                >
+                                    {{ typeLabel(master.profile?.type ?? null) }}
+                                </span>
+                            </div>
+                            <p class="text-white/50 text-sm mt-0.5">Reģistrēts: {{ formatDate(master.created_at) }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button
+                            v-if="!master.suspended_at"
+                            @click="showSuspendConfirm = true"
+                            class="px-4 py-2 text-sm font-semibold text-amber-400 border border-amber-400/30 rounded-lg hover:bg-amber-400/10 transition-colors"
+                        >
+                            Apturēt
+                        </button>
+                        <button
+                            v-else
+                            @click="doUnsuspend"
+                            class="px-4 py-2 text-sm font-semibold text-emerald-400 border border-emerald-400/30 rounded-lg hover:bg-emerald-400/10 transition-colors"
+                        >
+                            Atcelt apturēšanu
+                        </button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div v-if="master.suspended_at" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-3">
+                <span class="text-sm font-semibold text-red-700">
+                    Šis konts ir apturēts kopš {{ formatDate(master.suspended_at) }}.
+                </span>
             </div>
         </div>
 
@@ -325,5 +357,14 @@ const typeClass = (type: string | null) => type === 'company'
             </div>
 
         </div>
+        <ConfirmDialog
+            :show="showSuspendConfirm"
+            title="Apturēt lietotāju?"
+            :message="`Vai tiešām vēlaties apturēt ${master.name}? Viņš vairs nevarēs pieslēgties.`"
+            confirmLabel="Apturēt"
+            :processing="suspendProcessing"
+            @confirm="doSuspend"
+            @cancel="showSuspendConfirm = false"
+        />
     </AdminLayout>
 </template>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import AdminPagination from '@/Components/Common/AdminPagination.vue';
+import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
     ArrowLeftIcon,
     EnvelopeIcon,
@@ -39,6 +41,7 @@ interface Seeker {
     email: string;
     email_verified_at: string | null;
     created_at: string;
+    suspended_at: string | null;
     profile: {
         city: string | null;
         phone: string | null;
@@ -60,13 +63,30 @@ interface Paginator<T> {
     to: number | null;
 }
 
-defineProps<{
+const props = defineProps<{
     seeker: Seeker;
     jobRequests: Paginator<JobRequest>;
     reviews: Paginator<Review>;
 }>();
 
 const { t } = useI18n();
+
+const showSuspendConfirm = ref(false);
+const suspendProcessing = ref(false);
+
+const doSuspend = () => {
+    suspendProcessing.value = true;
+    router.post(route('admin.seekers.suspend', props.seeker.id), {}, {
+        onFinish: () => {
+            suspendProcessing.value = false;
+            showSuspendConfirm.value = false;
+        },
+    });
+};
+
+const doUnsuspend = () => {
+    router.post(route('admin.seekers.unsuspend', props.seeker.id));
+};
 
 const jobStatusLabel = (status: string) => {
     const map: Record<string, string> = {
@@ -112,19 +132,28 @@ const formatDate = (d: string) =>
                     <ArrowLeftIcon class="w-4 h-4" />
                     Atpakaļ uz meklētājiem
                 </Link>
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl font-extrabold text-white shrink-0">
-                        <img
-                            v-if="seeker.profile?.avatar"
-                            :src="`/storage/${seeker.profile.avatar}`"
-                            class="w-14 h-14 rounded-full object-cover"
-                            :alt="seeker.name"
-                        />
-                        <span v-else>{{ seeker.name.charAt(0).toUpperCase() }}</span>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ seeker.name }}</h1>
-                        <p class="text-white/50 text-sm mt-0.5">Reģistrēts: {{ formatDate(seeker.created_at) }}</p>
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl font-extrabold text-white shrink-0">
+                            <img
+                                v-if="seeker.profile?.avatar"
+                                :src="`/storage/${seeker.profile.avatar}`"
+                                class="w-14 h-14 rounded-full object-cover"
+                                :alt="seeker.name"
+                            />
+                            <span v-else>{{ seeker.name.charAt(0).toUpperCase() }}</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ seeker.name }}</h1>
+                                <span
+                                    v-if="seeker.suspended_at"
+                                    class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/20 text-red-300"
+                                >
+                                    Apturēts
+                                </span>
+                            </div>
+                            <p class="text-white/50 text-sm mt-0.5">Reģistrēts: {{ formatDate(seeker.created_at) }}</p>
                     </div>
                 </div>
             </div>
