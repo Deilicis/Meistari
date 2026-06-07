@@ -89,7 +89,13 @@ const mobileNavLinkClass = (active: boolean) =>
                                     type="button"
                                     class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
                                 >
-                                    <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-red-500 text-white">
+                                    <img
+                                        v-if="user.profile?.avatar"
+                                        :src="`/storage/${user.profile.avatar}`"
+                                        :alt="user.name"
+                                        class="w-7 h-7 rounded-full object-cover shrink-0"
+                                    />
+                                    <span v-else class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-red-500 text-white">
                                         {{ user.name.charAt(0).toUpperCase() }}
                                     </span>
                                     {{ user.name }}
