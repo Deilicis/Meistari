@@ -60,17 +60,18 @@ const props = defineProps<{
 
 const statCards = computed(() => [
     { label: t('admin.dashboard.total_users'), value: props.stats.totalUsers, icon: UsersIcon, bg: 'bg-slate-100', iconColor: 'text-slate-600' },
-    { label: t('admin.dashboard.seekers'), value: props.stats.seekers, icon: UserGroupIcon, bg: 'bg-blue-100', iconColor: 'text-blue-700' },
-    { label: t('admin.dashboard.masters'), value: props.stats.masters, icon: WrenchScrewdriverIcon, bg: 'bg-amber-100', iconColor: 'text-amber-700' },
-    { label: t('admin.dashboard.moderators'), value: props.stats.moderators, icon: ShieldCheckIcon, bg: 'bg-orange-100', iconColor: 'text-orange-700' },
-    { label: t('admin.dashboard.services'), value: props.stats.services, icon: BriefcaseIcon, bg: 'bg-emerald-100', iconColor: 'text-emerald-700' },
-    { label: t('admin.dashboard.job_requests'), value: props.stats.jobRequests, icon: ClipboardDocumentListIcon, bg: 'bg-purple-100', iconColor: 'text-purple-700' },
+    { label: t('admin.dashboard.seekers'), value: props.stats.seekers, icon: UserGroupIcon, bg: 'bg-blue-100', iconColor: 'text-blue-700', href: route('admin.seekers.index') },
+    { label: t('admin.dashboard.masters'), value: props.stats.masters, icon: WrenchScrewdriverIcon, bg: 'bg-amber-100', iconColor: 'text-amber-700', href: route('admin.masters.index') },
+    { label: t('admin.dashboard.moderators'), value: props.stats.moderators, icon: ShieldCheckIcon, bg: 'bg-orange-100', iconColor: 'text-orange-700', href: route('admin.staff.index') },
+    { label: t('admin.dashboard.services'), value: props.stats.services, icon: BriefcaseIcon, bg: 'bg-emerald-100', iconColor: 'text-emerald-700', href: route('admin.services.index') },
+    { label: t('admin.dashboard.job_requests'), value: props.stats.jobRequests, icon: ClipboardDocumentListIcon, bg: 'bg-purple-100', iconColor: 'text-purple-700', href: route('admin.job-requests.index') },
     {
         label: t('admin.dashboard.pending_complaints'),
         value: props.stats.pendingComplaints,
         icon: ExclamationTriangleIcon,
         bg: props.stats.pendingComplaints > 0 ? 'bg-red-100' : 'bg-gray-100',
         iconColor: props.stats.pendingComplaints > 0 ? 'text-red-600' : 'text-gray-400',
+        href: route('admin.complaints.index'),
     },
     {
         label: t('admin.dashboard.escrow_held'),
@@ -195,19 +196,22 @@ const formatDate = (dateStr: string) =>
             <div>
                 <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">{{ t('admin.dashboard.section_stats') }}</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-                    <div
+                    <component
+                        :is="card.href ? Link : 'div'"
                         v-for="card in statCards"
                         :key="card.label"
-                        class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-2"
+                        :href="card.href"
+                        class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-2 transition-all"
+                        :class="card.href ? 'hover:shadow-md hover:border-gray-200 hover:-translate-y-0.5 cursor-pointer' : ''"
                     >
                         <div class="w-9 h-9 rounded-xl flex items-center justify-center" :class="card.bg">
                             <component :is="card.icon" class="w-4 h-4" :class="card.iconColor" />
                         </div>
                         <div>
-                            <p class="text-xl font-extrabold text-gray-900 leading-none">{{ card.isString ? card.value : card.value }}</p>
+                            <p class="text-xl font-extrabold text-gray-900 leading-none">{{ card.value }}</p>
                             <p class="text-[11px] font-medium text-gray-400 mt-0.5 leading-snug">{{ card.label }}</p>
                         </div>
-                    </div>
+                    </component>
                 </div>
             </div>
 
