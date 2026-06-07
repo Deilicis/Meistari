@@ -6,6 +6,7 @@ import { useActiveRole } from '@/composables/useActiveRole';
 import { toast } from 'vue-sonner';
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { UserCircleIcon } from '@heroicons/vue/24/outline';
 import ProfileTabs from './Partials/ProfileTabs.vue';
 import BasicInformationTab from './Partials/BasicInformationTab.vue';
@@ -15,7 +16,18 @@ import AccountTab from './Partials/AccountTab.vue';
 import type { AuthUser, Profile } from '@/types/models';
 
 const { t } = useI18n();
-const { isMasterActive } = useActiveRole();
+const { isMasterActive, isStaff } = useActiveRole();
+
+const LayoutComponent = computed(() => isStaff.value ? AdminLayout : AuthenticatedLayout);
+
+const headerAccentClass = computed(() => {
+    if (isStaff.value) return 'bg-red-500';
+    return isMasterActive.value ? 'bg-gold' : 'bg-emerald-400';
+});
+const headerAccentTextClass = computed(() => {
+    if (isStaff.value) return 'text-red-400';
+    return isMasterActive.value ? 'text-gold' : 'text-emerald-400';
+});
 
 type ProfileUser = AuthUser & {
     profile: Profile & {

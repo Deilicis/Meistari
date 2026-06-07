@@ -12,6 +12,11 @@ export function useActiveRole() {
     const isSeeker = computed(() => user.value?.is_seeker ?? false);
     const hasBothRoles = computed(() => user.value?.has_both_roles ?? false);
 
+    const roles = computed<string[]>(() => user.value?.roles ?? []);
+    const isAdmin = computed(() => roles.value.includes('admin'));
+    const isModerator = computed(() => roles.value.includes('moderator'));
+    const isStaff = computed(() => isAdmin.value || isModerator.value);
+
     const roleLabel = computed(() => isMasterActive.value ? 'Meistars' : 'Meklētājs');
     const accentTextClass = computed(() => isMasterActive.value ? 'text-yellow-400' : 'text-emerald-400');
     const accentBgClass = computed(() => isMasterActive.value ? 'bg-yellow-400 text-navy' : 'bg-emerald-400 text-white');
@@ -21,6 +26,7 @@ export function useActiveRole() {
     return {
         activeRole, isMasterActive, isSeekerActive,
         isMaster, isSeeker, hasBothRoles,
+        isAdmin, isModerator, isStaff,
         roleLabel, accentTextClass, accentBgClass, accentBorderClass, accentDotClass,
     };
 }
