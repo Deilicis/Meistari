@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import AdminPagination from '@/Components/Common/AdminPagination.vue';
+import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
     ArrowLeftIcon,
     EnvelopeIcon,
@@ -47,6 +48,7 @@ interface Master {
     email: string;
     email_verified_at: string | null;
     created_at: string;
+    suspended_at: string | null;
     profile: {
         city: string | null;
         phone: string | null;
@@ -74,7 +76,7 @@ interface Paginator<T> {
     to: number | null;
 }
 
-defineProps<{
+const props = defineProps<{
     master: Master;
     services: Paginator<Service>;
     reviews: Paginator<Review>;
@@ -83,6 +85,23 @@ defineProps<{
 const fromServiceId = computed(() =>
     new URLSearchParams(window.location.search).get('from_service_id')
 );
+
+const showSuspendConfirm = ref(false);
+const suspendProcessing = ref(false);
+
+const doSuspend = () => {
+    suspendProcessing.value = true;
+    router.post(route('admin.masters.suspend', props.master.id), {}, {
+        onFinish: () => {
+            suspendProcessing.value = false;
+            showSuspendConfirm.value = false;
+        },
+    });
+};
+
+const doUnsuspend = () => {
+    router.post(route('admin.masters.unsuspend', props.master.id));
+};
 
 const formatDate = (d: string) =>
     new Date(d).toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', year: 'numeric' });

@@ -176,18 +176,26 @@ const formatDate = (d: string) =>
                                 {{ formatDate(seeker.created_at) }}
                             </td>
 
-                            
+
                             <td class="px-6 py-4">
-                                <span
-                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-                                    :class="seeker.profile?.is_verified
-                                        ? 'bg-emerald-100 text-emerald-700'
-                                        : 'bg-gray-100 text-gray-500'"
-                                >
-                                    <CheckBadgeIcon v-if="seeker.profile?.is_verified" class="w-3.5 h-3.5" />
-                                    <XCircleIcon v-else class="w-3.5 h-3.5" />
-                                    {{ seeker.profile?.is_verified ? 'Verificēts' : 'Neverificēts' }}
-                                </span>
+                                <div class="flex flex-wrap items-center gap-1">
+                                    <span
+                                        v-if="seeker.suspended_at"
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700"
+                                    >
+                                        Apturēts
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+                                        :class="seeker.profile?.is_verified
+                                            ? 'bg-emerald-100 text-emerald-700'
+                                            : 'bg-gray-100 text-gray-500'"
+                                    >
+                                        <CheckBadgeIcon v-if="seeker.profile?.is_verified" class="w-3.5 h-3.5" />
+                                        <XCircleIcon v-else class="w-3.5 h-3.5" />
+                                        {{ seeker.profile?.is_verified ? 'Verificēts' : 'Neverificēts' }}
+                                    </span>
+                                </div>
                             </td>
 
                             
