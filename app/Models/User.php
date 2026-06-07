@@ -31,6 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public const CREATED_AT = 'created_at';
     public const UPDATED_AT = 'updated_at';
     public const DELETED_AT = 'deleted_at';
+    public const SUSPENDED_AT = 'suspended_at';
 
     protected $table = self::TABLE;
 
