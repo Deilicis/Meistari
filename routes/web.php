@@ -116,17 +116,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::prefix('seekers')->name('seekers.')->group(function () {
-            Route::get('/',       [AdminSeekerController::class, 'index'])->name('index');
-            Route::get('/{user}', [AdminSeekerController::class, 'show'])->name('show');
-            Route::put('/{user}', [AdminSeekerController::class, 'update'])->name('update');
-            Route::delete('/{user}', [AdminSeekerController::class, 'destroy'])->name('destroy');
+            Route::get('/',                        [AdminSeekerController::class, 'index'])->name('index');
+            Route::get('/{user}',                  [AdminSeekerController::class, 'show'])->name('show');
+            Route::put('/{user}',                  [AdminSeekerController::class, 'update'])->name('update');
+            Route::delete('/{user}',               [AdminSeekerController::class, 'destroy'])->name('destroy');
+            Route::post('/{user}/suspend',         [AdminSeekerController::class, 'suspend'])->name('suspend');
+            Route::post('/{user}/unsuspend',       [AdminSeekerController::class, 'unsuspend'])->name('unsuspend');
         });
 
         Route::prefix('masters')->name('masters.')->group(function () {
-            Route::get('/',       [AdminMasterController::class, 'index'])->name('index');
-            Route::get('/{user}', [AdminMasterController::class, 'show'])->name('show');
-            Route::put('/{user}', [AdminMasterController::class, 'update'])->name('update');
-            Route::delete('/{user}', [AdminMasterController::class, 'destroy'])->name('destroy');
+            Route::get('/',                        [AdminMasterController::class, 'index'])->name('index');
+            Route::get('/{user}',                  [AdminMasterController::class, 'show'])->name('show');
+            Route::put('/{user}',                  [AdminMasterController::class, 'update'])->name('update');
+            Route::delete('/{user}',               [AdminMasterController::class, 'destroy'])->name('destroy');
+            Route::post('/{user}/suspend',         [AdminMasterController::class, 'suspend'])->name('suspend');
+            Route::post('/{user}/unsuspend',       [AdminMasterController::class, 'unsuspend'])->name('unsuspend');
         });
 
         Route::prefix('job-requests')->name('job-requests.')->group(function () {
