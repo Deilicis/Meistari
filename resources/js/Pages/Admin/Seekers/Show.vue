@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminPagination from '@/Components/Common/AdminPagination.vue';
 import {
     ArrowLeftIcon,
     EnvelopeIcon,
@@ -45,11 +46,25 @@ interface Seeker {
         is_verified: boolean;
         avatar: string | null;
     } | null;
-    job_requests: JobRequest[];
-    reviews_received: Review[];
 }
 
-defineProps<{ seeker: Seeker }>();
+interface Paginator<T> {
+    data: T[];
+    total: number;
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    links: { url: string | null; label: string; active: boolean }[];
+    from: number | null;
+    to: number | null;
+}
+
+defineProps<{
+    seeker: Seeker;
+    jobRequests: Paginator<JobRequest>;
+    reviews: Paginator<Review>;
+}>();
 
 const { t } = useI18n();
 
@@ -175,17 +190,17 @@ const formatDate = (d: string) =>
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">
-                            Darba sludinājumi ({{ seeker.job_requests.length }})
+                            Darba sludinājumi ({{ jobRequests.total }})
                         </h2>
                     </div>
 
-                    <div v-if="seeker.job_requests.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
+                    <div v-if="jobRequests.total === 0" class="px-6 py-10 text-center text-sm text-gray-400">
                         Nav darba sludinājumu.
                     </div>
 
                     <ul v-else class="divide-y divide-gray-50">
                         <li
-                            v-for="jr in seeker.job_requests"
+                            v-for="jr in jobRequests.data"
                             :key="jr.id"
                             class="px-6 py-4 flex items-center justify-between gap-4 hover:bg-gray-50/60 transition-colors"
                         >
@@ -203,24 +218,25 @@ const formatDate = (d: string) =>
                             </span>
                         </li>
                     </ul>
+                    <AdminPagination v-if="jobRequests.last_page > 1" :links="jobRequests.links" />
                 </div>
             </div>
 
-            
+
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">
-                        Saņemtās atsauksmes ({{ seeker.reviews_received.length }})
+                        Saņemtās atsauksmes ({{ reviews.total }})
                     </h2>
                 </div>
 
-                <div v-if="seeker.reviews_received.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
+                <div v-if="reviews.total === 0" class="px-6 py-10 text-center text-sm text-gray-400">
                     Nav atsauksmju.
                 </div>
 
                 <ul v-else class="divide-y divide-gray-50">
                     <li
-                        v-for="review in seeker.reviews_received"
+                        v-for="review in reviews.data"
                         :key="review.id"
                         class="px-6 py-4 flex items-start gap-4 hover:bg-gray-50/60 transition-colors"
                     >
@@ -244,6 +260,7 @@ const formatDate = (d: string) =>
                         </div>
                     </li>
                 </ul>
+                <AdminPagination v-if="reviews.last_page > 1" :links="reviews.links" />
             </div>
 
         </div>

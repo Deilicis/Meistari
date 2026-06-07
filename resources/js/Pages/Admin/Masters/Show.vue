@@ -60,11 +60,25 @@ interface Master {
         experiences: Experience[];
         portfolio_images: string[];
     } | null;
-    services: Service[];
-    reviews_received: Review[];
 }
 
-defineProps<{ master: Master }>();
+interface Paginator<T> {
+    data: T[];
+    total: number;
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    links: { url: string | null; label: string; active: boolean }[];
+    from: number | null;
+    to: number | null;
+}
+
+defineProps<{
+    master: Master;
+    services: Paginator<Service>;
+    reviews: Paginator<Review>;
+}>();
 
 const fromServiceId = computed(() =>
     new URLSearchParams(window.location.search).get('from_service_id')
@@ -212,17 +226,17 @@ const typeClass = (type: string | null) => type === 'company'
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                     <div class="bg-navy px-6 py-4">
                         <h2 class="text-sm font-bold text-white">
-                            Pakalpojumi ({{ master.services.length }})
+                            Pakalpojumi ({{ services.total }})
                         </h2>
                     </div>
 
-                    <div v-if="master.services.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
+                    <div v-if="services.total === 0" class="px-6 py-10 text-center text-sm text-gray-400">
                         Nav pakalpojumu.
                     </div>
 
                     <ul v-else class="divide-y divide-gray-50">
                         <li
-                            v-for="service in master.services"
+                            v-for="service in services.data"
                             :key="service.id"
                             class="px-6 py-4 flex items-center justify-between gap-4 hover:bg-gray-50/60 transition-colors"
                         >
@@ -246,24 +260,25 @@ const typeClass = (type: string | null) => type === 'company'
                             </div>
                         </li>
                     </ul>
+                    <AdminPagination v-if="services.last_page > 1" :links="services.links" />
                 </div>
             </div>
 
-            
+
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">
-                        Saņemtās atsauksmes ({{ master.reviews_received.length }})
+                        Saņemtās atsauksmes ({{ reviews.total }})
                     </h2>
                 </div>
 
-                <div v-if="master.reviews_received.length === 0" class="px-6 py-10 text-center text-sm text-gray-400">
+                <div v-if="reviews.total === 0" class="px-6 py-10 text-center text-sm text-gray-400">
                     Nav atsauksmju.
                 </div>
 
                 <ul v-else class="divide-y divide-gray-50">
                     <li
-                        v-for="review in master.reviews_received"
+                        v-for="review in reviews.data"
                         :key="review.id"
                         class="px-6 py-4 flex items-start gap-4 hover:bg-gray-50/60 transition-colors"
                     >
@@ -287,6 +302,7 @@ const typeClass = (type: string | null) => type === 'company'
                         </div>
                     </li>
                 </ul>
+                <AdminPagination v-if="reviews.last_page > 1" :links="reviews.links" />
             </div>
 
         </div>

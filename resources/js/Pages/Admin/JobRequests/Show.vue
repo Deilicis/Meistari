@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminPagination from '@/Components/Common/AdminPagination.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
     ArrowLeftIcon,
@@ -40,10 +41,24 @@ interface JobRequest {
         email: string;
         profile: { city: string | null } | null;
     };
-    applications: Application[];
 }
 
-defineProps<{ jobRequest: JobRequest }>();
+interface Paginator<T> {
+    data: T[];
+    total: number;
+    current_page: number;
+    last_page: number;
+    prev_page_url: string | null;
+    next_page_url: string | null;
+    links: { url: string | null; label: string; active: boolean }[];
+    from: number | null;
+    to: number | null;
+}
+
+defineProps<{
+    jobRequest: JobRequest;
+    applications: Paginator<Application>;
+}>();
 
 const showDeleteConfirm = ref(false);
 const deleteProcessing = ref(false);
@@ -244,7 +259,7 @@ const formatDateTime = (d: string) =>
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="bg-navy px-6 py-4">
                     <h2 class="text-sm font-bold text-white">
-                        Pieteikumi ({{ jobRequest.applications.length }})
+                        Pieteikumi ({{ applications.total }})
                     </h2>
                 </div>
                 <table class="w-full text-sm">
@@ -258,13 +273,13 @@ const formatDateTime = (d: string) =>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50">
-                        <tr v-if="jobRequest.applications.length === 0">
+                        <tr v-if="applications.total === 0">
                             <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-400">
                                 Nav pieteikumu.
                             </td>
                         </tr>
                         <tr
-                            v-for="app in jobRequest.applications"
+                            v-for="app in applications.data"
                             :key="app.id"
                             class="hover:bg-gray-50/60 transition-colors"
                         >
@@ -307,11 +322,12 @@ const formatDateTime = (d: string) =>
                         </tr>
                     </tbody>
                 </table>
+                <AdminPagination v-if="applications.last_page > 1" :links="applications.links" />
             </div>
 
         </div>
 
-        
+
         <ConfirmDialog
             :show="showDeleteConfirm"
             title="Dzēst sludinājumu?"
