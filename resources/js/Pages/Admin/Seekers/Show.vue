@@ -154,8 +154,33 @@ const formatDate = (d: string) =>
                                 </span>
                             </div>
                             <p class="text-white/50 text-sm mt-0.5">Reģistrēts: {{ formatDate(seeker.created_at) }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button
+                            v-if="!seeker.suspended_at"
+                            @click="showSuspendConfirm = true"
+                            class="px-4 py-2 text-sm font-semibold text-amber-400 border border-amber-400/30 rounded-lg hover:bg-amber-400/10 transition-colors"
+                        >
+                            Apturēt
+                        </button>
+                        <button
+                            v-else
+                            @click="doUnsuspend"
+                            class="px-4 py-2 text-sm font-semibold text-emerald-400 border border-emerald-400/30 rounded-lg hover:bg-emerald-400/10 transition-colors"
+                        >
+                            Atcelt apturēšanu
+                        </button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div v-if="seeker.suspended_at" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-3">
+                <span class="text-sm font-semibold text-red-700">
+                    Šis konts ir apturēts kopš {{ formatDate(seeker.suspended_at) }}.
+                </span>
             </div>
         </div>
 
@@ -293,5 +318,14 @@ const formatDate = (d: string) =>
             </div>
 
         </div>
+        <ConfirmDialog
+            :show="showSuspendConfirm"
+            title="Apturēt lietotāju?"
+            :message="`Vai tiešām vēlaties apturēt ${seeker.name}? Viņš vairs nevarēs pieslēgties.`"
+            confirmLabel="Apturēt"
+            :processing="suspendProcessing"
+            @confirm="doSuspend"
+            @cancel="showSuspendConfirm = false"
+        />
     </AdminLayout>
 </template>
