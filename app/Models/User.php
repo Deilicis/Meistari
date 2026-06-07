@@ -40,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail
         self::EMAIL,
         self::PASSWORD,
         self::ACTIVE_ROLE,
+        self::SUSPENDED_AT,
     ];
 
     protected $hidden = [
@@ -50,7 +51,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         self::EMAIL_VERIFIED_AT => 'datetime',
         self::PASSWORD => 'hashed',
-        self::ACTIVE_ROLE => RoleNameEnum::class,
+        self::ACTIVE_ROLE  => RoleNameEnum::class,
+        self::SUSPENDED_AT => 'datetime',
     ];
 
     public function getId(): int
@@ -86,6 +88,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getActiveRole(): ?RoleNameEnum
     {
         return $this->getAttribute(self::ACTIVE_ROLE);
+    }
+
+    public function getSuspendedAt(): ?Carbon
+    {
+        return $this->getAttribute(self::SUSPENDED_AT);
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->getAttribute(self::SUSPENDED_AT) !== null;
     }
 
     public function isMaster(): bool
