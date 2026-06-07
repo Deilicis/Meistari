@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import Modal from '@/Components/Common/Modal.vue';
@@ -83,6 +83,7 @@ const formatDate = (d: string) =>
 </script>
 
 <template>
+    <Head title="Meklētāji" />
     <AdminLayout>
         
         <div class="bg-navy">

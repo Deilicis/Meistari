@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { ShieldExclamationIcon } from '@heroicons/vue/24/outline';
@@ -105,6 +105,7 @@ const formatDate = (d: string | null) => {
 </script>
 
 <template>
+    <Head :title="`Sūdzība #${complaint.id}`" />
     <AdminLayout>
         <div class="bg-navy">
             <div class="h-1 bg-rose-500" />

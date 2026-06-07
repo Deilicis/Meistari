@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {
@@ -84,6 +84,7 @@ const formatDate = (d: string) =>
 </script>
 
 <template>
+    <Head :title="seeker.name" />
     <AdminLayout>
         
         <div class="bg-navy">

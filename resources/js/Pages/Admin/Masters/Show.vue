@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {
     ArrowLeftIcon,
@@ -79,6 +79,7 @@ const typeClass = (type: string | null) => type === 'company'
 </script>
 
 <template>
+    <Head :title="master.name" />
     <AdminLayout>
         
         <div class="bg-navy">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
@@ -98,6 +98,7 @@ const formatDate = (d: string) =>
 </script>
 
 <template>
+    <Head title="Sludinājumi" />
     <AdminLayout>
         
         <div class="bg-navy">

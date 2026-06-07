@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
 import AuditLogSearchBar from '@/Components/Search/AuditLogSearchBar.vue';
@@ -80,6 +80,7 @@ const formatValue = (v: any): string => {
 </script>
 
 <template>
+    <Head title="Audita žurnāls" />
     <AdminLayout>
         
         <div class="bg-navy">

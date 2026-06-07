@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {
@@ -179,6 +179,7 @@ const formatDate = (dateStr: string) =>
 </script>
 
 <template>
+    <Head title="Pārvaldības panelis" />
     <AdminLayout>
         <div class="bg-navy">
             <div class="h-1 bg-gold" />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import axios from 'axios';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
@@ -139,6 +139,7 @@ async function handleMerge(data: { source_id: number; target_id: number }) {
 </script>
 
 <template>
+    <Head title="Kategorijas" />
     <AdminLayout>
         
         <div class="bg-navy">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ConfirmDialog from '@/Components/Common/ConfirmDialog.vue';
 import {
@@ -58,6 +58,7 @@ const masterLink = (service: Service) =>
 </script>
 
 <template>
+    <Head :title="service.title" />
     <AdminLayout>
         
         <div class="bg-navy">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { EyeIcon, ShieldExclamationIcon } from '@heroicons/vue/24/outline';
 
@@ -67,6 +67,7 @@ const formatDate = (d: string) =>
 </script>
 
 <template>
+    <Head title="Sūdzības" />
     <AdminLayout>
         <div class="bg-navy">
             <div class="h-1 bg-rose-500" />
