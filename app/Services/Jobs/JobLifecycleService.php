@@ -386,3 +386,4 @@ class JobLifecycleService
 
         return $count;
     }
+}
